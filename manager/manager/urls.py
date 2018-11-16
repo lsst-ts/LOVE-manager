@@ -18,6 +18,5 @@ from django.urls import path
 from django.conf.urls import include, url
 
 urlpatterns = [
-    # url(r'^subscription/', include('subscription.urls')),
     path('admin/', admin.site.urls),
 ]
