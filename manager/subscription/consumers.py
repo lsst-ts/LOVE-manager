@@ -35,9 +35,11 @@ class SubscriptionConsumer(AsyncWebsocketConsumer):
     # Receive message from WebSocket
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        option = text_data_json['option']
-        data = text_data_json['data']
-        if option == 'subscribe':
+        # print('Received')
+        # print(text_data_json)
+        data = text_data_json.get('data')
+        option = text_data_json.get('option')
+        if option and option == 'subscribe':
             await self.join_telemetry_streams(data)
             await self.send(text_data=json.dumps({
                 'data': 'Successfully subscribed to %s' % json.dumps(data) 
@@ -45,14 +47,18 @@ class SubscriptionConsumer(AsyncWebsocketConsumer):
             return
             
         # Send data to telemetry_stream groups
-        for group in self.telemetry_stream_group_names:
-            print('group')
-            print(group)
+        parsed_data = json.loads(data)
+        telemetry_in_data = parsed_data.keys()
+        # print('telemetry_in_data')
+        # print(telemetry_in_data)
+        # print('telemetry_in_data')
+        # print(self.telemetry_stream_group_names)
+        for telemetry_group in telemetry_in_data:
             await self.channel_layer.group_send(
-                group,
+                telemetry_group,
                 {
                     'type': 'subscription_data',
-                    'data': data
+                    'data': parsed_data[telemetry_group]
                 }
             )
 
