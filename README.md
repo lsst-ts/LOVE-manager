@@ -6,7 +6,14 @@ Run redis
 
 ```docker run -p 6379:6379 -d redis:2.8```
 
-Move to the telemetry-manager folder and open the manager:
+Move to the telemetry-manager folder and load a virtualenv
+
+```
+python3 -m venv virtualenv
+source virtualenv/bin/activate
+```
+
+and open the manager:
 
 ```
 python3 manage.py runserver
