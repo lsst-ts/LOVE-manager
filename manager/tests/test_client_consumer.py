@@ -36,6 +36,34 @@ class TestClientConsumer:
 
         await communicator.disconnect()
 
+    @pytest.mark.asyncio
+    async def test_leave_telemetry_stream(self):
+        
+        # Arrange
+        communicator = WebsocketCommunicator(application,  "/ws/subscription/")
+        
+        connected, subprotocol = await communicator.connect()
+
+        subs_msg = {
+            "option": "subscribe", 
+            "data": "avoidanceRegions"
+        }
+        unsubs_msg = {
+            "option": "unsubscribe", 
+            "data": "avoidanceRegions"
+        }
+
+        # Act
+        await communicator.send_json_to(subs_msg)
+        subs_response = await communicator.receive_json_from()
+
+        await communicator.send_json_to(unsubs_msg)
+        unsubs_response = await communicator.receive_json_from()
+
+        # Assert
+        assert unsubs_response['data'] == 'Successfully unsubscribed to avoidanceRegions'
+
+        await communicator.disconnect()
 
     @pytest.mark.asyncio
     async def test_receive_telemetry_stream(self):
