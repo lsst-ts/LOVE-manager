@@ -52,6 +52,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                 return 
         
         # Send data to telemetry_stream groups        
+        data = json.loads(data)
         telemetry_in_data = data.keys()
         for telemetry_group in telemetry_in_data:
             await self.channel_layer.group_send(
