@@ -10,7 +10,13 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             telemetry_stream,
             self.channel_name
         )
-        
+
+    async def leave_telemetry_stream(self, telemetry_stream):
+        await self.channel_layer.group_discard(
+            telemetry_stream,
+            self.channel_name
+        )        
+
     async def connect(self):
         self.telemetry_stream_group_names = []
 
@@ -19,10 +25,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
     async def disconnect(self, close_code):
         # Leave telemetry_stream group
         for telemetry_stream in self.telemetry_stream_group_names:
-            await self.channel_layer.group_discard(
-                telemetry_stream,
-                self.channel_name
-            )        
+            await self.leave_telemetry_stream(telemetry_stream)
 
     async def receive_json(self, json_data):
 
@@ -31,13 +34,22 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             option = json_data['option']
         data = json_data['data']
 
-        if option and option == 'subscribe':
-            # Subscribe and send confirmation
-            await self.join_telemetry_stream(data)
-            await self.send_json({
-                'data': 'Successfully subscribed to %s' % data
-            })
-            return
+        if option:
+            if option == 'subscribe':
+                # Subscribe and send confirmation
+                await self.join_telemetry_stream(data)
+                await self.send_json({
+                    'data': 'Successfully subscribed to %s' % data
+                })
+                return
+            
+            if option == 'unsubscribe':
+                # Unsubscribe nad send confirmation
+                await self.leave_telemetry_stream(data)
+                await self.send_json({
+                    'data': 'Successfully unsubscribed to %s' % data
+                })
+                return 
         
         # Send data to telemetry_stream groups        
         telemetry_in_data = data.keys()
