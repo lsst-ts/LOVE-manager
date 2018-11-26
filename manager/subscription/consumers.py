@@ -25,7 +25,10 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             )        
 
     async def receive_json(self, json_data):
-        option = json_data['option']
+
+        option = None
+        if 'option' in json_data:
+            option = json_data['option']
         data = json_data['data']
 
         if option and option == 'subscribe':
