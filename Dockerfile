@@ -8,4 +8,4 @@ COPY ./manager /home/docker/manager
 
 WORKDIR /home/docker/manager
 
-CMD ["python", "manage.py", "runserver"]
+CMD python manage.py runserver 0.0.0.0:8000
