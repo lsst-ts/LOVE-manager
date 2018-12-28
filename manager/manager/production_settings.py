@@ -10,3 +10,21 @@ WEBPACK_LOADER = {
             'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.prod.json'),
         }
 }
+
+# LDAP
+
+AUTHENTICATION_BACKENDS = [
+    'django_auth_ldap.backend.LDAPBackend',
+]
+
+# Baseline configuration.
+AUTH_LDAP_SERVER_URI = 'ldap://45.79.13.50:389'
+
+AUTH_LDAP_BIND_DN = ''
+AUTH_LDAP_BIND_PASSWORD = ''
+
+AUTH_LDAP_USER_SEARCH = LDAPSearch(
+    'ou=people,dc=planetexpress,dc=com',
+    ldap.SCOPE_SUBTREE,
+    '(uid=%(user)s)',
+)
