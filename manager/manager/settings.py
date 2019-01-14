@@ -27,7 +27,7 @@ SECRET_KEY = 'tbder3gzppu)kl%(u3awhhg^^zu#j&!ceh@$n&v0d38sjx43s8'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', 'dev.love.inria.cl', 'love.inria.cl', '192.168.4.202']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'dev.love.inria.cl', 'love.inria.cl', '192.168.4.202']
 
 
 # Application definition
