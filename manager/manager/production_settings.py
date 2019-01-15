@@ -18,7 +18,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 # Baseline configuration.
-AUTH_LDAP_SERVER_URI = 'ldap://45.79.13.50:389'
+AUTH_LDAP_SERVER_URI = os.environ.get('AUTH_LDAP_SERVER_URI', 'ldap://45.79.13.50:389')
 
 AUTH_LDAP_BIND_DN = ''
 AUTH_LDAP_BIND_PASSWORD = ''

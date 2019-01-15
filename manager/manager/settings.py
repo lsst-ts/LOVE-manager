@@ -123,20 +123,19 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
-
+REDIS_HOST = os.environ.get('REDIS_HOST', '127.0.0.1')
 # Channels
 ASGI_APPLICATION = 'manager.routing.application'
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],
+            "hosts": [(REDIS_HOST, 6379)],
         },
     },
 }
 
 # React
-DIR = '/home/spereira/Workspace/LOVE-frontend/webpack-stats.dev.json'
 WEBPACK_LOADER = {
     'DEFAULT': {
             'BUNDLE_DIR_NAME': 'bundles/',
