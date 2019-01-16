@@ -1,7 +1,61 @@
 <!-- templates/registration/login.html -->
-<h2>Login</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Login</button>
-</form>
+{% load static %}
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+
+  <title>L.O.V.E. Login</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="{% static "./Theme Template for Bootstrap_files/bootstrap.min.css" %}" rel="stylesheet">
+  <!-- Bootstrap theme -->
+  <link href="{% static "./Theme Template for Bootstrap_files/bootstrap-theme.min.css" %}" rel="stylesheet">
+  <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+  <link href="{% static "./Theme Template for Bootstrap_files/ie10-viewport-bug-workaround.css" %}" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="{% static "./Theme Template for Bootstrap_files/theme.css" %}" rel="stylesheet">
+  <link href="{% static "css/love-ui.css" %}" rel="stylesheet">
+
+  <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+  <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+  <script src=="{% static "./Theme Template for Bootstrap_files/ie-emulation-modes-warning.js" %}"></script>
+
+</head>
+
+<body>
+  <div>
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+      <div class="panel">
+        <div class="panel-heading">
+          <h3 class="panel-title">Login</h3>
+        </div>
+        <div class="panel-body">
+          <form method="post">
+            <form method="post">
+              {% csrf_token %}
+              {% if form.errors %}
+              <div class="incorrect-credentials-div">
+                <p class=" label label-danger">
+                    Your username and password didn't match. 
+                    Please try again.
+                </p>
+              </div>
+              {% endif %}
+              <p><label for="id_username">Username</label> <input type="text" name="username" autofocus="" required=""
+                  id="id_username"></p>
+              <p><label for="id_password">Password</label> <input type="password" name="password" required="" id="id_password"></p>
+              <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+          </form>
+        </div>
+      </div>
+    </div><!-- /.col-sm-4 -->
+    <div class="col-md-4"></div>
+  </div><!-- /row -->
+</body>
+
+</html>
