@@ -124,13 +124,15 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 REDIS_HOST = os.environ.get('REDIS_HOST', '127.0.0.1')
+REDIS_PASS = os.environ.get('REDIS_PASS', '')
 # Channels
 ASGI_APPLICATION = 'manager.routing.application'
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [(REDIS_HOST, 6379)],
+            "hosts": ["redis://:"+REDIS_PASS+"@"+REDIS_HOST+":6379/0"],
+            "symmetric_encryption_keys": [SECRET_KEY],
         },
     },
 }
