@@ -1,4 +1,8 @@
-# Basic example
+# LOVE Manager
+
+This repository contains the code of the Django Channels project that acts as middleware for the LOVE-frontend
+
+## Basic local usage
 
 Run the producer as in https://github.com/lsst-ts/LOVE-backend/blob/master/README.md
 
