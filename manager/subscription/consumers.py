@@ -12,6 +12,8 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         )
 
     async def leave_telemetry_stream(self, telemetry_stream):
+        if telemetry_stream in self.telemetry_stream_group_names:
+            self.telemetry_stream_group_names.remove(telemetry_stream)
         await self.channel_layer.group_discard(
             telemetry_stream,
             self.channel_name
@@ -59,7 +61,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                 telemetry_group,
                 {
                     'type': 'subscription_data',
-                    'data': data[telemetry_group]
+                    'data': {telemetry_group: data[telemetry_group]}
                 }
             )
 
