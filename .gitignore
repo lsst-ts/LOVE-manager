@@ -1,4 +1,6 @@
 virtualenv
+venv
+*/venv
 *.pyc
 __pycache__
 assets
