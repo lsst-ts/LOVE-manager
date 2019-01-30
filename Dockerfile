@@ -1,18 +1,17 @@
 FROM python:3.6.7-stretch
 
+# Install required packages
 RUN apt-get update && \
     apt-get install -y libsasl2-dev python-dev libldap2-dev libssl-dev
 
-COPY ./manager/requirements.txt /home/docker/
+# Set workdir and install python requirements
+WORKDIR /usr/src/love
+COPY manager/requirements.txt .
+RUN pip install -r requirements.txt
 
-RUN cd /home/docker && pip install -r requirements.txt
+# Copy source code
+COPY manager .
 
-COPY ./manager /home/docker/manager
-
-WORKDIR /home/docker/manager
-
-RUN mkdir -p /home/LOVE/manager && cp -r /home/docker/manager /home/LOVE/manager
-
-WORKDIR /home/LOVE/manager/manager
+RUN ls -lah
 
 CMD python manage.py runserver 0.0.0.0:8000 --settings=manager.production_settings
