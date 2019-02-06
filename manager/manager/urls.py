@@ -20,8 +20,8 @@ from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('accounts/', include('django.contrib.auth.urls')), # new
-    path('test/', TemplateView.as_view(template_name="test.html")),
-    url(r'^', login_required(TemplateView.as_view(template_name="index.html"))),
+    path('manager/admin/', admin.site.urls),
+    path('manager/accounts/', include('django.contrib.auth.urls')),  # new
+    path('manager/test/', TemplateView.as_view(template_name="test.html")),
+    # url(r'^/manager/', login_required(TemplateView.as_view(template_name="index.html")))
 ]
