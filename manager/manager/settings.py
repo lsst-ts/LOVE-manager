@@ -143,14 +143,8 @@ CHANNEL_LAYERS = {
 }
 
 # LDAP
-AUTHENTICATION_BACKENDS = [
-    'django_auth_ldap.backend.LDAPBackend',
-]
-
-# Baseline configuration.
-AUTH_LDAP_SERVER_URI = os.environ.get(
-    'AUTH_LDAP_SERVER_URI', 'ldap://45.79.13.50:389'
-)
+# Baseline configuration:
+AUTH_LDAP_SERVER_URI = os.environ.get('AUTH_LDAP_SERVER_URI', False)
 
 AUTH_LDAP_BIND_DN = ''
 AUTH_LDAP_BIND_PASSWORD = ''
@@ -160,3 +154,10 @@ AUTH_LDAP_USER_SEARCH = LDAPSearch(
     ldap.SCOPE_SUBTREE,
     '(uid=%(user)s)',
 )
+
+# Only use LDAP activation backend if there is an AUTH_LDAP_SERVER_URI
+# configured in the OS ENV:
+if AUTH_LDAP_SERVER_URI:
+    AUTHENTICATION_BACKENDS = [
+        'django_auth_ldap.backend.LDAPBackend',
+    ]
