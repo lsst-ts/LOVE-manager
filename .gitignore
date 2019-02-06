@@ -3,5 +3,6 @@ venv
 */venv
 *.pyc
 __pycache__
+*.cache
 assets
 webpack-stats.*
