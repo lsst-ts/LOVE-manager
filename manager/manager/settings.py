@@ -33,15 +33,18 @@ ALLOWED_HOSTS = ['localhost', 'manager', 'nginx']
 # Application definition
 
 INSTALLED_APPS = [
-    'webpack_loader',
-    'channels',
-    'subscription',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'webpack_loader',
+    'channels',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'corsheaders',
+    'subscription',
 ]
 
 MIDDLEWARE = [
@@ -117,6 +120,17 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+# Rest Framework
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    )
+}
 
 
 # Static files (CSS, JavaScript, Images)
