@@ -41,15 +41,17 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'webpack_loader',
     'channels',
+    'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
-    'corsheaders',
     'api',
     'subscription',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'api.middleware.GetTokenMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
