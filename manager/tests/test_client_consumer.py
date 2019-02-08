@@ -1,7 +1,7 @@
 import pytest
 from channels.testing import WebsocketCommunicator
 from manager.routing import application
-
+import json
 
 class TestClientConsumer:
     @pytest.mark.asyncio
@@ -67,7 +67,6 @@ class TestClientConsumer:
 
     @pytest.mark.asyncio
     async def test_receive_telemetry_stream(self):
-        import json
         # Arrange
         communicator = WebsocketCommunicator(application,  "/ws/subscription/")
         
@@ -122,7 +121,7 @@ class TestClientConsumer:
 
         producer_msg = {
             "option": "somethingelse",
-            "data":{
+            "data": json.dumps({
                 "avoidanceRegions": {
                     "avoidanceRegions": 0,
                     "scale": 0.2633153200149536,
@@ -133,7 +132,7 @@ class TestClientConsumer:
                     "bulkCloud": 0.6713680575252166,
                     "timestamp": 0.5309269973966433
                 }
-            }
+            })
         }
 
         # Act
@@ -141,11 +140,9 @@ class TestClientConsumer:
         subscription_response = await communicator.receive_json_from()
         
         await communicator.send_json_to(producer_msg)
-        import  pdb; pdb.set_trace()
         producer_response = await communicator.receive_json_from()
         # Assert
-        assert producer_msg['data'] == producer_response['data']
-        
+        assert json.loads(producer_msg['data']) == producer_response['data']
         await communicator.disconnect()
     
 
