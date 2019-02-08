@@ -124,7 +124,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 REDIS_HOST = os.environ.get('REDIS_HOST', '127.0.0.1')
-REDIS_PASS = os.environ.get('REDIS_PASS', '')
+REDIS_PASS = os.environ.get('REDIS_PASS', 'admin123')
 # Channels
 ASGI_APPLICATION = 'manager.routing.application'
 CHANNEL_LAYERS = {
