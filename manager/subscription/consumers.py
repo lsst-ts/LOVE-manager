@@ -1,7 +1,26 @@
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 import json
 
+
 class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
+
+    async def connect(self):
+        """
+        Called upon connection, rejects connection if no authenticated user
+        """
+        self.telemetry_stream_group_names = []
+        # Reject connection if no authenticated user:
+        if self.scope['user'].is_anonymous:
+            await self.close()
+        else:
+            await self.accept()
+
+    async def disconnect(self, close_code):
+        """ Called upon disconnection """
+        # Leave telemetry_stream group
+        for telemetry_stream in self.telemetry_stream_group_names:
+            await self.leave_telemetry_stream(telemetry_stream)
+
     async def join_telemetry_stream(self, telemetry_stream):
         if telemetry_stream in self.telemetry_stream_group_names:
             return
@@ -15,17 +34,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         await self.channel_layer.group_discard(
             telemetry_stream,
             self.channel_name
-        )        
-
-    async def connect(self):
-        self.telemetry_stream_group_names = []
-
-        await self.accept()
-    
-    async def disconnect(self, close_code):
-        # Leave telemetry_stream group
-        for telemetry_stream in self.telemetry_stream_group_names:
-            await self.leave_telemetry_stream(telemetry_stream)
+        )
 
     async def receive_json(self, json_data):
 
@@ -42,16 +51,16 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                     'data': 'Successfully subscribed to %s' % data
                 })
                 return
-            
+
             if option == 'unsubscribe':
                 # Unsubscribe nad send confirmation
                 await self.leave_telemetry_stream(data)
                 await self.send_json({
                     'data': 'Successfully unsubscribed to %s' % data
                 })
-                return 
-        
-        # Send data to telemetry_stream groups        
+                return
+
+        # Send data to telemetry_stream groups
         data = json.loads(data)
         telemetry_in_data = data.keys()
         for telemetry_group in telemetry_in_data:
@@ -74,7 +83,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
 
     async def subscription_data(self, event):
         """
-            Receive data from telemetry_stream group
+        Receive data from telemetry_stream group
         """
         data = event['data']
         # Send data to WebSocket
