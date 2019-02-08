@@ -6,9 +6,9 @@ This repository contains the code of the Django Channels project that acts as mi
 
 Run the producer as in https://github.com/lsst-ts/LOVE-backend/blob/master/README.md
 
-Run redis
+Run redis from the `LOVE-integration-tools/deploy/dev$`
 
-```docker run -p 6379:6379 -d redis:2.8```
+```docker-compose up redis```
 
 Move to the telemetry-manager folder and load a virtualenv
 
