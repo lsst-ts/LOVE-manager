@@ -140,10 +140,19 @@ REST_FRAMEWORK = {
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 STATIC_URL = '/manager/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, "static"),
-#     os.path.join(BASE_DIR, "assets"),
-# ]
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static"),
+)
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
+)
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static_files"),
+    # os.path.join(BASE_DIR, "assets"),
+]
 
 # Channels
 ASGI_APPLICATION = 'manager.routing.application'
