@@ -33,17 +33,17 @@ ALLOWED_HOSTS = ['localhost', 'manager', 'nginx']
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
     'django.contrib.auth',
+    'django.contrib.admin',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'webpack_loader',
+    # 'webpack_loader',
     'channels',
-    'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
+    'corsheaders',
     'api',
     'subscription',
 ]
@@ -77,6 +77,10 @@ TEMPLATES = [
         },
     },
 ]
+
+# CORS Configuration
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
 
 WSGI_APPLICATION = 'manager.wsgi.application'
 
@@ -172,18 +176,18 @@ CHANNEL_LAYERS = {
 # Baseline configuration:
 AUTH_LDAP_SERVER_URI = os.environ.get('AUTH_LDAP_SERVER_URI', False)
 
-AUTH_LDAP_BIND_DN = ''
-AUTH_LDAP_BIND_PASSWORD = ''
-
-AUTH_LDAP_USER_SEARCH = LDAPSearch(
-    'ou=people,dc=planetexpress,dc=com',
-    ldap.SCOPE_SUBTREE,
-    '(uid=%(user)s)',
-)
-
 # Only use LDAP activation backend if there is an AUTH_LDAP_SERVER_URI
 # configured in the OS ENV:
 if AUTH_LDAP_SERVER_URI:
     AUTHENTICATION_BACKENDS = [
         'django_auth_ldap.backend.LDAPBackend',
     ]
+
+    AUTH_LDAP_BIND_DN = ''
+    AUTH_LDAP_BIND_PASSWORD = ''
+
+    AUTH_LDAP_USER_SEARCH = LDAPSearch(
+        'ou=people,dc=planetexpress,dc=com',
+        ldap.SCOPE_SUBTREE,
+        '(uid=%(user)s)',
+    )
