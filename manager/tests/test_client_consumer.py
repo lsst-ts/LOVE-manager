@@ -10,6 +10,23 @@ producer_msg = {
         "scriptQueue": json.dumps({"exists": {"item1": {"value": 0, "dataType": "Int"}}})
         }
 }
+subscription_msg = {
+    "option": "subscribe", 
+    "csc": "scheduler",
+    "stream": "avoidanceRegions"
+}
+
+subscription_all_msg = {
+    "option": "subscribe", 
+    "csc": "all",
+    "stream": "all"
+}
+
+unsubscription_msg = {
+    "option": "unsubscribe", 
+    "csc": "scheduler",
+    "stream": "avoidanceRegions"
+}
 
 class TestClientConsumer:
     @pytest.mark.asyncio
@@ -30,17 +47,12 @@ class TestClientConsumer:
         
         connected, subprotocol = await communicator.connect()
 
-        msg = {
-            "option": "subscribe", 
-            "data": "avoidanceRegions"
-            }
-
         # Act
-        await communicator.send_json_to(msg)
+        await communicator.send_json_to(subscription_msg)
         response = await communicator.receive_json_from()
 
         # Assert
-        assert response['data'] == 'Successfully subscribed to avoidanceRegions'
+        assert response['data'] == 'Successfully subscribed to scheduler-avoidanceRegions'
 
         await communicator.disconnect()
 
@@ -52,24 +64,16 @@ class TestClientConsumer:
         
         connected, subprotocol = await communicator.connect()
 
-        subs_msg = {
-            "option": "subscribe", 
-            "data": "avoidanceRegions"
-        }
-        unsubs_msg = {
-            "option": "unsubscribe", 
-            "data": "avoidanceRegions"
-        }
 
         # Act
-        await communicator.send_json_to(subs_msg)
+        await communicator.send_json_to(subscription_msg)
         subs_response = await communicator.receive_json_from()
 
-        await communicator.send_json_to(unsubs_msg)
+        await communicator.send_json_to(unsubscription_msg)
         unsubs_response = await communicator.receive_json_from()
 
         # Assert
-        assert unsubs_response['data'] == 'Successfully unsubscribed to avoidanceRegions'
+        assert unsubs_response['data'] == 'Successfully unsubscribed to scheduler-avoidanceRegions'
 
         await communicator.disconnect()
 
@@ -79,12 +83,6 @@ class TestClientConsumer:
         communicator = WebsocketCommunicator(application,  "/ws/subscription/")
         
         connected, subprotocol = await communicator.connect()
-
-        subscription_msg = {
-            "option": "subscribe", 
-            "data": "avoidanceRegions"
-        }
-
 
         # Act
         await communicator.send_json_to(subscription_msg)
@@ -106,18 +104,14 @@ class TestClientConsumer:
         
         connected, subprotocol = await communicator.connect()        
 
-        subscription_msg = {
-            "option": "subscribe", 
-            "data": "all"
-        }
-
         # Act
-        await communicator.send_json_to(subscription_msg)
+        await communicator.send_json_to(subscription_all_msg)
         subscription_response = await communicator.receive_json_from()
         
         await communicator.send_json_to(producer_msg)
         producer_response = await communicator.receive_json_from()
         # Assert
+        assert subscription_response['data'] == 'Successfully subscribed to all-all'
         assert producer_msg['data'] == producer_response['data']
         await communicator.disconnect()
     
