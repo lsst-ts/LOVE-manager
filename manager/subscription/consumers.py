@@ -10,6 +10,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         """
         self.telemetry_stream_group_names = []
         # Reject connection if no authenticated user:
+        # await self.accept()
         if self.scope['user'].is_anonymous:
             await self.close()
         else:

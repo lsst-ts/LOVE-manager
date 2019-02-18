@@ -4,7 +4,7 @@ from .consumers import SubscriptionConsumer
 
 websocket_urlpatterns = [
     url(
-        r'^manager/ws/subscription/$',
+        '^manager/ws/subscription/?$',
         TokenAuthMiddleware(SubscriptionConsumer)
     ),
 ]
