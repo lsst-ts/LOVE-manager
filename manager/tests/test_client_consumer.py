@@ -3,6 +3,14 @@ from channels.testing import WebsocketCommunicator
 from manager.routing import application
 import json
 
+producer_msg = {
+    "data": 
+        {
+        "scheduler": json.dumps({"avoidanceRegions": {"avoidanceRegions": {"value": 1, "dataType": "Int"}, "scale": {"value": 0.02813957817852497, "dataType": "Float"}}}),
+        "scriptQueue": json.dumps({"exists": {"item1": {"value": 0, "dataType": "Int"}}})
+        }
+}
+
 class TestClientConsumer:
     @pytest.mark.asyncio
     async def test_connection(self):
@@ -77,23 +85,7 @@ class TestClientConsumer:
             "data": "avoidanceRegions"
         }
 
-        producer_msg = {
-            "option": "somethingelse",
-            "data": json.dumps({
-                "avoidanceRegions": {
-                    "avoidanceRegions": 0,
-                    "scale": 0.2633153200149536,
-                    "timestamp": 0.3877990729003341,
-                    "zero": 0.3617618978023529
-                },
-                "bulkCloud": {
-                    "bulkCloud": 0.6713680575252166,
-                    "timestamp": 0.5309269973966433
-                }
-            })
-        }
 
-      
         # Act
         await communicator.send_json_to(subscription_msg)
         subscription_response = await communicator.receive_json_from()
@@ -102,7 +94,7 @@ class TestClientConsumer:
         producer_response = await communicator.receive_json_from()
 
         # Assert
-        assert json.loads(producer_msg['data'])['avoidanceRegions'] == producer_response['data']['avoidanceRegions']
+        assert json.loads(producer_msg['data']['scheduler'])['avoidanceRegions'] == producer_response['data']['scheduler']['avoidanceRegions']
         
         await communicator.disconnect()
 
@@ -119,22 +111,6 @@ class TestClientConsumer:
             "data": "all"
         }
 
-        producer_msg = {
-            "option": "somethingelse",
-            "data": json.dumps({
-                "avoidanceRegions": {
-                    "avoidanceRegions": 0,
-                    "scale": 0.2633153200149536,
-                    "timestamp": 0.3877990729003341,
-                    "zero": 0.3617618978023529
-                },
-                "bulkCloud": {
-                    "bulkCloud": 0.6713680575252166,
-                    "timestamp": 0.5309269973966433
-                }
-            })
-        }
-
         # Act
         await communicator.send_json_to(subscription_msg)
         subscription_response = await communicator.receive_json_from()
@@ -142,7 +118,7 @@ class TestClientConsumer:
         await communicator.send_json_to(producer_msg)
         producer_response = await communicator.receive_json_from()
         # Assert
-        assert json.loads(producer_msg['data']) == producer_response['data']
+        assert producer_msg['data'] == producer_response['data']
         await communicator.disconnect()
     
 
