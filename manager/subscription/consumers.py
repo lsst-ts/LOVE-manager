@@ -4,7 +4,7 @@ import json
 class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
     async def join_telemetry_stream(self, csc, stream):
         key = '-'.join([csc, stream])
-        if key in self.stream_group_names:
+        if [csc, stream] in self.stream_group_names:
             return
         self.stream_group_names.append([csc, stream])
         await self.channel_layer.group_add(
@@ -14,7 +14,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
 
     async def leave_telemetry_stream(self, csc, stream):
         key = '-'.join([csc, stream])
-        if key in self.stream_group_names:
+        if [csc, stream] in self.stream_group_names:
             self.stream_group_names.remove([csc, stream])
         await self.channel_layer.group_discard(
             key,
