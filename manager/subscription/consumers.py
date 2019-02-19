@@ -2,20 +2,20 @@ from channels.generic.websocket import AsyncJsonWebsocketConsumer
 import json
 
 class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
-    async def join_telemetry_stream(self, csc, stream):
-        key = '-'.join([csc, stream])
-        if [csc, stream] in self.stream_group_names:
+    async def join_telemetry_stream(self, category, csc, stream):
+        key = '-'.join([category, csc, stream])
+        if [category, csc, stream] in self.stream_group_names:
             return
-        self.stream_group_names.append([csc, stream])
+        self.stream_group_names.append([category, csc, stream])
         await self.channel_layer.group_add(
             key,
             self.channel_name
         )
 
-    async def leave_telemetry_stream(self, csc, stream):
-        key = '-'.join([csc, stream])
-        if [csc, stream] in self.stream_group_names:
-            self.stream_group_names.remove([csc, stream])
+    async def leave_telemetry_stream(self, category, csc, stream):
+        key = '-'.join([category, csc, stream])
+        if [category, csc, stream] in self.stream_group_names:
+            self.stream_group_names.remove([category, csc, stream])
         await self.channel_layer.group_discard(
             key,
             self.channel_name
@@ -29,7 +29,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
     async def disconnect(self, close_code):
         # Leave telemetry_stream group
         for telemetry_stream in self.stream_group_names:
-            await self.leave_telemetry_stream(telemetry_stream[0], telemetry_stream[1])
+            await self.leave_telemetry_stream(telemetry_stream[0], telemetry_stream[1], telemetry_stream[2])
 
     async def receive_json(self, json_data):
         debug_mode = False
@@ -41,12 +41,16 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         if 'option' in json_data:
             option = json_data['option']
 
+        category = 'telemetry'
+        if 'category' in json_data:
+            category = json_data['category']
+
         if option:
             if option == 'subscribe':
                 # Subscribe and send confirmation
                 csc = json_data['csc']
                 stream = json_data['stream']
-                await self.join_telemetry_stream(csc, stream)
+                await self.join_telemetry_stream(category, csc, stream)
                 await self.send_json({
                     'data': 'Successfully subscribed to %s-%s' % (csc, stream)
                 })
@@ -56,7 +60,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                 # Unsubscribe nad send confirmation
                 csc = json_data['csc']
                 stream = json_data['stream']
-                await self.leave_telemetry_stream(csc, stream)
+                await self.leave_telemetry_stream(category, csc, stream)
                 await self.send_json({
                     'data': 'Successfully unsubscribed to %s-%s' % (csc, stream)
                 })
@@ -70,9 +74,10 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             telemetry_in_data = data_csc.keys()
             for stream in telemetry_in_data:
                 await self.channel_layer.group_send(
-                    '-'.join([csc, stream]),
+                    '-'.join([category, csc, stream]),
                     {
                         'type': 'subscription_data',
+                        'category': category,
                         'data': {csc: {stream: data_csc[stream]}}
                     }
                 )
@@ -82,6 +87,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             'all-all',
             {
                 'type': 'subscription_data',
+                'category': category,
                 'data': data
             }
         )
@@ -91,7 +97,9 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             Receive data from telemetry_stream group
         """
         data = event['data']
+        category = event['category']
         # Send data to WebSocket
         await self.send(text_data=json.dumps({
-            'data': data
+            'data': data,
+            'category': category
         }))
