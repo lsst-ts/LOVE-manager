@@ -72,6 +72,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         for csc in csc_in_data:
             data_csc = json.loads(data[csc])
             telemetry_in_data = data_csc.keys()
+            streams_data = {}
             for stream in telemetry_in_data:
                 await self.channel_layer.group_send(
                     '-'.join([category, csc, stream]),
@@ -81,10 +82,29 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                         'data': {csc: {stream: data_csc[stream]}}
                     }
                 )
+                streams_data[stream] = data_csc[stream]
+            await self.channel_layer.group_send(
+                '-'.join([category, csc, 'all']),
+                {
+                    'type': 'subscription_data',
+                    'category': category,
+                    'data': {csc: streams_data}
+                }
+            )
 
-        # Send all data to consumers subscribed to "all"
+        # Send all data to consumers subscribed to "all" telemetry
         await self.channel_layer.group_send(
-            'all-all',
+            'telemetry-all-all',
+            {
+                'type': 'subscription_data',
+                'category': category,
+                'data': data
+            }
+        )
+
+        # Send all data to consumers subscribed to "all" events
+        await self.channel_layer.group_send(
+            'event-all-all',
             {
                 'type': 'subscription_data',
                 'category': category,
