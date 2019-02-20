@@ -32,17 +32,19 @@ unsubscription_msg = {
 class TestClientConsumer:
 
     @pytest.mark.asyncio
+    @pytest.mark.django_db
     async def test_connection(self):
-        communicator = WebsocketCommunicator(application,  "/ws/subscription/")
+        communicator = WebsocketCommunicator(application,  "manager/ws/subscription/")
         connected, subprotocol = await communicator.connect()
         assert connected, 'Communicator was not connected'
         await communicator.disconnect()
 
     @pytest.mark.asyncio
+    @pytest.mark.django_db
     async def test_join_telemetry_stream(self):
 
         # Arrange
-        communicator = WebsocketCommunicator(application,  "/ws/subscription/")
+        communicator = WebsocketCommunicator(application,  "manager/ws/subscription/")
 
         connected, subprotocol = await communicator.connect()
 
@@ -56,10 +58,11 @@ class TestClientConsumer:
         await communicator.disconnect()
 
     @pytest.mark.asyncio
+    @pytest.mark.django_db
     async def test_leave_telemetry_stream(self):
 
         # Arrange
-        communicator = WebsocketCommunicator(application,  "/ws/subscription/")
+        communicator = WebsocketCommunicator(application,  "manager/ws/subscription/")
 
         connected, subprotocol = await communicator.connect()
 
@@ -77,9 +80,10 @@ class TestClientConsumer:
         await communicator.disconnect()
 
     @pytest.mark.asyncio
+    @pytest.mark.django_db
     async def test_receive_telemetry_stream(self):
         # Arrange
-        communicator = WebsocketCommunicator(application,  "/ws/subscription/")
+        communicator = WebsocketCommunicator(application,  "manager/ws/subscription/")
 
         connected, subprotocol = await communicator.connect()
 
@@ -96,10 +100,11 @@ class TestClientConsumer:
         await communicator.disconnect()
 
     @pytest.mark.asyncio
+    @pytest.mark.django_db
     async def test_receive_all_telemetries(self):
 
         # Arrange
-        communicator = WebsocketCommunicator(application,  "/ws/subscription/")
+        communicator = WebsocketCommunicator(application,  "manager/ws/subscription/")
 
         connected, subprotocol = await communicator.connect()
 
