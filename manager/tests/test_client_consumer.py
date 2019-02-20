@@ -1,4 +1,6 @@
 import pytest
+from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
 from channels.testing import WebsocketCommunicator
 from manager.routing import application
 import json
@@ -34,84 +36,86 @@ class TestClientConsumer:
     @pytest.mark.asyncio
     @pytest.mark.django_db
     async def test_connection(self):
-        communicator = WebsocketCommunicator(application,  "manager/ws/subscription/")
+        # Arrange
+        user = User.objects.create_user(
+            'username', password='123', email='user@user.cl')
+        token = Token.objects.create(user=user)
+        url = 'manager/ws/subscription/?token={}'.format(token)
+        communicator = WebsocketCommunicator(application,  url)
+        # Act
         connected, subprotocol = await communicator.connect()
+        # Assert
         assert connected, 'Communicator was not connected'
         await communicator.disconnect()
 
     @pytest.mark.asyncio
     @pytest.mark.django_db
     async def test_join_telemetry_stream(self):
-
         # Arrange
-        communicator = WebsocketCommunicator(application,  "manager/ws/subscription/")
-
+        user = User.objects.create_user(
+            'username', password='123', email='user@user.cl')
+        token = Token.objects.create(user=user)
+        url = 'manager/ws/subscription/?token={}'.format(token)
+        communicator = WebsocketCommunicator(application,  url)
         connected, subprotocol = await communicator.connect()
-
         # Act
         await communicator.send_json_to(subscription_msg)
         response = await communicator.receive_json_from()
-
         # Assert
         assert response['data'] == 'Successfully subscribed to scheduler-avoidanceRegions'
-
         await communicator.disconnect()
 
     @pytest.mark.asyncio
     @pytest.mark.django_db
     async def test_leave_telemetry_stream(self):
-
         # Arrange
-        communicator = WebsocketCommunicator(application,  "manager/ws/subscription/")
-
+        user = User.objects.create_user(
+            'username', password='123', email='user@user.cl')
+        token = Token.objects.create(user=user)
+        url = 'manager/ws/subscription/?token={}'.format(token)
+        communicator = WebsocketCommunicator(application,  url)
         connected, subprotocol = await communicator.connect()
-
-
         # Act
         await communicator.send_json_to(subscription_msg)
         subs_response = await communicator.receive_json_from()
-
         await communicator.send_json_to(unsubscription_msg)
         unsubs_response = await communicator.receive_json_from()
-
         # Assert
         assert unsubs_response['data'] == 'Successfully unsubscribed to scheduler-avoidanceRegions'
-
         await communicator.disconnect()
 
     @pytest.mark.asyncio
     @pytest.mark.django_db
     async def test_receive_telemetry_stream(self):
         # Arrange
-        communicator = WebsocketCommunicator(application,  "manager/ws/subscription/")
-
+        user = User.objects.create_user(
+            'username', password='123', email='user@user.cl')
+        token = Token.objects.create(user=user)
+        url = 'manager/ws/subscription/?token={}'.format(token)
+        communicator = WebsocketCommunicator(application,  url)
         connected, subprotocol = await communicator.connect()
-
         # Act
         await communicator.send_json_to(subscription_msg)
         subscription_response = await communicator.receive_json_from()
-
         await communicator.send_json_to(producer_msg)
         producer_response = await communicator.receive_json_from()
-
         # Assert
         assert json.loads(producer_msg['data']['scheduler'])['avoidanceRegions'] == producer_response['data']['scheduler']['avoidanceRegions']
-
         await communicator.disconnect()
 
     @pytest.mark.asyncio
     @pytest.mark.django_db
     async def test_receive_all_telemetries(self):
-
         # Arrange
-        communicator = WebsocketCommunicator(application,  "manager/ws/subscription/")
-
+        user = User.objects.create_user(
+            'username', password='123', email='user@user.cl')
+        token = Token.objects.create(user=user)
+        url = 'manager/ws/subscription/?token={}'.format(token)
+        communicator = WebsocketCommunicator(application,  url)
         connected, subprotocol = await communicator.connect()
-
         # Act
         await communicator.send_json_to(subscription_all_msg)
         subscription_response = await communicator.receive_json_from()
-
         await communicator.send_json_to(producer_msg)
         producer_response = await communicator.receive_json_from()
         # Assert
