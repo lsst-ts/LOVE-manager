@@ -17,12 +17,18 @@ class TokenAuthMiddleware:
         data = urlparse.parse_qs(query_string)
         token_key = None
         scope['user'] = AnonymousUser()
+        scope['password'] = False
 
         if 'token' in data:
             token_key = data['token'][0]
             token = Token.objects.filter(key=token_key).first()
             if token is not None:
                 scope['user'] = token.user
+
+        if 'password' in data:
+            password = data['password'][0]
+            if password is not None:
+                scope['password'] = password
 
         close_old_connections()
         return self.inner(scope)

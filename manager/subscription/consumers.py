@@ -1,5 +1,6 @@
-from channels.generic.websocket import AsyncJsonWebsocketConsumer
 import json
+from channels.generic.websocket import AsyncJsonWebsocketConsumer
+from manager.settings import PROCESS_CONNECTION_PASS
 
 
 class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
@@ -10,9 +11,11 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         """
         self.stream_group_names = []
         # Reject connection if no authenticated user:
-        # await self.accept()
         if self.scope['user'].is_anonymous:
-            await self.close()
+            if self.scope['password'] and self.scope['password'] == PROCESS_CONNECTION_PASS:
+                await self.accept()
+            else:
+                await self.close()
         else:
             await self.accept()
 

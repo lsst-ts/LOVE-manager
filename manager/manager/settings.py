@@ -114,6 +114,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Password for other processes
+PROCESS_CONNECTION_PASS = os.environ.get('PROCESS_CONNECTION_PASS', 'dev_pass')
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
