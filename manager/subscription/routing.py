@@ -1,7 +1,10 @@
 from django.conf.urls import url
-
-from . import consumers
+from subscription.auth import TokenAuthMiddleware
+from .consumers import SubscriptionConsumer
 
 websocket_urlpatterns = [
-    url(r'^ws/subscription/$', consumers.SubscriptionConsumer),
+    url(
+        '^manager/ws/subscription/?$',
+        TokenAuthMiddleware(SubscriptionConsumer)
+    ),
 ]
