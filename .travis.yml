@@ -7,5 +7,9 @@ branches:
 services:
   - docker
 
+before_install:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
 script:
-- docker build -t inriachile/love-manager:latest .
+  - docker build -t inriachile/love-manager:latest .
+  - docker push inriachile/love-manager:latest #TODO use branch as variable ($TRAVIS_BRANCH)
