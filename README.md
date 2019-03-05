@@ -1,5 +1,7 @@
 # LOVE Manager
 
+[![Build Status](https://travis-ci.org/lsst-ts/LOVE-manager.svg?branch=develop)](https://travis-ci.org/lsst-ts/LOVE-manager)
+
 This repository contains the code of the Django Channels project that acts as middleware for the LOVE-frontend
 
 ## Basic local usage
@@ -24,7 +26,7 @@ python3 manage.py runserver
 ```
 
 
-Open  https://www.websocket.org/echo.html in a browser and connect to this address: 
+Open  https://www.websocket.org/echo.html in a browser and connect to this address:
 
 ```
 ws://localhost:8000/ws/subscription/

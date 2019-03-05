@@ -2,9 +2,8 @@ language: ruby
 
 branches:
   only:
-  - dev
+  - develop
   - master
-  - ci-pipeline #TODO remove this before PR
 
 services:
   - docker
@@ -14,5 +13,6 @@ before_install:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
 script:
+  # docker build & ship
   - docker build -t inriachile/love-manager:${TRAVIS_BRANCH} .
   - docker push inriachile/love-manager:${TRAVIS_BRANCH}
