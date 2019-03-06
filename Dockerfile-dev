@@ -2,7 +2,12 @@ FROM python:3.6.7-stretch
 
 # Install required packages
 RUN apt-get update && \
-    apt-get install -y libsasl2-dev python-dev libldap2-dev libssl-dev
+    apt-get install -y \
+    libsasl2-dev \
+    python-dev \
+    libldap2-dev \
+    libssl-dev &&\
+    rm -rf /var/lib/apt/lists/*
 
 # Set workdir and install python requirements
 WORKDIR /usr/src/love
