@@ -3,17 +3,27 @@ pipeline {
 
   environment {
     registry = "inriachile/love-manager"
+    registryCredential = "dockerhub-inriachile"
+    dockerImage = registry + ":$GIT_BRANCH"
   }
 
   triggers {
-    pollSCM('* * * * *')
+    pollSCM("* * * * *")
   }
   stages {
-    stage('Build') {
+    stage("Build Docker image") {
       steps {
-        echo 'Building Docker image'
         script {
-          docker.build registry + ":$GIT_BRANCH"
+          docker.build dockerImage
+        }
+      }
+    }
+    stage("Push Docker image") {
+      steps {
+        script {
+          docker.withRegistry("", registryCredential) {
+            dockerImage.push()
+          }
         }
       }
     }
