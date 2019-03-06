@@ -12,7 +12,7 @@ pipeline {
   stages {
     stage("Build Docker image") {
       when {
-        branch "ci-develop"
+        branch "ci-pipeline"
       }
       steps {
         script {
@@ -22,7 +22,7 @@ pipeline {
     }
     stage("Push Docker image") {
       when {
-        branch "ci-develop"
+        branch "ci-pipeline"
       }
       steps {
         script {
