@@ -2,9 +2,8 @@ pipeline {
   agent any
 
   environment {
-    registry = "inriachile/love-manager"
     registryCredential = "dockerhub-inriachile"
-    dockerImage = registry + ":$GIT_BRANCH"
+    dockerImage = "inriachile/love-manager:${GIT_BRANCH}"
   }
 
   triggers {
