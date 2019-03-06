@@ -8,10 +8,11 @@ pipeline {
   triggers {
     pollSCM("* * * * *")
   }
-  when {
-    branch "ci-develop"
-  }
+
   stages {
+    when {
+      branch "ci-develop"
+    }
     stage("Build Docker image") {
       steps {
         script {
