@@ -3,6 +3,9 @@ pipeline {
 
   stages {
     stage('Build') {
+      triggers {
+        pollSCM('* * * * *')
+      }
       steps {
         echo 'Building..'
       }
