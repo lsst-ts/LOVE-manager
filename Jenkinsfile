@@ -10,17 +10,10 @@ pipeline {
     pollSCM("* * * * *")
   }
   stages {
-    def dockerImage = null
     stage("Build Docker image") {
       steps {
         script {
-          dockerImage = docker.build dockerImageName
-        }
-      }
-    }
-    stage("Push Docker image") {
-      steps {
-        script {
+          def dockerImage = docker.build dockerImageName
           docker.withRegistry("", registryCredential) {
             dockerImage.push()
           }
