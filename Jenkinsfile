@@ -10,10 +10,10 @@ pipeline {
   }
 
   stages {
-    when {
-      branch "ci-develop"
-    }
     stage("Build Docker image") {
+      when {
+        branch "ci-develop"
+      }
       steps {
         script {
           dockerImage = docker.build dockerImageName
@@ -21,6 +21,9 @@ pipeline {
       }
     }
     stage("Push Docker image") {
+      when {
+        branch "ci-develop"
+      }
       steps {
         script {
           docker.withRegistry("", registryCredential) {
