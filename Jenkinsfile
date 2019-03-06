@@ -3,17 +3,18 @@ pipeline {
 
   environment {
     registryCredential = "dockerhub-inriachile"
-    dockerImage = "inriachile/love-manager:${GIT_BRANCH}"
+    dockerImageName = "inriachile/love-manager:${GIT_BRANCH}"
   }
 
   triggers {
     pollSCM("* * * * *")
   }
   stages {
+    def dockerImage = null
     stage("Build Docker image") {
       steps {
         script {
-          docker.build dockerImage
+          dockerImage = docker.build dockerImageName
         }
       }
     }
