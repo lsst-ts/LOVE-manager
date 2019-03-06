@@ -1,6 +1,6 @@
 # LOVE Manager
 
-This repository contains the code of the Django Channels project that acts as middleware for the LOVE-frontend.
+This repository contains the code of the Django Channels project that acts as middleware for the LOVE-frontend
 
 ## Basic local usage
 
