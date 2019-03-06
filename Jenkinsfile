@@ -13,7 +13,7 @@ pipeline {
     stage("Build Docker image") {
       when {
         anyOf {
-          branch "ci-pipeline"
+          branch "master"
           branch "develop"
         }
       }
@@ -26,7 +26,7 @@ pipeline {
     stage("Push Docker image") {
       when {
         anyOf {
-          branch "ci-pipeline"
+          branch "master"
           branch "develop"
         }
       }
