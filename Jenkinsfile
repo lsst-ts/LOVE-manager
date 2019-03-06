@@ -14,6 +14,12 @@ pipeline {
       steps {
         script {
           def dockerImage = docker.build dockerImageName
+        }
+      }
+    }
+    stage("Push Docker image") {
+      steps {
+        script {
           docker.withRegistry("", registryCredential) {
             dockerImage.push()
           }
