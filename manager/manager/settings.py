@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 import ldap
-from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
+from django_auth_ldap.config import LDAPSearch
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -27,25 +27,31 @@ SECRET_KEY = 'tbder3gzppu)kl%(u3awhhg^^zu#j&!ceh@$n&v0d38sjx43s8'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'dev.love.inria.cl', 'love.inria.cl', '192.168.4.202']
+ALLOWED_HOSTS = ['localhost', 'manager', 'nginx']
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'webpack_loader',
-    'channels',
-    'subscription',
-    'django.contrib.admin',
     'django.contrib.auth',
+    'django.contrib.admin',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 'webpack_loader',
+    'channels',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'corsheaders',
+    'api',
+    'subscription',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'api.middleware.GetTokenMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -71,6 +77,10 @@ TEMPLATES = [
         },
     },
 ]
+
+# CORS Configuration
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
 
 WSGI_APPLICATION = 'manager.wsgi.application'
 
@@ -104,6 +114,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Password for other processes
+PROCESS_CONNECTION_PASS = os.environ.get('PROCESS_CONNECTION_PASS', 'dev_pass')
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
@@ -118,15 +131,40 @@ USE_L10N = True
 
 USE_TZ = True
 
+# Rest Framework
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    )
+}
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
+STATIC_URL = '/manager/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static"),
+)
 
-STATIC_URL = '/static/'
-REDIS_HOST = os.environ.get('REDIS_HOST', '127.0.0.1')
-REDIS_PASS = os.environ.get('REDIS_PASS', '')
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
+)
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static_files"),
+    # os.path.join(BASE_DIR, "assets"),
+]
+
 # Channels
 ASGI_APPLICATION = 'manager.routing.application'
+REDIS_HOST = os.environ.get('REDIS_HOST', '127.0.0.1')
+REDIS_PASS = os.environ.get('REDIS_PASS', 'admin123')
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
@@ -137,10 +175,22 @@ CHANNEL_LAYERS = {
     },
 }
 
-# React
-WEBPACK_LOADER = {
-    'DEFAULT': {
-            'BUNDLE_DIR_NAME': 'bundles/',
-            'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.dev.json'),
-        }
-}
+# LDAP
+# Baseline configuration:
+AUTH_LDAP_SERVER_URI = os.environ.get('AUTH_LDAP_SERVER_URI', False)
+
+# Only use LDAP activation backend if there is an AUTH_LDAP_SERVER_URI
+# configured in the OS ENV:
+if AUTH_LDAP_SERVER_URI:
+    AUTHENTICATION_BACKENDS = [
+        'django_auth_ldap.backend.LDAPBackend',
+    ]
+
+    AUTH_LDAP_BIND_DN = ''
+    AUTH_LDAP_BIND_PASSWORD = ''
+
+    AUTH_LDAP_USER_SEARCH = LDAPSearch(
+        'ou=people,dc=planetexpress,dc=com',
+        ldap.SCOPE_SUBTREE,
+        '(uid=%(user)s)',
+    )
