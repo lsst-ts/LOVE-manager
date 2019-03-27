@@ -27,7 +27,7 @@ SECRET_KEY = 'tbder3gzppu)kl%(u3awhhg^^zu#j&!ceh@$n&v0d38sjx43s8'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', 'love-manager-mount', 'love-nginx-mount']
+ALLOWED_HOSTS = ['localhost', 'love-manager-mount', 'love-nginx-mount', 'manager']
 
 
 # Application definition
