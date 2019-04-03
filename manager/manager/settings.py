@@ -28,7 +28,7 @@ SECRET_KEY = 'tbder3gzppu)kl%(u3awhhg^^zu#j&!ceh@$n&v0d38sjx43s8'
 DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', 'love-manager-mount', 'love-nginx-mount', 'manager',
-                'love-manager', 'love-nginx']
+                'love-manager', 'love-nginx', '10.0.100.1', '10.0.100.209']
 
 
 # Application definition
