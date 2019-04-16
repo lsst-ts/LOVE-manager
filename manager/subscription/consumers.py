@@ -107,24 +107,26 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             )
 
         # Send all data to consumers subscribed to "all" telemetry
-        await self.channel_layer.group_send(
-            'telemetry-all-all',
-            {
-                'type': 'subscription_data',
-                'category': category,
-                'data': data
-            }
-        )
+        if category == 'telemetry':
+            await self.channel_layer.group_send(
+                'telemetry-all-all',
+                {
+                    'type': 'subscription_data',
+                    'category': category,
+                    'data': data
+                }
+            )
 
         # Send all data to consumers subscribed to "all" events
-        await self.channel_layer.group_send(
-            'event-all-all',
-            {
-                'type': 'subscription_data',
-                'category': category,
-                'data': data
-            }
-        )
+        if category == 'event':
+            await self.channel_layer.group_send(
+                'event-all-all',
+                {
+                    'type': 'subscription_data',
+                    'category': category,
+                    'data': data
+                }
+            )
 
     async def subscription_data(self, event):
         """
