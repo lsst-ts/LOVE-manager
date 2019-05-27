@@ -22,11 +22,11 @@ class AuthApiTestCase(TestCase):
             first_name='First',
             last_name='Last',
         )
-        self.get_token_url = reverse('get-token')
+        self.login_url = reverse('login')
         self.validate_token_url = reverse('validate-token')
         self.logout_url = reverse('logout')
 
-    def test_user_get_token(self):
+    def test_user_login(self):
         """ Test that an user can request a token using name and password """
         # Arrange:
         data = {'username': self.username, 'password': self.password}
@@ -36,14 +36,14 @@ class AuthApiTestCase(TestCase):
         self.assertEqual(tokens_num, 0, 'The user should have no token')
 
         # Act:
-        response = self.client.post(self.get_token_url, data, format='json')
+        response = self.client.post(self.login_url, data, format='json')
 
         # Assert after request:
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         tokens_num = Token.objects.filter(user__username=self.username).count()
         self.assertEqual(tokens_num, 1, 'The user should have a token')
 
-    def test_user_get_token_failed(self):
+    def test_user_login_failed(self):
         """
         Test that an user cannot request a token if the credentials are invalid
         """
@@ -55,7 +55,7 @@ class AuthApiTestCase(TestCase):
         self.assertEqual(tokens_num, 0, 'The user should have no token')
 
         # Act:
-        response = self.client.post(self.get_token_url, data, format='json')
+        response = self.client.post(self.login_url, data, format='json')
 
         # Assert after request:
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -66,7 +66,7 @@ class AuthApiTestCase(TestCase):
         """ Test that an user can validate a token """
         # Arrange:
         data = {'username': self.username, 'password': self.password}
-        response = self.client.post(self.get_token_url, data, format='json')
+        response = self.client.post(self.login_url, data, format='json')
         token = Token.objects.filter(user__username=self.username).first()
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
 
@@ -87,7 +87,7 @@ class AuthApiTestCase(TestCase):
         """ Test that an user fails to validate an invalid token """
         # Arrange:
         data = {'username': self.username, 'password': self.password}
-        response = self.client.post(self.get_token_url, data, format='json')
+        response = self.client.post(self.login_url, data, format='json')
         token = Token.objects.filter(user__username=self.username).first()
         self.client.credentials(HTTP_AUTHORIZATION='Token '+token.key+'fake')
 
@@ -108,7 +108,7 @@ class AuthApiTestCase(TestCase):
         """ Test that an user fails to validate an expired token """
         # Arrange:
         data = {'username': self.username, 'password': self.password}
-        response = self.client.post(self.get_token_url, data, format='json')
+        response = self.client.post(self.login_url, data, format='json')
         token = Token.objects.filter(user__username=self.username).first()
         self.client.credentials(HTTP_AUTHORIZATION='Token '+token.key)
         token.delete()
@@ -134,7 +134,7 @@ class AuthApiTestCase(TestCase):
         """ Test that an user can logout and delete the token """
         # Arrange:
         data = {'username': self.username, 'password': self.password}
-        response = self.client.post(self.get_token_url, data, format='json')
+        response = self.client.post(self.login_url, data, format='json')
         token = Token.objects.filter(user__username=self.username).first()
         old_tokens_count = len(Token.objects.filter(user__username=self.username))
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)

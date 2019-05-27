@@ -8,7 +8,7 @@ from api.views import validate_token, logout
 router = DefaultRouter()
 
 urlpatterns = [
-    path('get-token/', views.obtain_auth_token, name='get-token'),
+    path('get-token/', views.obtain_auth_token, name='login'),
     path('validate-token/', validate_token, name='validate-token'),
     path('logout/', logout, name='logout'),
     path('auth/', include('rest_framework.urls', namespace='rest_framework')),
