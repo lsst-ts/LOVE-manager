@@ -24,6 +24,7 @@ class AuthApiTestCase(TestCase):
         )
         self.get_token_url = reverse('get-token')
         self.validate_token_url = reverse('validate-token')
+        self.logout_url = reverse('logout')
 
     def test_user_get_token(self):
         """ Test that an user can request a token using name and password """
@@ -118,7 +119,7 @@ class AuthApiTestCase(TestCase):
 
         # Act:
         response = self.client.get(
-            self.validate_token_url, data, format='json'
+            self.validate_token_url, format='json'
         )
 
         # Assert after request:
@@ -128,3 +129,25 @@ class AuthApiTestCase(TestCase):
             {'detail': 'Token is valid'},
             'The response indicates the validation was correct'
         )
+
+    def test_user_logout(self):
+        """ Test that an user can logout and delete the token """
+        # Arrange:
+        data = {'username': self.username, 'password': self.password}
+        response = self.client.post(self.get_token_url, data, format='json')
+        token = Token.objects.filter(user__username=self.username).first()
+        old_tokens_count = len(Token.objects.filter(user__username=self.username))
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
+
+        # Act:
+        response = self.client.delete(self.logout_url, format='json')
+
+        # Assert after request:
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(
+            response.data,
+            {'detail': 'Logout successful, Token succesfully deleted'},
+            'The response is not as expected'
+        )
+        new_tokens_count = len(Token.objects.filter(user__username=self.username))
+        self.assertEqual(old_tokens_count - 1, new_tokens_count, 'The token was not deleted')
