@@ -28,7 +28,7 @@ SECRET_KEY = 'tbder3gzppu)kl%(u3awhhg^^zu#j&!ceh@$n&v0d38sjx43s8'
 DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', 'love-manager-mount', 'love-nginx-mount', 'manager',
-                'love-manager', 'love-nginx', '10.0.100.1', '10.0.100.209']
+                'love-manager', 'love-nginx', '10.0.100.1', '10.0.100.209', '127.0.0.1']
 
 
 # Application definition
@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     # 'webpack_loader',
     'channels',
     'rest_framework',
-    'rest_framework.authtoken',
+    # 'rest_framework.authtoken',
     'corsheaders',
     'api',
     'subscription',
@@ -138,7 +138,8 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
+        # 'rest_framework.authentication.TokenAuthentication',
+        'api.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     )
 }

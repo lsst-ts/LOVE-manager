@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from rest_framework.test import APIClient
 from rest_framework import status
-from rest_framework.authtoken.models import Token
+from api.models import Token
 
 
 class AuthApiTestCase(TestCase):
@@ -59,34 +59,34 @@ class AuthApiTestCase(TestCase):
         tokens_num_1 = Token.objects.filter(user__username=self.username).count()
         self.assertEqual(tokens_num_0, tokens_num_1, 'The user should have no token')
 
-    # def test_user_login_twice(self):
-    #     """ Test that an user can request a token twie receiving different tokens each time """
-    #     # Arrange:
-    #     data = {'username': self.username, 'password': self.password}
-    #     tokens_num_0 = Token.objects.filter(user__username=self.username).count()
-    #
-    #     # Act 1:
-    #     response = self.client.post(self.login_url, data, format='json')
-    #
-    #     # Assert 1:
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
-    #     tokens_num_1 = Token.objects.filter(user__username=self.username).count()
-    #     self.assertEqual(tokens_num_0 + 1, tokens_num_1, 'The user should have a new token')
-    #     retrieved_token_1 = response.data['token']
-    #     tokens_in_db = [t.key for t in Token.objects.filter(user__username=self.username)]
-    #     self.assertTrue(retrieved_token_1 in tokens_in_db, 'The token should be in the DB')
-    #
-    #     # Act 2:
-    #     response = self.client.post(self.login_url, data, format='json')
-    #
-    #     # Assert after request 2:
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
-    #     tokens_num_2 = Token.objects.filter(user__username=self.username).count()
-    #     self.assertEqual(tokens_num_1 + 1, tokens_num_2, 'The user should have another new token')
-    #     retrieved_token_2 = response.data['token']
-    #     tokens_in_db = [t.key for t in Token.objects.filter(user__username=self.username)]
-    #     self.assertTrue(retrieved_token_1 in tokens_in_db, 'The token should be in the DB')
-    #     self.assertNotEqual(retrieved_token_1, retrieved_token_2, 'The tokens should be different')
+    def test_user_login_twice(self):
+        """ Test that an user can request a token twie receiving different tokens each time """
+        # Arrange:
+        data = {'username': self.username, 'password': self.password}
+        tokens_num_0 = Token.objects.filter(user__username=self.username).count()
+
+        # Act 1:
+        response = self.client.post(self.login_url, data, format='json')
+
+        # Assert 1:
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        tokens_num_1 = Token.objects.filter(user__username=self.username).count()
+        self.assertEqual(tokens_num_0 + 1, tokens_num_1, 'The user should have a new token')
+        retrieved_token_1 = response.data['token']
+        tokens_in_db = [t.key for t in Token.objects.filter(user__username=self.username)]
+        self.assertTrue(retrieved_token_1 in tokens_in_db, 'The token should be in the DB')
+
+        # Act 2:
+        response = self.client.post(self.login_url, data, format='json')
+
+        # Assert after request 2:
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        tokens_num_2 = Token.objects.filter(user__username=self.username).count()
+        self.assertEqual(tokens_num_1 + 1, tokens_num_2, 'The user should have another new token')
+        retrieved_token_2 = response.data['token']
+        tokens_in_db = [t.key for t in Token.objects.filter(user__username=self.username)]
+        self.assertTrue(retrieved_token_1 in tokens_in_db, 'The token should be in the DB')
+        self.assertNotEqual(retrieved_token_1, retrieved_token_2, 'The tokens should be different')
 
     def test_user_validate_token(self):
         """ Test that an user can validate a token """
