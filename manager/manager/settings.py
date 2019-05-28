@@ -139,12 +139,12 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         # 'rest_framework.authentication.TokenAuthentication',
-        'api.authentication.TokenAuthentication',
+        # 'api.authentication.TokenAuthentication',
+        'api.authentication.ExpiringTokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     )
 }
-
-TOKEN_EXPIRED_AFTER_SECONDS = 100000
+TOKEN_EXPIRED_AFTER_DAYS = 30
 
 
 # Static files (CSS, JavaScript, Images)

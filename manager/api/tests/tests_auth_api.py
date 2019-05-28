@@ -6,7 +6,7 @@ from freezegun import freeze_time
 from rest_framework.test import APIClient
 from rest_framework import status
 from api.models import Token
-from manager.settings import TOKEN_EXPIRED_AFTER_SECONDS
+from django.conf import settings
 
 
 class AuthApiTestCase(TestCase):
@@ -168,7 +168,7 @@ class AuthApiTestCase(TestCase):
             self.client.credentials(HTTP_AUTHORIZATION='Token '+token.key)
 
             # Act:
-            max_timedelta = datetime.timedelta(seconds=TOKEN_EXPIRED_AFTER_SECONDS+1)
+            max_timedelta = datetime.timedelta(days=settings.TOKEN_EXPIRED_AFTER_DAYS, seconds=1)
             frozen_datetime.tick(delta=max_timedelta)
             response = self.client.get(
                 self.validate_token_url, format='json'
