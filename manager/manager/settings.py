@@ -144,6 +144,8 @@ REST_FRAMEWORK = {
     )
 }
 
+TOKEN_EXPIRED_AFTER_SECONDS = 100000
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/

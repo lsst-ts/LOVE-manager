@@ -1,9 +1,12 @@
+import datetime
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
+from freezegun import freeze_time
 from rest_framework.test import APIClient
 from rest_framework import status
 from api.models import Token
+from manager.settings import TOKEN_EXPIRED_AFTER_SECONDS
 
 
 class AuthApiTestCase(TestCase):
@@ -130,8 +133,8 @@ class AuthApiTestCase(TestCase):
             'The response indicates the validation was correct'
         )
 
-    def test_user_fails_to_validate_expired_token(self):
-        """ Test that an user fails to validate an expired token """
+    def test_user_fails_to_validate_deleted_token(self):
+        """ Test that an user fails to validate an deleted token """
         # Arrange:
         data = {'username': self.username, 'password': self.password}
         response = self.client.post(self.login_url, data, format='json')
@@ -139,22 +142,47 @@ class AuthApiTestCase(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token '+token.key)
         token.delete()
 
-        # Assert before request:
-        tokens_num = Token.objects.filter(user__username=self.username).count()
-        self.assertEqual(tokens_num, 0, 'The user should have no token')
-
         # Act:
         response = self.client.get(
             self.validate_token_url, format='json'
         )
 
-        # Assert after request:
+        # Assert:
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertNotEqual(
             response.data,
             {'detail': 'Token is valid'},
             'The response indicates the validation was correct'
         )
+
+    def test_user_fails_to_validate_expired_token(self):
+        """ Test that an user fails to validate an expired token """
+
+        initial_time = datetime.datetime.now()
+        with freeze_time(initial_time) as frozen_datetime:
+            # Arrange:
+            data = {'username': self.username, 'password': self.password}
+            response = self.client.post(self.login_url, data, format='json')
+            token = Token.objects.filter(user__username=self.username).first()
+            token_num_0 = Token.objects.filter(user__username=self.username).count()
+            self.client.credentials(HTTP_AUTHORIZATION='Token '+token.key)
+
+            # Act:
+            max_timedelta = datetime.timedelta(seconds=TOKEN_EXPIRED_AFTER_SECONDS+1)
+            frozen_datetime.tick(delta=max_timedelta)
+            response = self.client.get(
+                self.validate_token_url, format='json'
+            )
+
+            # Assert:
+            token_num_1 = Token.objects.filter(user__username=self.username).count()
+            self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+            self.assertNotEqual(
+                response.data,
+                {'detail': 'Token is valid'},
+                'The response indicates the validation was correct'
+            )
+            self.assertEqual(token_num_0 - 1, token_num_1)
 
     def test_user_logout(self):
         """ Test that an user can logout and delete the token """
