@@ -1,7 +1,7 @@
 import urllib.parse as urlparse
 from django.contrib.auth.models import AnonymousUser
 from django.db import close_old_connections
-from rest_framework.authtoken.models import Token
+from api.models import Token
 
 
 class TokenAuthMiddleware:

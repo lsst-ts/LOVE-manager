@@ -1,7 +1,7 @@
 import pytest
 import json
 from django.contrib.auth.models import User
-from rest_framework.authtoken.models import Token
+from api.models import Token
 from channels.testing import WebsocketCommunicator
 from manager.routing import application
 from manager.settings import PROCESS_CONNECTION_PASS
