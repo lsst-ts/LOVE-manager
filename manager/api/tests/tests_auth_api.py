@@ -30,18 +30,18 @@ class AuthApiTestCase(TestCase):
         """ Test that an user can request a token using name and password """
         # Arrange:
         data = {'username': self.username, 'password': self.password}
-
-        # Assert before request:
-        tokens_num = Token.objects.filter(user__username=self.username).count()
-        self.assertEqual(tokens_num, 0, 'The user should have no token')
+        tokens_num_0 = Token.objects.filter(user__username=self.username).count()
 
         # Act:
         response = self.client.post(self.login_url, data, format='json')
 
-        # Assert after request:
+        # Assert:
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        tokens_num = Token.objects.filter(user__username=self.username).count()
-        self.assertEqual(tokens_num, 1, 'The user should have a token')
+        tokens_num_1 = Token.objects.filter(user__username=self.username).count()
+        self.assertEqual(tokens_num_0 + 1, tokens_num_1, 'The user should have a new token')
+        retrieved_token_1 = response.data['token']
+        tokens_in_db = [t.key for t in Token.objects.filter(user__username=self.username)]
+        self.assertTrue(retrieved_token_1 in tokens_in_db, 'The token should be in the DB')
 
     def test_user_login_failed(self):
         """
@@ -49,18 +49,44 @@ class AuthApiTestCase(TestCase):
         """
         # Arrange:
         data = {'username': self.username, 'password': 'wrong-password'}
-
-        # Assert before request:
-        tokens_num = Token.objects.filter(user__username=self.username).count()
-        self.assertEqual(tokens_num, 0, 'The user should have no token')
+        tokens_num_0 = Token.objects.filter(user__username=self.username).count()
 
         # Act:
         response = self.client.post(self.login_url, data, format='json')
 
-        # Assert after request:
+        # Assert:
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        tokens_num = Token.objects.filter(user__username=self.username).count()
-        self.assertEqual(tokens_num, 0, 'The user should have no token')
+        tokens_num_1 = Token.objects.filter(user__username=self.username).count()
+        self.assertEqual(tokens_num_0, tokens_num_1, 'The user should have no token')
+
+    # def test_user_login_twice(self):
+    #     """ Test that an user can request a token twie receiving different tokens each time """
+    #     # Arrange:
+    #     data = {'username': self.username, 'password': self.password}
+    #     tokens_num_0 = Token.objects.filter(user__username=self.username).count()
+    #
+    #     # Act 1:
+    #     response = self.client.post(self.login_url, data, format='json')
+    #
+    #     # Assert 1:
+    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    #     tokens_num_1 = Token.objects.filter(user__username=self.username).count()
+    #     self.assertEqual(tokens_num_0 + 1, tokens_num_1, 'The user should have a new token')
+    #     retrieved_token_1 = response.data['token']
+    #     tokens_in_db = [t.key for t in Token.objects.filter(user__username=self.username)]
+    #     self.assertTrue(retrieved_token_1 in tokens_in_db, 'The token should be in the DB')
+    #
+    #     # Act 2:
+    #     response = self.client.post(self.login_url, data, format='json')
+    #
+    #     # Assert after request 2:
+    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    #     tokens_num_2 = Token.objects.filter(user__username=self.username).count()
+    #     self.assertEqual(tokens_num_1 + 1, tokens_num_2, 'The user should have another new token')
+    #     retrieved_token_2 = response.data['token']
+    #     tokens_in_db = [t.key for t in Token.objects.filter(user__username=self.username)]
+    #     self.assertTrue(retrieved_token_1 in tokens_in_db, 'The token should be in the DB')
+    #     self.assertNotEqual(retrieved_token_1, retrieved_token_2, 'The tokens should be different')
 
     def test_user_validate_token(self):
         """ Test that an user can validate a token """
@@ -136,18 +162,18 @@ class AuthApiTestCase(TestCase):
         data = {'username': self.username, 'password': self.password}
         response = self.client.post(self.login_url, data, format='json')
         token = Token.objects.filter(user__username=self.username).first()
-        old_tokens_count = len(Token.objects.filter(user__username=self.username))
+        old_tokens_count = Token.objects.filter(user__username=self.username).count()
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
 
         # Act:
         response = self.client.delete(self.logout_url, format='json')
 
-        # Assert after request:
+        # Assert:
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(
             response.data,
             {'detail': 'Logout successful, Token succesfully deleted'},
             'The response is not as expected'
         )
-        new_tokens_count = len(Token.objects.filter(user__username=self.username))
+        new_tokens_count = Token.objects.filter(user__username=self.username).count()
         self.assertEqual(old_tokens_count - 1, new_tokens_count, 'The token was not deleted')
