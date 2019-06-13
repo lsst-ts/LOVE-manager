@@ -1,17 +1,21 @@
-import pytest
 import json
+import pytest
 from django.contrib.auth.models import User
-from api.models import Token
 from channels.testing import WebsocketCommunicator
 from manager.routing import application
 from manager.settings import PROCESS_CONNECTION_PASS
+from api.models import Token
 
 producer_msg = {
-    "data":
-        {
-        "scheduler": json.dumps({"avoidanceRegions": {"avoidanceRegions": {"value": 1, "dataType": "Int"}, "scale": {"value": 0.02813957817852497, "dataType": "Float"}}}),
+    "data": {
+        "scheduler": json.dumps({
+            "avoidanceRegions": {
+                "avoidanceRegions": {"value": 1, "dataType": "Int"},
+                "scale": {"value": 0.02813957817852497, "dataType": "Float"}
+            }
+        }),
         "scriptQueue": json.dumps({"exists": {"item1": {"value": 0, "dataType": "Int"}}})
-        }
+    }
 }
 subscription_msg = {
     "option": "subscribe",
@@ -38,8 +42,7 @@ class TestClientConsumer:
     @pytest.mark.django_db
     async def test_connection_with_token(self):
         # Arrange
-        user = User.objects.create_user(
-            'username', password='123', email='user@user.cl')
+        user = User.objects.create_user('username', password='123', email='user@user.cl')
         token = Token.objects.create(user=user)
         url = 'manager/ws/subscription/?token={}'.format(token)
         communicator = WebsocketCommunicator(application,  url)
@@ -66,10 +69,9 @@ class TestClientConsumer:
     @pytest.mark.django_db
     async def test_connection_failed_for_invalid_token(self):
         # Arrange
-        user = User.objects.create_user(
-            'username', password='123', email='user@user.cl')
+        user = User.objects.create_user('username', password='123', email='user@user.cl')
         token = Token.objects.create(user=user)
-        url = 'manager/ws/subscription/?token={}'.format(str(token)+'fake')
+        url = 'manager/ws/subscription/?token={}'.format(str(token) + 'fake')
         communicator = WebsocketCommunicator(application,  url)
         # Act
         connected, subprotocol = await communicator.connect()
@@ -81,8 +83,7 @@ class TestClientConsumer:
     @pytest.mark.django_db
     async def test_join_telemetry_stream(self):
         # Arrange
-        user = User.objects.create_user(
-            'username', password='123', email='user@user.cl')
+        user = User.objects.create_user('username', password='123', email='user@user.cl')
         token = Token.objects.create(user=user)
         url = 'manager/ws/subscription/?token={}'.format(token)
         communicator = WebsocketCommunicator(application,  url)
@@ -98,8 +99,7 @@ class TestClientConsumer:
     @pytest.mark.django_db
     async def test_leave_telemetry_stream(self):
         # Arrange
-        user = User.objects.create_user(
-            'username', password='123', email='user@user.cl')
+        user = User.objects.create_user('username', password='123', email='user@user.cl')
         token = Token.objects.create(user=user)
         url = 'manager/ws/subscription/?token={}'.format(token)
         communicator = WebsocketCommunicator(application,  url)
@@ -117,8 +117,7 @@ class TestClientConsumer:
     @pytest.mark.django_db
     async def test_receive_telemetry_stream(self):
         # Arrange
-        user = User.objects.create_user(
-            'username', password='123', email='user@user.cl')
+        user = User.objects.create_user('username', password='123', email='user@user.cl')
         token = Token.objects.create(user=user)
         url = 'manager/ws/subscription/?token={}'.format(token)
         communicator = WebsocketCommunicator(application,  url)
@@ -129,15 +128,15 @@ class TestClientConsumer:
         await communicator.send_json_to(producer_msg)
         producer_response = await communicator.receive_json_from()
         # Assert
-        assert json.loads(producer_msg['data']['scheduler'])['avoidanceRegions'] == producer_response['data']['scheduler']['avoidanceRegions']
+        assert json.loads(producer_msg['data']['scheduler'])[
+            'avoidanceRegions'] == producer_response['data']['scheduler']['avoidanceRegions']
         await communicator.disconnect()
 
     @pytest.mark.asyncio
     @pytest.mark.django_db
     async def test_receive_all_telemetries(self):
         # Arrange
-        user = User.objects.create_user(
-            'username', password='123', email='user@user.cl')
+        user = User.objects.create_user('username', password='123', email='user@user.cl')
         token = Token.objects.create(user=user)
         url = 'manager/ws/subscription/?token={}'.format(token)
         communicator = WebsocketCommunicator(application,  url)

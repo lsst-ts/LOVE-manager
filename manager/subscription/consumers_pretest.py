@@ -1,6 +1,7 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 
+
 class SubscriptionConsumer(AsyncWebsocketConsumer):
 
     async def join_telemetry_stream(self, telemetry_stream):
@@ -42,10 +43,10 @@ class SubscriptionConsumer(AsyncWebsocketConsumer):
         if option and option == 'subscribe':
             await self.join_telemetry_streams(data)
             await self.send(text_data=json.dumps({
-                'data': 'Successfully subscribed to %s' % json.dumps(data) 
+                'data': 'Successfully subscribed to %s' % json.dumps(data)
             }))
             return
-            
+
         # Send data to telemetry_stream groups
         parsed_data = json.loads(data)
         telemetry_in_data = parsed_data.keys()
