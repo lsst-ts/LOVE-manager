@@ -12,7 +12,7 @@ channels-redis==2.3.3
 constantly==15.1.0
 cryptography==2.4.2
 daphne==2.2.3
-Django==2.1.7
+Django==2.1.9
 django-auth-ldap==1.7.0
 django-cors-headers==2.4.0
 djangorestframework==3.9.1
