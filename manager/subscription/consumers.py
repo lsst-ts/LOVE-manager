@@ -87,7 +87,6 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             telemetry_in_data = data_csc.keys()
             streams_data = {}
             for stream in telemetry_in_data:
-                print('Sending data')
                 await self.channel_layer.group_send(
                     '-'.join([category, csc, stream]),
                     {
@@ -132,7 +131,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         """
         Receive data from telemetry_stream group
         """
-        print('Received data')
+        # print('Received data')
         data = event['data']
         category = event['category']
         # Send data to WebSocket
