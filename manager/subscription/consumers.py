@@ -79,6 +79,27 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                 })
                 return
 
+            if option == 'cmd_subscribe':
+                print('CMD SUBSCRIBE')
+                await self.channel_layer.group_add(
+                    'CMD_CHANNEL',
+                    self.channel_name
+                )
+                return
+
+            if option == 'cmd':
+                print('CMD RECEIVED')
+                await self.channel_layer.group_send(
+                    'CMD_CHANNEL',
+                    {
+                        'type': 'command_data',
+                        'cmd': json_data['cmd'],
+                        'params': json_data['params'],
+                        'component': json_data['component'],
+                    }
+                )
+                return
+
         data = json_data['data']
         # Send data to telemetry_stream groups
         csc_in_data = data.keys()
@@ -139,4 +160,19 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         await self.send(text_data=json.dumps({
             'data': data,
             'category': category
+        }))
+
+    async def command_data(self, event):
+        """
+        Send command to producer
+        """
+        print('Received cmd')
+        cmd = event['cmd']
+        params = event['params']
+        component = event['component']
+        # Send data to WebSocket
+        await self.send(text_data=json.dumps({
+            'cmd': cmd,
+            'component': component,
+            'params': params
         }))
