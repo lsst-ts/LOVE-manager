@@ -27,8 +27,10 @@ SECRET_KEY = 'tbder3gzppu)kl%(u3awhhg^^zu#j&!ceh@$n&v0d38sjx43s8'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', 'love-manager-mount', 'love-nginx-mount', 'manager',
-                'love-manager', 'love-nginx', '10.0.100.1', '10.0.100.209', '127.0.0.1']
+ALLOWED_HOSTS = [
+    'localhost', 'love-manager-mount', 'love-nginx-mount', 'manager',
+    'love-manager', 'love-nginx', '10.0.100.1', '10.0.100.209', '127.0.0.1'
+]
 
 
 # Application definition
@@ -123,13 +125,9 @@ PROCESS_CONNECTION_PASS = os.environ.get('PROCESS_CONNECTION_PASS', 'dev_pass')
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 # Rest Framework
@@ -158,11 +156,9 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static_files"),
-    # os.path.join(BASE_DIR, "assets"),
 ]
 
 # Channels
