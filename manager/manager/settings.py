@@ -163,17 +163,24 @@ STATICFILES_DIRS = [
 
 # Channels
 ASGI_APPLICATION = 'manager.routing.application'
-REDIS_HOST = os.environ.get('REDIS_HOST', '127.0.0.1')
-REDIS_PASS = os.environ.get('REDIS_PASS', 'admin123')
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": ["redis://:"+REDIS_PASS+"@"+REDIS_HOST+":6379/0"],
-            "symmetric_encryption_keys": [SECRET_KEY],
+REDIS_HOST = os.environ.get('REDIS_HOST', False)
+REDIS_PASS = os.environ.get('REDIS_PASS', False)
+if REDIS_HOST:
+    CHANNEL_LAYERS = {
+        'default': {
+            'BACKEND': 'channels_redis.core.RedisChannelLayer',
+            'CONFIG': {
+                "hosts": ["redis://:" + REDIS_PASS + "@" + REDIS_HOST + ":6379/0"],
+                "symmetric_encryption_keys": [SECRET_KEY],
+            },
         },
-    },
-}
+    }
+else:
+    CHANNEL_LAYERS = {
+        'default': {
+            'BACKEND': 'channels.layers.InMemoryChannelLayer',
+        },
+    }
 
 # LDAP
 # Baseline configuration:
