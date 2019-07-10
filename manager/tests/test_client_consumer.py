@@ -40,47 +40,6 @@ class TestClientConsumer:
 
     @pytest.mark.asyncio
     @pytest.mark.django_db
-    async def test_connection_with_token(self):
-        # Arrange
-        user = User.objects.create_user('username', password='123', email='user@user.cl')
-        token = Token.objects.create(user=user)
-        url = 'manager/ws/subscription/?token={}'.format(token)
-        communicator = WebsocketCommunicator(application,  url)
-        # Act
-        connected, subprotocol = await communicator.connect()
-        # Assert
-        assert connected, 'Communicator was not connected'
-        await communicator.disconnect()
-
-    @pytest.mark.asyncio
-    @pytest.mark.django_db
-    async def test_connection_with_password(self):
-        # Arrange
-        password = PROCESS_CONNECTION_PASS
-        url = 'manager/ws/subscription/?password={}'.format(password)
-        communicator = WebsocketCommunicator(application,  url)
-        # Act
-        connected, subprotocol = await communicator.connect()
-        # Assert
-        assert connected, 'Communicator was not connected'
-        await communicator.disconnect()
-
-    @pytest.mark.asyncio
-    @pytest.mark.django_db
-    async def test_connection_failed_for_invalid_token(self):
-        # Arrange
-        user = User.objects.create_user('username', password='123', email='user@user.cl')
-        token = Token.objects.create(user=user)
-        url = 'manager/ws/subscription/?token={}'.format(str(token) + 'fake')
-        communicator = WebsocketCommunicator(application,  url)
-        # Act
-        connected, subprotocol = await communicator.connect()
-        # Assert
-        assert not connected, 'Communicator should not have connected'
-        await communicator.disconnect()
-
-    @pytest.mark.asyncio
-    @pytest.mark.django_db
     async def test_join_telemetry_stream(self):
         # Arrange
         user = User.objects.create_user('username', password='123', email='user@user.cl')
