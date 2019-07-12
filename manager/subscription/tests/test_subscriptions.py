@@ -18,13 +18,6 @@ msg_template = {
     }
 }
 
-subscription_msg = {
-    "option": "subscribe",
-    "csc": "ScriptQueue",
-    "stream": "stream1",
-    "category": "telemetry"
-}
-
 
 class TestSubscriptionCombinations:
     """ Test that clients can or cannot establish to subscriptions depending on different conditions """
@@ -85,4 +78,40 @@ class TestSubscriptionCombinations:
             # Assert
             assert response['data'] == \
                 'Successfully unsubscribed to {}-{}'.format(combination["csc"], combination["stream"])
+        await communicator.disconnect()
+
+    @pytest.mark.asyncio
+    @pytest.mark.django_db
+    async def test_receive_all_subscription(self):
+        """ Test that clients subscribed to all receive messages from all """
+        # Arrange
+        communicator = WebsocketCommunicator(application, self.url)
+        connected, subprotocol = await communicator.connect()
+        for combination in self.combinations:
+            msg = {
+                "option": "subscribe",
+                "csc": combination["csc"],
+                "stream": combination["stream"],
+                "category": combination["category"]
+            }
+            await communicator.send_json_to(msg)
+            response = await communicator.receive_json_from()
+        # Act
+        for combination in self.combinations:
+            msg = {
+                'category': combination['category'],
+                'data': {
+                    combination['csc']: json.dumps({
+                        combination['stream']: {
+                            'stream1_param_1': {'value': 1, 'dataType': 'Int'},
+                            'stream1_param_2': {'value': 1.02813957817852497, 'dataType': 'Float'}
+                        }
+                    })
+                }
+            }
+            await communicator.send_json_to(msg)
+            response = await communicator.receive_json_from()
+            # Assert
+            assert json.loads(msg['data'][combination['csc']])[combination['stream']] == \
+                response['data'][combination['csc']][combination['stream']]
         await communicator.disconnect()
