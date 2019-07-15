@@ -23,7 +23,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         """ Called upon disconnection """
         # Leave telemetry_stream group
         for telemetry_stream in self.stream_group_names:
-            await self.leave_telemetry_stream(telemetry_stream[0], telemetry_stream[1], telemetry_stream[2])
+            await self.leave_telemetry_stream(*telemetry_stream)
 
     async def join_telemetry_stream(self, category, csc, salindex, stream):
         key = '-'.join([category, csc, salindex, stream])
@@ -104,23 +104,26 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
 
         data = json_data['data']
         # Send data to telemetry_stream groups
-        csc_in_data = data.keys()
-        for csc in csc_in_data:
-            data_csc = json.loads(data[csc])
-            telemetry_in_data = data_csc.keys()
+        for csc_message in data:
+            csc = csc_message['csc']
+            salindex = csc_message['salindex']
+            data_csc = json.loads(csc_message['data'])
+            streams = data_csc.keys()
             streams_data = {}
-            for stream in telemetry_in_data:
+            for stream in streams:
                 await self.channel_layer.group_send(
-                    '-'.join([category, csc, stream]),
+                    '-'.join([category, csc, str(salindex), stream]),
                     {
                         'type': 'subscription_data',
                         'category': category,
-                        'data': {csc: {stream: data_csc[stream]}}
+                        'csc': csc,
+                        'salindex': salindex,
+                        'data': {stream: data_csc[stream]}
                     }
                 )
                 streams_data[stream] = data_csc[stream]
             await self.channel_layer.group_send(
-                '-'.join([category, csc, 'all']),
+                '-'.join([category, csc, str(salindex), 'all']),
                 {
                     'type': 'subscription_data',
                     'category': category,
@@ -157,10 +160,17 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         # print('Received data')
         data = event['data']
         category = event['category']
+        salindex = event['salindex']
+        csc = event['csc']
+
         # Send data to WebSocket
         await self.send(text_data=json.dumps({
-            'data': data,
-            'category': category
+            'category': category,
+            'data': [{
+                'csc': csc,
+                'salindex': salindex,
+                'data': data,
+            }]            
         }))
 
     async def command_data(self, event):

@@ -181,6 +181,7 @@ class TestSubscriptionCombinations:
             msg = {
                 "option": "subscribe",
                 "csc": combination["csc"],
+                "salindex": combination["salindex"],
                 "stream": combination["stream"],
                 "category": combination["category"]
             }
@@ -189,11 +190,13 @@ class TestSubscriptionCombinations:
         # Act
         for combination in self.combinations:
             msg, expected = \
-                self.build_messages(combination['category'], combination['csc'], [combination['stream']])
+                self.build_messages(combination['category'], combination['csc'], combination['salindex'], [combination['stream']])
             # assert False
             await communicator.send_json_to(msg)
             response = await communicator.receive_json_from()
             # Assert
+            print('\n response: ', response)
+            print('\n expected: ', expected)
             assert response == expected
         await communicator.disconnect()
 
