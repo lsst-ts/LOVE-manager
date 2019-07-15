@@ -71,7 +71,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                 return
 
             if option == 'unsubscribe':
-                # Unsubscribe nad send confirmation
+                # Unsubscribe and send confirmation
                 csc = json_data['csc']
                 salindex = json_data['salindex']
                 stream = json_data['stream']
@@ -87,6 +87,20 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                     'CMD_CHANNEL',
                     self.channel_name
                 )
+                await self.send_json({
+                    'data': 'Successfully subscribed to Commands'
+                })
+                return
+
+            if option == 'cmd_unsubscribe':
+                print('CMD SUBSCRIBE')
+                await self.channel_layer.group_add(
+                    'CMD_CHANNEL',
+                    self.channel_name
+                )
+                await self.send_json({
+                    'data': 'Successfully unsubscribed to Commands'
+                })
                 return
 
             if option == 'cmd':
@@ -170,7 +184,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                 'csc': csc,
                 'salindex': salindex,
                 'data': data,
-            }]            
+            }]
         }))
 
     async def command_data(self, event):

@@ -1,33 +1,10 @@
 import asyncio
 import json
 import pytest
-import random
 from django.contrib.auth.models import User
 from channels.testing import WebsocketCommunicator
 from manager.routing import application
 from api.models import Token
-
-msg_template = {
-    "category": "telemetry",
-    "data": [
-        {
-            "csc": "ScriptQueue",
-            "salindex": 1,
-            "data": json.dumps({
-                "stream1": {
-                    "stream1_param_1": {"value": 1, "dataType": "Int"},
-                    "stream1_param_2": {"value": 1.02813957817852497, "dataType": "Float"}
-                },
-                "stream2": {
-                    "stream1_param_1": {"value": 1, "dataType": "Int"},
-                    "stream1_param_2": {"value": 1.02813957817852497, "dataType": "Float"}
-                }
-            })
-        }
-    ]
-}
-
-no_reception_timeout = 0.0001
 
 
 class TestSubscriptionCombinations:
@@ -42,6 +19,8 @@ class TestSubscriptionCombinations:
     streams = ['stream1', 'stream2']
 
     combinations = []
+
+    no_reception_timeout = 0.0001
 
     def setup_method(self):
         """ TestCase setup, executed before each test of the TestCase """
@@ -202,7 +181,7 @@ class TestSubscriptionCombinations:
             else:
                 # Assert
                 with pytest.raises(asyncio.TimeoutError):
-                    await asyncio.wait_for(communicator.receive_json_from(), timeout=no_reception_timeout)
+                    await asyncio.wait_for(communicator.receive_json_from(), timeout=self.no_reception_timeout)
         await communicator.disconnect()
 
     @pytest.mark.asyncio
@@ -240,7 +219,7 @@ class TestSubscriptionCombinations:
                 else:
                     # Assert: not receive all the others
                     with pytest.raises(asyncio.TimeoutError):
-                        await asyncio.wait_for(communicator.receive_json_from(), timeout=no_reception_timeout)
+                        await asyncio.wait_for(communicator.receive_json_from(), timeout=self.no_reception_timeout)
             # Clean: Unsubscribe from 1
             subscription_msg['option'] = 'unsubscribe'
             await communicator.send_json_to(subscription_msg)
@@ -284,7 +263,7 @@ class TestSubscriptionCombinations:
             else:
                 # Assert: not receive all the others
                 with pytest.raises(asyncio.TimeoutError):
-                    await asyncio.wait_for(communicator.receive_json_from(), timeout=no_reception_timeout)
+                    await asyncio.wait_for(communicator.receive_json_from(), timeout=self.no_reception_timeout)
             # Clean: Unsubscribe from 1
             subscription_msg['option'] = 'unsubscribe'
             await communicator.send_json_to(subscription_msg)
