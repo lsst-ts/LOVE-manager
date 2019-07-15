@@ -195,8 +195,6 @@ class TestSubscriptionCombinations:
             await communicator.send_json_to(msg)
             response = await communicator.receive_json_from()
             # Assert
-            print('\n response: ', response)
-            print('\n expected: ', expected)
             assert response == expected
         await communicator.disconnect()
 
@@ -209,20 +207,22 @@ class TestSubscriptionCombinations:
         connected, subprotocol = await communicator.connect()
         subscription_msg = {
             'option': 'subscribe',
+            'category': 'telemetry',
             'csc': 'ScriptQueue',
+            'salindex': 1,
             'stream': 'stream1',
-            'category': 'telemetry'
         }
         await communicator.send_json_to(subscription_msg)
         await communicator.receive_json_from()
         # Act
         for combination in self.combinations:
             msg, expected = \
-                self.build_messages(combination['category'], combination['csc'], [combination['stream']])
+                self.build_messages(combination['category'], combination['csc'], combination['salindex'],[combination['stream']])
             await communicator.send_json_to(msg)
 
             if combination['category'] == subscription_msg['category'] and \
                     combination['csc'] == subscription_msg['csc'] and \
+                    combination['salindex'] == subscription_msg['salindex'] and \
                     combination['stream'] == subscription_msg['stream']:
                 response = await communicator.receive_json_from()
                 # Assert
@@ -245,7 +245,8 @@ class TestSubscriptionCombinations:
             subscription_msg = {
                 "csc": combination["csc"],
                 "stream": combination["stream"],
-                "category": combination["category"]
+                "category": combination["category"],
+                "salindex": combination["salindex"]
             }
             subscription_msg['option'] = 'subscribe'
             await communicator.send_json_to(subscription_msg)
@@ -253,11 +254,12 @@ class TestSubscriptionCombinations:
             # Act: Send and receive all
             for combination in self.combinations:
                 msg, expected = \
-                    self.build_messages(combination['category'], combination['csc'], [combination['stream']])
+                    self.build_messages(combination['category'], combination['csc'], combination['salindex'], [combination['stream']])
                 await communicator.send_json_to(msg)
 
                 if combination['category'] == subscription_msg['category'] and \
                         combination['csc'] == subscription_msg['csc'] and \
+                        combination['salindex'] == subscription_msg['salindex'] and \
                         combination['stream'] == subscription_msg['stream']:
                     response = await communicator.receive_json_from()
                     # Assert: receive the one subscribed to
@@ -284,23 +286,25 @@ class TestSubscriptionCombinations:
             subscription_msg = {
                 "csc": combination["csc"],
                 "stream": combination["stream"],
-                "category": combination["category"]
+                "category": combination["category"],
+                "salindex": combination["salindex"]
             }
             subscription_msg['option'] = 'subscribe'
             await communicator.send_json_to(subscription_msg)
             await communicator.receive_json_from()
             # Act: Send the big message
             msg, ignore = \
-                self.build_messages(combination['category'], combination['csc'], self.streams)
+                self.build_messages(combination['category'], combination['csc'],  combination['salindex'], self.streams)
             await communicator.send_json_to(msg)
 
             if combination['category'] == subscription_msg['category'] and \
                     combination['csc'] == subscription_msg['csc'] and \
+                    combination['salindex'] == subscription_msg['salindex'] and \
                     combination['stream'] == subscription_msg['stream']:
                 response = await communicator.receive_json_from()
                 # Assert: receive the one subscribed to
                 ignore, expected = \
-                    self.build_messages(combination['category'], combination['csc'], [combination['stream']])
+                    self.build_messages(combination['category'], combination['csc'],  combination['salindex'], [combination['stream']])
                 assert response == expected
             else:
                 # Assert: not receive all the others
