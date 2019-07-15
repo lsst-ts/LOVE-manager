@@ -27,6 +27,8 @@ msg_template = {
     ]
 }
 
+no_reception_timeout = 0.0001
+
 
 class TestSubscriptionCombinations:
     """ Test that clients can or cannot establish to subscriptions depending on different conditions """
@@ -200,7 +202,7 @@ class TestSubscriptionCombinations:
             else:
                 # Assert
                 with pytest.raises(asyncio.TimeoutError):
-                    await asyncio.wait_for(communicator.receive_json_from(), timeout=0.1)
+                    await asyncio.wait_for(communicator.receive_json_from(), timeout=no_reception_timeout)
         await communicator.disconnect()
 
     @pytest.mark.asyncio
@@ -238,7 +240,7 @@ class TestSubscriptionCombinations:
                 else:
                     # Assert: not receive all the others
                     with pytest.raises(asyncio.TimeoutError):
-                        await asyncio.wait_for(communicator.receive_json_from(), timeout=0.1)
+                        await asyncio.wait_for(communicator.receive_json_from(), timeout=no_reception_timeout)
             # Clean: Unsubscribe from 1
             subscription_msg['option'] = 'unsubscribe'
             await communicator.send_json_to(subscription_msg)
@@ -282,7 +284,7 @@ class TestSubscriptionCombinations:
             else:
                 # Assert: not receive all the others
                 with pytest.raises(asyncio.TimeoutError):
-                    await asyncio.wait_for(communicator.receive_json_from(), timeout=0.1)
+                    await asyncio.wait_for(communicator.receive_json_from(), timeout=no_reception_timeout)
             # Clean: Unsubscribe from 1
             subscription_msg['option'] = 'unsubscribe'
             await communicator.send_json_to(subscription_msg)
