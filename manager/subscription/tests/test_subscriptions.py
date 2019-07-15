@@ -58,18 +58,7 @@ class TestSubscriptionCombinations:
         expected: `{}`
             Dictionary containing the expected response to be received by the client in the test
         """
-        sent = {
-            'category': category,
-            'data': [{
-                'csc': csc,
-                'salindex': salindex,
-                'data': json.dumps(
-                    {stream: {'value': 1.02813957817852497, 'dataType': 'Float'}
-                        for stream in streams}
-                )
-            }]
-        }
-        expected = {
+        response = {
             'category': category,
             'data': [{
                 'csc': csc,
@@ -77,8 +66,7 @@ class TestSubscriptionCombinations:
                 'data': {stream: {'value': 1.02813957817852497, 'dataType': 'Float'} for stream in streams}
             }]
         }
-
-        return sent, expected
+        return response, response
 
     @pytest.mark.asyncio
     @pytest.mark.django_db
@@ -119,38 +107,38 @@ class TestSubscriptionCombinations:
                     combination["category"], combination["csc"], combination["salindex"], combination["stream"])
         await communicator.disconnect()
 
-    # @pytest.mark.asyncio
-    # @pytest.mark.django_db
-    # async def test_join_and_leave_all_subscription(self):
-    #     """ Test that clients can subscribe and leave all streams """
-    #     # Arrange
-    #     communicator = WebsocketCommunicator(application, self.url)
-    #     connected, subprotocol = await communicator.connect()
-    #     # Act 1 (Subscribe)
-    #     for category in self.categories:
-    #         msg = {
-    #             "option": "subscribe",
-    #             "category": category,
-    #             "csc": 'all',
-    #             "salindex": 'all',
-    #             "stream": 'all',
-    #         }
-    #         await communicator.send_json_to(msg)
-    #         # Assert 1
-    #         response = await communicator.receive_json_from()
-    #     # Act 2 (Unsubscribe)
-    #     for category in self.categories:
-    #         msg = {
-    #             "option": "unsubscribe",
-    #             "category": category,
-    #             "csc": 'all',
-    #             "salindex": 'all',
-    #             "stream": 'all',
-    #         }
-    #         await communicator.send_json_to(msg)
-    #         # Assert 2
-    #         response = await communicator.receive_json_from()
-    #     await communicator.disconnect()
+    @pytest.mark.asyncio
+    @pytest.mark.django_db
+    async def test_join_and_leave_all_subscription(self):
+        """ Test that clients can subscribe and leave all streams """
+        # Arrange
+        communicator = WebsocketCommunicator(application, self.url)
+        connected, subprotocol = await communicator.connect()
+        # Act 1 (Subscribe)
+        for category in self.categories:
+            msg = {
+                "option": "subscribe",
+                "category": category,
+                "csc": 'all',
+                "salindex": 'all',
+                "stream": 'all',
+            }
+            await communicator.send_json_to(msg)
+            # Assert 1
+            response = await communicator.receive_json_from()
+        # Act 2 (Unsubscribe)
+        for category in self.categories:
+            msg = {
+                "option": "unsubscribe",
+                "category": category,
+                "csc": 'all',
+                "salindex": 'all',
+                "stream": 'all',
+            }
+            await communicator.send_json_to(msg)
+            # Assert 2
+            response = await communicator.receive_json_from()
+        await communicator.disconnect()
 
     @pytest.mark.asyncio
     @pytest.mark.django_db
@@ -180,36 +168,36 @@ class TestSubscriptionCombinations:
             assert response == expected
         await communicator.disconnect()
 
-    # @pytest.mark.asyncio
-    # @pytest.mark.django_db
-    # async def test_receive_messages_from_all_subscription(self):
-    #     """ Test that clients subscribed to all streams receive messages from all of them """
-    #     # Arrange
-    #     communicator = WebsocketCommunicator(application, self.url)
-    #     connected, subprotocol = await communicator.connect()
-    #     for category in self.categories:
-    #         msg = {
-    #             "option": "subscribe",
-    #             "category": category,
-    #             "csc": 'all',
-    #             "salindex": 'all',
-    #             "stream": 'all',
-    #         }
-    #         await communicator.send_json_to(msg)
-    #         response = await communicator.receive_json_from()
-    #     # Act
-    #     for combination in self.combinations:
-    #         print('Sending: ', combination)
-    #         msg, expected = \
-    #             self.build_messages(combination['category'], combination['csc'], combination['salindex'], [
-    #                                 combination['stream']])
-    #         await communicator.send_json_to(msg)
-    #         response = await communicator.receive_json_from()
-    #         # Assert
-    #         print('response: ', response)
-    #         print('expected: ', expected)
-    #         assert response == expected
-    #     await communicator.disconnect()
+    @pytest.mark.asyncio
+    @pytest.mark.django_db
+    async def test_receive_messages_from_all_subscription(self):
+        """ Test that clients subscribed to all streams receive messages from all of them """
+        # Arrange
+        communicator = WebsocketCommunicator(application, self.url)
+        connected, subprotocol = await communicator.connect()
+        for category in self.categories:
+            msg = {
+                "option": "subscribe",
+                "category": category,
+                "csc": 'all',
+                "salindex": 'all',
+                "stream": 'all',
+            }
+            await communicator.send_json_to(msg)
+            response = await communicator.receive_json_from()
+        # Act
+        for combination in self.combinations:
+            msg, expected = \
+                self.build_messages(combination['category'], combination['csc'], combination['salindex'], [
+                                    combination['stream']])
+            print('Sending: ', msg)
+            await communicator.send_json_to(msg)
+            response = await communicator.receive_json_from()
+            # Assert
+            print('response: ', response)
+            print('expected: ', expected)
+            assert response == expected
+        await communicator.disconnect()
 
     @pytest.mark.asyncio
     @pytest.mark.django_db

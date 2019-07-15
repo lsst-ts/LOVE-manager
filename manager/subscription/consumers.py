@@ -101,27 +101,14 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                 await self.send_json({
                     'data': 'Successfully unsubscribed to Commands'
                 })
-                return
-
-            if option == 'cmd':
-                print('CMD RECEIVED')
-                await self.channel_layer.group_send(
-                    'CMD_CHANNEL',
-                    {
-                        'type': 'command_data',
-                        'cmd': json_data['cmd'],
-                        'params': json_data['params'],
-                        'component': json_data['component'],
-                    }
-                )
-                return
 
         data = json_data['data']
         # Send data to telemetry_stream groups
         for csc_message in data:
             csc = csc_message['csc']
             salindex = csc_message['salindex']
-            data_csc = json.loads(csc_message['data'])
+            data_csc = csc_message['data']
+            csc_message['data'] = data_csc
             streams = data_csc.keys()
             streams_data = {}
             for stream in streams:
@@ -145,27 +132,15 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                 }
             )
 
-        # Send all data to consumers subscribed to "all" telemetry
-        if category == 'telemetry':
-            await self.channel_layer.group_send(
-                'telemetry-all-all',
-                {
-                    'type': 'subscription_data',
-                    'category': category,
-                    'data': data
-                }
-            )
-
-        # Send all data to consumers subscribed to "all" events
-        if category == 'event':
-            await self.channel_layer.group_send(
-                'event-all-all',
-                {
-                    'type': 'subscription_data',
-                    'category': category,
-                    'data': data
-                }
-            )
+        # Send all data to consumers subscribed to "all" subscriptions of the same category
+        await self.channel_layer.group_send(
+            '{}-all-all-all'.format(category),
+            {
+                'type': 'subscription_all_data',
+                'category': category,
+                'data': data
+            }
+        )
 
     async def subscription_data(self, event):
         """
@@ -187,17 +162,15 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             }]
         }))
 
-    async def command_data(self, event):
+    async def subscription_all_data(self, event):
         """
-        Send command to producer
+        Receive data from telemetry_stream group
         """
-        print('Received cmd')
-        cmd = event['cmd']
-        params = event['params']
-        component = event['component']
+        data = event['data']
+        category = event['category']
+
         # Send data to WebSocket
         await self.send(text_data=json.dumps({
-            'cmd': cmd,
-            'component': component,
-            'params': params
+            'category': category,
+            'data': data
         }))
