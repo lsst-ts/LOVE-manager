@@ -49,16 +49,38 @@ class TestCommands:
         communicator = WebsocketCommunicator(application, self.url)
         connected, subprotocol = await communicator.connect()
         msg = {
-            "option": "cmd_subscribe",
+            "option": "subscribe",
+            "csc": combination["csc"],
+            "salindex": combination["salindex"],
+            "stream": combination["stream"],
+            "category": combination["category"]
         }
         await communicator.send_json_to(msg)
         response = await communicator.receive_json_from()
         # Act
+        # msg = {
+        #     'option': 'cmd',
+        #     'cmd': 'ScriptQueue_add',
+        #     'params': '{param1: value1, param2: value2}',
+        #     'component': 'ScriptQueue',
+        # }
+        # expected = {
+        #     'cmd': 'ScriptQueue_add',
+        #     'params': '{param1: value1, param2: value2}',
+        #     'component': 'ScriptQueue',
+        # }
         msg = {
-            'option': 'cmd',
-            'cmd': 'ScriptQueue_add',
-            'params': '{param1: value1, param2: value2}',
-            'component': 'ScriptQueue',
+            'category': 'cmd',
+            'data': [{
+                'csc': 'all',
+                'salindex': 'all',
+                'cmd_stream': {
+                    'data': {
+                        'cmd': 'Add Script',
+                        'params': '{param1: value1, param2: value2}',
+                    }
+                }
+            }]
         }
         expected = {
             'cmd': 'ScriptQueue_add',
