@@ -7,22 +7,6 @@ from channels.testing import WebsocketCommunicator
 from manager.routing import application
 from api.models import Token
 
-# msg_template = {
-#     "category": "telemetry",
-#     "data": {
-#         "ScriptQueue": json.dumps({
-#             "stream1": {
-#                 "stream1_param_1": {"value": 1, "dataType": "Int"},
-#                 "stream1_param_2": {"value": 1.02813957817852497, "dataType": "Float"}
-#             },
-#             "stream2": {
-#                 "stream1_param_1": {"value": 1, "dataType": "Int"},
-#                 "stream1_param_2": {"value": 1.02813957817852497, "dataType": "Float"}
-#             }
-#         })
-#     }
-# }
-
 msg_template = {
     "category": "telemetry",
     "data": [
@@ -59,8 +43,7 @@ class TestSubscriptionCombinations:
 
     def setup_method(self):
         """ TestCase setup, executed before each test of the TestCase """
-        self.user = User.objects.create_user(
-            'username', password='123', email='user@user.cl')
+        self.user = User.objects.create_user('username', password='123', email='user@user.cl')
         self.token = Token.objects.create(user=self.user)
         self.url = 'manager/ws/subscription/?token={}'.format(self.token)
         if len(self.combinations) == 0:
@@ -94,32 +77,17 @@ class TestSubscriptionCombinations:
         expected: `{}`
             Dictionary containing the expected response to be received by the client in the test
         """
-        # sent = {
-        #     'category': category,
-        #     'data': {
-        #         csc: json.dumps(
-        #             {stream: {'value': 1.02813957817852497, 'dataType': 'Float'} for stream in streams}
-        #         )
-        #     }
-        # }
-        # expected = {
-        #     'category': category,
-        #     'data': {
-        #         csc: {stream: {'value': 1.02813957817852497, 'dataType': 'Float'} for stream in streams}
-        #     }
-        # }
-
         sent = {
             'category': category,
             'data': [{
                 'csc': csc,
                 'salindex': salindex,
                 'data': json.dumps(
-                    {stream: {'value': 1.02813957817852497, 'dataType': 'Float'} for stream in streams}
+                    {stream: {'value': 1.02813957817852497, 'dataType': 'Float'}
+                        for stream in streams}
                 )
             }]
         }
-
         expected = {
             'category': category,
             'data': [{
@@ -190,7 +158,8 @@ class TestSubscriptionCombinations:
         # Act
         for combination in self.combinations:
             msg, expected = \
-                self.build_messages(combination['category'], combination['csc'], combination['salindex'], [combination['stream']])
+                self.build_messages(combination['category'], combination['csc'], combination['salindex'], [
+                                    combination['stream']])
             # assert False
             await communicator.send_json_to(msg)
             response = await communicator.receive_json_from()
@@ -217,7 +186,8 @@ class TestSubscriptionCombinations:
         # Act
         for combination in self.combinations:
             msg, expected = \
-                self.build_messages(combination['category'], combination['csc'], combination['salindex'],[combination['stream']])
+                self.build_messages(combination['category'], combination['csc'], combination['salindex'], [
+                                    combination['stream']])
             await communicator.send_json_to(msg)
 
             if combination['category'] == subscription_msg['category'] and \
@@ -254,7 +224,8 @@ class TestSubscriptionCombinations:
             # Act: Send and receive all
             for combination in self.combinations:
                 msg, expected = \
-                    self.build_messages(combination['category'], combination['csc'], combination['salindex'], [combination['stream']])
+                    self.build_messages(combination['category'], combination['csc'], combination['salindex'], [
+                                        combination['stream']])
                 await communicator.send_json_to(msg)
 
                 if combination['category'] == subscription_msg['category'] and \
@@ -294,7 +265,8 @@ class TestSubscriptionCombinations:
             await communicator.receive_json_from()
             # Act: Send the big message
             msg, ignore = \
-                self.build_messages(combination['category'], combination['csc'],  combination['salindex'], self.streams)
+                self.build_messages(
+                    combination['category'], combination['csc'],  combination['salindex'], self.streams)
             await communicator.send_json_to(msg)
 
             if combination['category'] == subscription_msg['category'] and \
@@ -304,7 +276,8 @@ class TestSubscriptionCombinations:
                 response = await communicator.receive_json_from()
                 # Assert: receive the one subscribed to
                 ignore, expected = \
-                    self.build_messages(combination['category'], combination['csc'],  combination['salindex'], [combination['stream']])
+                    self.build_messages(combination['category'], combination['csc'],  combination['salindex'], [
+                                        combination['stream']])
                 assert response == expected
             else:
                 # Assert: not receive all the others
