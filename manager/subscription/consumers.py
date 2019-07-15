@@ -25,20 +25,20 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         for telemetry_stream in self.stream_group_names:
             await self.leave_telemetry_stream(telemetry_stream[0], telemetry_stream[1], telemetry_stream[2])
 
-    async def join_telemetry_stream(self, category, csc, stream):
-        key = '-'.join([category, csc, stream])
-        if [category, csc, stream] in self.stream_group_names:
+    async def join_telemetry_stream(self, category, csc, salindex, stream):
+        key = '-'.join([category, csc, salindex, stream])
+        if [category, csc, salindex, stream] in self.stream_group_names:
             return
-        self.stream_group_names.append([category, csc, stream])
+        self.stream_group_names.append([category, csc, salindex, stream])
         await self.channel_layer.group_add(
             key,
             self.channel_name
         )
 
-    async def leave_telemetry_stream(self, category, csc, stream):
-        key = '-'.join([category, csc, stream])
-        if [category, csc, stream] in self.stream_group_names:
-            self.stream_group_names.remove([category, csc, stream])
+    async def leave_telemetry_stream(self, category, csc, salindex, stream):
+        key = '-'.join([category, csc, salindex, stream])
+        if [category, csc, salindex, stream] in self.stream_group_names:
+            self.stream_group_names.remove([category, csc, salindex, stream])
         await self.channel_layer.group_discard(
             key,
             self.channel_name
@@ -62,20 +62,22 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             if option == 'subscribe':
                 # Subscribe and send confirmation
                 csc = json_data['csc']
+                salindex = json_data['salindex']
                 stream = json_data['stream']
-                await self.join_telemetry_stream(category, csc, stream)
+                await self.join_telemetry_stream(category, csc, str(salindex), stream)
                 await self.send_json({
-                    'data': 'Successfully subscribed to %s-%s' % (csc, stream)
+                    'data': 'Successfully subscribed to %s-%s-%s-%s' % (category, csc, salindex, stream)
                 })
                 return
 
             if option == 'unsubscribe':
                 # Unsubscribe nad send confirmation
                 csc = json_data['csc']
+                salindex = json_data['salindex']
                 stream = json_data['stream']
-                await self.leave_telemetry_stream(category, csc, stream)
+                await self.leave_telemetry_stream(category, csc, str(salindex),  stream)
                 await self.send_json({
-                    'data': 'Successfully unsubscribed to %s-%s' % (csc, stream)
+                    'data': 'Successfully unsubscribed to %s-%s-%s-%s' % (category, csc, salindex, stream)
                 })
                 return
 

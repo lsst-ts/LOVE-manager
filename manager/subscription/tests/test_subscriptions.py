@@ -7,20 +7,40 @@ from channels.testing import WebsocketCommunicator
 from manager.routing import application
 from api.models import Token
 
+# msg_template = {
+#     "category": "telemetry",
+#     "data": {
+#         "ScriptQueue": json.dumps({
+#             "stream1": {
+#                 "stream1_param_1": {"value": 1, "dataType": "Int"},
+#                 "stream1_param_2": {"value": 1.02813957817852497, "dataType": "Float"}
+#             },
+#             "stream2": {
+#                 "stream1_param_1": {"value": 1, "dataType": "Int"},
+#                 "stream1_param_2": {"value": 1.02813957817852497, "dataType": "Float"}
+#             }
+#         })
+#     }
+# }
+
 msg_template = {
     "category": "telemetry",
-    "data": {
-        "ScriptQueue": json.dumps({
-            "stream1": {
-                "stream1_param_1": {"value": 1, "dataType": "Int"},
-                "stream1_param_2": {"value": 1.02813957817852497, "dataType": "Float"}
-            },
-            "stream2": {
-                "stream1_param_1": {"value": 1, "dataType": "Int"},
-                "stream1_param_2": {"value": 1.02813957817852497, "dataType": "Float"}
-            }
-        })
-    }
+    "data": [
+        {
+            "csc": "ScriptQueue",
+            "salindex": 1,
+            "data": json.dumps({
+                "stream1": {
+                    "stream1_param_1": {"value": 1, "dataType": "Int"},
+                    "stream1_param_2": {"value": 1.02813957817852497, "dataType": "Float"}
+                },
+                "stream2": {
+                    "stream1_param_1": {"value": 1, "dataType": "Int"},
+                    "stream1_param_2": {"value": 1.02813957817852497, "dataType": "Float"}
+                }
+            })
+        }
+    ]
 }
 
 
@@ -30,6 +50,8 @@ class TestSubscriptionCombinations:
     categories = ['event', 'telemetry']
 
     cscs = ['ScriptQueue', 'ATDome']
+
+    salindices = [1, 2]
 
     streams = ['stream1', 'stream2']
 
@@ -44,14 +66,16 @@ class TestSubscriptionCombinations:
         if len(self.combinations) == 0:
             for category in self.categories:
                 for csc in self.cscs:
-                    for stream in self.streams:
-                        self.combinations.append({
-                            "category": category,
-                            "csc": csc,
-                            "stream": stream,
-                        })
+                    for salindex in self.salindices:
+                        for stream in self.streams:
+                            self.combinations.append({
+                                "category": category,
+                                "csc": csc,
+                                "salindex": salindex,
+                                "stream": stream,
+                            })
 
-    def build_messages(self, category, csc, streams):
+    def build_messages(self, category, csc, salindex, streams):
         """ Builds and returns messages to send and expect, for testing purposes
 
         Parameters
@@ -70,20 +94,41 @@ class TestSubscriptionCombinations:
         expected: `{}`
             Dictionary containing the expected response to be received by the client in the test
         """
+        # sent = {
+        #     'category': category,
+        #     'data': {
+        #         csc: json.dumps(
+        #             {stream: {'value': 1.02813957817852497, 'dataType': 'Float'} for stream in streams}
+        #         )
+        #     }
+        # }
+        # expected = {
+        #     'category': category,
+        #     'data': {
+        #         csc: {stream: {'value': 1.02813957817852497, 'dataType': 'Float'} for stream in streams}
+        #     }
+        # }
+
         sent = {
             'category': category,
-            'data': {
-                csc: json.dumps(
+            'data': [{
+                'csc': csc,
+                'salindex': salindex,
+                'data': json.dumps(
                     {stream: {'value': 1.02813957817852497, 'dataType': 'Float'} for stream in streams}
                 )
-            }
+            }]
         }
+
         expected = {
             'category': category,
-            'data': {
-                csc: {stream: {'value': 1.02813957817852497, 'dataType': 'Float'} for stream in streams}
-            }
+            'data': [{
+                'csc': csc,
+                'salindex': salindex,
+                'data': {stream: {'value': 1.02813957817852497, 'dataType': 'Float'} for stream in streams}
+            }]
         }
+
         return sent, expected
 
     @pytest.mark.asyncio
@@ -98,6 +143,7 @@ class TestSubscriptionCombinations:
             msg = {
                 "option": "subscribe",
                 "csc": combination["csc"],
+                "salindex": combination["salindex"],
                 "stream": combination["stream"],
                 "category": combination["category"]
             }
@@ -105,13 +151,14 @@ class TestSubscriptionCombinations:
             response = await communicator.receive_json_from()
             # Assert
             assert response['data'] == \
-                'Successfully subscribed to {}-{}'.format(
-                    combination["csc"], combination["stream"])
+                'Successfully subscribed to {}-{}-{}-{}'.format(
+                    combination["category"], combination["csc"], combination["salindex"], combination["stream"])
         # Act 2 (Unsubscribe)
         for combination in self.combinations:
             msg = {
                 "option": "unsubscribe",
                 "csc": combination["csc"],
+                "salindex": combination["salindex"],
                 "stream": combination["stream"],
                 "category": combination["category"]
             }
@@ -119,8 +166,8 @@ class TestSubscriptionCombinations:
             response = await communicator.receive_json_from()
             # Assert
             assert response['data'] == \
-                'Successfully unsubscribed to {}-{}'.format(
-                    combination["csc"], combination["stream"])
+                'Successfully unsubscribed to {}-{}-{}-{}'.format(
+                    combination["category"], combination["csc"], combination["salindex"], combination["stream"])
         await communicator.disconnect()
 
     @pytest.mark.asyncio
