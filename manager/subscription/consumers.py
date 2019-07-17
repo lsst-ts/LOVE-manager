@@ -23,22 +23,22 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         """ Called upon disconnection """
         # Leave telemetry_stream group
         for telemetry_stream in self.stream_group_names:
-            await self.leave_telemetry_stream(telemetry_stream[0], telemetry_stream[1], telemetry_stream[2])
+            await self.leave_telemetry_stream(*telemetry_stream)
 
-    async def join_telemetry_stream(self, category, csc, stream):
-        key = '-'.join([category, csc, stream])
-        if [category, csc, stream] in self.stream_group_names:
+    async def join_telemetry_stream(self, category, csc, salindex, stream):
+        key = '-'.join([category, csc, salindex, stream])
+        if [category, csc, salindex, stream] in self.stream_group_names:
             return
-        self.stream_group_names.append([category, csc, stream])
+        self.stream_group_names.append([category, csc, salindex, stream])
         await self.channel_layer.group_add(
             key,
             self.channel_name
         )
 
-    async def leave_telemetry_stream(self, category, csc, stream):
-        key = '-'.join([category, csc, stream])
-        if [category, csc, stream] in self.stream_group_names:
-            self.stream_group_names.remove([category, csc, stream])
+    async def leave_telemetry_stream(self, category, csc, salindex, stream):
+        key = '-'.join([category, csc, salindex, stream])
+        if [category, csc, salindex, stream] in self.stream_group_names:
+            self.stream_group_names.remove([category, csc, salindex, stream])
         await self.channel_layer.group_discard(
             key,
             self.channel_name
@@ -62,20 +62,22 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             if option == 'subscribe':
                 # Subscribe and send confirmation
                 csc = json_data['csc']
+                salindex = json_data['salindex']
                 stream = json_data['stream']
-                await self.join_telemetry_stream(category, csc, stream)
+                await self.join_telemetry_stream(category, csc, str(salindex), stream)
                 await self.send_json({
-                    'data': 'Successfully subscribed to %s-%s' % (csc, stream)
+                    'data': 'Successfully subscribed to %s-%s-%s-%s' % (category, csc, salindex, stream)
                 })
                 return
 
             if option == 'unsubscribe':
-                # Unsubscribe nad send confirmation
+                # Unsubscribe and send confirmation
                 csc = json_data['csc']
+                salindex = json_data['salindex']
                 stream = json_data['stream']
-                await self.leave_telemetry_stream(category, csc, stream)
+                await self.leave_telemetry_stream(category, csc, str(salindex),  stream)
                 await self.send_json({
-                    'data': 'Successfully unsubscribed to %s-%s' % (csc, stream)
+                    'data': 'Successfully unsubscribed to %s-%s-%s-%s' % (category, csc, salindex, stream)
                 })
                 return
 
@@ -85,40 +87,44 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                     'CMD_CHANNEL',
                     self.channel_name
                 )
+                await self.send_json({
+                    'data': 'Successfully subscribed to Commands'
+                })
                 return
 
-            if option == 'cmd':
-                print('CMD RECEIVED')
-                await self.channel_layer.group_send(
+            if option == 'cmd_unsubscribe':
+                print('CMD SUBSCRIBE')
+                await self.channel_layer.group_add(
                     'CMD_CHANNEL',
-                    {
-                        'type': 'command_data',
-                        'cmd': json_data['cmd'],
-                        'params': json_data['params'],
-                        'component': json_data['component'],
-                    }
+                    self.channel_name
                 )
-                return
+                await self.send_json({
+                    'data': 'Successfully unsubscribed to Commands'
+                })
 
         data = json_data['data']
         # Send data to telemetry_stream groups
-        csc_in_data = data.keys()
-        for csc in csc_in_data:
-            data_csc = json.loads(data[csc])
-            telemetry_in_data = data_csc.keys()
+        for csc_message in data:
+            csc = csc_message['csc']
+            salindex = csc_message['salindex']
+            data_csc = csc_message['data']
+            csc_message['data'] = data_csc
+            streams = data_csc.keys()
             streams_data = {}
-            for stream in telemetry_in_data:
+            for stream in streams:
                 await self.channel_layer.group_send(
-                    '-'.join([category, csc, stream]),
+                    '-'.join([category, csc, str(salindex), stream]),
                     {
                         'type': 'subscription_data',
                         'category': category,
-                        'data': {csc: {stream: data_csc[stream]}}
+                        'csc': csc,
+                        'salindex': salindex,
+                        'data': {stream: data_csc[stream]}
                     }
                 )
                 streams_data[stream] = data_csc[stream]
             await self.channel_layer.group_send(
-                '-'.join([category, csc, 'all']),
+                '-'.join([category, csc, str(salindex), 'all']),
                 {
                     'type': 'subscription_data',
                     'category': category,
@@ -126,27 +132,15 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                 }
             )
 
-        # Send all data to consumers subscribed to "all" telemetry
-        if category == 'telemetry':
-            await self.channel_layer.group_send(
-                'telemetry-all-all',
-                {
-                    'type': 'subscription_data',
-                    'category': category,
-                    'data': data
-                }
-            )
-
-        # Send all data to consumers subscribed to "all" events
-        if category == 'event':
-            await self.channel_layer.group_send(
-                'event-all-all',
-                {
-                    'type': 'subscription_data',
-                    'category': category,
-                    'data': data
-                }
-            )
+        # Send all data to consumers subscribed to "all" subscriptions of the same category
+        await self.channel_layer.group_send(
+            '{}-all-all-all'.format(category),
+            {
+                'type': 'subscription_all_data',
+                'category': category,
+                'data': data
+            }
+        )
 
     async def subscription_data(self, event):
         """
@@ -155,23 +149,28 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         # print('Received data')
         data = event['data']
         category = event['category']
+        salindex = event['salindex']
+        csc = event['csc']
+
         # Send data to WebSocket
         await self.send(text_data=json.dumps({
-            'data': data,
-            'category': category
+            'category': category,
+            'data': [{
+                'csc': csc,
+                'salindex': salindex,
+                'data': data,
+            }]
         }))
 
-    async def command_data(self, event):
+    async def subscription_all_data(self, event):
         """
-        Send command to producer
+        Receive data from telemetry_stream group
         """
-        print('Received cmd')
-        cmd = event['cmd']
-        params = event['params']
-        component = event['component']
+        data = event['data']
+        category = event['category']
+
         # Send data to WebSocket
         await self.send(text_data=json.dumps({
-            'cmd': cmd,
-            'component': component,
-            'params': params
+            'category': category,
+            'data': data
         }))

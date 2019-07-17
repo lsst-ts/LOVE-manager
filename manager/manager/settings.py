@@ -17,6 +17,8 @@ from django_auth_ldap.config import LDAPSearch
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# Define wether the system is being tested or not:
+TESTING = os.environ.get('TESTING', False)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
@@ -165,7 +167,7 @@ STATICFILES_DIRS = [
 ASGI_APPLICATION = 'manager.routing.application'
 REDIS_HOST = os.environ.get('REDIS_HOST', False)
 REDIS_PASS = os.environ.get('REDIS_PASS', False)
-if REDIS_HOST:
+if REDIS_HOST and not TESTING:
     CHANNEL_LAYERS = {
         'default': {
             'BACKEND': 'channels_redis.core.RedisChannelLayer',
@@ -188,7 +190,7 @@ AUTH_LDAP_SERVER_URI = os.environ.get('AUTH_LDAP_SERVER_URI', False)
 
 # Only use LDAP activation backend if there is an AUTH_LDAP_SERVER_URI
 # configured in the OS ENV:
-if AUTH_LDAP_SERVER_URI:
+if AUTH_LDAP_SERVER_URI and not TESTING:
     AUTHENTICATION_BACKENDS = [
         'django_auth_ldap.backend.LDAPBackend',
     ]

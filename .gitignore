@@ -1,10 +1,10 @@
 virtualenv
 venv
 */venv
-*.pyc
-__pycache__
+**/*.pyc
 *.cache
 assets
 webpack-stats.*
 .vscode
 *.sqlite3
+**/__pycache__
