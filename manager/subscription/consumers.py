@@ -1,3 +1,4 @@
+"""Contains the Django Channels Consumers that handle the reception/sending of channels messages."""
 import json
 
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
