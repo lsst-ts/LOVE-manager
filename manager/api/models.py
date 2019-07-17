@@ -18,3 +18,15 @@ class Token(rest_framework.authtoken.models.Token):
 
     def __str__(self):
         return self.key
+
+
+class GlobalPermissions(models.Model):
+    """ Database-less model for custom Permissions """
+
+    class Meta:
+        managed = False
+
+        permissions = (
+            ('Commands.execute_commands', 'Execute Commands'),
+            ('ScriptQueue.run_scripts', 'Run and Requeue scripts in ScriptQueues'),
+        )
