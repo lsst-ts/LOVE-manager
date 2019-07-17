@@ -6,7 +6,7 @@ from api.models import Token
 
 class TokenAuthMiddleware:
     """
-    Custom middleware to use a token for user authentication
+    Custom middleware to use a token for user authentication.
     """
 
     def __init__(self, inner):
