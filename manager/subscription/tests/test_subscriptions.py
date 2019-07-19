@@ -126,6 +126,7 @@ class TestSubscriptionCombinations:
             await communicator.send_json_to(msg)
             # Assert 1
             response = await communicator.receive_json_from()
+            assert response['data'] == 'Successfully subscribed to {}-all-all-all'.format(category)
         # Act 2 (Unsubscribe)
         for category in self.categories:
             msg = {
@@ -138,6 +139,7 @@ class TestSubscriptionCombinations:
             await communicator.send_json_to(msg)
             # Assert 2
             response = await communicator.receive_json_from()
+            assert response['data'] == 'Successfully unsubscribed to {}-all-all-all'.format(category)
         await communicator.disconnect()
 
     @pytest.mark.asyncio
