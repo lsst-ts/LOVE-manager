@@ -20,7 +20,7 @@ class TestSubscriptionCombinations:
 
     combinations = []
 
-    no_reception_timeout = 0.0001
+    no_reception_timeout = 0.001
 
     def setup_method(self):
         """Set up the TestCase, executed before each test of the TestCase."""
@@ -192,12 +192,9 @@ class TestSubscriptionCombinations:
             msg, expected = \
                 self.build_messages(combination['category'], combination['csc'], combination['salindex'], [
                                     combination['stream']])
-            print('Sending: ', msg)
             await communicator.send_json_to(msg)
             response = await communicator.receive_json_from()
             # Assert
-            print('response: ', response)
-            print('expected: ', expected)
             assert response == expected
         await communicator.disconnect()
 

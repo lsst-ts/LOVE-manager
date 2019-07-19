@@ -124,6 +124,13 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         """
         data = message['data']
         category = message['category']
+        user = self.scope['user']
+        if category == 'cmd' and not user.has_perm('api.global_permissions.command.execute_command'):
+            self.send_json({
+                'data': 'Command not sent. User does not have permissions to send commands.'
+            })
+            return
+
         # Send data to telemetry_stream groups
         for csc_message in data:
             csc = csc_message['csc']
