@@ -51,7 +51,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         ----------
         message: `dict`
             dictionary containing the message parsed as json.
-            The expected format of the messageis as follows:
+            The expected format of the message is as follows:
             {
                 category: 'event'/'telemetry'/'cmd',
                 csc: 'ScriptQueue',

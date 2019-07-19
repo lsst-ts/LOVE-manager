@@ -1,3 +1,4 @@
+"""Defines the views exposed by the REST API exposed by this app ('api')."""
 from rest_framework import status
 # from rest_framework.authtoken.models import Token
 from api.models import Token
@@ -12,24 +13,57 @@ from api.serializers import UserSerializer
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
 def validate_token(request):
-    """ Validates the token and returns 200 code if valid """
+    """Validate the token and return 200 code if valid.
+
+    If the token is invalid this function is not executed (the request fails before)
+
+    Returns
+    -------
+    Response
+        The response stating that the token is valid with a 200 status code.
+    """
     return Response({'detail': 'Token is valid'}, status=status.HTTP_200_OK)
 
 
 @api_view(['DELETE'])
 @permission_classes((IsAuthenticated,))
 def logout(request):
-    """ Logouts and deletes the token. And returns 204 code if valid """
+    """Logout and delete the token. And returns 204 code if valid.
+
+    If the token is invalid this function is not executed (the request fails before)
+
+    Returns
+    -------
+    Response
+        The response stating that the token has been deleted, with a 204 status code.
+    """
     token = request._auth
     token.delete()
     return Response({'detail': 'Logout successful, Token succesfully deleted'}, status=status.HTTP_204_NO_CONTENT)
 
 
 class CustomObtainAuthToken(ObtainAuthToken):
-    """ API endpoint to obtain authorization tokens """
+    """API endpoint to obtain authorization tokens."""
 
     def post(self, request, *args, **kwargs):
-        """ Handle post requests """
+        """Handle the (post) request for token.
+
+        If the token is invalid this function is not executed (the request fails before)
+
+        Params
+        ------
+        request: Request
+            The Requets object
+        args: list
+            List of addittional arguments. Currenlty unused
+        kwargs: dict
+            Dictionary with addittional keyword arguments (indexed by keys in the dict). Currenlty unused
+
+        Returns
+        -------
+        Response
+            The response containing the token and opther user data.
+        """
         serializer = self.serializer_class(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
