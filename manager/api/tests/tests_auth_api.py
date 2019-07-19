@@ -1,3 +1,4 @@
+"""Test users' authentication thorugh the API."""
 import datetime
 from django.test import TestCase
 from django.urls import reverse
@@ -13,7 +14,7 @@ class AuthApiTestCase(TestCase):
     """Test suite for users' authentication."""
 
     def setUp(self):
-        """Define the test suite setup"""
+        """Define the test suite setup."""
         # Arrange:
         self.client = APIClient()
         self.username = 'test'
@@ -30,7 +31,7 @@ class AuthApiTestCase(TestCase):
         self.logout_url = reverse('logout')
 
     def test_user_login(self):
-        """ Test that an user can request a token using name and password """
+        """Test that an user can request a token using name and password."""
         # Arrange:
         data = {'username': self.username, 'password': self.password}
         tokens_num_0 = Token.objects.filter(user__username=self.username).count()
@@ -47,9 +48,7 @@ class AuthApiTestCase(TestCase):
         self.assertTrue(retrieved_token_1 in tokens_in_db, 'The token should be in the DB')
 
     def test_user_login_failed(self):
-        """
-        Test that an user cannot request a token if the credentials are invalid
-        """
+        """Test that an user cannot request a token if the credentials are invalid."""
         # Arrange:
         data = {'username': self.username, 'password': 'wrong-password'}
         tokens_num_0 = Token.objects.filter(user__username=self.username).count()
@@ -63,7 +62,7 @@ class AuthApiTestCase(TestCase):
         self.assertEqual(tokens_num_0, tokens_num_1, 'The user should have no token')
 
     def test_user_login_twice(self):
-        """ Test that an user can request a token twie receiving different tokens each time """
+        """Test that an user can request a token twie receiving different tokens each time."""
         # Arrange:
         data = {'username': self.username, 'password': self.password}
         tokens_num_0 = Token.objects.filter(user__username=self.username).count()
@@ -92,7 +91,7 @@ class AuthApiTestCase(TestCase):
         self.assertNotEqual(retrieved_token_1, retrieved_token_2, 'The tokens should be different')
 
     def test_user_validate_token(self):
-        """ Test that an user can validate a token """
+        """Test that an user can validate a token."""
         # Arrange:
         data = {'username': self.username, 'password': self.password}
         response = self.client.post(self.login_url, data, format='json')
@@ -113,7 +112,7 @@ class AuthApiTestCase(TestCase):
         )
 
     def test_user_validate_token_fail(self):
-        """ Test that an user fails to validate an invalid token """
+        """Test that an user fails to validate an invalid token."""
         # Arrange:
         data = {'username': self.username, 'password': self.password}
         response = self.client.post(self.login_url, data, format='json')
@@ -134,7 +133,7 @@ class AuthApiTestCase(TestCase):
         )
 
     def test_user_fails_to_validate_deleted_token(self):
-        """ Test that an user fails to validate an deleted token """
+        """Test that an user fails to validate an deleted token."""
         # Arrange:
         data = {'username': self.username, 'password': self.password}
         response = self.client.post(self.login_url, data, format='json')
@@ -156,7 +155,7 @@ class AuthApiTestCase(TestCase):
         )
 
     def test_user_fails_to_validate_expired_token(self):
-        """ Test that an user fails to validate an expired token """
+        """Test that an user fails to validate an expired token."""
 
         initial_time = datetime.datetime.now()
         with freeze_time(initial_time) as frozen_datetime:
@@ -185,7 +184,7 @@ class AuthApiTestCase(TestCase):
             self.assertEqual(token_num_0 - 1, token_num_1)
 
     def test_user_logout(self):
-        """ Test that an user can logout and delete the token """
+        """Test that an user can logout and delete the token."""
         # Arrange:
         data = {'username': self.username, 'password': self.password}
         response = self.client.post(self.login_url, data, format='json')
