@@ -49,12 +49,19 @@ class AuthApiTestCase(TestCase):
         self.assertEqual(tokens_num_0 + 1, tokens_num, 'The user should have a new token')
         tokens_in_db = [t.key for t in Token.objects.filter(user__username=self.username)]
         retrieved_token = response.data['token']
-        retrieved_permissions = response.data['permissions']
         self.assertTrue(retrieved_token in tokens_in_db, 'The token should be in the DB')
         self.assertEqual(
-            retrieved_permissions,
+            response.data['permissions'],
             self.expected_permissions,
             'The permissions are not as expected'
+        )
+        self.assertEqual(
+            response.data['user_data'],
+            {
+                'username': self.user.username,
+                'email': self.user.email,
+            },
+            'The user_data is not as expected'
         )
 
     def test_user_login_failed(self):
@@ -124,6 +131,14 @@ class AuthApiTestCase(TestCase):
             response.data['permissions'],
             self.expected_permissions,
             'The permissions are not as expected'
+        )
+        self.assertEqual(
+            response.data['user_data'],
+            {
+                'username': self.user.username,
+                'email': self.user.email,
+            },
+            'The user_data is not as expected'
         )
 
     def test_user_validate_token_fail(self):

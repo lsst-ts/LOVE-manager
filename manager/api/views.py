@@ -23,9 +23,11 @@ def validate_token(request):
         The response stating that the token is valid with a 200 status code.
     """
     user = request.user
+    user_data = UserSerializer(user).data
     return Response(
         {
             'detail': 'Token is valid',
+            'user_data': user_data,
             'permissions': {
                 'execute_commands': user.has_perm('api.command.execute_command')
             },
@@ -71,7 +73,7 @@ class CustomObtainAuthToken(ObtainAuthToken):
         Returns
         -------
         Response
-            The response containing the token and opther user data.
+            The response containing the token and other user data.
         """
         serializer = self.serializer_class(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
