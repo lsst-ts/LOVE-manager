@@ -1,5 +1,4 @@
 """Tests for the sending of comands."""
-import asyncio
 import pytest
 from django.contrib.auth.models import User, Permission
 from channels.testing import WebsocketCommunicator
@@ -63,8 +62,7 @@ class TestCommands:
         """Test that an authorized user can send commands."""
         # Arrange
         communicator = WebsocketCommunicator(application, self.url)
-        permission = Permission.objects.get(name='Execute Commands')
-        self.user.user_permissions.add(permission)
+        self.user.user_permissions.add(Permission.objects.get(name='Execute Commands'))
         connected, subprotocol = await communicator.connect()
         msg = {
             "option": "subscribe",

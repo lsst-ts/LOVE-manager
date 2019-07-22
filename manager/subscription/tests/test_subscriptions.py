@@ -1,7 +1,7 @@
 """Tests for the subscription of consumers to streams."""
 import asyncio
 import pytest
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
 from channels.testing import WebsocketCommunicator
 from manager.routing import application
 from api.models import Token
@@ -26,6 +26,7 @@ class TestSubscriptionCombinations:
         """Set up the TestCase, executed before each test of the TestCase."""
         self.user = User.objects.create_user('username', password='123', email='user@user.cl')
         self.token = Token.objects.create(user=self.user)
+        self.user.user_permissions.add(Permission.objects.get(name='Execute Commands'))
         self.url = 'manager/ws/subscription/?token={}'.format(self.token)
         if len(self.combinations) == 0:
             for category in self.categories:
