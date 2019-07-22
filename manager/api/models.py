@@ -43,7 +43,7 @@ class GlobalPermissions(models.Model):
         """boolean: Define wether or not the model will be managed by the ORM (saved in the DB)"""
 
         permissions = (
-            ('Commands.execute_commands', 'Execute Commands'),
-            ('ScriptQueue.run_scripts', 'Run and Requeue scripts in ScriptQueues'),
+            ('command.execute_command', 'Execute Commands'),
+            ('command.run_script', 'Run and Requeue scripts in ScriptQueues'),
         )
         """((string, string)): Tuple defining permissions in the format ((<name>, <description>))"""

@@ -125,8 +125,8 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         data = message['data']
         category = message['category']
         user = self.scope['user']
-        if category == 'cmd' and not user.has_perm('api.global_permissions.command.execute_command'):
-            self.send_json({
+        if category == 'cmd' and not user.has_perm('api.command.execute_command'):
+            await self.send_json({
                 'data': 'Command not sent. User does not have permissions to send commands.'
             })
             return
@@ -226,7 +226,6 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         message: `dict`
             dictionary containing the message parsed as json
         """
-        # print('Received data')
         data = message['data']
         category = message['category']
         salindex = message['salindex']

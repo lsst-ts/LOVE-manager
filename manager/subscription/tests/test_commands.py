@@ -63,11 +63,8 @@ class TestCommands:
         """Test that an authorized user can send commands."""
         # Arrange
         communicator = WebsocketCommunicator(application, self.url)
-        print(list(self.user.user_permissions.all()))
         permission = Permission.objects.get(name='Execute Commands')
-        print('Test permission: ', permission)
         self.user.user_permissions.add(permission)
-        print(list(self.user.user_permissions.all()))
         connected, subprotocol = await communicator.connect()
         msg = {
             "option": "subscribe",
@@ -86,26 +83,26 @@ class TestCommands:
         assert response == expected
         await communicator.disconnect()
 
-    # @pytest.mark.asyncio
-    # @pytest.mark.django_db
-    # async def test_unauthorized_user_cannot_send_command(self):
-    #     """Test that an unauthorized user cannot send commands."""
-    #     # Arrange
-    #     communicator = WebsocketCommunicator(application, self.url)
-    #     connected, subprotocol = await communicator.connect()
-    #     msg = {
-    #         "option": "subscribe",
-    #         "csc": "ScriptQueue",
-    #         "salindex": 1,
-    #         "stream": "stream1",
-    #         "category": "cmd"
-    #     }
-    #     await communicator.send_json_to(msg)
-    #     await communicator.receive_json_from()
-    #     # Act
-    #     msg, expected = self.build_messages('cmd', 'ScriptQueue', 1, ['stream1'])
-    #     await communicator.send_json_to(msg)
-    #     # Assert
-    #     with pytest.raises(asyncio.TimeoutError):
-    #         await asyncio.wait_for(communicator.receive_json_from(), timeout=self.no_reception_timeout)
-    #     await communicator.disconnect()
+    @pytest.mark.asyncio
+    @pytest.mark.django_db
+    async def test_unauthorized_user_cannot_send_command(self):
+        """Test that an unauthorized user cannot send commands."""
+        # Arrange
+        communicator = WebsocketCommunicator(application, self.url)
+        connected, subprotocol = await communicator.connect()
+        msg = {
+            "option": "subscribe",
+            "csc": "ScriptQueue",
+            "salindex": 1,
+            "stream": "stream1",
+            "category": "cmd"
+        }
+        await communicator.send_json_to(msg)
+        await communicator.receive_json_from()
+        # Act
+        msg, expected = self.build_messages('cmd', 'ScriptQueue', 1, ['stream1'])
+        await communicator.send_json_to(msg)
+        # Assert
+        response = await communicator.receive_json_from()
+        assert 'Command not sent' in response['data']
+        await communicator.disconnect()
