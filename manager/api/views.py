@@ -22,7 +22,16 @@ def validate_token(request):
     Response
         The response stating that the token is valid with a 200 status code.
     """
-    return Response({'detail': 'Token is valid'}, status=status.HTTP_200_OK)
+    user = request.user
+    return Response(
+        {
+            'detail': 'Token is valid',
+            'permissions': {
+                'execute_commands': user.has_perm('api.command.execute_command')
+            },
+        },
+        status=status.HTTP_200_OK
+    )
 
 
 @api_view(['DELETE'])
@@ -69,4 +78,10 @@ class CustomObtainAuthToken(ObtainAuthToken):
         user = serializer.validated_data['user']
         token = Token.objects.create(user=user)
         user_data = UserSerializer(user).data
-        return Response({'token': token.key, 'user_data': user_data})
+        return Response({
+            'token': token.key,
+            'user_data': user_data,
+            'permissions': {
+                'execute_commands': user.has_perm('api.command.execute_command')
+            },
+        })

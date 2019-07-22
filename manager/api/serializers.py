@@ -12,5 +12,5 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         """The model class to serialize"""
 
-        fields = ('username', 'email',)
+        fields = ('username', 'email', 'user_permissions')
         """The fields of the model class to serialize"""

@@ -2,7 +2,7 @@
 import datetime
 from django.test import TestCase
 from django.urls import reverse
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
 from freezegun import freeze_time
 from rest_framework.test import APIClient
 from rest_framework import status
@@ -26,9 +26,13 @@ class AuthApiTestCase(TestCase):
             first_name='First',
             last_name='Last',
         )
+        self.user.user_permissions.add(Permission.objects.get(name='Execute Commands'))
         self.login_url = reverse('login')
         self.validate_token_url = reverse('validate-token')
         self.logout_url = reverse('logout')
+        self.expected_permissions = {
+            'execute_commands': True,
+        }
 
     def test_user_login(self):
         """Test that a user can request a token using name and password."""
@@ -41,11 +45,17 @@ class AuthApiTestCase(TestCase):
 
         # Assert:
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        tokens_num_1 = Token.objects.filter(user__username=self.username).count()
-        self.assertEqual(tokens_num_0 + 1, tokens_num_1, 'The user should have a new token')
-        retrieved_token_1 = response.data['token']
+        tokens_num = Token.objects.filter(user__username=self.username).count()
+        self.assertEqual(tokens_num_0 + 1, tokens_num, 'The user should have a new token')
         tokens_in_db = [t.key for t in Token.objects.filter(user__username=self.username)]
-        self.assertTrue(retrieved_token_1 in tokens_in_db, 'The token should be in the DB')
+        retrieved_token = response.data['token']
+        retrieved_permissions = response.data['permissions']
+        self.assertTrue(retrieved_token in tokens_in_db, 'The token should be in the DB')
+        self.assertEqual(
+            retrieved_permissions,
+            self.expected_permissions,
+            'The permissions are not as expected'
+        )
 
     def test_user_login_failed(self):
         """Test that a user cannot request a token if the credentials are invalid."""
@@ -106,9 +116,14 @@ class AuthApiTestCase(TestCase):
         # Assert after request:
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
-            response.data,
-            {'detail': 'Token is valid'},
+            response.data['detail'],
+            'Token is valid',
             'The response is not as expected'
+        )
+        self.assertEqual(
+            response.data['permissions'],
+            self.expected_permissions,
+            'The permissions are not as expected'
         )
 
     def test_user_validate_token_fail(self):
