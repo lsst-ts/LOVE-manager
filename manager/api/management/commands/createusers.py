@@ -1,5 +1,6 @@
 """Management utility to create operator on duty user."""
 import getpass
+from argparse import RawTextHelpFormatter
 from django.contrib.auth.models import Permission, Group, User
 from django.core.management.base import BaseCommand
 
@@ -11,14 +12,56 @@ test_username = 'test'
 
 
 class Command(BaseCommand):
-    """The Django command to create the initial users with their permissions."""
+    """Django command to create the initial users with their permissions.
 
-    help = 'Creates the initial users'
+    It creates 4 users with the following characteristics and permissions:
+
+    - "admin": has all the permissions, it is a Django superuser
+    - "user": basic user with no permissions)
+    - "cmd_user": basic user with commands execution permissions
+    - "test": basic user with commands execution permissions
+
+    It also creates 1 Group: "cmd_group", which defines the commands execution permissions.
+    "cmd_user" and "test" users belong to "cmd_group".
+
+    The command receives arguments to set the passwords of the users,
+    run `python manage.py createusers --help` for help.
+    """
+
+    help = """Django command to create the initial users with their permissions.\n
+
+    It creates 4 users with the following characteristics and permissions:
+
+    - "admin": has all the permissions, it is a Django superuser
+    - "user": basic user with no permissions)
+    - "cmd_user": basic user with commands execution permissions
+    - "test": basic user with commands execution permissions
+
+    It also creates 1 Group: "cmd_group", which defines the commands execution permissions.
+    "cmd_user" and "test" users belong to "cmd_group"."""
+
     requires_migrations_checks = True
     stealth_options = ('stdin',)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+    def create_parser(self, *args, **kwargs):
+        """Create the arguments parser.
+
+        It is ovewritten here just in order to set the formatter_class so that is allows break lines
+        in the Command help.
+
+        Params
+        ------
+        args: list
+            List of arguments
+        kwargs: dict
+            Dictionary with addittional keyword arguments (indexed by keys in the dict)
+        """
+        parser = super(Command, self).create_parser(*args, **kwargs)
+        parser.formatter_class = RawTextHelpFormatter
+        return parser
 
     def add_arguments(self, parser):
         """Add arguments for the command.
@@ -30,15 +73,15 @@ class Command(BaseCommand):
         """
         parser.add_argument(
             '--adminpass',
-            help='Specifies the password for the admin user.'
+            help='Specifies the password for the "admin" user.'
         )
         parser.add_argument(
             '--userpass',
-            help='Specifies the password for the regular user, "user".'
+            help='Specifies the password for the regular users ("user").'
         )
         parser.add_argument(
             '--cmduserpass',
-            help='Specifies password for the user with cmd permissions, "cmd_user".'
+            help='Specifies password for the users with cmd permissions ("cmd_user" and "test").'
         )
 
     def handle(self, *args, **options):
