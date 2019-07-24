@@ -7,6 +7,7 @@ user_username = 'user'
 cmd_user_username = 'cmd_user'
 admin_username = 'admin'
 cmd_groupname = 'cmd'
+test_username = 'test'
 
 
 class Command(BaseCommand):
@@ -53,11 +54,13 @@ class Command(BaseCommand):
         admin_password = options['adminpass']
         user_password = options['userpass']
         cmd_password = options['cmduserpass']
+        cmd_password = options['cmduserpass']
 
         # Create users
         admin = self._create_user(admin_username, admin_password)
         self._create_user(user_username, user_password)
         cmd_user = self._create_user(cmd_user_username, cmd_password)
+        test_user = self._create_user(test_username, cmd_password)
 
         # Make admin superuser and staff
         admin.is_superuser = True
@@ -69,6 +72,7 @@ class Command(BaseCommand):
 
         # Add cmd_user to cmd_group
         cmd_group.user_set.add(cmd_user)
+        cmd_group.user_set.add(test_user)
 
     def _create_user(self, username, password):
         """Create a given user, if it does not exist. Return it anyway.
