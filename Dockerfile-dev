@@ -17,5 +17,10 @@ RUN pip install -r requirements.txt
 # Expose static files and port
 EXPOSE 8000
 
+# Set env variables for runtime (to be replaced in docker-cpomse files)
+ENV ADMIN_USER_PASS=test
+ENV USER_USER_PASS=test
+ENV CMD_USER_PASS=test
+
 # Run development server in runtime
 ENTRYPOINT ["./runserver-dev.sh"]

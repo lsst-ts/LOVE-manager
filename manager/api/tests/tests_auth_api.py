@@ -1,7 +1,8 @@
+"""Test users' authentication thorugh the API."""
 import datetime
 from django.test import TestCase
 from django.urls import reverse
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
 from freezegun import freeze_time
 from rest_framework.test import APIClient
 from rest_framework import status
@@ -13,7 +14,7 @@ class AuthApiTestCase(TestCase):
     """Test suite for users' authentication."""
 
     def setUp(self):
-        """Define the test suite setup"""
+        """Define the test suite setup."""
         # Arrange:
         self.client = APIClient()
         self.username = 'test'
@@ -25,12 +26,16 @@ class AuthApiTestCase(TestCase):
             first_name='First',
             last_name='Last',
         )
+        self.user.user_permissions.add(Permission.objects.get(name='Execute Commands'))
         self.login_url = reverse('login')
         self.validate_token_url = reverse('validate-token')
         self.logout_url = reverse('logout')
+        self.expected_permissions = {
+            'execute_commands': True,
+        }
 
     def test_user_login(self):
-        """ Test that an user can request a token using name and password """
+        """Test that a user can request a token using name and password."""
         # Arrange:
         data = {'username': self.username, 'password': self.password}
         tokens_num_0 = Token.objects.filter(user__username=self.username).count()
@@ -40,16 +45,27 @@ class AuthApiTestCase(TestCase):
 
         # Assert:
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        tokens_num_1 = Token.objects.filter(user__username=self.username).count()
-        self.assertEqual(tokens_num_0 + 1, tokens_num_1, 'The user should have a new token')
-        retrieved_token_1 = response.data['token']
+        tokens_num = Token.objects.filter(user__username=self.username).count()
+        self.assertEqual(tokens_num_0 + 1, tokens_num, 'The user should have a new token')
         tokens_in_db = [t.key for t in Token.objects.filter(user__username=self.username)]
-        self.assertTrue(retrieved_token_1 in tokens_in_db, 'The token should be in the DB')
+        retrieved_token = response.data['token']
+        self.assertTrue(retrieved_token in tokens_in_db, 'The token should be in the DB')
+        self.assertEqual(
+            response.data['permissions'],
+            self.expected_permissions,
+            'The permissions are not as expected'
+        )
+        self.assertEqual(
+            response.data['user_data'],
+            {
+                'username': self.user.username,
+                'email': self.user.email,
+            },
+            'The user_data is not as expected'
+        )
 
     def test_user_login_failed(self):
-        """
-        Test that an user cannot request a token if the credentials are invalid
-        """
+        """Test that a user cannot request a token if the credentials are invalid."""
         # Arrange:
         data = {'username': self.username, 'password': 'wrong-password'}
         tokens_num_0 = Token.objects.filter(user__username=self.username).count()
@@ -63,7 +79,7 @@ class AuthApiTestCase(TestCase):
         self.assertEqual(tokens_num_0, tokens_num_1, 'The user should have no token')
 
     def test_user_login_twice(self):
-        """ Test that an user can request a token twie receiving different tokens each time """
+        """Test that a user can request a token twie receiving different tokens each time."""
         # Arrange:
         data = {'username': self.username, 'password': self.password}
         tokens_num_0 = Token.objects.filter(user__username=self.username).count()
@@ -92,7 +108,7 @@ class AuthApiTestCase(TestCase):
         self.assertNotEqual(retrieved_token_1, retrieved_token_2, 'The tokens should be different')
 
     def test_user_validate_token(self):
-        """ Test that an user can validate a token """
+        """Test that a user can validate a token."""
         # Arrange:
         data = {'username': self.username, 'password': self.password}
         response = self.client.post(self.login_url, data, format='json')
@@ -107,18 +123,31 @@ class AuthApiTestCase(TestCase):
         # Assert after request:
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
-            response.data,
-            {'detail': 'Token is valid'},
+            response.data['detail'],
+            'Token is valid',
             'The response is not as expected'
+        )
+        self.assertEqual(
+            response.data['permissions'],
+            self.expected_permissions,
+            'The permissions are not as expected'
+        )
+        self.assertEqual(
+            response.data['user_data'],
+            {
+                'username': self.user.username,
+                'email': self.user.email,
+            },
+            'The user_data is not as expected'
         )
 
     def test_user_validate_token_fail(self):
-        """ Test that an user fails to validate an invalid token """
+        """Test that a user fails to validate an invalid token."""
         # Arrange:
         data = {'username': self.username, 'password': self.password}
         response = self.client.post(self.login_url, data, format='json')
         token = Token.objects.filter(user__username=self.username).first()
-        self.client.credentials(HTTP_AUTHORIZATION='Token '+token.key+'fake')
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key + 'fake')
 
         # Act:
         response = self.client.get(
@@ -134,12 +163,12 @@ class AuthApiTestCase(TestCase):
         )
 
     def test_user_fails_to_validate_deleted_token(self):
-        """ Test that an user fails to validate an deleted token """
+        """Test that a user fails to validate an deleted token."""
         # Arrange:
         data = {'username': self.username, 'password': self.password}
         response = self.client.post(self.login_url, data, format='json')
         token = Token.objects.filter(user__username=self.username).first()
-        self.client.credentials(HTTP_AUTHORIZATION='Token '+token.key)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
         token.delete()
 
         # Act:
@@ -156,16 +185,15 @@ class AuthApiTestCase(TestCase):
         )
 
     def test_user_fails_to_validate_expired_token(self):
-        """ Test that an user fails to validate an expired token """
-
+        """Test that a user fails to validate an expired token."""
+        # Arrange:
         initial_time = datetime.datetime.now()
         with freeze_time(initial_time) as frozen_datetime:
-            # Arrange:
             data = {'username': self.username, 'password': self.password}
             response = self.client.post(self.login_url, data, format='json')
             token = Token.objects.filter(user__username=self.username).first()
             token_num_0 = Token.objects.filter(user__username=self.username).count()
-            self.client.credentials(HTTP_AUTHORIZATION='Token '+token.key)
+            self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
 
             # Act:
             max_timedelta = datetime.timedelta(days=settings.TOKEN_EXPIRED_AFTER_DAYS, seconds=1)
@@ -185,7 +213,7 @@ class AuthApiTestCase(TestCase):
             self.assertEqual(token_num_0 - 1, token_num_1)
 
     def test_user_logout(self):
-        """ Test that an user can logout and delete the token """
+        """Test that a user can logout and delete the token."""
         # Arrange:
         data = {'username': self.username, 'password': self.password}
         response = self.client.post(self.login_url, data, format='json')

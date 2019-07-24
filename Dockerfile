@@ -23,5 +23,10 @@ RUN python manage.py collectstatic --noinput
 VOLUME /usr/src/love/static
 EXPOSE 8000
 
+# Set env variables for runtime (to be replaced in docker-cpomse files)
+ENV ADMIN_USER_PASS=test
+ENV USER_USER_PASS=test
+ENV CMD_USER_PASS=test
+
 # Run daphne server in runtime
 ENTRYPOINT ["./runserver.sh"]

@@ -3,6 +3,5 @@
 python manage.py makemigrations
 python manage.py migrate
 
-echo "from django.contrib.auth.models import User; User.objects.create_superuser('test', 'test@test.com', 'test') if (User.objects.filter(username='test').exists() == False) else None" | python manage.py shell
-
+python manage.py createusers --adminpass ${ADMIN_USER_PASS} --userpass ${USER_USER_PASS} --cmduserpass ${CMD_USER_PASS}
 daphne -b 0.0.0.0 -p 8000 manager.asgi:application
