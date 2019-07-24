@@ -1,12 +1,7 @@
 """Management utility to create operator on duty user."""
 import getpass
-from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission, Group, User
 from django.core.management.base import BaseCommand
-
-PASSWORD_FIELD = 'password'
-username = 'operator_on_duty'
-operators_group_name = 'operators'
 
 user_username = 'user'
 cmd_user_username = 'cmd_user'
@@ -23,9 +18,6 @@ class Command(BaseCommand):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.UserModel = get_user_model()
-        self.username_field = self.UserModel._meta.get_field(
-            self.UserModel.USERNAME_FIELD)
 
     def add_arguments(self, parser):
         """Add arguments for the command.
@@ -62,52 +54,21 @@ class Command(BaseCommand):
         user_password = options['userpass']
         cmd_password = options['cmduserpass']
 
-        # Create admin
-        self._create_admin(admin_password)
-
-        # Create user
+        # Create users
+        admin = self._create_user(admin_username, admin_password)
         self._create_user(user_username, user_password)
-
-        # Create cmd_user
         cmd_user = self._create_user(cmd_user_username, cmd_password)
+
+        # Make admin superuser and staff
+        admin.is_superuser = True
+        admin.is_staff = True
+        admin.save()
 
         # Create cmd_group
         cmd_group = self._create_cmd_group()
 
         # Add cmd_user to cmd_group
         cmd_group.user_set.add(cmd_user)
-
-    def _create_admin(self, password):
-        """Create the admin user, if it does not exist. Return it anyway.
-
-        Params
-        ------
-        password: string
-            The password for the user
-
-        Returns
-        -------
-        user: User
-            The User object
-        """
-        while password is None or password.strip() == '':
-            print('Creating admin user...')
-            password = getpass.getpass()
-            if password.strip() == '':
-                self.stderr.write("Error: Blank passwords aren't allowed.")
-                password = None
-                continue
-
-        user = User.objects.filter(username=admin_username).first()
-        if not user:
-            user = User.objects.create_superuser(
-                username=admin_username,
-                email='{}@fake.com'.format(admin_username),
-                password=password
-            )
-        else:
-            self.stderr.write("Error: The {} user is already created".format(admin_username))
-        return user
 
     def _create_user(self, username, password):
         """Create a given user, if it does not exist. Return it anyway.
@@ -140,7 +101,7 @@ class Command(BaseCommand):
                 password=password
             )
         else:
-            self.stderr.write("Error: The {} user is already created".format(username))
+            self.stderr.write("Warning: The {} user is already created".format(username))
         return user
 
     def _create_cmd_group(self):
