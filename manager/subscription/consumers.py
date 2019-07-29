@@ -156,6 +156,8 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                 {
                     'type': 'subscription_data',
                     'category': category,
+                    'csc': csc,
+                    'salindex': salindex,
                     'data': {csc: streams_data}
                 }
             )
