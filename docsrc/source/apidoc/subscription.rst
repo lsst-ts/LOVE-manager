@@ -1,13 +1,6 @@
 subscription package
 ====================
 
-Subpackages
------------
-
-.. toctree::
-
-   subscription.migrations
-
 Submodules
 ----------
 

@@ -6,7 +6,6 @@ Subpackages
 
 .. toctree::
 
-   api.migrations
    api.tests
 
 Submodules
