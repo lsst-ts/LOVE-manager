@@ -82,7 +82,10 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#api">API</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../apidoc/modules.html">ApiDoc</a></li>
 </ul>
 
@@ -150,8 +153,16 @@
             
   <div class="section" id="introduction">
 <h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
-<p>The LOVE-manager is Django application part of the LSST Operation and Visualization Environment (L.O.V.E.) project.
+<p>The LOVE-manager is part of the LSST Operation and Visualization Environment (L.O.V.E.) project.
 It is written in Python using both Django Rest Framework (DRF) and Django Channels.</p>
+<p>The LOVE-manager is an intermediary between the LOVE-producer and the LOVE-frontend.
+It handles websockets connections and redirect messages to subscribers following the Django Channels consumers and groups workflow.
+It also provides an API for token-based authentication and authorization.</p>
+<p>Currently the application has 2 Django apps:</p>
+<div class="section" id="api">
+<h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
+<p>This app contains the models and API endpoints for authentication. For more details please refer to the <a href="#id1"><span class="problematic" id="id2">ApiDoc_</span></a> section</p>
+</div>
 </div>
 
 
