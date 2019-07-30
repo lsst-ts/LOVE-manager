@@ -1,0 +1,290 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Websockets Group Subscriptions &mdash; LOVE-manager 0.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ApiDoc" href="../apidoc/modules.html" />
+    <link rel="prev" title="Websockets Connection" href="connection.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> LOVE-manager
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="connection.html">Websockets Connection</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Websockets Group Subscriptions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#love-manager-subscriptions-scheme">LOVE-manager Subscriptions scheme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#accepted-messages">Accepted messages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#subscription-messages">Subscription messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#telemetry-or-event-messages">Telemetry or Event messages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#command-messages">Command messages</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../apidoc/modules.html">ApiDoc</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">LOVE-manager</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Websockets Group Subscriptions</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/modules/subscriptions.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="websockets-group-subscriptions">
+<h1>Websockets Group Subscriptions<a class="headerlink" href="#websockets-group-subscriptions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="love-manager-subscriptions-scheme">
+<h2>LOVE-manager Subscriptions scheme<a class="headerlink" href="#love-manager-subscriptions-scheme" title="Permalink to this headline">¶</a></h2>
+<p>Group subscriptions are characterized by 4 variables:
+* <strong>category:</strong> describe the category or type of stream:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>*telemetry:*</strong> streams that transfer data from telemetry systems</p></li>
+<li><p><strong>*event:*</strong> streams that transfer data from events triggered asynchronously in the system</p></li>
+<li><p><strong>*cmd:*</strong> streams that transfer acknowledgement messages from sent commands</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p><strong>csc:</strong> describes the type of the source CSC, e.g. <cite>ScriptQueue</cite></p></li>
+<li><p><strong>salindex:</strong> describes the instance number (salindex) of a given the CSC, e.g. <cite>1</cite></p></li>
+<li><p><strong>stream:</strong> describes the particular stream of the subscription.</p></li>
+</ul>
+<p>The reasoning behind this scheme is that for a given CSC instance e.g. <cite>ScriptQueue 1</cite> (salindex 1), there could be a number of telemetries, events or commands, each identified by a different <cite>stream</cite>.</p>
+</div>
+<div class="section" id="accepted-messages">
+<h2>Accepted messages<a class="headerlink" href="#accepted-messages" title="Permalink to this headline">¶</a></h2>
+<p>The consumers accept the following types of messages:</p>
+<div class="section" id="subscription-messages">
+<h3>Subscription messages<a class="headerlink" href="#subscription-messages" title="Permalink to this headline">¶</a></h3>
+<p>Specifying the variables necessary to subscribe a to a group in a JSON message, as follows:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{
+  option: &#39;subscribe&#39;/&#39;unsubscribe&#39;,
+  category: &#39;event&#39;/&#39;telemetry&#39;/&#39;cmd&#39;,
+  csc: &#39;ScriptQueue&#39;,
+  salindex: 1,
+  stream: &#39;stream1&#39;,
+}
+</pre></div>
+</div>
+</div>
+<div class="section" id="telemetry-or-event-messages">
+<h3>Telemetry or Event messages<a class="headerlink" href="#telemetry-or-event-messages" title="Permalink to this headline">¶</a></h3>
+<p>Specifying the variables necessary to subscribe a to a group in a JSON message, as follows:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{
+  category: &#39;event&#39;/&#39;telemetry&#39;,
+  data: [{
+    csc: &#39;ScriptQueue&#39;,
+    salindex: 1,
+    data: {
+        stream1: {...&lt;data&gt;...},
+        stream2: {...&lt;data&gt;...},
+    }
+  }]
+}
+</pre></div>
+</div>
+<p>Where <cite>{…&lt;data&gt;…}</cite> represents the JSON message that is sent as data.</p>
+</div>
+<div class="section" id="command-messages">
+<h3>Command messages<a class="headerlink" href="#command-messages" title="Permalink to this headline">¶</a></h3>
+<p>Specifying the variables necessary to subscribe a to a group in a JSON message, as follows:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>{
+  category: &#39;cmd&#39;,
+  data: [{
+    csc: &#39;ScriptQueue&#39;,
+    salindex: 1,
+    data: {
+      cmd: &#39;CommandPath&#39;,
+      params: {
+        &#39;param1&#39;: &#39;value1&#39;,
+        &#39;param2&#39;: &#39;value2&#39;,
+        ...
+      },
+    }
+  }]
+}
+</pre></div>
+</div>
+<p>Where pairs <cite>param1</cite> and <cite>value1</cite> represent the parameters (name and value) to be passed to the command.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../apidoc/modules.html" class="btn btn-neutral float-right" title="ApiDoc" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="connection.html" class="btn btn-neutral float-left" title="Websockets Connection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Inria Chile
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,290 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>manager package &mdash; LOVE-manager 0.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="subscription package" href="subscription.html" />
+    <link rel="prev" title="manage module" href="manage.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> LOVE-manager
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../modules/introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/connection.html">Websockets Connection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/subscriptions.html">Websockets Group Subscriptions</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">ApiDoc</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="api.html">api package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manage.html">manage module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">manager package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-manager.asgi">manager.asgi module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-manager.routing">manager.routing module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-manager.settings">manager.settings module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-manager.urls">manager.urls module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-manager.wsgi">manager.wsgi module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-manager">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="subscription.html">subscription package</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">LOVE-manager</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">ApiDoc</a> &raquo;</li>
+        
+      <li>manager package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/apidoc/manager.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="manager-package">
+<h1>manager package<a class="headerlink" href="#manager-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-manager.asgi">
+<span id="manager-asgi-module"></span><h2>manager.asgi module<a class="headerlink" href="#module-manager.asgi" title="Permalink to this headline">¶</a></h2>
+<p>ASGI entrypoint.</p>
+<p>Configures Django and then runs the application defined in the ASGI_APPLICATION setting.</p>
+</div>
+<div class="section" id="module-manager.routing">
+<span id="manager-routing-module"></span><h2>manager.routing module<a class="headerlink" href="#module-manager.routing" title="Permalink to this headline">¶</a></h2>
+<p>Defines the rules for routing of channels messages (websockets) in the whole project.</p>
+</div>
+<div class="section" id="module-manager.settings">
+<span id="manager-settings-module"></span><h2>manager.settings module<a class="headerlink" href="#module-manager.settings" title="Permalink to this headline">¶</a></h2>
+<p>Django settings for manager project.</p>
+<p>Generated by ‘django-admin startproject’ using Django 2.1.3.</p>
+<p>For more information on this file, see
+<a class="reference external" href="https://docs.djangoproject.com/en/2.1/topics/settings/">https://docs.djangoproject.com/en/2.1/topics/settings/</a></p>
+<p>For the full list of settings and their values, see
+<a class="reference external" href="https://docs.djangoproject.com/en/2.1/ref/settings/">https://docs.djangoproject.com/en/2.1/ref/settings/</a></p>
+</div>
+<div class="section" id="module-manager.urls">
+<span id="manager-urls-module"></span><h2>manager.urls module<a class="headerlink" href="#module-manager.urls" title="Permalink to this headline">¶</a></h2>
+<p>manager URL Configuration.</p>
+<dl class="simple">
+<dt>The <cite>urlpatterns</cite> list routes URLs to views. For more information please see:</dt><dd><p><a class="reference external" href="https://docs.djangoproject.com/en/2.1/topics/http/urls/">https://docs.djangoproject.com/en/2.1/topics/http/urls/</a></p>
+</dd>
+</dl>
+<div class="section" id="examples">
+<h3>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>Function views</dt><dd><ol class="arabic simple">
+<li><p>Add an import:  from my_app import views</p></li>
+<li><p>Add a URL to urlpatterns:  path(‘’, views.home, name=’home’)</p></li>
+</ol>
+</dd>
+<dt>Class-based views</dt><dd><ol class="arabic simple">
+<li><p>Add an import:  from other_app.views import Home</p></li>
+<li><p>Add a URL to urlpatterns:  path(‘’, Home.as_view(), name=’home’)</p></li>
+</ol>
+</dd>
+<dt>Including another URLconf</dt><dd><ol class="arabic simple">
+<li><p>Import the include() function: from django.urls import include, path</p></li>
+<li><p>Add a URL to urlpatterns:  path(‘blog/’, include(‘blog.urls’))</p></li>
+</ol>
+</dd>
+</dl>
+<dl class="function">
+<dt id="manager.urls.path">
+<code class="sig-prename descclassname">manager.urls.</code><code class="sig-name descname">path</code><span class="sig-paren">(</span><em class="sig-param">route</em>, <em class="sig-param">view</em>, <em class="sig-param">kwargs=None</em>, <em class="sig-param">name=None</em>, <em class="sig-param">*</em>, <em class="sig-param">Pattern=&lt;class 'django.urls.resolvers.RoutePattern'&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#manager.urls.path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-manager.wsgi">
+<span id="manager-wsgi-module"></span><h2>manager.wsgi module<a class="headerlink" href="#module-manager.wsgi" title="Permalink to this headline">¶</a></h2>
+<p>WSGI config for manager project.</p>
+<p>It exposes the WSGI callable as a module-level variable named <code class="docutils literal notranslate"><span class="pre">application</span></code>.</p>
+<p>For more information on this file, see
+<a class="reference external" href="https://docs.djangoproject.com/en/2.1/howto/deployment/wsgi/">https://docs.djangoproject.com/en/2.1/howto/deployment/wsgi/</a></p>
+</div>
+<div class="section" id="module-manager">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-manager" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="subscription.html" class="btn btn-neutral float-right" title="subscription package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="manage.html" class="btn btn-neutral float-left" title="manage module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Inria Chile
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
