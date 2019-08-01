@@ -11,6 +11,7 @@ Welcome to LOVE-manager's documentation!
    :caption: Contents:
 
    modules/introduction.rst
+   modules/authentication.rst
    modules/connection.rst
    modules/subscriptions.rst
    apidoc/modules.rst
