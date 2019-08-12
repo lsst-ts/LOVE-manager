@@ -53,13 +53,16 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         ----------
         message: `dict`
             dictionary containing the message parsed as json.
-            The expected format of the message is as follows:
-            {
-                category: 'event'/'telemetry'/'cmd',
-                csc: 'ScriptQueue',
-                salindex: 1,
-                stream: 'stream1',
-            }
+
+        The expected format of the message is as follows:
+        {
+            option: 'subscribe'/'unsubscribe'
+            category: 'event'/'telemetry'/'cmd',
+            csc: 'ScriptQueue',
+            salindex: 1,
+            stream: 'stream1',
+        }
+
         """
         option = message['option']
         category = message['category']
@@ -89,7 +92,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
     async def handle_data_message(self, message):
         """Handle a data message.
 
-        Sends the message to the corresponding groups base don the data of the message.
+        Sends the message to the corresponding groups based on the data of the message.
 
         Parameters
         ----------
