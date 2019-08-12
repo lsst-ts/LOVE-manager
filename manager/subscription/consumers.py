@@ -1,6 +1,6 @@
 """Contains the Django Channels Consumers that handle the reception/sending of channels messages."""
 import json
-
+import random
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from manager.settings import PROCESS_CONNECTION_PASS
 
@@ -11,6 +11,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
         """Handle connection, rejects connection if no authenticated user."""
         self.stream_group_names = []
+        self.pending_commands = set()
         # Reject connection if no authenticated user:
         if self.scope['user'].is_anonymous:
             if self.scope['password'] and self.scope['password'] == PROCESS_CONNECTION_PASS:
@@ -23,6 +24,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
     async def disconnect(self, close_code):
         """Handle disconnection."""
         # Leave telemetry_stream group
+        self.pending_commands = set()
         for telemetry_stream in self.stream_group_names:
             await self._leave_group(*telemetry_stream)
 
@@ -112,12 +114,14 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                     csc: 'ScriptQueue',
                     salindex: 1,
                     data: {
-                        cmd: 'CommandPath',
-                        params: {
-                            'param1': 'value1',
-                            'param2': 'value2',
-                            ...
-                        },
+                        stream: {
+                            cmd: 'CommandPath',
+                            params: {
+                                'param1': 'value1',
+                                'param2': 'value2',
+                                ...
+                            },
+                        }
                     }
                 }]
             }
@@ -140,10 +144,25 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             streams = data_csc.keys()
             streams_data = {}
             for stream in streams:
+                sub_category = category
+                msg_type = "subscription_data"
+                group_name = '-'.join([sub_category, csc, str(salindex), stream])
+                if category == "cmd":
+                    await self._join_group("cmd_acks", "all", "all", "all")
+                    cmd_id = random.getrandbits(128)
+                    if 'cmd_id' in data_csc[stream]:
+                        cmd_id = data_csc[stream]['cmd_id']
+                    self.pending_commands.add(cmd_id)
+                    print('New Command', self.pending_commands)
+                if category == "ack":
+                    print('New Ack', self.pending_commands, message)
+                    sub_category = "cmd"  # Use sub group from cmds
+                    msg_type = "subscription_ack"
+                    group_name = 'cmd_acks-all-all-all'
                 await self.channel_layer.group_send(
-                    '-'.join([category, csc, str(salindex), stream]),
+                    group_name,
                     {
-                        'type': 'subscription_data',
+                        'type': msg_type,
                         'category': category,
                         'csc': csc,
                         'salindex': salindex,
@@ -242,6 +261,36 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                 'data': data,
             }]
         }))
+
+    async def subscription_ack(self, message):
+        """
+        Send a message to all the instances of a consumer that have joined the group.
+
+        It is used to send ack messages associated to subscriptions to all the groups of a particular category.
+        Only sends messages to those groups with a corresponding pending cmd.
+
+        Parameters
+        ----------
+        message: `dict`
+            dictionary containing the message parsed as json
+        """
+        data = message['data']
+        category = message['category']
+        salindex = message['salindex']
+        csc = message['csc']
+        for stream in data:
+            print('stream', data[stream])
+            cmd_id = data[stream]['cmd_id']
+            if cmd_id in self.pending_commands:
+                self.pending_commands.discard(cmd_id)
+                await self.send(text_data=json.dumps({
+                    'category': category,
+                    'data': [{
+                        'csc': csc,
+                        'salindex': salindex,
+                        'data': data,
+                    }]
+                }))
 
     async def subscription_all_data(self, message):
         """

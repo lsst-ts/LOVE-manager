@@ -104,3 +104,71 @@ class TestCommands:
         response = await communicator.receive_json_from()
         assert 'Command not sent' in response['data']
         await communicator.disconnect()
+
+    @pytest.mark.asyncio
+    @pytest.mark.django_db
+    async def test_authorized_user_gets_ack(self):
+        """Test that commands get acknowledged."""
+        # Arrange
+        communicator = WebsocketCommunicator(application, self.url)
+        self.user.user_permissions.add(Permission.objects.get(name='Execute Commands'))
+        connected, subprotocol = await communicator.connect()
+        msg = {
+            "option": "subscribe",
+            "csc": "ScriptQueue",
+            "salindex": 1,
+            "stream": "stream",
+            "category": "cmd"
+        }
+        await communicator.send_json_to(msg)
+        response = await communicator.receive_json_from()
+        # Act
+        msg_send = {
+            "category": "cmd",
+            "data": [{
+                "csc": "ScriptQueue",
+                "salindex": 1,
+                "data": {
+                    "stream": {
+                        "cmd": "test",
+                        "cmd_params": {"param1": 1, "param2": 2},
+                        "cmd_id": 12345
+                    }
+                }
+            }]
+        }
+        msg_receive = {
+            "category": "ack",
+            "data": [{
+                "csc": "ScriptQueue",
+                "salindex": 1,
+                "data": {
+                    "stream": {
+                        "cmd": "test",
+                        "cmd_params": {"param1": 1, "param2": 2},
+                        "cmd_id": 12345
+                    }
+                }
+            }]
+        }
+        ack = {
+            "category": "ack",
+            "data": [{
+                "csc": "ScriptQueue",
+                "salindex": 1,
+                "data": {
+                    "stream": {
+                        "cmd": "test",
+                        "cmd_params": {"param1": 1, "param2": 2},
+                        "cmd_id": 12345
+                    }
+                }
+            }]
+        }
+        await communicator.send_json_to(msg_send)
+        await communicator.receive_json_from()
+        await communicator.send_json_to(msg_receive)
+        # Assert
+        response = await communicator.receive_json_from()
+        assert ack == response
+        await communicator.disconnect()
