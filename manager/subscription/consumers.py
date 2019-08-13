@@ -110,9 +110,9 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                     }
                 }]
             }
-            The expected format of the message for a command is as follows:
+            The expected format of the message for a command/ack is as follows:
             {
-                category: 'cmd',
+                category: 'cmd'/'ack',
                 data: [{
                     csc: 'ScriptQueue',
                     salindex: 1,
