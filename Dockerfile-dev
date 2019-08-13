@@ -23,4 +23,4 @@ ENV USER_USER_PASS=test
 ENV CMD_USER_PASS=test
 
 # Run development server in runtime
-ENTRYPOINT ["./runserver-dev.sh"]
+CMD ["./runserver-dev.sh"]

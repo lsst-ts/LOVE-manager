@@ -29,4 +29,4 @@ ENV USER_USER_PASS=test
 ENV CMD_USER_PASS=test
 
 # Run daphne server in runtime
-ENTRYPOINT ["./runserver.sh"]
+CMD ["./runserver.sh"]
