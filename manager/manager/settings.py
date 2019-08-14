@@ -17,6 +17,8 @@ from django_auth_ldap.config import LDAPSearch
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# Define wether the system is being tested or not:
+TESTING = os.environ.get('TESTING', False)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
@@ -27,7 +29,10 @@ SECRET_KEY = 'tbder3gzppu)kl%(u3awhhg^^zu#j&!ceh@$n&v0d38sjx43s8'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', 'manager', 'nginx']
+ALLOWED_HOSTS = [
+    'localhost', 'love-manager-mount', 'love-nginx-mount', 'manager',
+    'love-manager', 'love-nginx', '10.0.100.1', '10.0.100.209', '127.0.0.1'
+]
 
 
 # Application definition
@@ -42,7 +47,7 @@ INSTALLED_APPS = [
     # 'webpack_loader',
     'channels',
     'rest_framework',
-    'rest_framework.authtoken',
+    # 'rest_framework.authtoken',
     'corsheaders',
     'api',
     'subscription',
@@ -122,13 +127,9 @@ PROCESS_CONNECTION_PASS = os.environ.get('PROCESS_CONNECTION_PASS', 'dev_pass')
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 # Rest Framework
@@ -137,10 +138,13 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
+        # 'rest_framework.authentication.TokenAuthentication',
+        # 'api.authentication.TokenAuthentication',
+        'api.authentication.ExpiringTokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     )
 }
+TOKEN_EXPIRED_AFTER_DAYS = 30
 
 
 # Static files (CSS, JavaScript, Images)
@@ -154,26 +158,31 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static_files"),
-    # os.path.join(BASE_DIR, "assets"),
 ]
 
 # Channels
 ASGI_APPLICATION = 'manager.routing.application'
-REDIS_HOST = os.environ.get('REDIS_HOST', '127.0.0.1')
-REDIS_PASS = os.environ.get('REDIS_PASS', 'admin123')
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": ["redis://:"+REDIS_PASS+"@"+REDIS_HOST+":6379/0"],
-            "symmetric_encryption_keys": [SECRET_KEY],
+REDIS_HOST = os.environ.get('REDIS_HOST', False)
+REDIS_PASS = os.environ.get('REDIS_PASS', False)
+if REDIS_HOST and not TESTING:
+    CHANNEL_LAYERS = {
+        'default': {
+            'BACKEND': 'channels_redis.core.RedisChannelLayer',
+            'CONFIG': {
+                "hosts": ["redis://:" + REDIS_PASS + "@" + REDIS_HOST + ":6379/0"],
+                "symmetric_encryption_keys": [SECRET_KEY],
+            },
         },
-    },
-}
+    }
+else:
+    CHANNEL_LAYERS = {
+        'default': {
+            'BACKEND': 'channels.layers.InMemoryChannelLayer',
+        },
+    }
 
 # LDAP
 # Baseline configuration:
@@ -181,7 +190,7 @@ AUTH_LDAP_SERVER_URI = os.environ.get('AUTH_LDAP_SERVER_URI', False)
 
 # Only use LDAP activation backend if there is an AUTH_LDAP_SERVER_URI
 # configured in the OS ENV:
-if AUTH_LDAP_SERVER_URI:
+if AUTH_LDAP_SERVER_URI and not TESTING:
     AUTHENTICATION_BACKENDS = [
         'django_auth_ldap.backend.LDAPBackend',
     ]
