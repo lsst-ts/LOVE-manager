@@ -1,0 +1,15 @@
+version: "3.7"
+
+services:
+
+  manager:
+    container_name: manager-local
+    build:
+      context: .
+      dockerfile: Dockerfile-dev
+    image: love-manager-image-mount
+    volumes:
+      - .:/usr/src/love
+    command: ""
+    stdin_open: true
+    tty: true
