@@ -23,4 +23,5 @@ ENV USER_USER_PASS=test
 ENV CMD_USER_PASS=test
 
 # Run development server in runtime
+WORKDIR /usr/src/love/manager
 CMD ["./runserver-dev.sh"]
