@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Introduction &mdash; LOVE-manager 0.0.0 documentation</title>
+  <title>How it works &mdash; LOVE-manager 0.0.0 documentation</title>
   
 
   
@@ -35,8 +35,8 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Authentication" href="authentication.html" />
-    <link rel="prev" title="Welcome to LOVE-manager’s documentation!" href="../index.html" /> 
+    <link rel="next" title="ApiDoc" href="../apidoc/modules.html" />
+    <link rel="prev" title="How to use it" href="how_to_use_it.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -82,10 +82,9 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="authentication.html">Authentication</a></li>
-<li class="toctree-l1"><a class="reference internal" href="connection.html">Websockets Connection</a></li>
-<li class="toctree-l1"><a class="reference internal" href="subscriptions.html">Websockets Group Subscriptions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="how_to_use_it.html">How to use it</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">How it works</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apidoc/modules.html">ApiDoc</a></li>
 </ul>
 
@@ -132,13 +131,13 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>Introduction</li>
+      <li>How it works</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../_sources/modules/introduction.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/modules/how_it_works.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -151,13 +150,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="introduction">
-<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
-<p>The LOVE-manager is part of the LSST Operation and Visualization Environment (L.O.V.E.) project.
-It is written in Python using both Django Rest Framework (DRF) and Django Channels.</p>
-<p>The LOVE-manager is an intermediary between the LOVE-producer and the LOVE-frontend.
-It handles websockets connections and redirect messages to subscribers following the Django Channels consumers and groups workflow.
-It also provides an API for token-based authentication and authorization.</p>
+  <div class="section" id="how-it-works">
+<h1>How it works<a class="headerlink" href="#how-it-works" title="Permalink to this headline">¶</a></h1>
 <p>Currently the application has 2 Django apps:</p>
 <ul class="simple">
 <li><p><strong>API:</strong> This app contains the models and API endpoints for authentication. For more details please refer to the ApiDoc section</p></li>
@@ -173,10 +167,10 @@ It also provides an API for token-based authentication and authorization.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="authentication.html" class="btn btn-neutral float-right" title="Authentication" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../apidoc/modules.html" class="btn btn-neutral float-right" title="ApiDoc" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../index.html" class="btn btn-neutral float-left" title="Welcome to LOVE-manager’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="how_to_use_it.html" class="btn btn-neutral float-left" title="How to use it" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Websockets Connection &mdash; LOVE-manager 0.0.0 documentation</title>
+  <title>Overview &mdash; LOVE-manager 0.0.0 documentation</title>
   
 
   
@@ -35,8 +35,8 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Websockets Group Subscriptions" href="subscriptions.html" />
-    <link rel="prev" title="Authentication" href="authentication.html" /> 
+    <link rel="next" title="How to use it" href="how_to_use_it.html" />
+    <link rel="prev" title="Welcome to LOVE-manager’s documentation!" href="../index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -82,14 +82,9 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="authentication.html">Authentication</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Websockets Connection</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#authenticate-with-user-token">Authenticate with user token</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#authenticate-with-password">Authenticate with password</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="subscriptions.html">Websockets Group Subscriptions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="how_to_use_it.html">How to use it</a></li>
+<li class="toctree-l1"><a class="reference internal" href="how_it_works.html">How it works</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../apidoc/modules.html">ApiDoc</a></li>
 </ul>
 
@@ -136,13 +131,13 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>Websockets Connection</li>
+      <li>Overview</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../_sources/modules/connection.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/modules/overview.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -155,22 +150,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="websockets-connection">
-<h1>Websockets Connection<a class="headerlink" href="#websockets-connection" title="Permalink to this headline">¶</a></h1>
-<p>Currently there are 2 ways to establish a websocket connection:</p>
-<div class="section" id="authenticate-with-user-token">
-<h2>Authenticate with user token<a class="headerlink" href="#authenticate-with-user-token" title="Permalink to this headline">¶</a></h2>
-<p>This is the mechanism intended for end users. It requires them to have an authentication token.
-In order to stablish the connection they must append the token to the websocket url as follows:</p>
-<p><cite>&lt;IP&gt;/manager/ws/subscription/?token=&lt;my-token&gt;</cite></p>
-</div>
-<div class="section" id="authenticate-with-password">
-<h2>Authenticate with password<a class="headerlink" href="#authenticate-with-password" title="Permalink to this headline">¶</a></h2>
-<p>This is the mechanism intended for other applications. It requires them to have the password token.
-In order to stablish the connection they must append the password to the websocket url as follows:</p>
-<p><cite>&lt;IP&gt;/manager/ws/subscription/?password=&lt;my-password&gt;</cite></p>
-</div>
-</div>
+  <div class="section" id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
+<p>The LOVE-manager is part of the LSST Operation and Visualization Environment (L.O.V.E.) project.
+It is written in Python using both Django Rest Framework (DRF) and Django Channels.</p>
+<p>The LOVE-manager is an intermediary between the LOVE-producer and the LOVE-frontend.
+It handles websockets connections and redirect messages to subscribers following the Django Channels consumers and groups workflow.
+It also provides an API for token-based authentication and authorization.</p>
+<img alt="../_images/Manager_Overview.svg" src="../_images/Manager_Overview.svg" /></div>
 
 
            </div>
@@ -180,10 +167,10 @@ In order to stablish the connection they must append the password to the websock
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="subscriptions.html" class="btn btn-neutral float-right" title="Websockets Group Subscriptions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="how_to_use_it.html" class="btn btn-neutral float-right" title="How to use it" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="authentication.html" class="btn btn-neutral float-left" title="Authentication" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../index.html" class="btn btn-neutral float-left" title="Welcome to LOVE-manager’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

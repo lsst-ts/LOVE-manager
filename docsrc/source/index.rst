@@ -10,10 +10,9 @@ Welcome to LOVE-manager's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   modules/introduction.rst
-   modules/authentication.rst
-   modules/connection.rst
-   modules/subscriptions.rst
+   modules/overview.rst
+   modules/how_to_use_it.rst
+   modules/how_it_works.rst
    apidoc/modules.rst
 
 
