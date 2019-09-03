@@ -86,7 +86,10 @@
 <li class="toctree-l1"><a class="reference internal" href="how_to_use_it.html">2. How to use it</a></li>
 <li class="toctree-l1"><a class="reference internal" href="how_it_works.html">3. How it works</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">4. Readme File</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#use-as-part-of-the-love-system">4.1. Use as part of the LOVE system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#use-as-part-of-the-love-system">4.1. Use as part of the LOVE system</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#initialize-environment-variables">4.1.1. Initialize Environment variables</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#local-load-for-development">4.2. Local load for development</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#load-and-get-into-the-docker-image">4.2.1. Load and get into the docker image</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#run-tests">4.2.2. Run tests</a></li>
@@ -167,6 +170,20 @@
 <div class="section" id="use-as-part-of-the-love-system">
 <h2>4.1. Use as part of the LOVE system<a class="headerlink" href="#use-as-part-of-the-love-system" title="Permalink to this headline">¶</a></h2>
 <p>In order to use the LOVE-manager as part of the LOVE system we recommend to use the docker-compose and configuration files provided in the <a class="reference external" href="https://github.com/lsst-ts/LOVE-integration-tools">LOVE-integration-tools</a> repo. Please follow the instructions there.</p>
+<div class="section" id="initialize-environment-variables">
+<h3>4.1.1. Initialize Environment variables<a class="headerlink" href="#initialize-environment-variables" title="Permalink to this headline">¶</a></h3>
+<p>In order to use the LOVE-manager, some environment variables must be defined before it is run.
+All these variables are initialized with default variables defined in <code class="code docutils literal notranslate"><span class="pre">.env</span></code> files defined in the corresponding deployment environment defined in <a class="reference external" href="https://github.com/lsst-ts/LOVE-integration-tools">LOVE-integration-tools</a>. The are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ADMIN_USER_PASS</span></code>: password for the default <code class="docutils literal notranslate"><span class="pre">admin</span></code> user, which has every permission.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">USER_USER_PASS</span></code>: password for the default <code class="docutils literal notranslate"><span class="pre">user</span></code> user, which has readonly permissions and cannot execute commands.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CMD_USER_PASS</span></code>: password for the default <code class="docutils literal notranslate"><span class="pre">cmd</span></code> user, which has readonly permissions but can execute commands.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LOVE_MANAGER_REDIS_HOST</span></code>: the location of the redis host that implements the <code class="docutils literal notranslate"><span class="pre">Channels</span> <span class="pre">Layer</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">REDIS_PASS</span></code>: the password that the LOVE-manager needs tio use to connect with <code class="docutils literal notranslate"><span class="pre">redis</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PROCESS_CONNECTION_PASS</span></code>: the password that the LOVE-producer will use to establish a websocket connection with the LOVE-manager.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">AUTH_LDAP_SERVER_URI</span></code>: (deprecated) the location of the LDAP authentication server. No LDAP server is used if this variable is empty</p></li>
+</ul>
+</div>
 </div>
 <div class="section" id="local-load-for-development">
 <h2>4.2. Local load for development<a class="headerlink" href="#local-load-for-development" title="Permalink to this headline">¶</a></h2>
