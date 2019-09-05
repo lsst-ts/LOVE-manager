@@ -10,7 +10,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Set workdir and install python requirements
-WORKDIR /usr/src/love
+WORKDIR /usr/src/love/manager
 COPY manager/requirements.txt .
 RUN pip install -r requirements.txt
 
