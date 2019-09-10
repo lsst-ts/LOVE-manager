@@ -65,7 +65,8 @@ class TestSubscriptionCombinations:
                 'csc': csc,
                 'salindex': salindex,
                 'data': {stream: {'value': 1.02813957817852497, 'dataType': 'Float'} for stream in streams}
-            }]
+            }],
+            'subscription': '{}-{}-{}-{}'.format(category, csc, salindex, streams[0])
         }
         return response, response
 
@@ -194,8 +195,11 @@ class TestSubscriptionCombinations:
                 self.build_messages(combination['category'], combination['csc'], combination['salindex'], [
                                     combination['stream']])
             await communicator.send_json_to(msg)
+            expected['subscription'] = '{}-all-all-all'.format(combination['category'])
             response = await communicator.receive_json_from()
             # Assert
+            print(response)
+            print(expected)
             assert response == expected
         await communicator.disconnect()
 
