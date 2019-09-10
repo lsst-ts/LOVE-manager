@@ -15,12 +15,13 @@ COPY manager/requirements.txt .
 RUN pip install -r requirements.txt
 
 # Copy source code and build project
-COPY manager .
+COPY manager ./manager
+WORKDIR /usr/src/love/manager
 RUN find . | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf
 RUN python manage.py collectstatic --noinput
 
 # Expose static files and port
-VOLUME /usr/src/love/static
+VOLUME /usr/src/love/manager/static
 EXPOSE 8000
 
 # Set env variables for runtime (to be replaced in docker-cpomse files)

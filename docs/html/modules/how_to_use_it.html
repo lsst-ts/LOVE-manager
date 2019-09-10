@@ -1,0 +1,432 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>2. How to use it &mdash; LOVE-manager 0.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="3. How it works" href="how_it_works.html" />
+    <link rel="prev" title="1. Overview" href="overview.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> LOVE-manager
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">1. Overview</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">2. How to use it</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#authentication">2.1. Authentication</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#request-token">2.1.1. Request token</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#validate-token">2.1.2. Validate token</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#logout">2.1.3. Logout</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#websockets-connection">2.2. Websockets Connection</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#authenticate-with-user-token">2.2.1. Authenticate with user token</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#authenticate-with-password">2.2.2. Authenticate with password</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#websockets-group-subscriptions">2.3. Websockets Group Subscriptions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#love-manager-subscriptions-scheme">2.3.1. LOVE-manager Subscriptions scheme</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#accepted-messages">2.3.2. Accepted messages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#subscription-messages">2.3.2.1. Subscription messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#telemetry-or-event-messages">2.3.2.2. Telemetry or Event messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#command-messages">2.3.2.3. Command messages</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="how_it_works.html">3. How it works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme_link.html">4. Readme File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apidoc/modules.html">5. ApiDoc</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">LOVE-manager</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>2. How to use it</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/modules/how_to_use_it.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="how-to-use-it">
+<h1>2. How to use it<a class="headerlink" href="#how-to-use-it" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="authentication">
+<h2>2.1. Authentication<a class="headerlink" href="#authentication" title="Permalink to this headline">¶</a></h2>
+<p>LOVE-manager provides a token-based authentication mechanism.
+Clients may request a token providing their credentials (username and password).</p>
+<p>Token request, validation and logout operations are done via HTTP requests as follows:</p>
+<div class="section" id="request-token">
+<h3>2.1.1. Request token<a class="headerlink" href="#request-token" title="Permalink to this headline">¶</a></h3>
+<p>Requests a new authorization token.
+Returns token, user data and permissions</p>
+<ul class="simple">
+<li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/api/get-token/</span></code></p></li>
+<li><p>HTTP Operation: post</p></li>
+<li><p>Message JSON data:</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;username&gt;&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;password&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;password&gt;&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Expected Response:</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;token&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;token&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;permissions&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;execute_commands&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;True/False&gt;&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;user_data&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;username&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;password&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;password&gt;&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="validate-token">
+<h3>2.1.2. Validate token<a class="headerlink" href="#validate-token" title="Permalink to this headline">¶</a></h3>
+<p>Validates a given authorization token, passed through HTTP Headers.
+Returns a confirmation of validity, user data and permissions.</p>
+<ul class="simple">
+<li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/api/validate-token/</span></code></p></li>
+<li><p>HTTP Operation: get</p></li>
+<li><p>Message HTTP Headers:</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;Accept&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;Authorization&quot;</span><span class="p">:</span> <span class="s2">&quot;Token &lt;token&gt;&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Expected Response:</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;detail&quot;</span><span class="p">:</span> <span class="s2">&quot;Token is valid&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;permissions&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;execute_commands&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;True/False&gt;&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;user_data&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;username&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;password&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;password&gt;&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="logout">
+<h3>2.1.3. Logout<a class="headerlink" href="#logout" title="Permalink to this headline">¶</a></h3>
+<p>Requests deletion of a given token, passed through HTTP Headers.
+The token is deleted and a confirmation is replied.</p>
+<ul class="simple">
+<li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/api/logout/</span></code></p></li>
+<li><p>HTTP Operation: delete</p></li>
+<li><p>Message HTTP Headers:</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;Accept&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;Authorization&quot;</span><span class="p">:</span> <span class="s2">&quot;Token &lt;token&gt;&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Expected Response:</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">204</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;detail&quot;</span><span class="p">:</span> <span class="s2">&quot;Logout successful, Token succesfully deleted&quot;</span><span class="p">,</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="websockets-connection">
+<h2>2.2. Websockets Connection<a class="headerlink" href="#websockets-connection" title="Permalink to this headline">¶</a></h2>
+<p>Currently there are 2 ways to establish a websocket connection:</p>
+<div class="section" id="authenticate-with-user-token">
+<h3>2.2.1. Authenticate with user token<a class="headerlink" href="#authenticate-with-user-token" title="Permalink to this headline">¶</a></h3>
+<p>This is the mechanism intended for end users. It requires them to have an authentication token.
+In order to stablish the connection they must append the token to the websocket url as follows:</p>
+<p><code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/ws/subscription/?token=&lt;my-token&gt;</span></code></p>
+</div>
+<div class="section" id="authenticate-with-password">
+<h3>2.2.2. Authenticate with password<a class="headerlink" href="#authenticate-with-password" title="Permalink to this headline">¶</a></h3>
+<p>This is the mechanism intended for other applications. It requires them to have the password token.
+In order to stablish the connection they must append the password to the websocket url as follows:</p>
+<p><code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/ws/subscription/?password=&lt;my-password&gt;</span></code></p>
+</div>
+</div>
+<div class="section" id="websockets-group-subscriptions">
+<h2>2.3. Websockets Group Subscriptions<a class="headerlink" href="#websockets-group-subscriptions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="love-manager-subscriptions-scheme">
+<h3>2.3.1. LOVE-manager Subscriptions scheme<a class="headerlink" href="#love-manager-subscriptions-scheme" title="Permalink to this headline">¶</a></h3>
+<p>Group subscriptions are characterized by 4 variables:
+* <strong>category:</strong> describe the category or type of stream:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>*telemetry:*</strong> streams that transfer data from telemetry systems</p></li>
+<li><p><strong>*event:*</strong> streams that transfer data from events triggered asynchronously in the system</p></li>
+<li><p><strong>*cmd:*</strong> streams that transfer acknowledgement messages from sent commands</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p><strong>csc:</strong> describes the type of the source CSC, e.g. <code class="code docutils literal notranslate"><span class="pre">ScriptQueue</span></code></p></li>
+<li><p><strong>salindex:</strong> describes the instance number (salindex) of a given the CSC, e.g. <code class="code docutils literal notranslate"><span class="pre">1</span></code></p></li>
+<li><p><strong>stream:</strong> describes the particular stream of the subscription.</p></li>
+</ul>
+<p>The reasoning behind this scheme is that for a given CSC instance e.g. <code class="code docutils literal notranslate"><span class="pre">ScriptQueue</span> <span class="pre">1</span></code> (salindex 1), there could be a number of telemetries, events or commands, each identified by a different <code class="code docutils literal notranslate"><span class="pre">stream</span></code>.</p>
+</div>
+<div class="section" id="accepted-messages">
+<h3>2.3.2. Accepted messages<a class="headerlink" href="#accepted-messages" title="Permalink to this headline">¶</a></h3>
+<p>The consumers accept the following types of messages:</p>
+<div class="section" id="subscription-messages">
+<h4>2.3.2.1. Subscription messages<a class="headerlink" href="#subscription-messages" title="Permalink to this headline">¶</a></h4>
+<p>Specifying the variables necessary to subscribe a to a group in a JSON message, as follows:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;option&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;subscribe/unsubscribe&gt;&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;event/telemetry/cmd&gt;&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;csc&quot;</span><span class="p">:</span> <span class="s2">&quot;ScriptQueue&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;salindex&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="nt">&quot;stream&quot;</span><span class="p">:</span> <span class="s2">&quot;stream1&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="telemetry-or-event-messages">
+<h4>2.3.2.2. Telemetry or Event messages<a class="headerlink" href="#telemetry-or-event-messages" title="Permalink to this headline">¶</a></h4>
+<p>Specifying the variables necessary to subscribe a to a group in a JSON message, as follows:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;event/telemetry&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">[{</span>
+    <span class="nt">&quot;csc&quot;</span><span class="p">:</span> <span class="s2">&quot;ScriptQueue&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;salindex&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;stream1&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;&lt;key1&gt;&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;data1&gt;&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;&lt;key2&gt;&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;data2&gt;&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="nt">&quot;stream1&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;&lt;key1&gt;&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;data1&gt;&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;&lt;key2&gt;&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;data2&gt;&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">}</span>
+  <span class="p">}]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Where <code class="code docutils literal notranslate"><span class="pre">{...&lt;data&gt;...}</span></code> represents the JSON message that is sent as data.</p>
+</div>
+<div class="section" id="command-messages">
+<h4>2.3.2.3. Command messages<a class="headerlink" href="#command-messages" title="Permalink to this headline">¶</a></h4>
+<p>Specifying the variables necessary to subscribe a to a group in a JSON message, as follows:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;cmd&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">[{</span>
+    <span class="nt">&quot;csc&quot;</span><span class="p">:</span> <span class="s2">&quot;ScriptQueue&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;salindex&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;cmd&quot;</span><span class="p">:</span> <span class="s2">&quot;CommandPath&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;params&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;param1&quot;</span><span class="p">:</span> <span class="s2">&quot;value1&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;param2&quot;</span><span class="p">:</span> <span class="s2">&quot;value2&quot;</span><span class="p">,</span>
+      <span class="p">},</span>
+    <span class="p">}</span>
+  <span class="p">}]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Where pairs <code class="code docutils literal notranslate"><span class="pre">param1</span></code> and <code class="code docutils literal notranslate"><span class="pre">value1</span></code> represent the parameters (name and value) to be passed to the command.</p>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="how_it_works.html" class="btn btn-neutral float-right" title="3. How it works" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="overview.html" class="btn btn-neutral float-left" title="1. Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Inria Chile
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
