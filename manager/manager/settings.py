@@ -24,19 +24,41 @@ TESTING = os.environ.get('TESTING', False)
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'tbder3gzppu)kl%(u3awhhg^^zu#j&!ceh@$n&v0d38sjx43s8'
+SECRET_KEY = os.getenv('SECRET_KEY', 'tbder3gzppu)kl%(u3awhhg^^zu#j&!ceh@$n&v0d38sjx43s8')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+if os.environ.get('NO_DEBUG'):
+    DEBUG = False
+else:
+    DEBUG = True
+
+# Database
+# https://docs.djangoproject.com/en/2.1/ref/settings/#databases
+if os.environ.get('DB_ENGINE') == 'postgresql':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': os.getenv('DB_NAME', 'postgres'),
+            'USER': os.getenv('DB_USER', 'postgres'),
+            'HOST': os.getenv('DB_HOST', 'postgres'),
+            'PORT': os.getenv('DB_PORT', '5432'),
+            'PASSWORD': os.getenv('DB_PASS', 'postgres')
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
 
 ALLOWED_HOSTS = [
     'localhost', 'love-manager-mount', 'love-nginx-mount', 'manager',
-    'love-manager', 'love-nginx', '10.0.100.1', '10.0.100.209', '127.0.0.1'
+    'love-manager', 'love-nginx', '10.0.100.1', '10.0.100.209', '127.0.0.1', '0.0.0.0'
 ]
 
-
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.admin',
@@ -88,17 +110,6 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
 WSGI_APPLICATION = 'manager.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
 
 
 # Password validation

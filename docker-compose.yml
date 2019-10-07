@@ -2,14 +2,39 @@ version: "3.7"
 
 services:
 
+  database:
+    container_name: manager-postgres-local
+    image: postgres:12.0
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - db_data_local:/var/lib/postgresql/data
+
   manager:
     container_name: manager-local
     build:
       context: .
       dockerfile: Dockerfile-dev
     image: love-manager-image-mount
+    environment:
+      - DB_ENGINE=postgresql
+      - DB_NAME=postgres
+      - DB_USER=postgres
+      - DB_PASS=postgres
+      - DB_HOST=database
+      - DB_PORT=5432
+    ports:
+    - "8000:8000"
+    depends_on:
+      - database
+    restart: always
     volumes:
       - .:/usr/src/love
-    command: ""
+    command: "sleep infinity"
     stdin_open: true
     tty: true
+
+volumes:
+  db_data_local:
