@@ -12,7 +12,7 @@ All these variables are initialized with default variables defined in :code:`.en
 * `ADMIN_USER_PASS`: password for the default `admin` user, which has every permission.
 * `USER_USER_PASS`: password for the default `user` user, which has readonly permissions and cannot execute commands.
 * `CMD_USER_PASS`: password for the default `cmd` user, which has readonly permissions but can execute commands.
-* `LOVE_MANAGER_REDIS_HOST`: the location of the redis host that implements the `Channels Layer`.
+* `REDIS_HOST`: the location of the redis host that implements the `Channels Layer`.
 * `REDIS_PASS`: the password that the LOVE-manager needs to use to connect with `redis`.
 * `PROCESS_CONNECTION_PASS`: the password that the LOVE-producer will use to establish a websocket connection with the LOVE-manager.
 * `DB_ENGINE`: describe which database engine should be used. If its value is `postgresql` Postgres will be used, otherwise it will use Sqlite3.

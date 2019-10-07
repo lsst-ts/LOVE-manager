@@ -11,6 +11,7 @@ services:
       - POSTGRES_PASSWORD=postgres
     volumes:
       - ./db_data:/var/lib/postgresql/data
+    restart: always
 
   manager:
     container_name: manager-local
