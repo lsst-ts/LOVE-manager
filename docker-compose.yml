@@ -10,7 +10,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     volumes:
-      - db_data_local:/var/lib/postgresql/data
+      - ./db_data:/var/lib/postgresql/data
 
   manager:
     container_name: manager-local
@@ -35,6 +35,3 @@ services:
     command: "sleep infinity"
     stdin_open: true
     tty: true
-
-volumes:
-  db_data_local:
