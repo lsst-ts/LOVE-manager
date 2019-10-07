@@ -71,7 +71,7 @@ class TestSubscriptionCombinations:
         return response, response
 
     @pytest.mark.asyncio
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     async def test_join_and_leave_every_subscription(self):
         """Test that clients can join and then leave any subscription stream."""
         # Arrange
@@ -110,7 +110,7 @@ class TestSubscriptionCombinations:
         await communicator.disconnect()
 
     @pytest.mark.asyncio
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     async def test_join_and_leave_all_subscription(self):
         """Test that clients can subscribe and leave all streams."""
         # Arrange
@@ -145,7 +145,7 @@ class TestSubscriptionCombinations:
         await communicator.disconnect()
 
     @pytest.mark.asyncio
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     async def test_receive_messages_from_every_subscription(self):
         """Test that clients subscribed (individually) to every stream receive messages from all of them."""
         # Arrange
@@ -173,7 +173,7 @@ class TestSubscriptionCombinations:
         await communicator.disconnect()
 
     @pytest.mark.asyncio
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     async def test_receive_messages_from_all_subscription(self):
         """Test that clients subscribed to all streams receive messages from all of them."""
         # Arrange
@@ -204,7 +204,7 @@ class TestSubscriptionCombinations:
         await communicator.disconnect()
 
     @pytest.mark.asyncio
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     async def test_receive_message_for_subscribed_group_only(self):
         """Test that clients subscribed to some groups only receive messages from those."""
         # Arrange
@@ -240,7 +240,7 @@ class TestSubscriptionCombinations:
         await communicator.disconnect()
 
     @pytest.mark.asyncio
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     async def test_receive_message_for_subscribed_groups_only(self):
         """Test that clients subscribed to some groups only receive messages from those."""
         # Arrange
@@ -282,7 +282,7 @@ class TestSubscriptionCombinations:
         await communicator.disconnect()
 
     @pytest.mark.asyncio
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     async def test_receive_part_of_message_for_subscribed_groups_only(self):
         """Test that clients subscribed to some groups only receive the corresponding part of incoming messages."""
         # Arrange

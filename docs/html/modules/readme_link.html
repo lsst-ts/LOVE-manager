@@ -179,15 +179,23 @@ All these variables are initialized with default variables defined in <code clas
 <li><p><code class="docutils literal notranslate"><span class="pre">USER_USER_PASS</span></code>: password for the default <code class="docutils literal notranslate"><span class="pre">user</span></code> user, which has readonly permissions and cannot execute commands.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">CMD_USER_PASS</span></code>: password for the default <code class="docutils literal notranslate"><span class="pre">cmd</span></code> user, which has readonly permissions but can execute commands.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">LOVE_MANAGER_REDIS_HOST</span></code>: the location of the redis host that implements the <code class="docutils literal notranslate"><span class="pre">Channels</span> <span class="pre">Layer</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">REDIS_PASS</span></code>: the password that the LOVE-manager needs tio use to connect with <code class="docutils literal notranslate"><span class="pre">redis</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">REDIS_PASS</span></code>: the password that the LOVE-manager needs to use to connect with <code class="docutils literal notranslate"><span class="pre">redis</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">PROCESS_CONNECTION_PASS</span></code>: the password that the LOVE-producer will use to establish a websocket connection with the LOVE-manager.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DB_ENGINE</span></code>: describe which database engine should be used. If its value is <code class="docutils literal notranslate"><span class="pre">postgresql</span></code> Postgres will be used, otherwise it will use Sqlite3.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DB_NAME</span></code>: defines the name of the Database. Only used if <code class="docutils literal notranslate"><span class="pre">DB_ENGINE=postgresql</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DB_USER</span></code>: defines the user of the Database. Only used if <code class="docutils literal notranslate"><span class="pre">DB_ENGINE=postgresql</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DB_PASS</span></code>: defines the password of the Database. Only used if <code class="docutils literal notranslate"><span class="pre">DB_ENGINE=postgresql</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DB_HOST</span></code>: defines the host of the Database. Only used if <code class="docutils literal notranslate"><span class="pre">DB_ENGINE=postgresql</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DB_PORT</span></code>: defines the port of the Database. Only used if <code class="docutils literal notranslate"><span class="pre">DB_ENGINE=postgresql</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NO_DEBUG</span></code>: defines wether or not the LOVE-.manager will be run using Django’s debug mode. If the variable is defined, then Debug mode will be off.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SECRET_KEY</span></code>: overrides Django’s SECRET_KEY, if not defined the default value (public in this repo) will be used.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">AUTH_LDAP_SERVER_URI</span></code>: (deprecated) the location of the LDAP authentication server. No LDAP server is used if this variable is empty</p></li>
 </ul>
 </div>
 </div>
 <div class="section" id="local-load-for-development">
 <h2>4.2. Local load for development<a class="headerlink" href="#local-load-for-development" title="Permalink to this headline">¶</a></h2>
-<p>We provide a docker image and a docker-compose file in order to load the LOVE-manager locally for development purposes, i.e. run tests and build documentation.</p>
+<p>We provide a docker image and a docker-compose file in order to load the LOVE-manager with a Postgres database locally, for development purposes, such as run tests and build documentation.</p>
 <p>This docker-compose does not copy the code into the image, but instead it mounts the repository inside the image, this way you can edit the code from outside the docker container with no need to rebuild or restart.</p>
 <div class="section" id="load-and-get-into-the-docker-image">
 <h3>4.2.1. Load and get into the docker image<a class="headerlink" href="#load-and-get-into-the-docker-image" title="Permalink to this headline">¶</a></h3>
