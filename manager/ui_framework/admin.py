@@ -7,7 +7,5 @@ For more information see:
 https://docs.djangoproject.com/en/2.2/ref/contrib/admin/
 """
 from django.contrib import admin
-from api.models import Token
 
-
-admin.site.register(Token)
+# Register your models here.

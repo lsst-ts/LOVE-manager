@@ -1,4 +1,4 @@
-"""Test users' authentication thorugh the API."""
+"""Test users' authentication through the API."""
 import datetime
 from django.test import TestCase
 from django.urls import reverse

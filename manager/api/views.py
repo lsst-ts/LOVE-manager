@@ -1,4 +1,4 @@
-"""Defines the views exposed by the REST API exposed by this app ('api')."""
+"""Defines the views exposed by the REST API exposed by this app."""
 from rest_framework import status
 # from rest_framework.authtoken.models import Token
 from api.models import Token
