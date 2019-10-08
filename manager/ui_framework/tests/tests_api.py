@@ -1,6 +1,6 @@
 """Test the UI Framework API."""
 import json
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
@@ -192,8 +192,8 @@ class ViewCrudTestCase(TestCase):
                 Workspace.objects.create(name='My Workspace 3'),
             ]
             for i in range(0, len(self.workspaces)):
-                self.workspaces[i].views.add(self.views[i])
-                self.workspaces[i].views.add(self.views[i + 1])
+                self.workspaces[i].views.add(self.views[i], through_defaults={'view_name': 'v{}'.format(i)})
+                self.workspaces[i].views.add(self.views[i + 1], through_defaults={'view_name': 'v{}'.format(i)})
         self.old_count = View.objects.count()
 
     def client_login(self):
