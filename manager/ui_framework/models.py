@@ -4,6 +4,7 @@ Defines the Django models for this app.
 For more information see:
 https://docs.djangoproject.com/en/2.2/topics/db/models/
 """
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 
 
@@ -34,6 +35,9 @@ class View(BaseModel):
 
     name = models.CharField(max_length=20)
     """The name of the View. e.g 'My View'"""
+
+    data = JSONField(null=True, blank=True)
+    """The data that constitutes the View, stored as a JSON"""
 
     def __str__(self):
         """Redefine how objects of this class are transformed to string."""
