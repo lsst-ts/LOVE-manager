@@ -46,8 +46,26 @@ class Workspace(BaseModel):
     name = models.CharField(max_length=20)
     """The name of the Workspace. e.g 'My Workspace'"""
 
-    views = models.ManyToManyField(View)
+    views = models.ManyToManyField(View, through='WorkspaceView', related_name='workspaces')
 
     def __str__(self):
         """Redefine how objects of this class are transformed to string."""
         return self.name
+
+
+class WorkspaceView(BaseModel):
+    """WorkspaceView Model, that relates a Works with a View."""
+
+    workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE, related_name='wokspace_views')
+    """The corresponding Workspace"""
+
+    view = models.ForeignKey(View, on_delete=models.CASCADE, related_name='wokspace_views')
+    """The corresponding View"""
+
+    view_name = models.CharField(max_length=20, blank=True)
+    """The custom name for the View within the Workspace"""
+
+    def __str__(self):
+        """Redefine how objects of this class are transformed to string."""
+        if self.view_name and self.view_name != '':
+            return '{}: {} - {}'.format(self.view_name, self.workspace.name, self.view.name)
