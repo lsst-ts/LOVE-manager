@@ -26,4 +26,5 @@ urlpatterns = [
     path('manager/test/', TemplateView.as_view(template_name="test.html")),
     path('manager/login/', TemplateView.as_view(template_name="registration/login.html")),
     path('manager/api/', include('api.urls')),
+    path('manager/ui_framework/', include('ui_framework.urls')),
 ]
