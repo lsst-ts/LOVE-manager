@@ -7,5 +7,8 @@ For more information see:
 https://docs.djangoproject.com/en/2.2/ref/contrib/admin/
 """
 from django.contrib import admin
+from .models import Workspace, View, WorkspaceView
 
-# Register your models here.
+admin.site.register(Workspace)
+admin.site.register(View)
+admin.site.register(WorkspaceView)
