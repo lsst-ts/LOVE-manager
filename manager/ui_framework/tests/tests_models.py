@@ -2,7 +2,7 @@
 from django.test import TestCase
 from django.utils import timezone
 from freezegun import freeze_time
-from ui_framework.models import Workspace, View
+from ui_framework.models import Workspace, View, WorkspaceView
 
 
 class WorkspaceModelTestCase(TestCase):
@@ -233,3 +233,131 @@ class ViewModelTestCase(TestCase):
         )
         with self.assertRaises(Exception):
             Workspace.objects.get(pk=self.view_pk)
+
+
+class WorkspaceViewModelTestCase(TestCase):
+    """Test the workspace_view model."""
+
+    def setUp(self):
+        """Testcase setup."""
+        # Arrange
+        self.workspace_name = 'My Workspace'
+        self.view_name = 'My View'
+        self.workspace_view_name = 'My WorkspaceView'
+        self.old_workspace_views_num = WorkspaceView.objects.count()
+        self.creation_timestamp = timezone.now()
+        with freeze_time(self.creation_timestamp):
+            self.workspace = Workspace.objects.create(name=self.workspace_name)
+            self.view = View.objects.create(name=self.view_name)
+            self.workspace_view = WorkspaceView.objects.create(
+                view_name=self.workspace_view_name,
+                workspace=self.workspace,
+                view=self.view
+            )
+
+    def test_create_workspace_view(self):
+        """Test that a workspace_view can be created in the database."""
+        # Assert
+        self.new_workspace_views_num = WorkspaceView.objects.count()
+        self.assertEqual(
+            self.old_workspace_views_num + 1, self.new_workspace_views_num,
+            'There is not a new object in the database'
+        )
+        self.assertEqual(
+            self.workspace_view.view_name, self.workspace_view_name,
+            'The name is not as expected'
+        )
+        self.assertEqual(
+            self.workspace_view.creation_timestamp, self.creation_timestamp,
+            'The creation_timestamp is not as expected'
+        )
+        self.assertEqual(
+            self.workspace_view.update_timestamp, self.creation_timestamp,
+            'The update_timestamp is not as expected'
+        )
+
+    def test_retrieve_workspace_view(self):
+        """Test that a workspace_view can be retrieved from the database."""
+        # Arrange:
+        self.old_workspace_views_num = WorkspaceView.objects.count()
+
+        # Act
+        self.workspace_view = WorkspaceView.objects.get(pk=self.workspace_view.pk)
+
+        # Assert
+        self.new_workspace_views_num = WorkspaceView.objects.count()
+        self.assertEqual(
+            self.old_workspace_views_num, self.new_workspace_views_num,
+            'The number of objects in the DB should not change'
+        )
+        self.assertEqual(
+            self.workspace_view.view_name, self.workspace_view_name,
+            'The name is not as expected'
+        )
+        self.assertEqual(
+            self.workspace_view.creation_timestamp, self.creation_timestamp,
+            'The creation_timestamp is not as expected'
+        )
+        self.assertEqual(
+            self.workspace_view.update_timestamp, self.creation_timestamp,
+            'The update_timestamp is not as expected'
+        )
+
+    def test_update_workspace_view(self):
+        """Test that a workspace_view can be updated in the database."""
+        # Arrange:
+        self.old_workspace_views_num = WorkspaceView.objects.count()
+        self.new_sort_value = self.workspace_view.sort_value + 1
+        # Act
+        self.update_timestamp = timezone.now()
+        with freeze_time(self.update_timestamp):
+            self.workspace_view.view_name = 'This other name'
+            self.workspace_view.sort_value = self.new_sort_value
+            self.workspace_view.save()
+
+        # Assert
+        self.workspace_view = WorkspaceView.objects.get(pk=self.workspace_view.pk)
+        self.new_workspace_views_num = WorkspaceView.objects.count()
+        self.assertEqual(
+            self.old_workspace_views_num, self.new_workspace_views_num,
+            'The number of objects in the DB should not change'
+        )
+        self.assertEqual(
+            self.workspace_view.view_name, 'This other name',
+            'The name was not updated'
+        )
+        self.assertEqual(
+            self.workspace_view.sort_value, self.new_sort_value,
+            'The sort value was not updated'
+        )
+        self.assertEqual(
+            self.workspace_view.creation_timestamp, self.creation_timestamp,
+            'The creation_timestamp is not as expected'
+        )
+        self.assertEqual(
+            self.workspace_view.update_timestamp, self.update_timestamp,
+            'The update_timestamp is not as expected'
+        )
+        self.assertNotEqual(
+            self.workspace_view.creation_timestamp, self.workspace_view.update_timestamp,
+            'The update_timestamp should be updated after updating the object'
+        )
+
+    def test_delete_workspace_view(self):
+        """Test that a workspace_view can be deleted from the database."""
+        # Arrange:
+        self.old_workspace_views_num = WorkspaceView.objects.count()
+
+        # Act
+        self.workspace_view = WorkspaceView.objects.get(pk=self.workspace_view.pk)
+        self.workspace_view_pk = self.workspace_view.pk
+        self.workspace_view.delete()
+
+        # Assert
+        self.new_workspace_views_num = WorkspaceView.objects.count()
+        self.assertEqual(
+            self.old_workspace_views_num - 1, self.new_workspace_views_num,
+            'The number of objects in the DB have decreased by 1'
+        )
+        with self.assertRaises(Exception):
+            Workspace.objects.get(pk=self.workspace_view_pk)
