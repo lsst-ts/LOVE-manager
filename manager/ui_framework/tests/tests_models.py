@@ -361,3 +361,53 @@ class WorkspaceViewModelTestCase(TestCase):
         )
         with self.assertRaises(Exception):
             Workspace.objects.get(pk=self.workspace_view_pk)
+
+
+class WorkspaceAndViewsRelationsTestCase(TestCase):
+    """Test the relationships vetween Workspace, View and WorkspaceView models."""
+
+    def setUp(self):
+        """Testcase setup."""
+        # Arrange
+        self.setup_timestamp = timezone.now()
+        with freeze_time(self.setup_timestamp):
+            self.workspaces = [
+                Workspace.objects.create(name='My Workspace 1'),
+                Workspace.objects.create(name='My Workspace 2'),
+                Workspace.objects.create(name='My Workspace 3'),
+            ]
+            self.views = [
+                View.objects.create(name='My View 1'),
+                View.objects.create(name='My View 2'),
+                View.objects.create(name='My View 3'),
+            ]
+
+    def test_add_and_get_views_to_workspace(self):
+        """Test that Views can be added/retrieved to/from a Workspace in the DB."""
+        # Act
+        # - Add
+        sorted_views = [self.views[0], self.views[2], self.views[1]]
+        for view in sorted_views:
+            self.workspaces[0].views.add(view)
+        # - Get
+        workspace = Workspace.objects.get(pk=self.workspaces[0].pk)
+        retrieved_views = list(workspace.views.all())
+        retrieved_sorted_views = list(workspace.get_sorted_views())
+        # Assert
+        self.assertEqual(set(retrieved_views), set(self.views), 'The views were not assigned to the workspace')
+        self.assertEqual(retrieved_sorted_views, sorted_views, 'The views were not sorted properly workspace')
+
+    def test_get_workspaces_from_a_view(self):
+        """Test that a View can retrieve its Workspaces from the DB."""
+        # Arrange
+        view = self.views[0]
+        workspaces = [
+            self.workspaces[2],
+            self.workspaces[0],
+        ]
+        for workspace in workspaces:
+            workspace.views.add(view)
+        # Act
+        retrieved_workspaces = set(view.workspaces.all())
+        # Assert
+        self.assertEqual(retrieved_workspaces, set(workspaces), 'The workspaces from the view are not as expected')

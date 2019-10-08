@@ -52,14 +52,24 @@ class Workspace(BaseModel):
         """Redefine how objects of this class are transformed to string."""
         return self.name
 
+    def get_sorted_views(self):
+        """Return the views sorted by the sort_value of their corresponding WorkView.
+
+        Returns
+        -------
+        list:
+            List of View objects associated to this Workspace
+        """
+        return [wv.view for wv in self.workspace_views.all()]
+
 
 class WorkspaceView(BaseModel):
     """WorkspaceView Model, that relates a Works with a View."""
 
-    workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE, related_name='wokspace_views')
+    workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE, related_name='workspace_views')
     """The corresponding Workspace"""
 
-    view = models.ForeignKey(View, on_delete=models.CASCADE, related_name='wokspace_views')
+    view = models.ForeignKey(View, on_delete=models.CASCADE, related_name='workspace_views')
     """The corresponding View"""
 
     view_name = models.CharField(max_length=20, blank=True)
@@ -81,3 +91,5 @@ class WorkspaceView(BaseModel):
         """Redefine how objects of this class are transformed to string."""
         if self.view_name and self.view_name != '':
             return '{}: {} - {}'.format(self.view_name, self.workspace.name, self.view.name)
+        else:
+            return '{} - {}'.format(self.workspace.name, self.view.name)
