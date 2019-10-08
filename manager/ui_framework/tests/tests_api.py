@@ -79,7 +79,7 @@ class WorkspaceCrudTestCase(TestCase):
         self.assertEqual(retrieved_data, expected_data, 'Retrieved data is not as expected')
 
     def test_create_workspaces(self):
-        """Test that the list of workspaces can be retrieved through the API."""
+        """Test that a workspace can be created through the API."""
         # Arrange
         self.client_login()
         given_data = {
@@ -97,3 +97,64 @@ class WorkspaceCrudTestCase(TestCase):
         new_workspace = Workspace.objects.get(name=given_data['name'])
         new_workspace_views = [v.pk for v in new_workspace.views.all()]
         self.assertEqual(new_workspace_views, given_data['views'], 'Retrieved views are not as expected')
+
+    def test_retrieve_workspaces(self):
+        """Test that a workspace can be retrieved through the API."""
+        # Arrange
+        self.client_login()
+        workspace = self.workspaces[0]
+        # Act
+        response = self.client.get(reverse('workspace-detail', kwargs={'pk': workspace.pk}))
+
+        # Assert
+        expected_data = {
+            'id': workspace.id,
+            'name': workspace.name,
+            'creation_timestamp': self.setup_ts_str,
+            'update_timestamp': self.setup_ts_str,
+            'views': [v.pk for v in workspace.views.all()],
+        }
+        self.assertEqual(response.status_code, status.HTTP_200_OK, 'The request failed')
+        retrieved_data = dict(response.data)
+        self.assertEqual(retrieved_data, expected_data, 'Retrieved data is not as expected')
+
+    def test_update_workspaces(self):
+        """Test that a workspace can be updated through the API."""
+        # Arrange
+        self.client_login()
+        workspace = self.workspaces[0]
+        given_data = {
+            'name': 'My New Workspace',
+        }
+        # Act
+        self.update_ts = timezone.now()
+        self.update_ts_str = serializers.DateTimeField().to_representation(self.update_ts)
+        with freeze_time(self.update_ts):
+            response = self.client.put(reverse('workspace-detail', kwargs={'pk': workspace.pk}), given_data)
+
+        # Assert
+        expected_data = {
+            'id': workspace.id,
+            'name': given_data['name'],
+            'creation_timestamp': self.setup_ts_str,
+            'update_timestamp': self.update_ts_str,
+            'views': [v.pk for v in workspace.views.all()],
+        }
+        self.assertEqual(response.status_code, status.HTTP_200_OK, 'The request failed')
+        retrieved_data = dict(response.data)
+        self.assertEqual(retrieved_data, expected_data, 'Retrieved data is not as expected')
+
+    def test_delete_workspaces(self):
+        """Test that a workspace can be deleted through the API."""
+        # Arrange
+        self.client_login()
+        workspace_pk = self.workspaces[0].pk
+        # Act
+        response = self.client.delete(reverse('workspace-detail', kwargs={'pk': workspace_pk}))
+
+        # Assert
+        self.new_count = Workspace.objects.count()
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT, 'The request failed')
+        self.assertEqual(self.old_count - 1, self.new_count, 'The number of objects in the DB have decreased by 1')
+        with self.assertRaises(Exception):
+            Workspace.objects.get(pk=workspace_pk)
