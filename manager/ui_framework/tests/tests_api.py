@@ -31,12 +31,23 @@ class WorkspaceCrudTestCase(TestCase):
         )
         self.setup_ts = timezone.now()
         self.setup_ts_str = serializers.DateTimeField().to_representation(self.setup_ts)
+
         with freeze_time(self.setup_ts):
+            self.views = [
+                View.objects.create(name='My View 1'),
+                View.objects.create(name='My View 2'),
+                View.objects.create(name='My View 3'),
+                View.objects.create(name='My View 4'),
+            ]
             self.workspaces = [
                 Workspace.objects.create(name='My Workspace 1'),
                 Workspace.objects.create(name='My Workspace 2'),
                 Workspace.objects.create(name='My Workspace 3'),
             ]
+            for i in range(0, len(self.workspaces)):
+                self.workspaces[i].views.add(self.views[i])
+                self.workspaces[i].views.add(self.views[i + 1])
+        self.old_count = Workspace.objects.count()
 
     def client_login(self):
         """Perform a login for the APIClient."""
@@ -54,15 +65,35 @@ class WorkspaceCrudTestCase(TestCase):
         response = self.client.get(reverse('workspace-list'))
 
         # Assert
-        expected_workspaces = [
+        expected_data = [
             {
                 'id': workspace.id,
                 'name': workspace.name,
                 'creation_timestamp': self.setup_ts_str,
                 'update_timestamp': self.setup_ts_str,
-                'views': [],
+                'views': [v.pk for v in workspace.views.all()],
             } for workspace in Workspace.objects.all()
         ]
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        retrieved_workspaces = [dict(w) for w in response.data]
-        self.assertEqual(retrieved_workspaces, expected_workspaces)
+        self.assertEqual(response.status_code, status.HTTP_200_OK, 'The request failed')
+        retrieved_data = [dict(w) for w in response.data]
+        self.assertEqual(retrieved_data, expected_data, 'Retrieved data is not as expected')
+
+    def test_create_workspaces(self):
+        """Test that the list of workspaces can be retrieved through the API."""
+        # Arrange
+        self.client_login()
+        given_data = {
+            'name': 'My New Workspace',
+            'views': [],
+        }
+
+        # Act
+        response = self.client.post(reverse('workspace-list'), given_data)
+
+        # Assert
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, 'The request failed')
+        self.new_count = Workspace.objects.count()
+        self.assertEqual(self.old_count + 1, self.new_count, 'A new object should have been created in the DB')
+        new_workspace = Workspace.objects.get(name=given_data['name'])
+        new_workspace_views = [v.pk for v in new_workspace.views.all()]
+        self.assertEqual(new_workspace_views, given_data['views'], 'Retrieved views are not as expected')
