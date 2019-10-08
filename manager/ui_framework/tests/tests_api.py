@@ -1,6 +1,5 @@
 """Test the UI Framework API."""
-from collections import OrderedDict
-from django.conf import settings
+import json
 from django.contrib.auth.models import User, Permission
 from django.test import TestCase
 from django.urls import reverse
@@ -158,3 +157,152 @@ class WorkspaceCrudTestCase(TestCase):
         self.assertEqual(self.old_count - 1, self.new_count, 'The number of objects in the DB have decreased by 1')
         with self.assertRaises(Exception):
             Workspace.objects.get(pk=workspace_pk)
+
+
+class ViewCrudTestCase(TestCase):
+    """Test the view CRUD API."""
+
+    def setUp(self):
+        """Testcase setup."""
+        # Arrange
+        self.client = APIClient()
+        self.login_url = reverse('login')
+        self.username = 'test'
+        self.password = 'password'
+        self.user = User.objects.create_user(
+            username=self.username,
+            password='password',
+            email='test@user.cl',
+            first_name='First',
+            last_name='Last',
+        )
+        self.setup_ts = timezone.now()
+        self.setup_ts_str = serializers.DateTimeField().to_representation(self.setup_ts)
+
+        with freeze_time(self.setup_ts):
+            self.views = [
+                View.objects.create(name='My View 1', data='{ "data_name": "My View 1" }'),
+                View.objects.create(name='My View 2', data='{ "data_name": "My View 2" }'),
+                View.objects.create(name='My View 3', data='{ "data_name": "My View 3" }'),
+                View.objects.create(name='My View 4', data='{ "data_name": "My View 4" }'),
+            ]
+            self.workspaces = [
+                Workspace.objects.create(name='My Workspace 1'),
+                Workspace.objects.create(name='My Workspace 2'),
+                Workspace.objects.create(name='My Workspace 3'),
+            ]
+            for i in range(0, len(self.workspaces)):
+                self.workspaces[i].views.add(self.views[i])
+                self.workspaces[i].views.add(self.views[i + 1])
+        self.old_count = View.objects.count()
+
+    def client_login(self):
+        """Perform a login for the APIClient."""
+        data = {'username': self.username, 'password': self.password}
+        self.client.post(self.login_url, data, format='json')
+        self.token = Token.objects.get(user__username=self.username)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+
+    def test_list_views(self):
+        """Test that the list of views can be retrieved through the API."""
+        # Arrange
+        self.client_login()
+
+        # Act
+        response = self.client.get(reverse('view-list'))
+
+        # Assert
+        expected_data = [
+            {
+                'id': view.id,
+                'name': view.name,
+                'creation_timestamp': self.setup_ts_str,
+                'update_timestamp': self.setup_ts_str,
+                'data': view.data,
+            } for view in View.objects.all()
+        ]
+        self.assertEqual(response.status_code, status.HTTP_200_OK, 'The request failed')
+        retrieved_data = [dict(v) for v in response.data]
+        self.assertEqual(retrieved_data, expected_data, 'Retrieved data is not as expected')
+
+    def test_create_views(self):
+        """Test that a view can be created through the API."""
+        # Arrange
+        self.client_login()
+        given_data = {
+            "name": "My New View",
+            "views": [],
+            "data": '{"data_name": "My New View"}'
+        }
+
+        # Act
+        response = self.client.post(reverse('view-list'), given_data)
+
+        # Assert
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, 'The request failed')
+        self.new_count = View.objects.count()
+        self.assertEqual(self.old_count + 1, self.new_count, 'A new object should have been created in the DB')
+        new_view = View.objects.get(name=given_data['name'])
+        self.assertEqual(new_view.data, json.loads(given_data['data']), 'Retrieved data is not as expected')
+
+    def test_retrieve_views(self):
+        """Test that a view can be retrieved through the API."""
+        # Arrange
+        self.client_login()
+        view = self.views[0]
+        # Act
+        response = self.client.get(reverse('view-detail', kwargs={'pk': view.pk}))
+
+        # Assert
+        expected_data = {
+            'id': view.id,
+            'name': view.name,
+            'creation_timestamp': self.setup_ts_str,
+            'update_timestamp': self.setup_ts_str,
+            'data': view.data,
+        }
+        self.assertEqual(response.status_code, status.HTTP_200_OK, 'The request failed')
+        retrieved_data = dict(response.data)
+        self.assertEqual(retrieved_data, expected_data, 'Retrieved data is not as expected')
+
+    def test_update_views(self):
+        """Test that a view can be updated through the API."""
+        # Arrange
+        self.client_login()
+        view = self.views[0]
+        given_data = {
+            "name": "My New Workspace",
+            "data": '{"data_name": "My New View"}'
+        }
+        # Act
+        self.update_ts = timezone.now()
+        self.update_ts_str = serializers.DateTimeField().to_representation(self.update_ts)
+        with freeze_time(self.update_ts):
+            response = self.client.put(reverse('view-detail', kwargs={'pk': view.pk}), given_data)
+
+        # Assert
+        expected_data = {
+            'id': view.id,
+            'name': given_data['name'],
+            'creation_timestamp': self.setup_ts_str,
+            'update_timestamp': self.update_ts_str,
+            'data': json.loads(given_data['data']),
+        }
+        self.assertEqual(response.status_code, status.HTTP_200_OK, 'The request failed')
+        retrieved_data = dict(response.data)
+        self.assertEqual(retrieved_data, expected_data, 'Retrieved data is not as expected')
+
+    def test_delete_views(self):
+        """Test that a view can be deleted through the API."""
+        # Arrange
+        self.client_login()
+        view_pk = self.views[0].pk
+        # Act
+        response = self.client.delete(reverse('view-detail', kwargs={'pk': view_pk}))
+
+        # Assert
+        self.new_count = View.objects.count()
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT, 'The request failed')
+        self.assertEqual(self.old_count - 1, self.new_count, 'The number of objects in the DB have decreased by 1')
+        with self.assertRaises(Exception):
+            View.objects.get(pk=view_pk)
