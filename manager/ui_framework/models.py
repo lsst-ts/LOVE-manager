@@ -65,6 +65,18 @@ class WorkspaceView(BaseModel):
     view_name = models.CharField(max_length=20, blank=True)
     """The custom name for the View within the Workspace"""
 
+    sort_value = models.PositiveIntegerField(default=0, blank=False, null=False)
+    """Order of the View within the Workspace."""
+
+    class Meta:
+        """Define attributes of the Meta class."""
+
+        unique_together = ('workspace', 'view')
+        """Forbid duplicated pairs of Workspace and View."""
+
+        ordering = ('sort_value',)
+        """Set ordering according to 'sort_value' field."""
+
     def __str__(self):
         """Redefine how objects of this class are transformed to string."""
         if self.view_name and self.view_name != '':
