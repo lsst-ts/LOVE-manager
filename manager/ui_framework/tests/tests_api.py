@@ -32,18 +32,38 @@ class WorkspaceCrudTestCase(TestCase):
         self.setup_ts_str = serializers.DateTimeField().to_representation(self.setup_ts)
 
         with freeze_time(self.setup_ts):
-            self.views = [
-                View.objects.create(name='My View 1'),
-                View.objects.create(name='My View 2'),
-                View.objects.create(name='My View 3'),
-                View.objects.create(name='My View 4'),
+            self.views_data = [
+                {
+                    'name': 'My View 1',
+                    'data': json.dumps({"data_name": "My View 1"}),
+                },
+                {
+                    'name': 'My View 2',
+                    'data': json.dumps({"data_name": "My View 2"}),
+                },
+                {
+                    'name': 'My View 3',
+                    'data': json.dumps({"data_name": "My View 3"}),
+                },
+                {
+                    'name': 'My View 4',
+                    'data': json.dumps({"data_name": "My View 4"}),
+                }
             ]
-            self.workspaces = [
-                Workspace.objects.create(name='My Workspace 1'),
-                Workspace.objects.create(name='My Workspace 2'),
-                Workspace.objects.create(name='My Workspace 3'),
+            self.workspaces_data = [
+                {'name': 'My Workspace 1'},
+                {'name': 'My Workspace 2'},
+                {'name': 'My Workspace 3'},
             ]
-            for i in range(0, len(self.workspaces)):
+            self.views = []
+            self.workspaces = []
+            for i in range(0, len(self.views_data)):
+                self.views.append(View.objects.create(**self.views_data[i]))
+
+            for i in range(0, len(self.workspaces_data)):
+                aux = Workspace.objects.create(**self.workspaces_data[i])
+                self.workspaces_data[i]['id'] = aux.id
+                self.workspaces.append(aux)
                 self.workspaces[i].views.add(self.views[i])
                 self.workspaces[i].views.add(self.views[i + 1])
         self.old_count = Workspace.objects.count()
@@ -64,15 +84,16 @@ class WorkspaceCrudTestCase(TestCase):
         response = self.client.get(reverse('workspace-list'))
 
         # Assert
-        expected_data = [
-            {
-                'id': workspace.id,
-                'name': workspace.name,
+        expected_data = []
+        for i in range(0, len(self.workspaces_data)):
+            expected_data.append({
+                'id': self.workspaces_data[i]['id'],
+                'name': self.workspaces_data[i]['name'],
                 'creation_timestamp': self.setup_ts_str,
                 'update_timestamp': self.setup_ts_str,
-                'views': [v.pk for v in workspace.views.all()],
-            } for workspace in Workspace.objects.all()
-        ]
+                'views': [v.pk for v in self.views[i: i + 2]],
+            })
+
         self.assertEqual(response.status_code, status.HTTP_200_OK, 'The request failed')
         retrieved_data = [dict(w) for w in response.data]
         self.assertEqual(retrieved_data, expected_data, 'Retrieved data is not as expected')
@@ -101,17 +122,17 @@ class WorkspaceCrudTestCase(TestCase):
         """Test that a workspace can be retrieved through the API."""
         # Arrange
         self.client_login()
-        workspace = self.workspaces[0]
+        workspace_data = self.workspaces_data[0]
         # Act
-        response = self.client.get(reverse('workspace-detail', kwargs={'pk': workspace.pk}))
+        response = self.client.get(reverse('workspace-detail', kwargs={'pk': workspace_data['id']}))
 
         # Assert
         expected_data = {
-            'id': workspace.id,
-            'name': workspace.name,
+            'id': workspace_data['id'],
+            'name': workspace_data['name'],
             'creation_timestamp': self.setup_ts_str,
             'update_timestamp': self.setup_ts_str,
-            'views': [v.pk for v in workspace.views.all()],
+            'views': [v.pk for v in self.views[0:2]],
         }
         self.assertEqual(response.status_code, status.HTTP_200_OK, 'The request failed')
         retrieved_data = dict(response.data)
@@ -137,7 +158,7 @@ class WorkspaceCrudTestCase(TestCase):
             'name': given_data['name'],
             'creation_timestamp': self.setup_ts_str,
             'update_timestamp': self.update_ts_str,
-            'views': [v.pk for v in workspace.views.all()],
+            'views': [v.pk for v in self.views[0:2]],
         }
         self.assertEqual(response.status_code, status.HTTP_200_OK, 'The request failed')
         retrieved_data = dict(response.data)
@@ -180,18 +201,40 @@ class ViewCrudTestCase(TestCase):
         self.setup_ts_str = serializers.DateTimeField().to_representation(self.setup_ts)
 
         with freeze_time(self.setup_ts):
-            self.views = [
-                View.objects.create(name='My View 1', data='{ "data_name": "My View 1" }'),
-                View.objects.create(name='My View 2', data='{ "data_name": "My View 2" }'),
-                View.objects.create(name='My View 3', data='{ "data_name": "My View 3" }'),
-                View.objects.create(name='My View 4', data='{ "data_name": "My View 4" }'),
+            self.views_data = [
+                {
+                    'name': 'My View 1',
+                    'data': json.dumps({"data_name": "My View 1"}),
+                },
+                {
+                    'name': 'My View 2',
+                    'data': json.dumps({"data_name": "My View 2"}),
+                },
+                {
+                    'name': 'My View 3',
+                    'data': json.dumps({"data_name": "My View 3"}),
+                },
+                {
+                    'name': 'My View 4',
+                    'data': json.dumps({"data_name": "My View 4"}),
+                }
             ]
-            self.workspaces = [
-                Workspace.objects.create(name='My Workspace 1'),
-                Workspace.objects.create(name='My Workspace 2'),
-                Workspace.objects.create(name='My Workspace 3'),
+            self.workspaces_data = [
+                {'name': 'My Workspace 1'},
+                {'name': 'My Workspace 2'},
+                {'name': 'My Workspace 3'},
             ]
-            for i in range(0, len(self.workspaces)):
+            self.views = []
+            self.workspaces = []
+            for i in range(0, len(self.views_data)):
+                aux = View.objects.create(**self.views_data[i])
+                self.views_data[i]['id'] = aux.id
+                self.views.append(aux)
+
+            for i in range(0, len(self.workspaces_data)):
+                aux = Workspace.objects.create(**self.workspaces_data[i])
+                self.workspaces_data[i]['id'] = aux.id
+                self.workspaces.append(aux)
                 self.workspaces[i].views.add(self.views[i], through_defaults={'view_name': 'v{}'.format(i)})
                 self.workspaces[i].views.add(self.views[i + 1], through_defaults={'view_name': 'v{}'.format(i)})
         self.old_count = View.objects.count()
@@ -214,12 +257,12 @@ class ViewCrudTestCase(TestCase):
         # Assert
         expected_data = [
             {
-                'id': view.id,
-                'name': view.name,
+                'id': view['id'],
                 'creation_timestamp': self.setup_ts_str,
                 'update_timestamp': self.setup_ts_str,
-                'data': view.data,
-            } for view in View.objects.all()
+                'name': view['name'],
+                'data': view['data'],
+            } for view in self.views_data
         ]
         self.assertEqual(response.status_code, status.HTTP_200_OK, 'The request failed')
         retrieved_data = [dict(v) for v in response.data]
@@ -249,17 +292,17 @@ class ViewCrudTestCase(TestCase):
         """Test that a view can be retrieved through the API."""
         # Arrange
         self.client_login()
-        view = self.views[0]
+        data = self.views_data[0]
         # Act
-        response = self.client.get(reverse('view-detail', kwargs={'pk': view.pk}))
+        response = self.client.get(reverse('view-detail', kwargs={'pk': data['id']}))
 
         # Assert
         expected_data = {
-            'id': view.id,
-            'name': view.name,
+            'id': data['id'],
+            'name': data['name'],
             'creation_timestamp': self.setup_ts_str,
             'update_timestamp': self.setup_ts_str,
-            'data': view.data,
+            'data': data['data'],
         }
         self.assertEqual(response.status_code, status.HTTP_200_OK, 'The request failed')
         retrieved_data = dict(response.data)
@@ -269,7 +312,7 @@ class ViewCrudTestCase(TestCase):
         """Test that a view can be updated through the API."""
         # Arrange
         self.client_login()
-        view = self.views[0]
+        data = self.views_data[0]
         given_data = {
             "name": "My New Workspace",
             "data": '{"data_name": "My New View"}'
@@ -278,11 +321,11 @@ class ViewCrudTestCase(TestCase):
         self.update_ts = timezone.now()
         self.update_ts_str = serializers.DateTimeField().to_representation(self.update_ts)
         with freeze_time(self.update_ts):
-            response = self.client.put(reverse('view-detail', kwargs={'pk': view.pk}), given_data)
+            response = self.client.put(reverse('view-detail', kwargs={'pk': data['id']}), given_data)
 
         # Assert
         expected_data = {
-            'id': view.id,
+            'id': data['id'],
             'name': given_data['name'],
             'creation_timestamp': self.setup_ts_str,
             'update_timestamp': self.update_ts_str,
