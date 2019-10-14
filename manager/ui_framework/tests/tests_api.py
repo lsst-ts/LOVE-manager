@@ -64,8 +64,8 @@ class WorkspaceCrudTestCase(TestCase):
                 aux = Workspace.objects.create(**self.workspaces_data[i])
                 self.workspaces_data[i]['id'] = aux.id
                 self.workspaces.append(aux)
-                self.workspaces[i].views.add(self.views[i])
-                self.workspaces[i].views.add(self.views[i + 1])
+                self.workspaces[i].views.add(self.views[i], through_defaults={'view_name': 'v{}'.format(i)})
+                self.workspaces[i].views.add(self.views[i + 1], through_defaults={'view_name': 'v{}'.format(i)})
         self.old_count = Workspace.objects.count()
 
     def client_login(self):
@@ -349,3 +349,189 @@ class ViewCrudTestCase(TestCase):
         self.assertEqual(self.old_count - 1, self.new_count, 'The number of objects in the DB have decreased by 1')
         with self.assertRaises(Exception):
             View.objects.get(pk=view_pk)
+
+
+class WorkspaceViewCrudTestCase(TestCase):
+    """Test the workspace_view CRUD API."""
+
+    def setUp(self):
+        """Testcase setup."""
+        # Arrange
+        self.client = APIClient()
+        self.login_url = reverse('login')
+        self.username = 'test'
+        self.password = 'password'
+        self.user = User.objects.create_user(
+            username=self.username,
+            password='password',
+            email='test@user.cl',
+            first_name='First',
+            last_name='Last',
+        )
+        self.setup_ts = timezone.now()
+        self.setup_ts_str = serializers.DateTimeField().to_representation(self.setup_ts)
+
+        with freeze_time(self.setup_ts):
+            self.views_data = [
+                {
+                    'name': 'My View 1',
+                    'data': json.dumps({"data_name": "My View 1"}),
+                },
+                {
+                    'name': 'My View 2',
+                    'data': json.dumps({"data_name": "My View 2"}),
+                },
+                {
+                    'name': 'My View 3',
+                    'data': json.dumps({"data_name": "My View 3"}),
+                },
+                {
+                    'name': 'My View 4',
+                    'data': json.dumps({"data_name": "My View 4"}),
+                }
+            ]
+            self.workspaces_data = [
+                {'name': 'My Workspace 1'},
+                {'name': 'My Workspace 2'},
+                {'name': 'My Workspace 3'},
+            ]
+            self.views = []
+            self.workspaces = []
+            self.workspace_views_data = []
+            for i in range(0, len(self.views_data)):
+                aux = View.objects.create(**self.views_data[i])
+                self.views_data[i]['id'] = aux.id
+                self.views.append(aux)
+
+            for i in range(0, len(self.workspaces_data)):
+                aux = Workspace.objects.create(**self.workspaces_data[i])
+                self.workspaces_data[i]['id'] = aux.id
+                self.workspaces.append(aux)
+                # Add view[i]
+                self.workspaces[i].views.add(self.views[i], through_defaults={'view_name': 'v{}'.format(i)})
+                aux = WorkspaceView.objects.get(workspace=self.workspaces[i], view=self.views[i])
+                self.workspace_views_data.append({
+                    'id': aux.id,
+                    'creation_timestamp': self.setup_ts_str,
+                    'update_timestamp': self.setup_ts_str,
+                    'view_name': 'v{}'.format(i),
+                    'sort_value': 0,
+                    'view': self.views[i].pk,
+                    'workspace': self.workspaces[i].pk,
+                })
+                # Add view[i + 1]
+                self.workspaces[i].views.add(self.views[i + 1], through_defaults={'view_name': 'v{}'.format(i)})
+                aux = WorkspaceView.objects.get(workspace=self.workspaces[i], view=self.views[i + 1])
+                self.workspace_views_data.append({
+                    'id': aux.id,
+                    'creation_timestamp': self.setup_ts_str,
+                    'update_timestamp': self.setup_ts_str,
+                    'view_name': 'v{}'.format(i),
+                    'sort_value': 0,
+                    'view': self.views[i + 1].pk,
+                    'workspace': self.workspaces[i].pk,
+                })
+        self.old_count = WorkspaceView.objects.count()
+
+    def client_login(self):
+        """Perform a login for the APIClient."""
+        data = {'username': self.username, 'password': self.password}
+        self.client.post(self.login_url, data, format='json')
+        self.token = Token.objects.get(user__username=self.username)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+
+    def test_list_workspace_views(self):
+        """Test that the list of workspace_views can be retrieved through the API."""
+        # Arrange
+        self.client_login()
+
+        # Act
+        response = self.client.get(reverse('workspaceview-list'))
+
+        # Assert
+        expected_data = self.workspace_views_data
+        self.assertEqual(response.status_code, status.HTTP_200_OK, 'The request failed')
+        retrieved_data = [dict(v) for v in response.data]
+        self.assertEqual(retrieved_data, expected_data, 'Retrieved data is not as expected')
+
+    def test_create_worskpace_views(self):
+        """Test that a workspace_view can be created through the API."""
+        # Arrange
+        self.client_login()
+        given_data = {
+            "view_name": "My New Name",
+            "workspace": self.workspaces[0].id,
+            "view": self.views[3].id,
+            "sort_value": 1,
+        }
+
+        # Act
+        response = self.client.post(reverse('workspaceview-list'), given_data)
+
+        # Assert
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, 'The request failed')
+        self.new_count = WorkspaceView.objects.count()
+        self.assertEqual(self.old_count + 1, self.new_count, 'A new object should have been created in the DB')
+        new_wv = WorkspaceView.objects.get(view_name=given_data['view_name'])
+        self.assertEqual(new_wv.view_name, given_data['view_name'], 'New objects view_name is not as expected')
+        self.assertEqual(new_wv.view.id, given_data['view'], 'New objects view is not as expected')
+        self.assertEqual(new_wv.workspace.id, given_data['workspace'], 'New objects workspace is not as expected')
+        self.assertEqual(new_wv.sort_value, given_data['sort_value'], 'New objects sort_value is not as expected')
+
+    def test_retrieve_workspace_views(self):
+        """Test that a workspace_views can be retrieved through the API."""
+        # Arrange
+        self.client_login()
+        data = self.workspace_views_data[0]
+        # Act
+        response = self.client.get(reverse('workspaceview-detail', kwargs={'pk': data['id']}))
+
+        # Assert
+        self.assertEqual(response.status_code, status.HTTP_200_OK, 'The request failed')
+        retrieved_data = dict(response.data)
+        self.assertEqual(retrieved_data, data, 'Retrieved data is not as expected')
+
+    def test_update_workspace_view(self):
+        """Test that a workspace_view can be updated through the API."""
+        # Arrange
+        self.client_login()
+        data = self.workspace_views_data[0]
+        given_data = {
+            "view_name": "My New Name",
+            'view': self.views[3].id,
+            'workspace': self.workspaces[1].id,
+        }
+        # Act
+        self.update_ts = timezone.now()
+        self.update_ts_str = serializers.DateTimeField().to_representation(self.update_ts)
+        with freeze_time(self.update_ts):
+            response = self.client.put(reverse('workspaceview-detail', kwargs={'pk': data['id']}), given_data)
+
+        # Assert
+        expected_data = {
+            'id': data['id'],
+            'creation_timestamp': self.setup_ts_str,
+            'update_timestamp': self.update_ts_str,
+            'view_name': given_data['view_name'],
+            'sort_value': 0,
+            'view': self.views[3].id,
+            'workspace': self.workspaces[1].id,
+        }
+        self.assertEqual(response.status_code, status.HTTP_200_OK, 'The request failed')
+        retrieved_data = dict(response.data)
+        self.assertEqual(retrieved_data, expected_data, 'Retrieved data is not as expected')
+
+    def test_delete_workspace_views(self):
+        """Test that a workspace_view can be deleted through the API."""
+        # Arrange
+        self.client_login()
+        wv_pk = self.workspace_views_data[0]['id']
+        # Act
+        response = self.client.delete(reverse('workspaceview-detail', kwargs={'pk': wv_pk}))
+
+        # Assert
+        self.new_count = WorkspaceView.objects.count()
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT, 'The request failed')
+        self.assertEqual(self.old_count - 1, self.new_count, 'The number of objects in the DB have decreased by 1')
+        with self.assertRaises(Exception):
+            WorkspaceView.objects.get(pk=wv_pk)
