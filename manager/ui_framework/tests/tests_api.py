@@ -15,8 +15,12 @@ class WorkspaceCrudTestCase(TestCase):
     """Test the workspace CRUD API."""
 
     def setUp(self):
-        """Testcase setup."""
+        """Testcase setup.
+
+        We start with 3 workspaces and 4 views and we add view_i and view_i+1 to workspace_i
+        """
         # Arrange
+        # Client setup
         self.client = APIClient()
         self.login_url = reverse('login')
         self.username = 'test'
@@ -32,6 +36,7 @@ class WorkspaceCrudTestCase(TestCase):
         self.setup_ts_str = serializers.DateTimeField().to_representation(self.setup_ts)
 
         with freeze_time(self.setup_ts):
+            # Data to be used to create views and workspaces
             self.views_data = [
                 {
                     'name': 'My View 1',
@@ -57,9 +62,11 @@ class WorkspaceCrudTestCase(TestCase):
             ]
             self.views = []
             self.workspaces = []
+            # Create views and store them in self.views
             for i in range(0, len(self.views_data)):
                 self.views.append(View.objects.create(**self.views_data[i]))
 
+            # Create workspaces, add them the views and store them in self.workspaces
             for i in range(0, len(self.workspaces_data)):
                 aux = Workspace.objects.create(**self.workspaces_data[i])
                 self.workspaces_data[i]['id'] = aux.id
@@ -184,8 +191,12 @@ class ViewCrudTestCase(TestCase):
     """Test the view CRUD API."""
 
     def setUp(self):
-        """Testcase setup."""
+        """Testcase setup.
+
+        We start with 3 workspaces and 4 views and we add view_i and view_i+1 to workspace_i
+        """
         # Arrange
+        # Client setup
         self.client = APIClient()
         self.login_url = reverse('login')
         self.username = 'test'
@@ -201,6 +212,7 @@ class ViewCrudTestCase(TestCase):
         self.setup_ts_str = serializers.DateTimeField().to_representation(self.setup_ts)
 
         with freeze_time(self.setup_ts):
+            # Data to be used to create views and workspaces
             self.views_data = [
                 {
                     'name': 'My View 1',
@@ -226,11 +238,13 @@ class ViewCrudTestCase(TestCase):
             ]
             self.views = []
             self.workspaces = []
+            # Create views and store them in self.views
             for i in range(0, len(self.views_data)):
                 aux = View.objects.create(**self.views_data[i])
                 self.views_data[i]['id'] = aux.id
                 self.views.append(aux)
 
+            # Create workspaces, add them the views and store them in self.workspaces
             for i in range(0, len(self.workspaces_data)):
                 aux = Workspace.objects.create(**self.workspaces_data[i])
                 self.workspaces_data[i]['id'] = aux.id
@@ -355,8 +369,12 @@ class WorkspaceViewCrudTestCase(TestCase):
     """Test the workspace_view CRUD API."""
 
     def setUp(self):
-        """Testcase setup."""
+        """Testcase setup.
+
+        We start with 3 workspaces and 4 views and we add view_i and view_i+1 to workspace_i
+        """
         # Arrange
+        # Client setup
         self.client = APIClient()
         self.login_url = reverse('login')
         self.username = 'test'
@@ -398,11 +416,14 @@ class WorkspaceViewCrudTestCase(TestCase):
             self.views = []
             self.workspaces = []
             self.workspace_views_data = []
+            # Create views and store them in self.views
             for i in range(0, len(self.views_data)):
                 aux = View.objects.create(**self.views_data[i])
                 self.views_data[i]['id'] = aux.id
                 self.views.append(aux)
 
+            # Create workspaces, add them the views and store them in self.workspaces,
+            # and store data from workspace_views in self.workspace_views_data for asserting
             for i in range(0, len(self.workspaces_data)):
                 aux = Workspace.objects.create(**self.workspaces_data[i])
                 self.workspaces_data[i]['id'] = aux.id
