@@ -14,7 +14,7 @@ class UnauthenticatedCrudTestCase(BaseTestCase):
         # Arrange
         super().setUp()
 
-    def test_cannot_list_objects(self):
+    def test_unauthenticated_list_objects(self):
         """Test that unauthenticated users cannot retrieve the list of objects through the API."""
         for case in self.cases:
             # Act
@@ -26,7 +26,7 @@ class UnauthenticatedCrudTestCase(BaseTestCase):
                 'Get list of {} did not return status 401'.format(case['class'])
             )
 
-    def test_cannot_create_objects(self):
+    def test_unauthenticated_create_objects(self):
         """Test that unauthenticated users cannot create objects through the API."""
         for case in self.cases:
             # Act
@@ -42,7 +42,7 @@ class UnauthenticatedCrudTestCase(BaseTestCase):
                 'The number of {} should not have changed'.format(case['class'])
             )
 
-    def test_cannot_retrieve_objects(self):
+    def test_unauthenticated_retrieve_objects(self):
         """Test that unauthenticated users cannot retrieve objects through the API."""
         for case in self.cases:
             # Act
@@ -55,7 +55,7 @@ class UnauthenticatedCrudTestCase(BaseTestCase):
                 'Getting a {} did not return status 401'.format(case['class'])
             )
 
-    def test_cannot_update_objects(self):
+    def test_unauthenticated_update_objects(self):
         """Test that unauthenticated users cannot update objects through the API."""
         for case in self.cases:
             # Act
@@ -74,7 +74,7 @@ class UnauthenticatedCrudTestCase(BaseTestCase):
                 'The object {} should not have been updated'.format(case['class'])
             )
 
-    def test_cannot_dalete_objects(self):
+    def test_unauthenticated_delete_objects(self):
         """Test that unauthenticated users cannot dalete objects through the API."""
         for case in self.cases:
             # Act
@@ -114,20 +114,25 @@ class UnauthorizedCrudTestCase(BaseTestCase):
         self.token = Token.objects.get(user__username=self.username)
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
 
-    def test_cannot_list_objects(self):
-        """Test that unauthenticated users cannot retrieve the list of objects through the API."""
+    def test_unauthorized_list_objects(self):
+        """Test that unauthorized users can still retrieve the list of objects through the API."""
         for case in self.cases:
             # Act
             url = reverse('{}-list'.format(case['url_key']))
             response = self.client.get(url)
             # Assert
             self.assertEqual(
-                response.status_code, status.HTTP_403_FORBIDDEN,
-                'Get list of {} did not return status 403'.format(case['class'])
+                response.status_code, status.HTTP_200_OK,
+                'Retrieving list of {} did not return status 200'.format(case['class'])
+            )
+            retrieved_data = [dict(data) for data in response.data]
+            self.assertEqual(
+                retrieved_data, case['current_data'],
+                'Retrieved list of {} is not as expected'.format(case['class'])
             )
 
-    def test_cannot_create_objects(self):
-        """Test that unauthenticated users cannot create objects through the API."""
+    def test_unauthorized_create_objects(self):
+        """Test that unauthorized users cannot create objects through the API."""
         for case in self.cases:
             # Act
             url = reverse('{}-list'.format(case['url_key']))
@@ -142,24 +147,29 @@ class UnauthorizedCrudTestCase(BaseTestCase):
                 'The number of {} should not have changed'.format(case['class'])
             )
 
-    def test_cannot_retrieve_objects(self):
-        """Test that unauthenticated users cannot retrieve objects through the API."""
+    def test_unauthorized_retrieve_objects(self):
+        """Test that unauthorized users can still retrieve objects through the API."""
         for case in self.cases:
             # Act
-            obj = case['class'].objects.first()
+            obj = case['class'].objects.get(id=case['selected_id'])
             url = reverse('{}-detail'.format(case['url_key']), kwargs={'pk': obj.pk})
             response = self.client.get(url)
             # Assert
             self.assertEqual(
-                response.status_code, status.HTTP_403_FORBIDDEN,
-                'Getting a {} did not return status 403'.format(case['class'])
+                response.status_code, status.HTTP_200_OK,
+                'Getting a {} did not return status 200'.format(case['class'])
+            )
+            retrieved_data = dict(response.data)
+            self.assertEqual(
+                retrieved_data, case['current_data'][0],
+                'Retrieved list of {} is not as expected'.format(case['class'])
             )
 
-    def test_cannot_update_objects(self):
-        """Test that unauthenticated users cannot update objects through the API."""
+    def test_unauthorized_update_objects(self):
+        """Test that unauthorized users cannot update objects through the API."""
         for case in self.cases:
             # Act
-            obj = case['class'].objects.first()
+            obj = case['class'].objects.get(id=case['selected_id'])
             old_data = get_dict(obj)
             url = reverse('{}-detail'.format(case['url_key']), kwargs={'pk': obj.pk})
             response = self.client.put(url, case['new_data'])
@@ -174,8 +184,8 @@ class UnauthorizedCrudTestCase(BaseTestCase):
                 'The object {} should not have been updated'.format(case['class'])
             )
 
-    def test_cannot_dalete_objects(self):
-        """Test that unauthenticated users cannot dalete objects through the API."""
+    def test_unauthorized_delete_objects(self):
+        """Test that unauthorized users cannot dalete objects through the API."""
         for case in self.cases:
             # Act
             obj = case['class'].objects.first()

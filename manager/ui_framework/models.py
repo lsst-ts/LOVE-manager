@@ -66,6 +66,10 @@ class Workspace(BaseModel):
         """
         return [wv.view for wv in self.workspace_views.all()]
 
+    @staticmethod
+    def has_read_permission(request):
+        return request.user.has_perm('ui_framework.view_workspace')
+
 
 class WorkspaceView(BaseModel):
     """WorkspaceView Model, that relates a Works with a View."""

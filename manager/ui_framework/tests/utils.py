@@ -75,25 +75,48 @@ class BaseTestCase(TestCase):
             ]
             self.views = []
             self.workspaces = []
+            self.workspace_views_data = []
             # Create views, store them in self.views and add auto-generated fields to self.views_data
             for i in range(0, len(self.views_data)):
                 view = View.objects.create(**self.views_data[i])
                 self.views_data[i]['id'] = view.id
-                self.views_data[i]['creation_timestamp'] = view.creation_timestamp
-                self.views_data[i]['update_timestamp'] = view.update_timestamp
+                self.views_data[i]['creation_timestamp'] = self.setup_ts_str
+                self.views_data[i]['update_timestamp'] = self.setup_ts_str
                 self.views.append(view)
 
             # Create views, store them in self.views and add auto-generated fields to self.views_data
             for i in range(0, len(self.workspaces_data)):
                 workspace = Workspace.objects.create(**self.workspaces_data[i])
                 self.workspaces_data[i]['id'] = workspace.id
-                self.workspaces_data[i]['creation_timestamp'] = workspace.creation_timestamp
-                self.workspaces_data[i]['update_timestamp'] = workspace.update_timestamp
+                self.workspaces_data[i]['creation_timestamp'] = self.setup_ts_str
+                self.workspaces_data[i]['update_timestamp'] = self.setup_ts_str
+                self.workspaces_data[i]['views'] = [self.views[i].pk, self.views[i + 1].pk]
                 self.workspaces.append(workspace)
 
-                # Add view_i and view_i+1 to workspace_i
+                # Add view[i]
                 self.workspaces[i].views.add(self.views[i], through_defaults={'view_name': 'v{}'.format(i)})
+                aux = WorkspaceView.objects.get(workspace=self.workspaces[i], view=self.views[i])
+                self.workspace_views_data.append({
+                    'id': aux.id,
+                    'creation_timestamp': self.setup_ts_str,
+                    'update_timestamp': self.setup_ts_str,
+                    'view_name': 'v{}'.format(i),
+                    'sort_value': 0,
+                    'view': self.views[i].pk,
+                    'workspace': self.workspaces[i].pk,
+                })
+                # Add view[i + 1]
                 self.workspaces[i].views.add(self.views[i + 1], through_defaults={'view_name': 'v{}'.format(i)})
+                aux = WorkspaceView.objects.get(workspace=self.workspaces[i], view=self.views[i + 1])
+                self.workspace_views_data.append({
+                    'id': aux.id,
+                    'creation_timestamp': self.setup_ts_str,
+                    'update_timestamp': self.setup_ts_str,
+                    'view_name': 'v{}'.format(i),
+                    'sort_value': 0,
+                    'view': self.views[i + 1].pk,
+                    'workspace': self.workspaces[i].pk,
+                })
 
         # Client to test the API
         self.client = APIClient()
@@ -106,7 +129,9 @@ class BaseTestCase(TestCase):
                 'old_count': Workspace.objects.count(),
                 'new_data': {
                     'name': 'My new Workspace',
-                }
+                },
+                'current_data': self.workspaces_data,
+                'selected_id': self.workspaces_data[0]['id'],
             },
             {
                 'class': View,
@@ -115,7 +140,9 @@ class BaseTestCase(TestCase):
                 'new_data': {
                     'name': 'My new View',
                     'data': json.dumps({"dummy_key": "Dummy_value"}),
-                }
+                },
+                'current_data': self.views_data,
+                'selected_id': self.views_data[0]['id'],
             },
             {
                 'class': WorkspaceView,
@@ -126,6 +153,8 @@ class BaseTestCase(TestCase):
                     'sort_value': 1,
                     'view': 0,
                     'workspace': 0,
-                }
+                },
+                'current_data': self.workspace_views_data,
+                'selected_id': self.workspace_views_data[0]['id'],
             },
         ]

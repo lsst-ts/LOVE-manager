@@ -1,6 +1,6 @@
 """Test the UI Framework API."""
 import json
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
@@ -86,6 +86,7 @@ class WorkspaceCrudTestCase(TestCase):
         """Test that the list of workspaces can be retrieved through the API."""
         # Arrange
         self.client_login()
+        self.user.user_permissions.add(Permission.objects.get(codename='view_workspace'))
 
         # Act
         response = self.client.get(reverse('workspace-list'))
@@ -109,6 +110,7 @@ class WorkspaceCrudTestCase(TestCase):
         """Test that a workspace can be created through the API."""
         # Arrange
         self.client_login()
+        self.user.user_permissions.add(Permission.objects.get(codename='add_workspace'))
         given_data = {
             'name': 'My New Workspace',
             'views': [],
@@ -129,6 +131,7 @@ class WorkspaceCrudTestCase(TestCase):
         """Test that a workspace can be retrieved through the API."""
         # Arrange
         self.client_login()
+        self.user.user_permissions.add(Permission.objects.get(codename='view_workspace'))
         workspace_data = self.workspaces_data[0]
         # Act
         response = self.client.get(reverse('workspace-detail', kwargs={'pk': workspace_data['id']}))
@@ -150,6 +153,7 @@ class WorkspaceCrudTestCase(TestCase):
         # Arrange
         self.client_login()
         workspace = self.workspaces[0]
+        self.user.user_permissions.add(Permission.objects.get(codename='change_workspace'))
         given_data = {
             'name': 'My New Workspace',
         }
@@ -175,6 +179,7 @@ class WorkspaceCrudTestCase(TestCase):
         """Test that a workspace can be deleted through the API."""
         # Arrange
         self.client_login()
+        self.user.user_permissions.add(Permission.objects.get(codename='delete_workspace'))
         workspace_pk = self.workspaces[0].pk
         # Act
         response = self.client.delete(reverse('workspace-detail', kwargs={'pk': workspace_pk}))
@@ -264,6 +269,7 @@ class ViewCrudTestCase(TestCase):
         """Test that the list of views can be retrieved through the API."""
         # Arrange
         self.client_login()
+        self.user.user_permissions.add(Permission.objects.get(codename='view_view'))
 
         # Act
         response = self.client.get(reverse('view-list'))
@@ -286,6 +292,7 @@ class ViewCrudTestCase(TestCase):
         """Test that a view can be created through the API."""
         # Arrange
         self.client_login()
+        self.user.user_permissions.add(Permission.objects.get(codename='add_view'))
         given_data = {
             "name": "My New View",
             "views": [],
@@ -306,6 +313,7 @@ class ViewCrudTestCase(TestCase):
         """Test that a view can be retrieved through the API."""
         # Arrange
         self.client_login()
+        self.user.user_permissions.add(Permission.objects.get(codename='view_view'))
         data = self.views_data[0]
         # Act
         response = self.client.get(reverse('view-detail', kwargs={'pk': data['id']}))
@@ -326,6 +334,7 @@ class ViewCrudTestCase(TestCase):
         """Test that a view can be updated through the API."""
         # Arrange
         self.client_login()
+        self.user.user_permissions.add(Permission.objects.get(codename='change_view'))
         data = self.views_data[0]
         given_data = {
             "name": "My New Workspace",
@@ -353,6 +362,7 @@ class ViewCrudTestCase(TestCase):
         """Test that a view can be deleted through the API."""
         # Arrange
         self.client_login()
+        self.user.user_permissions.add(Permission.objects.get(codename='delete_view'))
         view_pk = self.views[0].pk
         # Act
         response = self.client.delete(reverse('view-detail', kwargs={'pk': view_pk}))
@@ -465,6 +475,7 @@ class WorkspaceViewCrudTestCase(TestCase):
         """Test that the list of workspace_views can be retrieved through the API."""
         # Arrange
         self.client_login()
+        self.user.user_permissions.add(Permission.objects.get(codename='view_workspaceview'))
 
         # Act
         response = self.client.get(reverse('workspaceview-list'))
@@ -479,6 +490,7 @@ class WorkspaceViewCrudTestCase(TestCase):
         """Test that a workspace_view can be created through the API."""
         # Arrange
         self.client_login()
+        self.user.user_permissions.add(Permission.objects.get(codename='add_workspaceview'))
         given_data = {
             "view_name": "My New Name",
             "workspace": self.workspaces[0].id,
@@ -503,6 +515,7 @@ class WorkspaceViewCrudTestCase(TestCase):
         """Test that a workspace_views can be retrieved through the API."""
         # Arrange
         self.client_login()
+        self.user.user_permissions.add(Permission.objects.get(codename='view_workspaceview'))
         data = self.workspace_views_data[0]
         # Act
         response = self.client.get(reverse('workspaceview-detail', kwargs={'pk': data['id']}))
@@ -516,6 +529,7 @@ class WorkspaceViewCrudTestCase(TestCase):
         """Test that a workspace_view can be updated through the API."""
         # Arrange
         self.client_login()
+        self.user.user_permissions.add(Permission.objects.get(codename='change_workspaceview'))
         data = self.workspace_views_data[0]
         given_data = {
             "view_name": "My New Name",
@@ -546,6 +560,7 @@ class WorkspaceViewCrudTestCase(TestCase):
         """Test that a workspace_view can be deleted through the API."""
         # Arrange
         self.client_login()
+        self.user.user_permissions.add(Permission.objects.get(codename='delete_workspaceview'))
         wv_pk = self.workspace_views_data[0]['id']
         # Act
         response = self.client.delete(reverse('workspaceview-detail', kwargs={'pk': wv_pk}))
