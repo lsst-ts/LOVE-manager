@@ -125,7 +125,7 @@ class BaseTestCase(TestCase):
         self.cases = [
             {
                 'class': Workspace,
-                'url_key': 'workspace',
+                'key': 'workspace',
                 'old_count': Workspace.objects.count(),
                 'new_data': {
                     'name': 'My new Workspace',
@@ -135,7 +135,7 @@ class BaseTestCase(TestCase):
             },
             {
                 'class': View,
-                'url_key': 'view',
+                'key': 'view',
                 'old_count': View.objects.count(),
                 'new_data': {
                     'name': 'My new View',
@@ -146,13 +146,13 @@ class BaseTestCase(TestCase):
             },
             {
                 'class': WorkspaceView,
-                'url_key': 'workspaceview',
+                'key': 'workspaceview',
                 'old_count': WorkspaceView.objects.count(),
                 'new_data': {
-                    'view_name': 'My new View with custom name',
-                    'sort_value': 1,
-                    'view': 0,
-                    'workspace': 0,
+                    'view_name': 'New view_name',
+                    # 'sort_value': 1,
+                    'view': self.views_data[3]['id'],
+                    'workspace': self.workspaces_data[0]['id'],
                 },
                 'current_data': self.workspace_views_data,
                 'selected_id': self.workspace_views_data[0]['id'],
