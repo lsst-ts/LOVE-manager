@@ -7,7 +7,8 @@ For more information see:
 https://docs.djangoproject.com/en/2.2/ref/contrib/admin/
 """
 from django.contrib import admin
-from api.models import Token
+from .models import Workspace, View, WorkspaceView
 
-
-admin.site.register(Token)
+admin.site.register(Workspace)
+admin.site.register(View)
+admin.site.register(WorkspaceView)

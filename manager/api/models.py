@@ -2,7 +2,7 @@
 Defines the Django models for this app ('api').
 
 For more information see:
-https://docs.djangoproject.com/en/2.1/topics/db/models/
+https://docs.djangoproject.com/en/2.2/topics/db/models/
 """
 from django.conf import settings
 from django.db import models
