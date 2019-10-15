@@ -4,6 +4,7 @@ from django.test import TestCase
 from django.utils import timezone
 from freezegun import freeze_time
 from rest_framework import serializers
+from rest_framework.test import APIClient
 from ui_framework.models import Workspace, View, WorkspaceView
 
 
@@ -93,6 +94,11 @@ class BaseTestCase(TestCase):
                 # Add view_i and view_i+1 to workspace_i
                 self.workspaces[i].views.add(self.views[i], through_defaults={'view_name': 'v{}'.format(i)})
                 self.workspaces[i].views.add(self.views[i + 1], through_defaults={'view_name': 'v{}'.format(i)})
+
+        # Client to test the API
+        self.client = APIClient()
+
+        # Models to test:
         self.cases = [
             {
                 'class': Workspace,
