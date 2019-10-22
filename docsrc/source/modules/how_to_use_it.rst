@@ -219,12 +219,14 @@ UI Framework
 ============
 
 The UI Framework backend is composed of 3 models:
-- Workspace: represents a workspace, composed by different views
-- View: represents a view, all the data of the view is contained in JSON format in the ..code:`data` field of the view
-- WorkspaceView: relates a Workspace and a View, it is the intermediary table of the many-to-many relationship between Workspace and View.
+
+  - **Workspace:** represents a workspace, composed by different views
+  - **View:** represents a view, all the data of the view is contained in JSON format in the :code:`data` field of the view
+  - **WorkspaceView:** relates a Workspace and a View, it is the intermediary table of the many-to-many relationship between Workspace and View.
 
 Currently the API provides a standard REST api for these models.
 For more info you can either:
-- Use the browsable API available in: :code:`<IP>/manager/ui_framework/`
-- See the apidoc in Swagger format, available in: :code:`<IP>/manager/apidoc/swagger/`
-- See the apidoc in ReDoc format, available in: :code:`<IP>/manager/apidoc/redoc/`
+
+  - Use the browsable API available in: :code:`<IP>/manager/ui_framework/`
+  - See the apidoc in Swagger format, available in: :code:`<IP>/manager/apidoc/swagger/`
+  - See the apidoc in ReDoc format, available in: :code:`<IP>/manager/apidoc/redoc/`
