@@ -9,3 +9,4 @@ These are the ApiDocs of the project.
    manage
    manager
    subscription
+   ui_framework
