@@ -17,7 +17,7 @@ Including another URLconf
 """
 from django.conf.urls import include
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
 from django.views.generic import TemplateView
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -39,8 +39,8 @@ urlpatterns = [
     path('manager/login/', TemplateView.as_view(template_name="registration/login.html")),
     path('manager/api/', include('api.urls')),
     path('manager/ui_framework/', include('ui_framework.urls')),
-    path('manager/apidoc/swagger(?P<format>\.json|\.yaml)$',
-         schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    re_path(r'^manager/apidoc/swagger(?P<format>\.json|\.yaml)$',
+            schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('manager/apidoc/swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('manager/apidoc/redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]
