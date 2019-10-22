@@ -5,7 +5,7 @@ from ui_framework.serializers import WorkspaceSerializer, ViewSerializer, Worksp
 
 
 class WorkspaceViewSet(viewsets.ModelViewSet):
-    """Define API endpoints for the Workspace model."""
+    """GET, POST, PUT, PATCH or DELETE instances the Workspace model."""
 
     queryset = Workspace.objects.all()
     """Set of objects to be accessed by queries to this viewsets endpoints"""
@@ -15,7 +15,7 @@ class WorkspaceViewSet(viewsets.ModelViewSet):
 
 
 class ViewViewSet(viewsets.ModelViewSet):
-    """Define API endpoints for the View model."""
+    """GET, POST, PUT, PATCH or DELETE instances the View model."""
 
     queryset = View.objects.all()
     """Set of objects to be accessed by queries to this viewsets endpoints"""
@@ -25,7 +25,7 @@ class ViewViewSet(viewsets.ModelViewSet):
 
 
 class WorkspaceViewViewSet(viewsets.ModelViewSet):
-    """Define API endpoints for the WorkspaceView model."""
+    """GET, POST, PUT, PATCH or DELETE instances the WorkspaceView model."""
 
     queryset = WorkspaceView.objects.all()
     """Set of objects to be accessed by queries to this viewsets endpoints"""
