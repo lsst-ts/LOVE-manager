@@ -11,10 +11,11 @@ from api.models import Token
 from api.serializers import TokenSerializer
 
 
-login_response = openapi.Response('response description', TokenSerializer)
+valid_response = openapi.Response('Valid token', TokenSerializer)
+invalid_response = openapi.Response('Invalid token')
 
 
-@swagger_auto_schema(method='get', responses={200: login_response})
+@swagger_auto_schema(method='get', responses={200: valid_response, 401: invalid_response})
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
 def validate_token(request):
@@ -32,6 +33,7 @@ def validate_token(request):
     return Response(TokenSerializer(token).data)
 
 
+@swagger_auto_schema(method='delete', responses={204: openapi.Response('Logout Successful')})
 @api_view(['DELETE'])
 @permission_classes((IsAuthenticated,))
 def logout(request):
@@ -52,7 +54,10 @@ def logout(request):
 class CustomObtainAuthToken(ObtainAuthToken):
     """API endpoint to obtain authorization tokens."""
 
-    @swagger_auto_schema(responses={200: login_response})
+    login_response = openapi.Response('Login succesful', TokenSerializer)
+    login_failed_response = openapi.Response('Login failed')
+
+    @swagger_auto_schema(responses={200: login_response, 400: login_failed_response})
     def post(self, request, *args, **kwargs):
         """Handle the (post) request for token.
 
