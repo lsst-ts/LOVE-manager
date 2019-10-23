@@ -1,13 +1,14 @@
 """Defines the views exposed by the REST API exposed by this app."""
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
-# from rest_framework.authtoken.models import Token
-from api.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.decorators import api_view
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from api.serializers import UserSerializer
+from api.models import Token
+from api.serializers import UserSerializer, TokenSerializer
 
 
 @api_view(['GET'])
@@ -56,6 +57,9 @@ def logout(request):
 class CustomObtainAuthToken(ObtainAuthToken):
     """API endpoint to obtain authorization tokens."""
 
+    login_response = openapi.Response('response description', TokenSerializer)
+
+    @swagger_auto_schema(responses={200: login_response})
     def post(self, request, *args, **kwargs):
         """Handle the (post) request for token.
 
@@ -79,11 +83,14 @@ class CustomObtainAuthToken(ObtainAuthToken):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token = Token.objects.create(user=user)
-        user_data = UserSerializer(user).data
-        return Response({
-            'token': token.key,
-            'user_data': user_data,
-            'permissions': {
-                'execute_commands': user.has_perm('api.command.execute_command')
-            },
-        })
+        serializer = TokenSerializer(token)
+        print('DATA: ', serializer.data)
+        return Response(serializer.data)
+        # user_data = UserSerializer(user).data
+        # return Response({
+        #     'token': token.key,
+        #     'user_data': user_data,
+        #     'permissions': {
+        #         'execute_commands': user.has_perm('api.command.execute_command')
+        #     },
+        # })
