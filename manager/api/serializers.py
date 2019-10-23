@@ -21,8 +21,7 @@ class UserPermissionsSerializer(serializers.Serializer):
 
     execute_commands = serializers.SerializerMethodField('can_execute_commands')
 
-    @swagger_serializer_method(serializer_or_field=serializers.BooleanField)
-    def can_execute_commands(self, obj):
+    def can_execute_commands(self, obj) -> bool:
         return serializers.BooleanField(obj.has_perm('api.command.execute_command'))
 
 
