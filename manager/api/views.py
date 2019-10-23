@@ -8,9 +8,13 @@ from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from api.models import Token
-from api.serializers import UserSerializer, TokenSerializer
+from api.serializers import TokenSerializer
 
 
+login_response = openapi.Response('response description', TokenSerializer)
+
+
+@swagger_auto_schema(method='get', responses={200: login_response})
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
 def validate_token(request):
@@ -23,18 +27,9 @@ def validate_token(request):
     Response
         The response stating that the token is valid with a 200 status code.
     """
-    user = request.user
-    user_data = UserSerializer(user).data
-    return Response(
-        {
-            'detail': 'Token is valid',
-            'user_data': user_data,
-            'permissions': {
-                'execute_commands': user.has_perm('api.command.execute_command')
-            },
-        },
-        status=status.HTTP_200_OK
-    )
+    token_key = request.META.get('HTTP_AUTHORIZATION')[6:]
+    token = Token.objects.get(key=token_key)
+    return Response(TokenSerializer(token).data)
 
 
 @api_view(['DELETE'])
@@ -56,8 +51,6 @@ def logout(request):
 
 class CustomObtainAuthToken(ObtainAuthToken):
     """API endpoint to obtain authorization tokens."""
-
-    login_response = openapi.Response('response description', TokenSerializer)
 
     @swagger_auto_schema(responses={200: login_response})
     def post(self, request, *args, **kwargs):
@@ -83,5 +76,4 @@ class CustomObtainAuthToken(ObtainAuthToken):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token = Token.objects.create(user=user)
-        serializer = TokenSerializer(token)
-        return Response(serializer.data)
+        return Response(TokenSerializer(token).data)
