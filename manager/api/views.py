@@ -84,13 +84,4 @@ class CustomObtainAuthToken(ObtainAuthToken):
         user = serializer.validated_data['user']
         token = Token.objects.create(user=user)
         serializer = TokenSerializer(token)
-        print('DATA: ', serializer.data)
         return Response(serializer.data)
-        # user_data = UserSerializer(user).data
-        # return Response({
-        #     'token': token.key,
-        #     'user_data': user_data,
-        #     'permissions': {
-        #         'execute_commands': user.has_perm('api.command.execute_command')
-        #     },
-        # })

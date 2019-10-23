@@ -18,11 +18,24 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserPermissionsSerializer(serializers.Serializer):
+    """Custom Serializer for user permissions."""
 
     execute_commands = serializers.SerializerMethodField('can_execute_commands')
 
-    def can_execute_commands(self, obj) -> bool:
-        return serializers.BooleanField(obj.has_perm('api.command.execute_command'))
+    def can_execute_commands(self, user) -> bool:
+        """Define wether or not the given user has permissions to execute commands.
+
+        Params
+        ------
+        user: User
+            The User object
+
+        Returns
+        -------
+        Bool
+            True if the user can execute commands, False if not.
+        """
+        return user.has_perm('api.command.execute_command')
 
 
 class TokenSerializer(serializers.Serializer):
@@ -30,20 +43,37 @@ class TokenSerializer(serializers.Serializer):
 
     user = UserSerializer()
 
-    key = serializers.CharField()
-
-    user_data = serializers.SerializerMethodField('get_user_data')
-
     token = serializers.SerializerMethodField('get_token')
 
     permissions = serializers.SerializerMethodField('get_permissions')
 
     @swagger_serializer_method(serializer_or_field=UserPermissionsSerializer)
-    def get_permissions(self, obj):
-        return UserPermissionsSerializer(obj)
+    def get_permissions(self, token):
+        """Return user permissions serialized as a dictionary with permission names as keys and bools as values.
 
-    def get_token(self, obj):
-        return serializers.CharField(obj.key)
+        Params
+        ------
+        token: Token
+            The Token object
 
-    def get_user_data(self, obj):
-        return UserSerializer(obj.user)
+        Returns
+        -------
+        Bool
+            True if the user can execute commands, False if not.
+        """
+        return UserPermissionsSerializer(token.user).data
+
+    def get_token(self, token):
+        """Return the token key.
+
+        Params
+        ------
+        token: Token
+            The Token object
+
+        Returns
+        -------
+        String
+            The token key
+        """
+        return token.key
