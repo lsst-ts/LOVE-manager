@@ -56,12 +56,12 @@ class AuthApiTestCase(TestCase):
             'The permissions are not as expected'
         )
         self.assertEqual(
-            response.data['user_data'],
+            response.data['user'],
             {
                 'username': self.user.username,
                 'email': self.user.email,
             },
-            'The user_data is not as expected'
+            'The user is not as expected'
         )
 
     def test_user_login_failed(self):
@@ -123,8 +123,8 @@ class AuthApiTestCase(TestCase):
         # Assert after request:
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
-            response.data['detail'],
-            'Token is valid',
+            response.data['token'],
+            token.key,
             'The response is not as expected'
         )
         self.assertEqual(
@@ -133,12 +133,12 @@ class AuthApiTestCase(TestCase):
             'The permissions are not as expected'
         )
         self.assertEqual(
-            response.data['user_data'],
+            response.data['user'],
             {
                 'username': self.user.username,
                 'email': self.user.email,
             },
-            'The user_data is not as expected'
+            'The user is not as expected'
         )
 
     def test_user_validate_token_fail(self):
@@ -156,11 +156,6 @@ class AuthApiTestCase(TestCase):
 
         # Assert after request:
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertNotEqual(
-            response.data,
-            {'detail': 'Token is valid'},
-            'The response indicates the validation was correct'
-        )
 
     def test_user_fails_to_validate_deleted_token(self):
         """Test that a user fails to validate an deleted token."""
@@ -178,11 +173,6 @@ class AuthApiTestCase(TestCase):
 
         # Assert:
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertNotEqual(
-            response.data,
-            {'detail': 'Token is valid'},
-            'The response indicates the validation was correct'
-        )
 
     def test_user_fails_to_validate_expired_token(self):
         """Test that a user fails to validate an expired token."""
@@ -205,11 +195,6 @@ class AuthApiTestCase(TestCase):
             # Assert:
             token_num_1 = Token.objects.filter(user__username=self.username).count()
             self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-            self.assertNotEqual(
-                response.data,
-                {'detail': 'Token is valid'},
-                'The response indicates the validation was correct'
-            )
             self.assertEqual(token_num_0 - 1, token_num_1)
 
     def test_user_logout(self):

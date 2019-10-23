@@ -1,15 +1,21 @@
 """Defines the views exposed by the REST API exposed by this app."""
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
-# from rest_framework.authtoken.models import Token
-from api.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.decorators import api_view
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from api.serializers import UserSerializer
+from api.models import Token
+from api.serializers import TokenSerializer
 
 
+valid_response = openapi.Response('Valid token', TokenSerializer)
+invalid_response = openapi.Response('Invalid token')
+
+
+@swagger_auto_schema(method='get', responses={200: valid_response, 401: invalid_response})
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
 def validate_token(request):
@@ -22,20 +28,12 @@ def validate_token(request):
     Response
         The response stating that the token is valid with a 200 status code.
     """
-    user = request.user
-    user_data = UserSerializer(user).data
-    return Response(
-        {
-            'detail': 'Token is valid',
-            'user_data': user_data,
-            'permissions': {
-                'execute_commands': user.has_perm('api.command.execute_command')
-            },
-        },
-        status=status.HTTP_200_OK
-    )
+    token_key = request.META.get('HTTP_AUTHORIZATION')[6:]
+    token = Token.objects.get(key=token_key)
+    return Response(TokenSerializer(token).data)
 
 
+@swagger_auto_schema(method='delete', responses={204: openapi.Response('Logout Successful')})
 @api_view(['DELETE'])
 @permission_classes((IsAuthenticated,))
 def logout(request):
@@ -56,6 +54,10 @@ def logout(request):
 class CustomObtainAuthToken(ObtainAuthToken):
     """API endpoint to obtain authorization tokens."""
 
+    login_response = openapi.Response('Login succesful', TokenSerializer)
+    login_failed_response = openapi.Response('Login failed')
+
+    @swagger_auto_schema(responses={200: login_response, 400: login_failed_response})
     def post(self, request, *args, **kwargs):
         """Handle the (post) request for token.
 
@@ -79,11 +81,4 @@ class CustomObtainAuthToken(ObtainAuthToken):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token = Token.objects.create(user=user)
-        user_data = UserSerializer(user).data
-        return Response({
-            'token': token.key,
-            'user_data': user_data,
-            'permissions': {
-                'execute_commands': user.has_perm('api.command.execute_command')
-            },
-        })
+        return Response(TokenSerializer(token).data)
