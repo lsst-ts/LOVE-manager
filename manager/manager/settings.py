@@ -180,13 +180,14 @@ STATICFILES_DIRS = [
 # Channels
 ASGI_APPLICATION = 'manager.routing.application'
 REDIS_HOST = os.environ.get('REDIS_HOST', False)
+REDIS_PORT = os.environ.get('REDIS_PORT', "6379")
 REDIS_PASS = os.environ.get('REDIS_PASS', False)
 if REDIS_HOST and not TESTING:
     CHANNEL_LAYERS = {
         'default': {
             'BACKEND': 'channels_redis.core.RedisChannelLayer',
             'CONFIG': {
-                "hosts": ["redis://:" + REDIS_PASS + "@" + REDIS_HOST + ":6379/0"],
+                "hosts": ["redis://:" + REDIS_PASS + "@" + REDIS_HOST + ":" + REDIS_PORT + "/0"],
                 "symmetric_encryption_keys": [SECRET_KEY],
             },
         },
