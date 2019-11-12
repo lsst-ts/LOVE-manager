@@ -37,22 +37,22 @@ pipeline {
         }
       }
     }
-    stage("Test Docker Image") {
-      when {
-        anyOf {
-          branch "master"
-          branch "develop"
-          branch "bugfix/*"
-          branch "hotfix/*"
-          branch "release/*"
-        }
-      }
-      steps {
-        script {
-          sh "docker run ${dockerImageName} pytest"
-        }
-      }
-    }
+    // stage("Test Docker Image") {
+    //   when {
+    //     anyOf {
+    //       branch "master"
+    //       branch "develop"
+    //       branch "bugfix/*"
+    //       branch "hotfix/*"
+    //       branch "release/*"
+    //     }
+    //   }
+    //   steps {
+    //     script {
+    //       sh "docker run ${dockerImageName} pytest"
+    //     }
+    //   }
+    // }
     stage("Push Docker image") {
       when {
         anyOf {

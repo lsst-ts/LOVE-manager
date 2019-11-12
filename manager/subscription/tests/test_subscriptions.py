@@ -65,12 +65,13 @@ class TestSubscriptionCombinations:
                 'csc': csc,
                 'salindex': salindex,
                 'data': {stream: {'value': 1.02813957817852497, 'dataType': 'Float'} for stream in streams}
-            }]
+            }],
+            'subscription': '{}-{}-{}-{}'.format(category, csc, salindex, streams[0])
         }
         return response, response
 
     @pytest.mark.asyncio
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     async def test_join_and_leave_every_subscription(self):
         """Test that clients can join and then leave any subscription stream."""
         # Arrange
@@ -109,7 +110,7 @@ class TestSubscriptionCombinations:
         await communicator.disconnect()
 
     @pytest.mark.asyncio
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     async def test_join_and_leave_all_subscription(self):
         """Test that clients can subscribe and leave all streams."""
         # Arrange
@@ -144,7 +145,7 @@ class TestSubscriptionCombinations:
         await communicator.disconnect()
 
     @pytest.mark.asyncio
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     async def test_receive_messages_from_every_subscription(self):
         """Test that clients subscribed (individually) to every stream receive messages from all of them."""
         # Arrange
@@ -172,7 +173,7 @@ class TestSubscriptionCombinations:
         await communicator.disconnect()
 
     @pytest.mark.asyncio
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     async def test_receive_messages_from_all_subscription(self):
         """Test that clients subscribed to all streams receive messages from all of them."""
         # Arrange
@@ -194,13 +195,16 @@ class TestSubscriptionCombinations:
                 self.build_messages(combination['category'], combination['csc'], combination['salindex'], [
                                     combination['stream']])
             await communicator.send_json_to(msg)
+            expected['subscription'] = '{}-all-all-all'.format(combination['category'])
             response = await communicator.receive_json_from()
             # Assert
+            print(response)
+            print(expected)
             assert response == expected
         await communicator.disconnect()
 
     @pytest.mark.asyncio
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     async def test_receive_message_for_subscribed_group_only(self):
         """Test that clients subscribed to some groups only receive messages from those."""
         # Arrange
@@ -236,7 +240,7 @@ class TestSubscriptionCombinations:
         await communicator.disconnect()
 
     @pytest.mark.asyncio
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     async def test_receive_message_for_subscribed_groups_only(self):
         """Test that clients subscribed to some groups only receive messages from those."""
         # Arrange
@@ -278,7 +282,7 @@ class TestSubscriptionCombinations:
         await communicator.disconnect()
 
     @pytest.mark.asyncio
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     async def test_receive_part_of_message_for_subscribed_groups_only(self):
         """Test that clients subscribed to some groups only receive the corresponding part of incoming messages."""
         # Arrange

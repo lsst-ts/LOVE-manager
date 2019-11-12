@@ -52,12 +52,13 @@ class TestCommands:
                 'csc': csc,
                 'salindex': salindex,
                 'data': {stream: {'value': 1.02813957817852497, 'dataType': 'Float'} for stream in streams}
-            }]
+            }],
+            'subscription': '{}-{}-{}-{}'.format(category, csc, salindex, streams[0])
         }
         return response, response
 
     @pytest.mark.asyncio
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     async def test_authorized_user_can_send_command(self):
         """Test that an authorized user can send commands."""
         # Arrange
@@ -82,7 +83,7 @@ class TestCommands:
         await communicator.disconnect()
 
     @pytest.mark.asyncio
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     async def test_unauthorized_user_cannot_send_command(self):
         """Test that an unauthorized user cannot send commands."""
         # Arrange
@@ -106,7 +107,7 @@ class TestCommands:
         await communicator.disconnect()
 
     @pytest.mark.asyncio
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     async def test_authorized_user_gets_ack(self):
         """Test that commands get acknowledged."""
         # Arrange
@@ -149,7 +150,8 @@ class TestCommands:
                         "cmd_id": 12345
                     }
                 }
-            }]
+            }],
+            "subscription": "cmd_acks-all-all-all"
         }
         ack = {
             "category": "ack",
@@ -163,12 +165,16 @@ class TestCommands:
                         "cmd_id": 12345
                     }
                 }
-            }]
+            }],
+            "subscription": "cmd_acks-all-all-all"
         }
         await communicator.send_json_to(msg_send)
         await communicator.receive_json_from()
         await communicator.send_json_to(msg_receive)
         # Assert
         response = await communicator.receive_json_from()
+        print(ack)
+        print('\n\n\n')
+        print(response)
         assert ack == response
         await communicator.disconnect()

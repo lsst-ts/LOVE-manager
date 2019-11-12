@@ -186,7 +186,8 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                         'category': category,
                         'csc': csc,
                         'salindex': salindex,
-                        'data': {stream: data_csc[stream]}
+                        'data': {stream: data_csc[stream]},
+                        'subscription': group_name
                     }
                 )
                 streams_data[stream] = data_csc[stream]
@@ -197,7 +198,8 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                     'category': category,
                     'csc': csc,
                     'salindex': salindex,
-                    'data': {csc: streams_data}
+                    'data': {csc: streams_data},
+                    'subscription': '-'.join([category, csc, str(salindex), 'all'])
                 }
             )
 
@@ -271,6 +273,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         category = message['category']
         salindex = message['salindex']
         csc = message['csc']
+        subscription = message['subscription']
 
         # Send data to WebSocket
         await self.send(text_data=json.dumps({
@@ -278,8 +281,9 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             'data': [{
                 'csc': csc,
                 'salindex': salindex,
-                'data': data,
-            }]
+                'data': data
+            }],
+            'subscription': subscription
         }))
 
     async def subscription_ack(self, message):
@@ -309,7 +313,8 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                         'csc': csc,
                         'salindex': salindex,
                         'data': data,
-                    }]
+                    }],
+                    'subscription': 'cmd_acks-all-all-all'
                 }))
 
     async def subscription_all_data(self, message):
@@ -325,9 +330,11 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         """
         data = message['data']
         category = message['category']
+        # subscription = '{}-all-all-all'.format(category)
 
         # Send data to WebSocket
         await self.send(text_data=json.dumps({
             'category': category,
-            'data': data
+            'data': data,
+            'subscription': '{}-all-all-all'.format(category)
         }))
