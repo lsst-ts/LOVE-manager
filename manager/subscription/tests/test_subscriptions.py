@@ -324,3 +324,58 @@ class TestSubscriptionCombinations:
             await communicator.send_json_to(subscription_msg)
             await communicator.receive_json_from()
         await communicator.disconnect()
+
+    @pytest.mark.asyncio
+    @pytest.mark.django_db
+    async def test_request_initial_state_when_subscribing_to_event(self):
+        """
+        Must send  a request for initial_state to the Producer whenever 
+        a client subscribes to events
+        """
+        # Arrange
+        client_communicator = WebsocketCommunicator(application, self.url)
+        producer_communicator = WebsocketCommunicator(application, self.url)
+        await client_communicator.connect()
+        await producer_communicator.connect()
+
+        # Act 1 (Subscribe producer)
+        await producer_communicator.send_json_to({
+            'option': 'subscribe',
+            'category': 'initial_state',
+            'csc': 'all',
+            'salindex': 'all',
+            'stream': 'all'
+        })
+        await producer_communicator.receive_json_from()
+
+        # Act 2  (Subscribe client)
+        for combination in self.combinations:
+            # initial state is only useful for events
+            if combination["category"] != "event":
+                continue
+
+            msg = {
+                "option": "subscribe",
+                "csc": combination["csc"],
+                "salindex": combination["salindex"],
+                "stream": combination["stream"],
+                "category": combination["category"]
+            }
+            await client_communicator.send_json_to(msg)
+            producer_consumer_response = await producer_communicator.receive_json_from()
+
+            # Assert
+            assert producer_consumer_response == {
+                'category': 'initial_state',
+                'data': [{
+                    'csc': combination["csc"],
+                    'salindex': combination["salindex"],
+                    'stream': {
+                        'event_name': combination["stream"]
+                    }
+                }]
+
+            }
+
+        await client_communicator.disconnect()
+        await producer_communicator.disconnect()
