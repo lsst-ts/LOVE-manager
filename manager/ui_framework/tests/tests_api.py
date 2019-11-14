@@ -1,4 +1,4 @@
-"""Test the UI Framework API."""
+"""Test the UI Framework REST API."""
 from django.contrib.auth.models import User, Permission
 from django.urls import reverse
 from rest_framework import status
