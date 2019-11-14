@@ -1,6 +1,8 @@
 """Defines the views exposed by the REST API exposed by this app."""
-from rest_framework import viewsets, status
-from rest_framework.decorators import api_view, permission_classes, action
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import viewsets
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from ui_framework.models import Workspace, View, WorkspaceView
 from ui_framework.serializers import (
@@ -20,6 +22,9 @@ class WorkspaceViewSet(viewsets.ModelViewSet):
     serializer_class = WorkspaceSerializer
     """Serializer used to serialize Workspace objects"""
 
+    @swagger_auto_schema(
+        method='get',
+        responses={200: openapi.Response('Responsee', WorkspaceWithViewNameSerializer)})
     @action(detail=False)
     def with_view_name(self, request):
         """Serialize Workspaces including the view's names in the views response.
