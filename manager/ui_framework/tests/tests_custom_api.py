@@ -4,7 +4,7 @@ from django.urls import reverse
 from rest_framework import status
 from api.models import Token
 from ui_framework.models import Workspace, View, WorkspaceView
-from ui_framework.tests.utils import BaseTestCase
+from ui_framework.tests.utils import BaseTestCase, get_dict
 
 
 class AuthorizedCrudTestCase(BaseTestCase):
@@ -46,6 +46,27 @@ class AuthorizedCrudTestCase(BaseTestCase):
             'Retrieving list of workspaces did not return status 200'
         )
         retrieved_data = [dict(data) for data in response.data]
+        self.assertEqual(
+            retrieved_data, expected_data,
+            'Retrieved list of workspaces is not as expected'
+        )
+
+    def test_get_full_workspace(self):
+        """Test that authorized users can retrieve a workspace with all its views fully subserialized."""
+        # Arrange
+        self.user.user_permissions.add(Permission.objects.get(codename='view_workspace'))
+        w = self.workspaces_data[0]
+        expected_data = {**w, 'views': self.views_data[0:2]}
+
+        # Act
+        url = reverse('workspace-full', kwargs={'pk': w['id']})
+        response = self.client.get(url)
+        # Assert
+        self.assertEqual(
+            response.status_code, status.HTTP_200_OK,
+            'Retrieving list of workspaces did not return status 200'
+        )
+        retrieved_data = dict(response.data)
         self.assertEqual(
             retrieved_data, expected_data,
             'Retrieved list of workspaces is not as expected'

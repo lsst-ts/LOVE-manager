@@ -1,7 +1,7 @@
 """Defines the views exposed by the REST API exposed by this app."""
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from ui_framework.models import Workspace, View, WorkspaceView
@@ -9,6 +9,7 @@ from ui_framework.serializers import (
     WorkspaceSerializer,
     ViewSerializer,
     WorkspaceViewSerializer,
+    WorkspaceFullSerializer,
     WorkspaceWithViewNameSerializer,
 )
 
@@ -21,6 +22,33 @@ class WorkspaceViewSet(viewsets.ModelViewSet):
 
     serializer_class = WorkspaceSerializer
     """Serializer used to serialize Workspace objects"""
+
+    @swagger_auto_schema(
+        method='get',
+        responses={200: openapi.Response('Responsee', WorkspaceFullSerializer)})
+    @action(detail=True)
+    def full(self, request, pk=None):
+        """Serialize a Workspace including the view's fully subserialized.
+
+        Params
+        ------
+        request: Request
+            The Requets object
+        pk: int
+            The corresponding Workspace pk
+
+        Returns
+        -------
+        Response
+            The response containing the serialized Workspaces, with the views fully subserialized
+        """
+        try:
+            workspace = Workspace.objects.get(pk=pk)
+        except Workspace.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = WorkspaceFullSerializer(workspace)
+        return Response(serializer.data)
 
     @swagger_auto_schema(
         method='get',

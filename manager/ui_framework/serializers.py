@@ -33,6 +33,18 @@ class WorkspaceSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class WorkspaceFullSerializer(serializers.ModelSerializer):
+    """Serializer for the Workspace model, including the views fully subserialized."""
+
+    views = ViewSerializer(many=True, read_only=True)
+
+    class Meta:
+        """Meta class to map serializer's fields with the model fields."""
+
+        model = Workspace
+        fields = '__all__'
+
+
 class WorkspaceWithViewNameSerializer(serializers.ModelSerializer):
     """Serializer for the Workspace model, including names of views in the view field."""
 
