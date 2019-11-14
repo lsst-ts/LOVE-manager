@@ -3,8 +3,8 @@ from django.contrib.auth.models import User, Permission
 from django.urls import reverse
 from rest_framework import status
 from api.models import Token
-from ui_framework.models import Workspace, View, WorkspaceView
-from ui_framework.tests.utils import BaseTestCase, get_dict
+from ui_framework.models import View
+from ui_framework.tests.utils import BaseTestCase
 
 
 class AuthorizedCrudTestCase(BaseTestCase):
