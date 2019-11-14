@@ -29,7 +29,7 @@ class AuthorizedCrudTestCase(BaseTestCase):
         self.token = Token.objects.get(user__username=self.username)
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
 
-    def test_get_available_workspaces(self):
+    def test_get_workspaces_with_view_name(self):
         """Test that authorized users can retrieve the list of available workspaces, with views ids and names."""
         # Arrange
         self.user.user_permissions.add(Permission.objects.get(codename='view_workspace'))
@@ -38,7 +38,7 @@ class AuthorizedCrudTestCase(BaseTestCase):
             for w in self.workspaces_data
         ]
         # Act
-        url = reverse('workspace-list')
+        url = reverse('workspace-with-view-name')
         response = self.client.get(url)
         # Assert
         self.assertEqual(
