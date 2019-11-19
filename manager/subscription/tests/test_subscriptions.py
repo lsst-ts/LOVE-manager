@@ -326,10 +326,10 @@ class TestSubscriptionCombinations:
         await communicator.disconnect()
 
     @pytest.mark.asyncio
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     async def test_request_initial_state_when_subscribing_to_event(self):
         """
-        Must send  a request for initial_state to the Producer whenever 
+        Must send  a request for initial_state to the Producer whenever
         a client subscribes to events
         """
         # Arrange
@@ -349,6 +349,7 @@ class TestSubscriptionCombinations:
         await producer_communicator.receive_json_from()
 
         # Act 2  (Subscribe client)
+        import pprint
         for combination in self.combinations:
             # initial state is only useful for events
             if combination["category"] != "event":
@@ -365,6 +366,8 @@ class TestSubscriptionCombinations:
             producer_consumer_response = await producer_communicator.receive_json_from()
 
             # Assert
+            print('\n producer_consumer_response:')
+            pprint.pprint(producer_consumer_response)
             assert producer_consumer_response == {
                 'category': 'initial_state',
                 'data': [{
@@ -372,8 +375,9 @@ class TestSubscriptionCombinations:
                     'salindex': combination["salindex"],
                     'stream': {
                         'event_name': combination["stream"]
-                    }
-                }]
+                    },
+                }],
+                'subscription': 'initial_state-all-all-all'
 
             }
 
