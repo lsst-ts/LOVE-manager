@@ -87,7 +87,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                         'data': [{
                             "csc": csc,
                             "salindex": salindex,
-                            "stream": {
+                            "data": {
                                 "event_name": stream
                             }
                         }]
