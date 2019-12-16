@@ -8,6 +8,7 @@ from rest_framework.test import APIClient
 from rest_framework import status
 from api.models import Token
 from django.conf import settings
+from astropy.time import Time
 
 
 class AuthApiTestCase(TestCase):
@@ -62,6 +63,13 @@ class AuthApiTestCase(TestCase):
                 'email': self.user.email,
             },
             'The user is not as expected'
+        )
+        t = Time.now()
+        dt = (t.datetime.timestamp() - t.tai.datetime.timestamp())
+        self.assertEqual(
+            response.data['tai_to_utc'],
+            dt,
+            'The taiToUTC transformation is not as expected'
         )
 
     def test_user_login_failed(self):
@@ -139,6 +147,13 @@ class AuthApiTestCase(TestCase):
                 'email': self.user.email,
             },
             'The user is not as expected'
+        )
+        t = Time.now()
+        dt = (t.datetime.timestamp() - t.tai.datetime.timestamp())
+        self.assertEqual(
+            response.data['tai_to_utc'],
+            dt,
+            'The taiToUTC transformation is not as expected'
         )
 
     def test_user_validate_token_fail(self):
