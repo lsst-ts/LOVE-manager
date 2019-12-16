@@ -2,6 +2,7 @@
 from drf_yasg.utils import swagger_serializer_method
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from astropy.time import Time
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -47,6 +48,8 @@ class TokenSerializer(serializers.Serializer):
 
     permissions = serializers.SerializerMethodField('get_permissions')
 
+    tai_to_utc = serializers.SerializerMethodField('get_tai_to_utc')
+
     @swagger_serializer_method(serializer_or_field=UserPermissionsSerializer)
     def get_permissions(self, token):
         """Return user permissions serialized as a dictionary with permission names as keys and bools as values.
@@ -77,3 +80,20 @@ class TokenSerializer(serializers.Serializer):
             The token key
         """
         return token.key
+
+    def get_tai_to_utc(self, token) -> float:
+        """Return the difference in seconds between TAI and UTC Timestamps.
+
+        Params
+        ------
+        token: Token
+            The Token object
+
+        Returns
+        -------
+        Int
+            The number of seconds of difference between TAI and UTC times
+        """
+        t = Time.now()
+        dt = (t.datetime.timestamp() - t.tai.datetime.timestamp())
+        return dt
