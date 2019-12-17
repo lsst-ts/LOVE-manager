@@ -362,10 +362,12 @@ class TestSubscriptionCombinations:
                 "stream": combination["stream"],
                 "category": combination["category"]
             }
+
+            # Subscribe the first time
             await client_communicator.send_json_to(msg)
             producer_consumer_response = await producer_communicator.receive_json_from()
 
-            # Assert
+            # Assert first subscription
             print('\n producer_consumer_response:')
             pprint.pprint(producer_consumer_response)
             assert producer_consumer_response == {
@@ -373,13 +375,20 @@ class TestSubscriptionCombinations:
                 'data': [{
                     'csc': combination["csc"],
                     'salindex': combination["salindex"],
-                    'stream': {
+                    'data': {
                         'event_name': combination["stream"]
                     },
                 }],
                 'subscription': 'initial_state-all-all-all'
 
             }
+
+            # Assert second subscription doesn't produce a message
+            await client_communicator.send_json_to(msg)
+
+            with pytest.raises(asyncio.TimeoutError):
+                producer_consumer_response = await  asyncio.wait_for(producer_communicator.receive_json_from(), timeout=self.no_reception_timeout)
+            print('adsfadsf')
 
         await client_communicator.disconnect()
         await producer_communicator.disconnect()
