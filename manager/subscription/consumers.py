@@ -77,24 +77,6 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                 'data': 'Successfully subscribed to %s-%s-%s-%s' % (category, csc, salindex, stream)
             })
 
-            # If subscribed to an event, send request for initial-state
-            if category == 'event':
-                await self.channel_layer.group_send(
-                    'initial_state-all-all-all',
-                    {
-                        'type': 'subscription_all_data',
-                        'category': 'initial_state',
-                        'data': [{
-                            "csc": csc,
-                            "salindex": salindex,
-                            "data": {
-                                "event_name": stream
-                            }
-                        }]
-                    }
-                )
-            return
-
         if option == 'unsubscribe':
             # Unsubscribe and send confirmation
             csc = message['csc']
@@ -235,6 +217,23 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             key,
             self.channel_name
         )
+
+        # If subscribing to an event, send the initial_state
+        if category == 'event':
+            await self.channel_layer.group_send(
+                'initial_state-all-all-all',
+                {
+                    'type': 'subscription_all_data',
+                    'category': 'initial_state',
+                    'data': [{
+                        "csc": csc,
+                        "salindex": int(salindex),
+                        "data": {
+                            "event_name": stream
+                        }
+                    }]
+                }
+            )
 
     async def _leave_group(self, category, csc, salindex, stream):
         """Leave a group in order to receive messages from it.
