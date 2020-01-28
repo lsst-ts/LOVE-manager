@@ -116,3 +116,44 @@ class SchemaValidationTestCase(TestCase):
             response.data,
             expected_data
         )
+
+    def test_invalid_config(self):
+        """Test validation output of an invalid config file"""
+
+        # Act:
+        url = reverse('validate-config-schema')
+        config = "wait_time: 'asd'"
+        request_data = {
+            'config': config,
+            'schema': self.script_schema
+        }
+        response = self.client.post(url, request_data, format='json')
+
+        # Assert:
+        expected_data = {
+            'error': {
+                'cause': None,
+                'context': [],
+                'instance': 'asd',
+                'message': "'asd' is not of type 'number'",
+                'parent': None,
+                'path': ['wait_time'],
+                'relative_path': ['wait_time'],
+                'relative_schema_path': ['properties', 'wait_time', 'type'],
+                'schema': {
+                    'default': 0,
+                    'description': 'Time to wait, in seconds',
+                    'minimum': 0,
+                    'type': 'number'
+                },
+                'schema_path': ['properties', 'wait_time', 'type'],
+                'validator': 'type',
+                'validator_value': 'number'
+            },
+            'title': 'INVALID CONFIG YAML'
+        }
+
+        self.assertEqual(
+            response.data,
+            expected_data
+        )

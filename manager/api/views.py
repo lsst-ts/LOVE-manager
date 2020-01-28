@@ -1,5 +1,7 @@
 """Defines the views exposed by the REST API exposed by this app."""
 import yaml
+import jsonschema
+import collections
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
@@ -96,7 +98,6 @@ def validate_config_schema(request):
         Dictionary containing a 'title' and an 'error' key (if any)
         or an 'output' with the output of the validator (config with defaults-autocomplete)
     """
-
     try:
         config = yaml.safe_load(request.data['config'])
     except yaml.scanner.ScannerError as e:
@@ -108,6 +109,17 @@ def validate_config_schema(request):
         })
     schema = yaml.safe_load(request.data['schema'])
     validator = DefaultingValidator(schema)
-    output = validator.validate(config)
 
-    return Response({'title': 'None', "output": output})
+    try:
+        output = validator.validate(config)
+        return Response({'title': 'None', "output": output})
+    except jsonschema.exceptions.ValidationError as e:
+        error = e.__dict__
+        for key in error:
+            if(type(error[key]) == collections.deque):
+                error[key] = list(error[key])
+
+        return Response({
+            'title': 'INVALID CONFIG YAML',
+            'error': error
+        })
