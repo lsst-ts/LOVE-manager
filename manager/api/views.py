@@ -9,7 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from api.models import Token
 from api.serializers import TokenSerializer
-
+from .schema_validator import DefaultingValidator 
 
 valid_response = openapi.Response('Valid token', TokenSerializer)
 invalid_response = openapi.Response('Invalid token')
@@ -82,3 +82,18 @@ class CustomObtainAuthToken(ObtainAuthToken):
         user = serializer.validated_data['user']
         token = Token.objects.create(user=user)
         return Response(TokenSerializer(token).data)
+
+
+@swagger_auto_schema(method='post', responses={200: valid_response, 401: invalid_response})
+@api_view(['POST'])
+@permission_classes((IsAuthenticated,))
+def validate_config_schema(request):
+    """Validate a configuration yaml with a scema
+
+    Returns
+    -------
+    Response
+        The response stating that the token is valid with a 200 status code.
+    """
+    
+    return Response({'data': 'ok'})
