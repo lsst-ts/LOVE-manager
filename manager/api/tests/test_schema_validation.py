@@ -3,8 +3,35 @@ from django.urls import reverse
 from api.models import Token
 from rest_framework.test import APIClient
 from django.contrib.auth.models import User, Permission
-
+import yaml
 class SchemaValidationTestCase(TestCase):
+    script_schema = """
+    $id: https://github.com/lsst-ts/ts_salobj/TestScript.yaml
+    $schema: http://json-schema.org/draft-07/schema#
+    additionalProperties: false
+    description: Configuration for TestScript
+    properties:
+        fail_cleanup:
+            default: false
+            description: If true then raise an exception in the "cleanup" method.
+            type: boolean
+        fail_run:
+            default: false
+            description: If true then raise an exception in the "run" method afer the "start" checkpoint but before waiting.
+            type: boolean
+        wait_time:
+            default: 0
+            description: Time to wait, in seconds
+            minimum: 0
+            type: number
+    required:
+    - wait_time
+    - fail_run
+    - fail_cleanup
+    title: TestScript v1
+    type: object
+    """
+
     def setUp(self):
         """Define the test suite setup."""
         # Arrange:
@@ -27,7 +54,7 @@ class SchemaValidationTestCase(TestCase):
         }
 
 
-    def test_validation(self):
+    def test_valid_config(self):
         """Test schema validation can be performed"""
         # Arrange:
         data = {'username': self.username, 'password': self.password}
@@ -37,7 +64,19 @@ class SchemaValidationTestCase(TestCase):
 
         # Act:
         url = reverse('validate-config-schema')
-        data = {'data': 'adsfasdf'}
+        data = {
+            'config': "wait_time: 3600",
+            'schema': self.script_schema
+        }
         response = self.client.post(url, data, format='json')
-        print('response', response)
-        print('response.data', response, flush=True)
+
+        # Assert:
+        expected_data = {
+            "title": "None",
+            "output": {'wait_time': 3600, 'fail_cleanup': False, 'fail_run': False}
+        }
+
+        self.assertEqual(
+            response.data,
+            expected_data
+        )

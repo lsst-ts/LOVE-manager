@@ -1,4 +1,5 @@
 """Defines the views exposed by the REST API exposed by this app."""
+import yaml
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
@@ -9,8 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from api.models import Token
 from api.serializers import TokenSerializer
-from .schema_validator import DefaultingValidator 
-
+from .schema_validator import DefaultingValidator
 valid_response = openapi.Response('Valid token', TokenSerializer)
 invalid_response = openapi.Response('Invalid token')
 
@@ -95,5 +95,10 @@ def validate_config_schema(request):
     Response
         The response stating that the token is valid with a 200 status code.
     """
-    
-    return Response({'data': 'ok'})
+
+    config = yaml.safe_load(request.data['config'])
+    schema = yaml.safe_load(request.data['schema'])
+    validator = DefaultingValidator(schema)
+    output = validator.validate(config)
+
+    return Response({'title': 'None', "output": output})
