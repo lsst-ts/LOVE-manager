@@ -4,6 +4,8 @@ from api.models import Token
 from rest_framework.test import APIClient
 from django.contrib.auth.models import User, Permission
 import yaml
+
+
 class SchemaValidationTestCase(TestCase):
     script_schema = """
     $id: https://github.com/lsst-ts/ts_salobj/TestScript.yaml
@@ -53,15 +55,13 @@ class SchemaValidationTestCase(TestCase):
             'execute_commands': True,
         }
 
-
-    def test_valid_config(self):
-        """Test schema validation can be performed"""
-        # Arrange:
         data = {'username': self.username, 'password': self.password}
         response = self.client.post(self.login_url, data, format='json')
         token = Token.objects.filter(user__username=self.username).first()
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
 
+    def test_valid_config(self):
+        """Test schema validation works for a valid config yaml string"""
         # Act:
         url = reverse('validate-config-schema')
         data = {
@@ -74,6 +74,42 @@ class SchemaValidationTestCase(TestCase):
         expected_data = {
             "title": "None",
             "output": {'wait_time': 3600, 'fail_cleanup': False, 'fail_run': False}
+        }
+
+        self.assertEqual(
+            response.data,
+            expected_data
+        )
+
+    def test_unparsable_config(self):
+        """Test validation output of an unparsable config file"""
+
+        # Act:
+        url = reverse('validate-config-schema')
+        config = "wait_time: -\na:"""
+        request_data = {
+            'config': config,
+            'schema': self.script_schema
+        }
+        response = self.client.post(url, request_data, format='json')
+
+        # Assert:
+        expected_data = {
+            'error': {
+                'context': None,
+                'context_mark': None,
+                'note': None,
+                'problem': 'sequence entries are not allowed here',
+                'problem_mark': {
+                    'buffer': f"{config}\x00",
+                    'column': 11,
+                    'index': 11,
+                    'line': 0,
+                    'name': '<unicode string>',
+                    'pointer': 11
+                }
+            },
+            'title': 'ERROR WHILE PARSING YAML STRING'
         }
 
         self.assertEqual(

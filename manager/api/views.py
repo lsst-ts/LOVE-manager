@@ -88,15 +88,24 @@ class CustomObtainAuthToken(ObtainAuthToken):
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
 def validate_config_schema(request):
-    """Validate a configuration yaml with a scema
+    """Validate a configuration yaml with using a schema
 
     Returns
     -------
     Response
-        The response stating that the token is valid with a 200 status code.
+        Dictionary containing a 'title' and an 'error' key (if any)
+        or an 'output' with the output of the validator (config with defaults-autocomplete)
     """
 
-    config = yaml.safe_load(request.data['config'])
+    try:
+        config = yaml.safe_load(request.data['config'])
+    except yaml.scanner.ScannerError as e:
+        error = e.__dict__
+        error['problem_mark'] = e.problem_mark.__dict__
+        return Response({
+            'title': 'ERROR WHILE PARSING YAML STRING',
+            'error': error
+        })
     schema = yaml.safe_load(request.data['schema'])
     validator = DefaultingValidator(schema)
     output = validator.validate(config)
