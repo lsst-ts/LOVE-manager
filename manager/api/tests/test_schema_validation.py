@@ -93,35 +93,35 @@ class SchemaValidationTestCase(TestCase):
         expected_data = [
             {'error': {'context': None,
                        'note': None,
-                       'problem': 'sequence entries are not allowed here',
-                       'problem_mark': {'buffer': 'wait_time: -\na:\x00',
-                                        'column': 11,
-                                        'index': 11,
-                                        'line': 0,
-                                        'name': '<unicode string>',
-                                        'pointer': 11}},
+                'problem': 'sequence entries are not allowed here',
+                'problem_mark': {'buffer': 'wait_time: -\na:\x00',
+                                 'column': 11,
+                                 'index': 11,
+                                 'line': 0,
+                                 'name': '<unicode string>',
+                                 'pointer': 11}},
              'title': 'ERROR WHILE PARSING YAML STRING'},
             {'error': {'context': 'while scanning a simple key',
                        'note': None,
-                       'problem': "could not find expected ':'",
-                       'problem_mark': {'buffer': "fail_cleanup: \nw:'\x00",
-                                        'column': 3,
-                                        'index': 18,
-                                        'line': 1,
-                                        'name': '<unicode string>',
-                                        'pointer': 18}},
+                'problem': "could not find expected ':'",
+                'problem_mark': {'buffer': "fail_cleanup: \nw:'\x00",
+                                 'column': 3,
+                                 'index': 18,
+                                 'line': 1,
+                                 'name': '<unicode string>',
+                                 'pointer': 18}},
              'title': 'ERROR WHILE PARSING YAML STRING'},
             {'error': {'context': 'while parsing a block mapping',
                        'note': None,
-                       'problem': "expected <block end>, but found ':'",
-                       'problem_mark': {'buffer': ':\x00',
-                                        'column': 0,
-                                        'index': 0,
-                                        'line': 0,
-                                        'name': '<unicode string>',
-                                        'pointer': 0}},
+                'problem': "expected <block end>, but found ':'",
+                'problem_mark': {'buffer': ':\x00',
+                                 'column': 0,
+                                 'index': 0,
+                                 'line': 0,
+                                 'name': '<unicode string>',
+                                 'pointer': 0}},
              'title': 'ERROR WHILE PARSING YAML STRING'}
-            ]
+        ]
 
         for config, expected_datum in zip(configs, expected_data):
             # Act:
@@ -142,8 +142,23 @@ class SchemaValidationTestCase(TestCase):
 
         configs = [
             "wait_time: 'asd'",
+            "asdfasfd"
         ]
-        for config in configs:
+
+        expected_data = [{
+            'error': {
+                'message': "'asd' is not of type 'number'",
+                'path': ['wait_time'],
+                'schema_path': ['properties', 'wait_time', 'type'],
+            },
+            'title': 'INVALID CONFIG YAML'
+        },
+            {'error': {'message': 'asdfasfd is not a dict', 'path': [], 'schema_path': []},
+             'title': 'INVALID CONFIG YAML'}
+
+        ]
+
+        for config, expected_datum in zip(configs, expected_data):
             # Act:
             url = reverse('validate-config-schema')
             request_data = {
@@ -153,30 +168,7 @@ class SchemaValidationTestCase(TestCase):
             response = self.client.post(url, request_data, format='json')
 
             # Assert:
-            expected_data = {
-                'error': {
-                    'cause': None,
-                    'context': [],
-                    'instance': 'asd',
-                    'message': "'asd' is not of type 'number'",
-                    'parent': None,
-                    'path': ['wait_time'],
-                    'relative_path': ['wait_time'],
-                    'relative_schema_path': ['properties', 'wait_time', 'type'],
-                    'schema': {
-                        'default': 0,
-                        'description': 'Time to wait, in seconds',
-                        'minimum': 0,
-                        'type': 'number'
-                    },
-                    'schema_path': ['properties', 'wait_time', 'type'],
-                    'validator': 'type',
-                    'validator_value': 'number'
-                },
-                'title': 'INVALID CONFIG YAML'
-            }
-
             self.assertEqual(
                 response.data,
-                expected_data
+                expected_datum
             )

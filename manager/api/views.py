@@ -122,5 +122,9 @@ def validate_config_schema(request):
 
         return Response({
             'title': 'INVALID CONFIG YAML',
-            'error': error
+            'error': {
+                'message': str(error["message"]),
+                "path": [] if not error['path'] else list(error['path']),
+                "schema_path": [] if not error['schema_path'] else list(error['schema_path']),
+            }
         })
