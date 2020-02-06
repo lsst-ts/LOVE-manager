@@ -82,6 +82,32 @@ class ViewViewSet(viewsets.ModelViewSet):
     serializer_class = ViewSerializer
     """Serializer used to serialize View objects"""
 
+    @swagger_auto_schema(
+        method='get',
+        responses={200: openapi.Response('Responsee', ViewSerializer)})
+    @action(detail=False)
+    def search(self, request):
+        """Serialize Views containing the query string.
+
+        Params
+        ------
+        request: Request
+            The Requets object
+
+        Returns
+        -------
+        Response
+            The response containing the serialized Views.
+        """
+
+        views = View.objects.all()
+        query = self.request.query_params.get('query', None)
+        if query is not None:
+            views = views.filter(name__icontains=query)
+
+        serializer = ViewSerializer(views, many=True)
+        return Response(serializer.data)
+
 
 class WorkspaceViewViewSet(viewsets.ModelViewSet):
     """GET, POST, PUT, PATCH or DELETE instances the WorkspaceView model."""
