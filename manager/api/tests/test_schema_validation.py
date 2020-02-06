@@ -33,6 +33,7 @@ class SchemaValidationTestCase(TestCase):
     title: TestScript v1
     type: object
     """
+    maxDiff = None
 
     def setUp(self):
         """Define the test suite setup."""
@@ -81,79 +82,101 @@ class SchemaValidationTestCase(TestCase):
             expected_data
         )
 
-    def test_unparsable_config(self):
+    def test_syntax_error(self):
         """Test validation output of an unparsable config file"""
+        configs = [
+            "wait_time: -\na:""",  # ScannerError
+            "fail_cleanup: \nw:'",  # ScannerError
+            ":"  # ParserError
+        ]
 
-        # Act:
-        url = reverse('validate-config-schema')
-        config = "wait_time: -\na:"""
-        request_data = {
-            'config': config,
-            'schema': self.script_schema
-        }
-        response = self.client.post(url, request_data, format='json')
+        expected_data = [
+            {'error': {'context': None,
+                       'note': None,
+                       'problem': 'sequence entries are not allowed here',
+                       'problem_mark': {'buffer': 'wait_time: -\na:\x00',
+                                        'column': 11,
+                                        'index': 11,
+                                        'line': 0,
+                                        'name': '<unicode string>',
+                                        'pointer': 11}},
+             'title': 'ERROR WHILE PARSING YAML STRING'},
+            {'error': {'context': 'while scanning a simple key',
+                       'note': None,
+                       'problem': "could not find expected ':'",
+                       'problem_mark': {'buffer': "fail_cleanup: \nw:'\x00",
+                                        'column': 3,
+                                        'index': 18,
+                                        'line': 1,
+                                        'name': '<unicode string>',
+                                        'pointer': 18}},
+             'title': 'ERROR WHILE PARSING YAML STRING'},
+            {'error': {'context': 'while parsing a block mapping',
+                       'note': None,
+                       'problem': "expected <block end>, but found ':'",
+                       'problem_mark': {'buffer': ':\x00',
+                                        'column': 0,
+                                        'index': 0,
+                                        'line': 0,
+                                        'name': '<unicode string>',
+                                        'pointer': 0}},
+             'title': 'ERROR WHILE PARSING YAML STRING'}
+            ]
 
-        # Assert:
-        expected_data = {
-            'error': {
-                'context': None,
-                'context_mark': None,
-                'note': None,
-                'problem': 'sequence entries are not allowed here',
-                'problem_mark': {
-                    'buffer': f"{config}\x00",
-                    'column': 11,
-                    'index': 11,
-                    'line': 0,
-                    'name': '<unicode string>',
-                    'pointer': 11
-                }
-            },
-            'title': 'ERROR WHILE PARSING YAML STRING'
-        }
-
-        self.assertEqual(
-            response.data,
-            expected_data
-        )
+        for config, expected_datum in zip(configs, expected_data):
+            # Act:
+            url = reverse('validate-config-schema')
+            request_data = {
+                'config': config,
+                'schema': self.script_schema
+            }
+            response = self.client.post(url, request_data, format='json')
+            # Assert:
+            self.assertEqual(
+                response.data,
+                expected_datum
+            )
 
     def test_invalid_config(self):
         """Test validation output of an invalid config file"""
 
-        # Act:
-        url = reverse('validate-config-schema')
-        config = "wait_time: 'asd'"
-        request_data = {
-            'config': config,
-            'schema': self.script_schema
-        }
-        response = self.client.post(url, request_data, format='json')
+        configs = [
+            "wait_time: 'asd'",
+        ]
+        for config in configs:
+            # Act:
+            url = reverse('validate-config-schema')
+            request_data = {
+                'config': config,
+                'schema': self.script_schema
+            }
+            response = self.client.post(url, request_data, format='json')
 
-        # Assert:
-        expected_data = {
-            'error': {
-                'cause': None,
-                'context': [],
-                'instance': 'asd',
-                'message': "'asd' is not of type 'number'",
-                'parent': None,
-                'path': ['wait_time'],
-                'relative_path': ['wait_time'],
-                'relative_schema_path': ['properties', 'wait_time', 'type'],
-                'schema': {
-                    'default': 0,
-                    'description': 'Time to wait, in seconds',
-                    'minimum': 0,
-                    'type': 'number'
+            # Assert:
+            expected_data = {
+                'error': {
+                    'cause': None,
+                    'context': [],
+                    'instance': 'asd',
+                    'message': "'asd' is not of type 'number'",
+                    'parent': None,
+                    'path': ['wait_time'],
+                    'relative_path': ['wait_time'],
+                    'relative_schema_path': ['properties', 'wait_time', 'type'],
+                    'schema': {
+                        'default': 0,
+                        'description': 'Time to wait, in seconds',
+                        'minimum': 0,
+                        'type': 'number'
+                    },
+                    'schema_path': ['properties', 'wait_time', 'type'],
+                    'validator': 'type',
+                    'validator_value': 'number'
                 },
-                'schema_path': ['properties', 'wait_time', 'type'],
-                'validator': 'type',
-                'validator_value': 'number'
-            },
-            'title': 'INVALID CONFIG YAML'
-        }
+                'title': 'INVALID CONFIG YAML'
+            }
 
-        self.assertEqual(
-            response.data,
-            expected_data
-        )
+            self.assertEqual(
+                response.data,
+                expected_data
+            )

@@ -100,9 +100,10 @@ def validate_config_schema(request):
     """
     try:
         config = yaml.safe_load(request.data['config'])
-    except yaml.scanner.ScannerError as e:
+    except yaml.YAMLError as e:
         error = e.__dict__
         error['problem_mark'] = e.problem_mark.__dict__
+        del error['context_mark']
         return Response({
             'title': 'ERROR WHILE PARSING YAML STRING',
             'error': error
