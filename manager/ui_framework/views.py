@@ -76,7 +76,7 @@ class WorkspaceViewSet(viewsets.ModelViewSet):
 class ViewViewSet(viewsets.ModelViewSet):
     """GET, POST, PUT, PATCH or DELETE instances the View model."""
 
-    queryset = View.objects.all()
+    queryset = View.objects.order_by('-update_timestamp').all()
     """Set of objects to be accessed by queries to this viewsets endpoints"""
 
     serializer_class = ViewSerializer
@@ -100,7 +100,7 @@ class ViewViewSet(viewsets.ModelViewSet):
             The response containing the serialized Views.
         """
 
-        views = View.objects.all()
+        views = View.objects.order_by('-update_timestamp').all()
         query = self.request.query_params.get('query', None)
         if query is not None:
             views = views.filter(name__icontains=query)
