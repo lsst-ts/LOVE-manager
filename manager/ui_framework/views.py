@@ -8,6 +8,7 @@ from ui_framework.models import Workspace, View, WorkspaceView
 from ui_framework.serializers import (
     WorkspaceSerializer,
     ViewSerializer,
+    ViewSummarySerializer,
     WorkspaceViewSerializer,
     WorkspaceFullSerializer,
     WorkspaceWithViewNameSerializer,
@@ -106,6 +107,28 @@ class ViewViewSet(viewsets.ModelViewSet):
             views = views.filter(name__icontains=query)
 
         serializer = ViewSerializer(views, many=True)
+        return Response(serializer.data)
+
+    @swagger_auto_schema(
+    method='get',
+    responses={200: openapi.Response('Responsee', ViewSerializer)})
+    @action(detail=False)
+    def summary(self, request):
+        """Serialize Views containing the query string.
+
+        Params
+        ------
+        request: Request
+            The Requets object
+
+        Returns
+        -------
+        Response
+            The response containing the serialized Views.
+        """
+
+        views = View.objects.order_by('-update_timestamp').all()
+        serializer = ViewSummarySerializer(views, many=True)
         return Response(serializer.data)
 
 
