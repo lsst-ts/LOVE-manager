@@ -43,4 +43,5 @@ urlpatterns = [
             schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('manager/apidoc/swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('manager/apidoc/redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path('manager/schema_validation/', TemplateView.as_view(template_name="test.html")),
 ]

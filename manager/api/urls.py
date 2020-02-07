@@ -18,7 +18,7 @@ Including another URLconf
 from django.conf.urls import include
 from django.urls import path
 from rest_framework.routers import DefaultRouter
-from api.views import validate_token, logout, CustomObtainAuthToken
+from api.views import validate_token, logout, CustomObtainAuthToken, validate_config_schema
 
 
 router = DefaultRouter()
@@ -26,6 +26,7 @@ router = DefaultRouter()
 urlpatterns = [
     path('get-token/', CustomObtainAuthToken.as_view(), name='login'),
     path('validate-token/', validate_token, name='validate-token'),
+    path('validate-config-schema/', validate_config_schema, name='validate-config-schema'),
     path('logout/', logout, name='logout'),
     path('auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
