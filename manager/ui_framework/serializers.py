@@ -29,6 +29,8 @@ class Base64ImageField(serializers.ImageField):
             if 'data:' in data and ';base64,' in data:
                 # Break out the header from the base64 content
                 header, data = data.split(';base64,')
+            else:
+                return None
 
             # Try to decode the file. Return validation error if it fails.
             try:
