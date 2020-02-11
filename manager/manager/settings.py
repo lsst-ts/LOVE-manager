@@ -177,6 +177,9 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static_files"),
 ]
 
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = "/media/"
+
 # Channels
 ASGI_APPLICATION = 'manager.routing.application'
 REDIS_HOST = os.environ.get('REDIS_HOST', False)
