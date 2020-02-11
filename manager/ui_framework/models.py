@@ -39,6 +39,8 @@ class View(BaseModel):
     data = JSONField(null=True, blank=True)
     """The data that constitutes the View, stored as a JSON"""
 
+    thumbnail = models.ImageField(upload_to='thumbnails/', default='thumbnails/default.png')
+
     def __str__(self):
         """Redefine how objects of this class are transformed to string."""
         return self.name
