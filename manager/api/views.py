@@ -1,4 +1,7 @@
 """Defines the views exposed by the REST API exposed by this app."""
+import yaml
+import jsonschema
+import collections
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
@@ -9,8 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from api.models import Token
 from api.serializers import TokenSerializer
-
-
+from .schema_validator import DefaultingValidator
 valid_response = openapi.Response('Valid token', TokenSerializer)
 invalid_response = openapi.Response('Invalid token')
 
@@ -82,3 +84,47 @@ class CustomObtainAuthToken(ObtainAuthToken):
         user = serializer.validated_data['user']
         token = Token.objects.create(user=user)
         return Response(TokenSerializer(token).data)
+
+
+@swagger_auto_schema(method='post', responses={200: valid_response, 401: invalid_response})
+@api_view(['POST'])
+@permission_classes((IsAuthenticated,))
+def validate_config_schema(request):
+    """Validate a configuration yaml with using a schema
+
+    Returns
+    -------
+    Response
+        Dictionary containing a 'title' and an 'error' key (if any)
+        or an 'output' with the output of the validator (config with defaults-autocomplete)
+    """
+    try:
+        config = yaml.safe_load(request.data['config'])
+    except yaml.YAMLError as e:
+        error = e.__dict__
+        error['problem_mark'] = e.problem_mark.__dict__
+        del error['context_mark']
+        return Response({
+            'title': 'ERROR WHILE PARSING YAML STRING',
+            'error': error
+        })
+    schema = yaml.safe_load(request.data['schema'])
+    validator = DefaultingValidator(schema)
+
+    try:
+        output = validator.validate(config)
+        return Response({'title': 'None', "output": output})
+    except jsonschema.exceptions.ValidationError as e:
+        error = e.__dict__
+        for key in error:
+            if(type(error[key]) == collections.deque):
+                error[key] = list(error[key])
+
+        return Response({
+            'title': 'INVALID CONFIG YAML',
+            'error': {
+                'message': str(error["message"]),
+                "path": [] if not error['path'] else list(error['path']),
+                "schema_path": [] if not error['schema_path'] else list(error['schema_path']),
+            }
+        })

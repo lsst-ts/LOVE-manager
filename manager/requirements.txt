@@ -19,7 +19,7 @@ coreapi==2.3.3
 coreschema==0.0.4
 cryptography==2.7
 daphne==2.3.0
-Django==2.2.9
+Django==2.2.10
 django-auth-ldap==2.0.0
 django-cors-headers==3.1.1
 django-webpack-loader==0.6.0
@@ -38,6 +38,7 @@ incremental==17.5.0
 inflection==0.3.1
 itypes==1.1.0
 Jinja2==2.10.3
+jsonschema==3.2.0
 m2r==0.2.1
 MarkupSafe==1.1.1
 mccabe==0.6.1
@@ -58,6 +59,7 @@ pyflakes==2.1.1
 Pygments==2.4.2
 PyHamcrest==1.9.0
 pyparsing==2.4.2
+pyrsistent==0.15.7
 pytest==5.2.1
 pytest-asyncio==0.10.0
 pytest-django==3.5.1
@@ -65,6 +67,7 @@ pytest-env==0.6.2
 python-dateutil==2.8.0
 python-ldap==3.2.0
 pytz==2019.3
+PyYAML==5.3
 requests==2.22.0
 ruamel.yaml==0.16.6
 ruamel.yaml.clib==0.2.0
