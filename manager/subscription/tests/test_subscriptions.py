@@ -368,8 +368,6 @@ class TestSubscriptionCombinations:
             producer_consumer_response = await producer_communicator.receive_json_from()
 
             # Assert first subscription
-            print('\n producer_consumer_response:')
-            pprint.pprint(producer_consumer_response)
             assert producer_consumer_response == {
                 'category': 'initial_state',
                 'data': [{

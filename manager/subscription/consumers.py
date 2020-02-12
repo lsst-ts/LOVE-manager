@@ -227,7 +227,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                     'category': 'initial_state',
                     'data': [{
                         "csc": csc,
-                        "salindex": int(salindex),
+                        "salindex": int(salindex) if salindex != 'all' else salindex,
                         "data": {
                             "event_name": stream
                         }
