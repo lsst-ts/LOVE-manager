@@ -37,9 +37,9 @@ class Base64ImageField(serializers.ImageField):
                 decoded_file = base64.b64decode(data)
             except TypeError:
                 self.fail('invalid_image')
-
+            view_id = self.parent.context['request'].data['id']
             # Generate file name:
-            file_name = str(uuid.uuid4())[:12] # 12 characters are more than enough.
+            file_name = f'view_{view_id}'
             # Get the file name extension:
             file_extension = self.get_file_extension(file_name, decoded_file)
 
