@@ -1,12 +1,19 @@
 """Contains the Django Channels Consumers that handle the reception/sending of channels messages."""
 import json
 import random
+import asyncio
+import datetime
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from manager.settings import PROCESS_CONNECTION_PASS
 
 
 class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
     """Consumer that handles incoming websocket messages."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.first_connection = asyncio.Future()
+        asyncio.create_task(self.heartbeat())
 
     async def connect(self):
         """Handle connection, rejects connection if no authenticated user."""
@@ -16,10 +23,12 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         if self.scope['user'].is_anonymous:
             if self.scope['password'] and self.scope['password'] == PROCESS_CONNECTION_PASS:
                 await self.accept()
+                self.first_connection.set_result(True)
             else:
                 await self.close()
         else:
             await self.accept()
+            self.first_connection.set_result(True)
 
     async def disconnect(self, close_code):
         """Handle disconnection."""
@@ -27,6 +36,27 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         self.pending_commands = set()
         for telemetry_stream in self.stream_group_names:
             await self._leave_group(*telemetry_stream)
+
+    async def heartbeat(self):
+        value = await self.first_connection
+        print('value', value, '\n\n\n\n')
+        while True:
+            try:
+                await asyncio.gather(asyncio.sleep(0.1), self.channel_layer.group_send(
+                    'heartbeat-manager-0-stream',
+                    {
+                        'type': 'subscription_data',
+                        'category': 'heartbeat',
+                        'data': {'timestamp': 1 },
+                        'subscription': 'heartbeat',
+                        'salindex': 0,
+                        'csc': 'manager'
+                    }
+                ))
+                await asyncio.sleep(2)
+            except Exception as e:
+                print(e)
+                await asyncio.sleep(3)
 
     async def receive_json(self, message):
         """Handle a received message.
