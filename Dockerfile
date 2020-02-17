@@ -1,4 +1,4 @@
-FROM python:3.6.7-stretch
+FROM python:3.7.2-stretch
 
 # Install required packages
 RUN apt-get update && \
