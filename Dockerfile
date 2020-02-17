@@ -22,6 +22,7 @@ RUN python manage.py collectstatic --noinput
 
 # Expose static files and port
 VOLUME /usr/src/love/manager/static
+VOLUME /usr/src/love/manager/media
 EXPOSE 8000
 
 # Set env variables for runtime (to be replaced in docker-cpomse files)
