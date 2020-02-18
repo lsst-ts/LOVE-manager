@@ -39,21 +39,17 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
 
     async def heartbeat(self):
         value = await self.first_connection
-        print('value', value, '\n\n\n\n')
         while True:
             try:
-                await asyncio.gather(asyncio.sleep(0.1), self.channel_layer.group_send(
-                    'heartbeat-manager-0-stream',
-                    {
-                        'type': 'subscription_data',
-                        'category': 'heartbeat',
-                        'data': {'timestamp': 1 },
-                        'subscription': 'heartbeat',
+                await asyncio.gather(asyncio.sleep(3), self.send(text_data=json.dumps({
+                    'category': 'heartbeat',
+                    'data': [{
+                        'csc': 'manager',
                         'salindex': 0,
-                        'csc': 'manager'
-                    }
-                ))
-                await asyncio.sleep(2)
+                        'data': {'timestamp': datetime.datetime.now().timestamp()}
+                    }],
+                    'subscription': 'heartbeat'
+                })))
             except Exception as e:
                 print(e)
                 await asyncio.sleep(3)
