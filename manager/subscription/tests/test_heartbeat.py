@@ -5,6 +5,7 @@ from django.contrib.auth.models import User, Permission
 from channels.testing import WebsocketCommunicator
 from manager.routing import application
 from api.models import Token
+from subscription.heartbeat_manager import HeartbeatManager
 
 
 class TestHeartbeat:
@@ -20,6 +21,7 @@ class TestHeartbeat:
     @pytest.mark.django_db(transaction=True)
     async def test_join_and_leave_subscription(self):
         # Arrange
+        await HeartbeatManager.reset()
         category = 'heartbeat'
         communicator = WebsocketCommunicator(application, self.url)
         connected, subprotocol = await communicator.connect()
@@ -56,11 +58,6 @@ class TestHeartbeat:
 
         await communicator.disconnect()
 
-    @pytest.mark.asyncio
-    @pytest.mark.django_db(transaction=True)
-    async def test_join_and_leave_subscription_2(self):
-        # Arrange
-        category = 'heartbeat'
         communicator = WebsocketCommunicator(application, self.url)
         connected, subprotocol = await communicator.connect()
 
