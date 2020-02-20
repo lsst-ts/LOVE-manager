@@ -238,8 +238,9 @@ class AuthorizedCrudTestCase(BaseTestCase):
                 'Retrieving list of {} did not return status 200'.format(case['class'])
             )
             retrieved_data = [dict(data) for data in response.data]
+            expected_data = case['current_data']
             self.assertEqual(
-                retrieved_data, case['current_data'],
+                retrieved_data, expected_data,
                 'Retrieved list of {} is not as expected'.format(case['class'])
             )
 
@@ -276,8 +277,9 @@ class AuthorizedCrudTestCase(BaseTestCase):
                 'Getting a {} did not return status 200'.format(case['class'])
             )
             retrieved_data = dict(response.data)
+            expected_data = case['current_data'][0]
             self.assertEqual(
-                retrieved_data, case['current_data'][0],
+                retrieved_data, expected_data,
                 'Retrieved list of {} is not as expected'.format(case['class'])
             )
 

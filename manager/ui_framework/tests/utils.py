@@ -76,12 +76,12 @@ class BaseTestCase(TestCase):
             self.views = []
             self.workspaces = []
             self.workspace_views_data = []
+            default_thumbnail = '/media/' + View._meta.get_field('thumbnail').get_default()
             # Create views, store them in self.views and add auto-generated fields to self.views_data
             for i in range(0, len(self.views_data)):
                 view = View.objects.create(**self.views_data[i])
                 self.views_data[i]['id'] = view.id
-                self.views_data[i]['creation_timestamp'] = self.setup_ts_str
-                self.views_data[i]['update_timestamp'] = self.setup_ts_str
+                self.views_data[i]['thumbnail'] = default_thumbnail
                 self.views.append(view)
 
             # Create views, store them in self.views and add auto-generated fields to self.views_data
@@ -131,6 +131,7 @@ class BaseTestCase(TestCase):
                     'name': 'My new Workspace',
                 },
                 'current_data': self.workspaces_data,
+                'list_data': self.workspaces_data,
                 'selected_id': self.workspaces_data[0]['id'],
             },
             {
@@ -155,6 +156,7 @@ class BaseTestCase(TestCase):
                     'workspace': self.workspaces_data[0]['id'],
                 },
                 'current_data': self.workspace_views_data,
+                'list_data': self.workspace_views_data,
                 'selected_id': self.workspace_views_data[0]['id'],
             },
         ]
