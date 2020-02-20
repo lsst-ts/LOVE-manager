@@ -38,8 +38,48 @@ class TestHeartbeat:
         # Assert 1
         assert response['data'] == f'Successfully subscribed to heartbeat-manager-0-stream'
 
-        response = await communicator.receive_json_from(timeout=5)
-        assert response['data'][0]['data']['timestamp'] != None  
+        response = await communicator.receive_json_from(timeout=10)
+        assert response['data'][0]['data']['timestamp'] != None
+        # Act 2 (Unsubscribe)
+        msg = {
+            "option": "unsubscribe",
+            "category": "heartbeat",
+            "csc": "manager",
+            "salindex": 0,
+            "stream": "stream",
+        }
+        await communicator.send_json_to(msg)
+        response = await communicator.receive_json_from()
+
+        # Assert 2
+        assert response['data'] == f'Successfully unsubscribed to heartbeat-manager-0-stream'
+
+        await communicator.disconnect()
+
+    @pytest.mark.asyncio
+    @pytest.mark.django_db(transaction=True)
+    async def test_join_and_leave_subscription_2(self):
+        # Arrange
+        category = 'heartbeat'
+        communicator = WebsocketCommunicator(application, self.url)
+        connected, subprotocol = await communicator.connect()
+
+        # Act 1 (Subscribe)
+        msg = {
+            "option": "subscribe",
+            "category": "heartbeat",
+            "csc": "manager",
+            "salindex": 0,
+            "stream": "stream",
+        }
+        await communicator.send_json_to(msg)
+        response = await communicator.receive_json_from()
+
+        # Assert 1
+        assert response['data'] == f'Successfully subscribed to heartbeat-manager-0-stream'
+
+        response = await communicator.receive_json_from(timeout=10)
+        assert response['data'][0]['data']['timestamp'] != None
         # Act 2 (Unsubscribe)
         msg = {
             "option": "unsubscribe",

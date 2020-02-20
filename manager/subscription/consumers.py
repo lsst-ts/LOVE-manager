@@ -4,16 +4,27 @@ import random
 import asyncio
 import datetime
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 from manager.settings import PROCESS_CONNECTION_PASS
 
 
 class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
     """Consumer that handles incoming websocket messages."""
 
+    __heartbeat_task = None
+
+    @staticmethod
+    def create_heartbeat_task():
+        if not SubscriptionConsumer.__heartbeat_task:
+            SubscriptionConsumer.__heartbeat_task = asyncio.create_task(SubscriptionConsumer.dispatch_heartbeats())
+
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.first_connection = asyncio.Future()
-        asyncio.create_task(self.heartbeat())
+        SubscriptionConsumer.create_heartbeat_task()
+        # asyncio.create_task(self.heartbeat())
 
     async def connect(self):
         """Handle connection, rejects connection if no authenticated user."""
@@ -37,11 +48,12 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         for telemetry_stream in self.stream_group_names:
             await self._leave_group(*telemetry_stream)
 
-    async def heartbeat(self):
-        value = await self.first_connection
+    @staticmethod
+    async def dispatch_heartbeats():
+        channel_layer = get_channel_layer()
         while True:
             try:
-                await asyncio.gather(asyncio.sleep(3), self.send(text_data=json.dumps({
+                data = json.dumps({
                     'category': 'heartbeat',
                     'data': [{
                         'csc': 'manager',
@@ -49,10 +61,47 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                         'data': {'timestamp': datetime.datetime.now().timestamp()}
                     }],
                     'subscription': 'heartbeat'
-                })))
+                })
+                await asyncio.sleep(3)
+                await channel_layer.group_send(
+                    'heartbeat-manager-0-stream',
+                    {'type': 'send_heartbeat', 'data': data}
+                )
             except Exception as e:
                 print(e)
                 await asyncio.sleep(3)
+
+    async def send_heartbeat(self, message):
+        """
+        Send a heartbeat to all the instances of a consumer that have joined the heartbeat-manager-0-stream.
+
+        It is used to send messages associated to subscriptions to all the groups of a particular category
+
+        Parameters
+        ----------
+        message: `string`
+            dictionary containing the heartbeat message
+        """
+        # Send data to WebSocket
+        print('message: ', message)
+        await self.send(text_data=message['data'])
+
+    # async def heartbeat(self):
+    #     value = await self.first_connection
+    #     while True:
+    #         try:
+    #             await asyncio.gather(asyncio.sleep(3), self.send(text_data=json.dumps({
+    #                 'category': 'heartbeat',
+    #                 'data': [{
+    #                     'csc': 'manager',
+    #                     'salindex': 0,
+    #                     'data': {'timestamp': datetime.datetime.now().timestamp()}
+    #                 }],
+    #                 'subscription': 'heartbeat'
+    #             })))
+    #         except Exception as e:
+    #             print(e)
+    #             await asyncio.sleep(3)
 
     async def receive_json(self, message):
         """Handle a received message.
