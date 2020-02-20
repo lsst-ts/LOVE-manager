@@ -1,5 +1,6 @@
 """Utilities for testing purposes."""
 import json
+from django.conf import settings
 from django.test import TestCase
 from django.utils import timezone
 from freezegun import freeze_time
@@ -76,7 +77,7 @@ class BaseTestCase(TestCase):
             self.views = []
             self.workspaces = []
             self.workspace_views_data = []
-            default_thumbnail = '/media/' + View._meta.get_field('thumbnail').get_default()
+            default_thumbnail = settings.MEDIA_URL + View._meta.get_field('thumbnail').get_default()
             # Create views, store them in self.views and add auto-generated fields to self.views_data
             for i in range(0, len(self.views_data)):
                 view = View.objects.create(**self.views_data[i])
