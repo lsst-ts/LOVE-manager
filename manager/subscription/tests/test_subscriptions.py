@@ -88,9 +88,6 @@ class TestSubscriptionCombinations:
             }
             await communicator.send_json_to(msg)
             response = await communicator.receive_json_from()
-            from pprint import pprint
-            print('response.data')
-            pprint(response['data'])
             # Assert
             assert response['data'] == \
                 'Successfully subscribed to {}-{}-{}-{}'.format(
@@ -201,8 +198,6 @@ class TestSubscriptionCombinations:
             expected['subscription'] = '{}-all-all-all'.format(combination['category'])
             response = await communicator.receive_json_from()
             # Assert
-            print(response)
-            print(expected)
             assert response == expected
         await communicator.disconnect()
 
@@ -352,7 +347,6 @@ class TestSubscriptionCombinations:
         await producer_communicator.receive_json_from()
 
         # Act 2  (Subscribe client)
-        import pprint
         for combination in self.combinations:
             # initial state is only useful for events
             if combination["category"] != "event":
@@ -389,7 +383,6 @@ class TestSubscriptionCombinations:
 
             with pytest.raises(asyncio.TimeoutError):
                 producer_consumer_response = await  asyncio.wait_for(producer_communicator.receive_json_from(), timeout=self.no_reception_timeout)
-            print('adsfadsf')
 
         await client_communicator.disconnect()
         await producer_communicator.disconnect()
