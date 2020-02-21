@@ -3,8 +3,8 @@ import json
 import random
 import asyncio
 import datetime
-from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from manager.settings import PROCESS_CONNECTION_PASS
+from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from subscription.heartbeat_manager import HeartbeatManager
 
 
@@ -23,8 +23,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         # Reject connection if no authenticated user:
         if self.scope["user"].is_anonymous:
             if (
-                self.scope["password"]
-                and self.scope["password"] == PROCESS_CONNECTION_PASS
+                self.scope["password"] and self.scope["password"] == PROCESS_CONNECTION_PASS
             ):
                 await self.accept()
                 self.first_connection.set_result(True)
@@ -34,7 +33,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             await self.accept()
             self.first_connection.set_result(True)
             url_token = self.scope["query_string"][6:].decode()
-            personal_group_name = 'token-{}'.format(url_token)
+            personal_group_name = "token-{}".format(url_token)
             await self.channel_layer.group_add(personal_group_name, self.channel_name)
 
     async def disconnect(self, close_code):
@@ -326,7 +325,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                     text_data=json.dumps(
                         {
                             "category": category,
-                            "data": [{"csc": csc, "salindex": salindex, "data": data,}],
+                            "data": [{"csc": csc, "salindex": salindex, "data": data}],
                             "subscription": "cmd_acks-all-all-all",
                         }
                     )
@@ -373,4 +372,12 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         await self.send(text_data=message["data"])
 
     async def logout(self, message):
+        """Closes the connection.
+
+        Parameters
+        ----------
+        message: `string`
+            message received, it is part of the API (as this function is called by a message reception)
+            but it is not used
+        """
         await self.close()
