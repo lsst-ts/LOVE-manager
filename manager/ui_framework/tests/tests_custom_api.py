@@ -1,4 +1,5 @@
 """Test the UI Framework Custom API."""
+from django.conf import settings
 from django.contrib.auth.models import User, Permission
 from django.urls import reverse
 from rest_framework import status
@@ -34,7 +35,11 @@ class AuthorizedCrudTestCase(BaseTestCase):
         # Arrange
         self.user.user_permissions.add(Permission.objects.get(codename='view_workspace'))
         expected_data = [
-            {**w, 'views': [{'id': v_pk, 'name': View.objects.get(pk=v_pk).name} for v_pk in w['views']]}
+            {**w, 'views': [{
+                'id': v_pk,
+                'name': v.name,
+                'thumbnail': settings.MEDIA_URL + v.thumbnail.name,
+            } for v_pk in w['views'] for v in [View.objects.get(pk=v_pk)]]}
             for w in self.workspaces_data
         ]
         # Act

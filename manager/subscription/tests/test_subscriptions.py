@@ -88,6 +88,9 @@ class TestSubscriptionCombinations:
             }
             await communicator.send_json_to(msg)
             response = await communicator.receive_json_from()
+            from pprint import pprint
+            print('response.data')
+            pprint(response['data'])
             # Assert
             assert response['data'] == \
                 'Successfully subscribed to {}-{}-{}-{}'.format(

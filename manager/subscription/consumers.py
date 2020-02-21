@@ -5,6 +5,7 @@ import asyncio
 import datetime
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from manager.settings import PROCESS_CONNECTION_PASS
+from subscription.heartbeat_manager import HeartbeatManager
 
 
 class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
@@ -13,7 +14,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.first_connection = asyncio.Future()
-        asyncio.create_task(self.heartbeat())
+        HeartbeatManager.initialize()
 
     async def connect(self):
         """Handle connection, rejects connection if no authenticated user."""
@@ -37,22 +38,19 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         for telemetry_stream in self.stream_group_names:
             await self._leave_group(*telemetry_stream)
 
-    async def heartbeat(self):
-        value = await self.first_connection
-        while True:
-            try:
-                await asyncio.gather(asyncio.sleep(3), self.send(text_data=json.dumps({
-                    'category': 'heartbeat',
-                    'data': [{
-                        'csc': 'manager',
-                        'salindex': 0,
-                        'data': {'timestamp': datetime.datetime.now().timestamp()}
-                    }],
-                    'subscription': 'heartbeat'
-                })))
-            except Exception as e:
-                print(e)
-                await asyncio.sleep(3)
+    async def send_heartbeat(self, message):
+        """
+        Send a heartbeat to all the instances of a consumer that have joined the heartbeat-manager-0-stream.
+
+        It is used to send messages associated to subscriptions to all the groups of a particular category
+
+        Parameters
+        ----------
+        message: `string`
+            dictionary containing the heartbeat message
+        """
+        # Send data to WebSocket
+        await self.send(text_data=message['data'])
 
     async def receive_json(self, message):
         """Handle a received message.
