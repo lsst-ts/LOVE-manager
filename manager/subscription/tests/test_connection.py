@@ -1,7 +1,9 @@
 """Tests for the connection of users."""
 import pytest
+import asyncio
 from django.contrib.auth.models import User
 from channels.testing import WebsocketCommunicator
+from channels.layers import get_channel_layer
 from manager.routing import application
 from manager.settings import PROCESS_CONNECTION_PASS
 from api.models import Token
@@ -70,26 +72,56 @@ class TestClientConnection:
 
     @pytest.mark.asyncio
     @pytest.mark.django_db(transaction=True)
-    async def test_connection_interrupted_for_deleted_token(self):
-        """Test that a client gets disconnected when its authentication Token is deleted."""
-        # Arrange
-        user = User.objects.create_user('username', password='123', email='user@user.cl')
-        token = Token.objects.create(user=user)
-        url = 'manager/ws/subscription/?token={}'.format(token)
-        communicator = WebsocketCommunicator(application, url)
-        connected, subprotocol = await communicator.connect()
-        assert connected, 'Error, communicator was not connected, test could not be completed'
-        # Act
-        token.delete()
-        # Assert
-        msg = {
+    async def test_connection_interrupted_when_logout_message_is_sent(self):
+        """Test that a client gets disconnected when a message is sent for it to logout, for only that client"""
+        # ARRANGE
+        password = PROCESS_CONNECTION_PASS
+        subscription_msg = {
             "option": "subscribe",
             "csc": "ScriptQueue",
             "salindex": 0,
             "stream": "stream1",
             "category": "event"
         }
-        await communicator.send_json_to(msg)
-        response = await communicator.receive_json_from()
-        assert response['data'] == 'Successfully subscribed to event-ScriptQueue-0-stream1'
-        await communicator.disconnect()
+        expected_response = 'Successfully subscribed to event-ScriptQueue-0-stream1'
+        channel_layer = get_channel_layer()
+
+        # Connect 3 clients (2 users and 1 with password)
+        user = User.objects.create_user('username', password='123', email='user@user.cl')
+        user2 = User.objects.create_user('username2', password='123', email='user@user.cl')
+        token = Token.objects.create(user=user)
+        token2 = Token.objects.create(user=user2)
+        client1 = WebsocketCommunicator(application, 'manager/ws/subscription/?token={}'.format(token))
+        client2 = WebsocketCommunicator(application, 'manager/ws/subscription/?token={}'.format(token2))
+        client3 = WebsocketCommunicator(application, 'manager/ws/subscription/?password={}'.format(password))
+        for client in [client1, client2, client3]:
+            connected, subprotocol = await client.connect()
+            assert connected, 'Error, client was not connected, test could not be completed'
+
+        # ACT
+        await channel_layer.group_send(
+            'token-{}'.format(str(token)),
+            {'type': 'logout', 'message': ''}
+        )
+        await asyncio.sleep(1) # Wait 1 second, to ensure the connection is closed before we continue
+
+        # ASSERT
+        # Client 1 should not be able to send and receive messages
+        with pytest.raises(AssertionError):
+            await client1.send_json_to(subscription_msg)
+            response = await client1.receive_json_from()
+
+        # Client 2 should be able to send and receive messages
+        await client2.send_json_to(subscription_msg)
+        response = await client2.receive_json_from()
+        assert response['data'] == expected_response
+
+        # Client 3 should be able to send and receive messages
+        await client3.send_json_to(subscription_msg)
+        response = await client3.receive_json_from()
+        assert response['data'] == expected_response
+
+        # Disconnect all clients
+        await client1.disconnect()
+        await client2.disconnect()
+        await client3.disconnect()
