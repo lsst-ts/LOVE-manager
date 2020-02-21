@@ -67,3 +67,29 @@ class TestClientConnection:
         # Assert
         assert not connected, 'Communicator should not have connected'
         await communicator.disconnect()
+
+    @pytest.mark.asyncio
+    @pytest.mark.django_db(transaction=True)
+    async def test_connection_interrupted_for_deleted_token(self):
+        """Test that a client gets disconnected when its authentication Token is deleted."""
+        # Arrange
+        user = User.objects.create_user('username', password='123', email='user@user.cl')
+        token = Token.objects.create(user=user)
+        url = 'manager/ws/subscription/?token={}'.format(token)
+        communicator = WebsocketCommunicator(application, url)
+        connected, subprotocol = await communicator.connect()
+        assert connected, 'Error, communicator was not connected, test could not be completed'
+        # Act
+        token.delete()
+        # Assert
+        msg = {
+            "option": "subscribe",
+            "csc": "ScriptQueue",
+            "salindex": 0,
+            "stream": "stream1",
+            "category": "event"
+        }
+        await communicator.send_json_to(msg)
+        response = await communicator.receive_json_from()
+        assert response['data'] == 'Successfully subscribed to event-ScriptQueue-0-stream1'
+        await communicator.disconnect()
