@@ -103,7 +103,7 @@ class TestClientConnection:
             'token-{}'.format(str(token)),
             {'type': 'logout', 'message': ''}
         )
-        await asyncio.sleep(1) # Wait 1 second, to ensure the connection is closed before we continue
+        await asyncio.sleep(1)  # Wait 1 second, to ensure the connection is closed before we continue
 
         # ASSERT
         # Client 1 should not be able to send and receive messages
@@ -140,7 +140,6 @@ class TestClientConnection:
             "category": "event"
         }
         expected_response = 'Successfully subscribed to event-ScriptQueue-0-stream1'
-        channel_layer = get_channel_layer()
 
         # Connect 3 clients (2 users and 1 with password)
         user = User.objects.create_user('username', password='123', email='user@user.cl')
@@ -156,7 +155,7 @@ class TestClientConnection:
 
         # ACT: delete de token
         token.delete()
-        await asyncio.sleep(1) # Wait 1 second, to ensure the connection is closed before we continue
+        await asyncio.sleep(1)  # Wait 1 second, to ensure the connection is closed before we continue
 
         # ASSERT
         # Client 1 should not be able to send and receive messages
