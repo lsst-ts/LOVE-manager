@@ -3,6 +3,7 @@ from rest_framework import serializers
 from ui_framework.models import Workspace, View, WorkspaceView
 from django.conf import settings
 
+
 class Base64ImageField(serializers.ImageField):
     """
     A Django REST framework field for handling image-uploads through raw post data.
@@ -37,7 +38,12 @@ class Base64ImageField(serializers.ImageField):
                 decoded_file = base64.b64decode(data)
             except TypeError:
                 self.fail('invalid_image')
-            view_id = self.parent.context['request'].data['id']
+
+            
+            view_id = View.objects.count() + 1 
+            # id field should come in req data if iew exists
+            if 'id'  in self.parent.context['request'].data: 
+                view_id = self.parent.context['request'].data['id']
             # Generate file name:
             file_name = f'view_{view_id}'
             # Get the file name extension:
@@ -56,13 +62,13 @@ class Base64ImageField(serializers.ImageField):
         extension = "jpg" if extension == "jpeg" else extension
 
         return extension
-        
+
+
 class ViewSerializer(serializers.ModelSerializer):
     """Serializer for the View model."""
     thumbnail = Base64ImageField(
-        required=False, max_length=None, use_url=False, allow_empty_file=True, allow_null=True,
-    )
-
+            required=False, max_length=None, use_url=False, allow_empty_file=True, allow_null=True)
+    
     class Meta:
         """Meta class to map serializer's fields with the model fields."""
 
