@@ -1,9 +1,8 @@
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
-from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from api.models import Token
-
+import asyncio
 
 @receiver(post_delete, sender=Token)
 def handle_token_deletion(sender, **kwargs):
@@ -19,7 +18,7 @@ def handle_token_deletion(sender, **kwargs):
         that was deleted
     """
     deleted_token = str(kwargs['instance'])
-    async_to_sync(get_channel_layer().group_send)(
+    asyncio.create_task(get_channel_layer().group_send(
         'token-{}'.format(deleted_token),
         {'type': 'logout', 'message': ''}
-    )
+    ))
