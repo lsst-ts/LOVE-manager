@@ -9,6 +9,8 @@ from rest_framework.test import APIClient
 from api.models import Token
 from ui_framework.models import View
 import os
+import glob
+import filecmp
 
 
 class ViewThumbnailTestCase(TestCase):
@@ -32,7 +34,13 @@ class ViewThumbnailTestCase(TestCase):
                                        Permission.objects.get(codename='delete_view'),
                                        Permission.objects.get(codename='change_view'))
 
-    def test_asdf(self):
+        # delete existing test thumbnails
+        thumbnail_files_list = glob.glob(settings.MEDIA_ROOT + '/thumbnails/*')
+        for file in thumbnail_files_list:
+            os.remove(file)
+
+    def test_new_view(self):
+        """ Test behavior when adding a new view """
         self.maxDiff = None
         # data = {'username': self.username, 'password': self.password}
         # response = self.client.post(self.login_url, data, format='json')
@@ -54,14 +62,14 @@ class ViewThumbnailTestCase(TestCase):
         request_url = reverse('view-list')
         response = self.client.post(request_url, request_data, format='json')
 
-        # assert response status code
+        # assert response status code 201
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        # assert new object was created 
+        # assert new object was created
         new_count = View.objects.count()
         self.assertEqual(old_count + 1, new_count)
 
-        # assert expected response
+        # assert expected response data
         view = View.objects.get(name="view name")
         expected_response = {
             'id': view.id,
@@ -71,36 +79,8 @@ class ViewThumbnailTestCase(TestCase):
         }
         self.assertEqual(response.data, expected_response)
 
-        # assert file content
-        print('\n settings.MEDIA_ROOT', settings.MEDIA_ROOT)
-        print('\n settings.TESTING', settings.TESTING)
-        
-        with open(view.thumbnail.url) as f: 
-            print(f)
-            raise Exception('ads')
-            
-
-
-    # def test_asdf(self):
-    #     # Arrange
-    #     expected_data = [
-    #         {**w, 'views': [{
-    #             'id': v_pk,
-    #             'name': v.name,
-    #             'thumbnail': settings.MEDIA_URL + v.thumbnail.name,
-    #         } for v_pk in w['views'] for v in [View.objects.get(pk=v_pk)]]}
-    #         for w in self.workspaces_data
-    #     ]
-    #     # Act
-    #     url = reverse('workspace-with-view-name')
-    #     response = self.client.get(url)
-    #     # Assert
-    #     self.assertEqual(
-    #         response.status_code, status.HTTP_200_OK,
-    #         'Retrieving list of workspaces did not return status 200'
-    #     )
-    #     retrieved_data = [dict(data) for data in response.data]
-    #     self.assertEqual(
-    #         retrieved_data, expected_data,
-    #         'Retrieved list of workspaces is not as expected'
-    #     )
+        # assert stored image file content
+        file_url = settings.MEDIA_BASE + view.thumbnail.url
+        expected_url = mock_location + '.png'
+        self.assertEqual(filecmp.cmp(file_url, expected_url),
+         f'\nThe image was not saved as expected\nsaved at {file_url}\nexpected at {expected_url}')
