@@ -12,5 +12,5 @@ webpack-stats.*
 manager/media
 
 # preserve folder structure with dummy gitinclude file 
-manager/ui_framework/tests/media/thumbnail/**
-!manager/ui_framework/tests/media/thumbnail/.gitinclude
+manager/ui_framework/tests/media/thumbnails/**
+!manager/ui_framework/tests/media/thumbnails/.gitinclude
