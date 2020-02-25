@@ -2,6 +2,8 @@
 from rest_framework import serializers
 from ui_framework.models import Workspace, View, WorkspaceView
 from django.conf import settings
+from django.db.models import Max
+
 
 class Base64ImageField(serializers.ImageField):
     """
@@ -13,6 +15,21 @@ class Base64ImageField(serializers.ImageField):
 
     Updated for Django REST framework 3.
     """
+    @staticmethod
+    def _get_view_id_from_data(data):
+        """ Returns a view_id integer for building the thumbnail file_namet
+        by checking whether the id comes in the request data or if a new one 
+        has to be created """
+        # id field should come in req data if view exists
+        if 'id' in data:
+            return data['id']
+
+        # safe to assume that max(id)+1 can be overwritten
+        view_id_max = View.objects.aggregate(Max('id'))
+        if view_id_max['id_max'] is None:
+            return 1
+
+        return view_id_max['id__max'] + 1
 
     def to_representation(self, value):
         return settings.MEDIA_URL + str(value)
@@ -37,9 +54,12 @@ class Base64ImageField(serializers.ImageField):
                 decoded_file = base64.b64decode(data)
             except TypeError:
                 self.fail('invalid_image')
-            view_id = self.parent.context['request'].data['id']
+
+
             # Generate file name:
+            view_id = self._get_view_id_from_data(self.parent.context['request'].data)
             file_name = f'view_{view_id}'
+            
             # Get the file name extension:
             file_extension = self.get_file_extension(file_name, decoded_file)
 
@@ -56,12 +76,12 @@ class Base64ImageField(serializers.ImageField):
         extension = "jpg" if extension == "jpeg" else extension
 
         return extension
-        
+
+
 class ViewSerializer(serializers.ModelSerializer):
     """Serializer for the View model."""
     thumbnail = Base64ImageField(
-        required=False, max_length=None, use_url=False, allow_empty_file=True, allow_null=True,
-    )
+        required=False, max_length=None, use_url=False, allow_empty_file=True, allow_null=True)
 
     class Meta:
         """Meta class to map serializer's fields with the model fields."""
