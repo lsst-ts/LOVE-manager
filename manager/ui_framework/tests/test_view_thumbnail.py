@@ -1,5 +1,6 @@
 """Test the UI Framework thumbnail behavior."""
-from django.conf import settings
+# from django.conf import settings
+from manager import settings
 from django.contrib.auth.models import User, Permission
 from django.urls import reverse
 from django.test import TestCase
@@ -49,9 +50,6 @@ class ViewThumbnailTestCase(TestCase):
             "thumbnail": image_data
         }
 
-        # assert database object exists
-
-
         # send POST request with data
         request_url = reverse('view-list')
         response = self.client.post(request_url, request_data, format='json')
@@ -73,9 +71,15 @@ class ViewThumbnailTestCase(TestCase):
         }
         self.assertEqual(response.data, expected_response)
 
-        # assert file exists in media/thumbnail
-
         # assert file content
+        print('\n settings.MEDIA_ROOT', settings.MEDIA_ROOT)
+        print('\n settings.TESTING', settings.TESTING)
+        
+        with open(view.thumbnail.url) as f: 
+            print(f)
+            raise Exception('ads')
+            
+
 
     # def test_asdf(self):
     #     # Arrange

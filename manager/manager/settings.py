@@ -19,7 +19,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Define wether the system is being tested or not:
 TESTING = os.environ.get('TESTING', False)
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
@@ -177,8 +176,10 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static_files"),
 ]
 
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL)
+if TESTING:
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'ui_framework', 'tests', MEDIA_URL)
 
 # Channels
 ASGI_APPLICATION = 'manager.routing.application'
