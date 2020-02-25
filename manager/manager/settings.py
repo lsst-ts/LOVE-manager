@@ -177,9 +177,11 @@ STATICFILES_DIRS = [
 ]
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL)
 if TESTING:
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'ui_framework', 'tests', MEDIA_URL)
+    MEDIA_BASE = os.path.join(BASE_DIR, 'ui_framework', 'tests')
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'ui_framework', 'tests', 'media')
+else:
+    MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # Channels
 ASGI_APPLICATION = 'manager.routing.application'
