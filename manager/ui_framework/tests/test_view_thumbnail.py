@@ -87,7 +87,7 @@ class ViewThumbnailTestCase(TestCase):
         file_url = settings.MEDIA_BASE + view.thumbnail.url
         expected_url = mock_location + '.png'
         self.assertTrue(filecmp.cmp(file_url, expected_url),
-         f'\nThe image was not saved as expected\nsaved at {file_url}\nexpected at {expected_url}')
+                        f'\nThe image was not saved as expected\nsaved at {file_url}\nexpected at {expected_url}')
 
         # - retrieved file content from get/ endpoint
         with open(file_url, 'rb') as f:
@@ -96,16 +96,33 @@ class ViewThumbnailTestCase(TestCase):
             stream = b''.join(png_response.streaming_content)
             self.assertEqual(stream, file_content)
 
-        # Act 2
-        # - delete the view
-        delete_response  =self.client.delete(reverse('view-detail', kwargs={'pk': view.pk}))
+    def test_delete_view(self):
+        # Arrange
+        # add view with thumbnail
+        mock_location = os.path.join(os.getcwd(), 'ui_framework', 'tests', 'media', 'mock', 'test')
+        with open(mock_location) as f:
+            image_data = f.read()
+
+        request_data = {
+            "name": "view name",
+            "data": {"key1": "value1"},
+            "thumbnail": image_data
+        }
+        request_url = reverse('view-list')
+        response = self.client.post(request_url, request_data, format='json')
+
+        # Act
+        # delete the view
+        view = View.objects.get(name="view name")
+        delete_response = self.client.delete(reverse('view-detail', kwargs={'pk': view.pk}))
 
         # Assert 2
 
         # - response status code
         self.assertEqual(delete_response.status_code, status.HTTP_204_NO_CONTENT)
-        
+
         # - file does not exist
+        file_url = settings.MEDIA_BASE + view.thumbnail.url
         with pytest.raises(FileNotFoundError):
             f = open(file_url, 'r')
             f.close()
