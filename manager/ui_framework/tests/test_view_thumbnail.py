@@ -42,7 +42,7 @@ class ViewThumbnailTestCase(TestCase):
 
     @override_settings(DEBUG=True)
     def test_new_view(self):
-        """ Test behavior when adding a new view """
+        """ Test thumbnail behavior when adding a new view """
         # Arrange
         # read test data (base64 string)
         old_count = View.objects.count()
@@ -93,6 +93,4 @@ class ViewThumbnailTestCase(TestCase):
             file_content = f.read()
             png_response = self.client.get('/manager' + view.thumbnail.url)
             stream = b''.join(png_response.streaming_content)
-            print(stream, flush=True)
-            print(png_response, flush=True)
             self.assertEqual(stream, file_content)
