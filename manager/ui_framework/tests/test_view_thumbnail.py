@@ -1,5 +1,6 @@
 """Test the UI Framework thumbnail behavior."""
 # from django.conf import settings
+import pytest
 from manager import settings
 from django.contrib.auth.models import User, Permission
 from django.urls import reverse
@@ -56,7 +57,7 @@ class ViewThumbnailTestCase(TestCase):
             "thumbnail": image_data
         }
 
-        # Act
+        # Act 1
         # send POST request with data
         request_url = reverse('view-list')
         response = self.client.post(request_url, request_data, format='json')
@@ -94,3 +95,21 @@ class ViewThumbnailTestCase(TestCase):
             png_response = self.client.get('/manager' + view.thumbnail.url)
             stream = b''.join(png_response.streaming_content)
             self.assertEqual(stream, file_content)
+
+        # Act 2
+        # - delete the view
+        delete_response  =self.client.delete(reverse('view-detail', kwargs={'pk': view.pk}))
+
+        # Assert 2
+
+        # - response status code
+        self.assertEqual(delete_response.status_code, status.HTTP_204_NO_CONTENT)
+        
+        # - file does not exist
+        with pytest.raises(FileNotFoundError):
+            f = open(file_url, 'r')
+            f.close()
+
+        # - getting the file gives 404
+        get_deleted_response = self.client.get('/manager' + view.thumbnail.url)
+        self.assertEqual(get_deleted_response.status_code, status.HTTP_404_NOT_FOUND)
