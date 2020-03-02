@@ -9,4 +9,8 @@ webpack-stats.*
 **/__pycache__
 **/.DS_Store
 **/db_data
-**/media
+manager/media
+
+# preserve folder structure with dummy gitinclude file 
+manager/ui_framework/tests/media/thumbnails/**
+!manager/ui_framework/tests/media/thumbnails/.gitinclude

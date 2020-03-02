@@ -26,7 +26,7 @@ class Base64ImageField(serializers.ImageField):
 
         # safe to assume that max(id)+1 can be overwritten
         view_id_max = View.objects.aggregate(Max('id'))
-        if view_id_max['id_max'] is None:
+        if view_id_max['id__max'] is None:
             return 1
 
         return view_id_max['id__max'] + 1

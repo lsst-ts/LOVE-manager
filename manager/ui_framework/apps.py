@@ -6,3 +6,7 @@ class UiFrameworkConfig(AppConfig):
     """General App config class. Currently defines the name of the app."""
 
     name = 'ui_framework'
+
+    def ready(self):
+        """ Import signals module when app is ready """
+        import ui_framework.signals
