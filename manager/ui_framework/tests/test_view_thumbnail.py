@@ -1,10 +1,9 @@
 """Test the UI Framework thumbnail behavior."""
-# from django.conf import settings
 import pytest
 from manager import settings
 from django.contrib.auth.models import User, Permission
 from django.urls import reverse
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from rest_framework import status
 from rest_framework.test import APIClient
 from api.models import Token
@@ -12,9 +11,8 @@ from ui_framework.models import View
 import os
 import glob
 import filecmp
-from django.test.utils import override_settings
 
-
+@override_settings(DEBUG=True)
 class ViewThumbnailTestCase(TestCase):
     """Thumbnail files are created and managed properly."""
 
@@ -41,7 +39,6 @@ class ViewThumbnailTestCase(TestCase):
         for file in thumbnail_files_list:
             os.remove(file)
 
-    @override_settings(DEBUG=True)
     def test_new_view(self):
         """ Test thumbnail behavior when adding a new view """
         # Arrange
@@ -56,7 +53,6 @@ class ViewThumbnailTestCase(TestCase):
             "data": {"key1": "value1"},
             "thumbnail": image_data
         }
-
         # Act 1
         # send POST request with data
         request_url = reverse('view-list')
@@ -97,6 +93,7 @@ class ViewThumbnailTestCase(TestCase):
             self.assertEqual(stream, file_content)
 
     def test_delete_view(self):
+        """ Test thumbnail behavior when deleting a view """
         # Arrange
         # add view with thumbnail
         mock_location = os.path.join(os.getcwd(), 'ui_framework', 'tests', 'media', 'mock', 'test')
