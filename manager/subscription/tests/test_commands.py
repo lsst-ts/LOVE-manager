@@ -1,6 +1,7 @@
 """Tests for the sending of comands."""
 import pytest
 from django.contrib.auth.models import User, Permission
+from channels.db import database_sync_to_async
 from channels.testing import WebsocketCommunicator
 from manager.routing import application
 from api.models import Token
@@ -21,11 +22,13 @@ class TestCommands:
 
     no_reception_timeout = 0.001
 
-    def setup_method(self):
+    @database_sync_to_async
+    def setup(self):
         """Set up the TestCase, executed before each test of the TestCase."""
         self.user = User.objects.create_user('username', password='123', email='user@user.cl')
         self.token = Token.objects.create(user=self.user)
         self.url = 'manager/ws/subscription/?token={}'.format(self.token)
+        self.perm = Permission.objects.get(name='Execute Commands')
 
     def build_messages(self, category, csc, salindex, streams):
         """Build and return messages to send and expect, for testing purposes.
@@ -62,8 +65,9 @@ class TestCommands:
     async def test_authorized_user_can_send_command(self):
         """Test that an authorized user can send commands."""
         # Arrange
+        await self.setup()
         communicator = WebsocketCommunicator(application, self.url)
-        self.user.user_permissions.add(Permission.objects.get(name='Execute Commands'))
+        await database_sync_to_async(self.user.user_permissions.add)(self.perm)
         connected, subprotocol = await communicator.connect()
         msg = {
             "option": "subscribe",
@@ -87,6 +91,7 @@ class TestCommands:
     async def test_unauthorized_user_cannot_send_command(self):
         """Test that an unauthorized user cannot send commands."""
         # Arrange
+        await self.setup()
         communicator = WebsocketCommunicator(application, self.url)
         connected, subprotocol = await communicator.connect()
         msg = {
@@ -111,8 +116,9 @@ class TestCommands:
     async def test_authorized_user_gets_ack(self):
         """Test that commands get acknowledged."""
         # Arrange
+        await self.setup()
         communicator = WebsocketCommunicator(application, self.url)
-        self.user.user_permissions.add(Permission.objects.get(name='Execute Commands'))
+        await database_sync_to_async(self.user.user_permissions.add)(self.perm)
         connected, subprotocol = await communicator.connect()
         msg = {
             "option": "subscribe",
