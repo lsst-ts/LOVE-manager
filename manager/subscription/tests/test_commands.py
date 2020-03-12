@@ -22,8 +22,7 @@ class TestCommands:
 
     no_reception_timeout = 0.001
 
-    @database_sync_to_async
-    def setup(self):
+    def setup_method(self):
         """Set up the TestCase, executed before each test of the TestCase."""
         self.user = User.objects.create_user('username', password='123', email='user@user.cl')
         self.token = Token.objects.create(user=self.user)
@@ -65,7 +64,6 @@ class TestCommands:
     async def test_authorized_user_can_send_command(self):
         """Test that an authorized user can send commands."""
         # Arrange
-        await self.setup()
         communicator = WebsocketCommunicator(application, self.url)
         await database_sync_to_async(self.user.user_permissions.add)(self.perm)
         connected, subprotocol = await communicator.connect()
@@ -91,7 +89,6 @@ class TestCommands:
     async def test_unauthorized_user_cannot_send_command(self):
         """Test that an unauthorized user cannot send commands."""
         # Arrange
-        await self.setup()
         communicator = WebsocketCommunicator(application, self.url)
         connected, subprotocol = await communicator.connect()
         msg = {
@@ -116,7 +113,6 @@ class TestCommands:
     async def test_authorized_user_gets_ack(self):
         """Test that commands get acknowledged."""
         # Arrange
-        await self.setup()
         communicator = WebsocketCommunicator(application, self.url)
         await database_sync_to_async(self.user.user_permissions.add)(self.perm)
         connected, subprotocol = await communicator.connect()
@@ -179,8 +175,5 @@ class TestCommands:
         await communicator.send_json_to(msg_receive)
         # Assert
         response = await communicator.receive_json_from()
-        print(ack)
-        print('\n\n\n')
-        print(response)
         assert ack == response
         await communicator.disconnect()

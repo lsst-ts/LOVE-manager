@@ -13,9 +13,7 @@ from api.models import Token
 class TestClientConnection:
     """Test that clients can or cannot connect depending on different conditions."""
 
-    @pytest.mark.django_db(transaction=True)
-    @database_sync_to_async
-    def setup(self):
+    def setup_method(self):
         self.user = User.objects.create_user('username', password='123', email='user@user.cl')
         self.token = Token.objects.create(user=self.user)
         self.user2 = User.objects.create_user('username2', password='123', email='user@user.cl')
@@ -26,7 +24,6 @@ class TestClientConnection:
     async def test_connection_with_token(self):
         """Test that clients can connect with a valid token."""
         # Arrange
-        await self.setup()
         url = 'manager/ws/subscription/?token={}'.format(self.token)
         communicator = WebsocketCommunicator(application, url)
         # Act
@@ -54,7 +51,6 @@ class TestClientConnection:
     async def test_connection_failed_for_invalid_token(self):
         """Test that clients cannot connect with an invalid token."""
         # Arrange
-        await self.setup()
         url = 'manager/ws/subscription/?token={}'.format(str(self.token) + 'fake')
         communicator = WebsocketCommunicator(application, url)
         # Act
@@ -82,7 +78,6 @@ class TestClientConnection:
     async def test_connection_interrupted_when_logout_message_is_sent(self):
         """Test that a client gets disconnected when a message is sent for it to logout, for only that client"""
         # ARRANGE
-        await self.setup()
         password = PROCESS_CONNECTION_PASS
         subscription_msg = {
             "option": "subscribe",
@@ -135,7 +130,6 @@ class TestClientConnection:
     async def test_connection_interrupted_when_token_is_deleted(self):
         """Test that a client gets disconnected when the token is deleted from the database"""
         # ARRANGE
-        await self.setup()
         password = PROCESS_CONNECTION_PASS
         subscription_msg = {
             "option": "subscribe",
