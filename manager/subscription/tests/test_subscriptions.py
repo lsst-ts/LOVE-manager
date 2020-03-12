@@ -382,7 +382,9 @@ class TestSubscriptionCombinations:
             await client_communicator.send_json_to(msg)
 
             with pytest.raises(asyncio.TimeoutError):
-                producer_consumer_response = await  asyncio.wait_for(producer_communicator.receive_json_from(), timeout=self.no_reception_timeout)
+                producer_consumer_response = await asyncio.wait_for(
+                    producer_communicator.receive_json_from(), timeout=self.no_reception_timeout
+                )
 
         await client_communicator.disconnect()
         await producer_communicator.disconnect()
