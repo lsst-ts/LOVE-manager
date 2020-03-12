@@ -1,5 +1,4 @@
 """Tests for the subscription of consumers to love_csc streams."""
-import asyncio
 import pytest
 from django.contrib.auth.models import User, Permission
 from channels.testing import WebsocketCommunicator
@@ -22,7 +21,6 @@ class TestHeartbeat:
     async def test_join_and_leave_subscription(self):
         # Arrange
         await HeartbeatManager.reset()
-        category = 'heartbeat'
         communicator = WebsocketCommunicator(application, self.url)
         connected, subprotocol = await communicator.connect()
 
@@ -41,7 +39,7 @@ class TestHeartbeat:
         assert response['data'] == f'Successfully subscribed to heartbeat-manager-0-stream'
 
         response = await communicator.receive_json_from(timeout=10)
-        assert response['data'][0]['data']['timestamp'] != None
+        assert response['data'][0]['data']['timestamp'] is not None
         # Act 2 (Unsubscribe)
         msg = {
             "option": "unsubscribe",
@@ -76,7 +74,7 @@ class TestHeartbeat:
         assert response['data'] == f'Successfully subscribed to heartbeat-manager-0-stream'
 
         response = await communicator.receive_json_from(timeout=10)
-        assert response['data'][0]['data']['timestamp'] != None
+        assert response['data'][0]['data']['timestamp'] is not None
         # Act 2 (Unsubscribe)
         msg = {
             "option": "unsubscribe",

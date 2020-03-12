@@ -3,8 +3,9 @@ import json
 import random
 import asyncio
 import datetime
-from manager.settings import PROCESS_CONNECTION_PASS
+from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
+from manager.settings import PROCESS_CONNECTION_PASS
 from subscription.heartbeat_manager import HeartbeatManager
 
 
@@ -152,7 +153,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         data = message["data"]
         category = message["category"]
         user = self.scope["user"]
-        if category == "cmd" and not user.has_perm("api.command.execute_command"):
+        if category == "cmd" and not await database_sync_to_async(user.has_perm)("api.command.execute_command"):
             await self.send_json(
                 {
                     "data": "Command not sent. User does not have permissions to send commands."

@@ -1,4 +1,4 @@
-FROM python:3.7.2-stretch
+FROM python:3.8.2-buster
 
 # Install required packages
 RUN apt-get update && \

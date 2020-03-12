@@ -1,6 +1,7 @@
 """Tests for the sending of comands."""
 import pytest
 from django.contrib.auth.models import User, Permission
+from channels.db import database_sync_to_async
 from channels.testing import WebsocketCommunicator
 from manager.routing import application
 from api.models import Token
@@ -26,6 +27,7 @@ class TestCommands:
         self.user = User.objects.create_user('username', password='123', email='user@user.cl')
         self.token = Token.objects.create(user=self.user)
         self.url = 'manager/ws/subscription/?token={}'.format(self.token)
+        self.perm = Permission.objects.get(name='Execute Commands')
 
     def build_messages(self, category, csc, salindex, streams):
         """Build and return messages to send and expect, for testing purposes.
@@ -63,7 +65,7 @@ class TestCommands:
         """Test that an authorized user can send commands."""
         # Arrange
         communicator = WebsocketCommunicator(application, self.url)
-        self.user.user_permissions.add(Permission.objects.get(name='Execute Commands'))
+        await database_sync_to_async(self.user.user_permissions.add)(self.perm)
         connected, subprotocol = await communicator.connect()
         msg = {
             "option": "subscribe",
@@ -112,7 +114,7 @@ class TestCommands:
         """Test that commands get acknowledged."""
         # Arrange
         communicator = WebsocketCommunicator(application, self.url)
-        self.user.user_permissions.add(Permission.objects.get(name='Execute Commands'))
+        await database_sync_to_async(self.user.user_permissions.add)(self.perm)
         connected, subprotocol = await communicator.connect()
         msg = {
             "option": "subscribe",
@@ -173,8 +175,5 @@ class TestCommands:
         await communicator.send_json_to(msg_receive)
         # Assert
         response = await communicator.receive_json_from()
-        print(ack)
-        print('\n\n\n')
-        print(response)
         assert ack == response
         await communicator.disconnect()
