@@ -47,7 +47,5 @@ class TokenAuthMiddlewareInstance:
         data = urlparse.parse_qs(query_string)
         self.scope['user'] = await get_user(data['token'][0] if 'token' in data else None)
         self.scope['password'] = data['password'][0] if 'password' in data else None
-
-        # close_old_connections()
         inner = self.inner(self.scope)
         return await inner(receive, send)

@@ -13,7 +13,7 @@ from api.models import Token
 class TestClientConnection:
     """Test that clients can or cannot connect depending on different conditions."""
 
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     @database_sync_to_async
     def setup(self):
         self.user = User.objects.create_user('username', password='123', email='user@user.cl')
@@ -21,15 +21,8 @@ class TestClientConnection:
         self.user2 = User.objects.create_user('username2', password='123', email='user@user.cl')
         self.token2 = Token.objects.create(user=self.user2)
 
-
-    @pytest.mark.django_db
-    @database_sync_to_async
-    def destroy(self):
-        User.objects.all().delete()
-        Token.objects.all().delete()
-
     @pytest.mark.asyncio
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     async def test_connection_with_token(self):
         """Test that clients can connect with a valid token."""
         # Arrange
@@ -41,10 +34,9 @@ class TestClientConnection:
         # Assert
         assert connected, 'Communicator was not connected'
         await communicator.disconnect()
-        await self.destroy()
 
     @pytest.mark.asyncio
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     async def test_connection_with_password(self):
         """Test that clients can connect with a valid password."""
         # Arrange
@@ -58,7 +50,7 @@ class TestClientConnection:
         await communicator.disconnect()
 
     @pytest.mark.asyncio
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     async def test_connection_failed_for_invalid_token(self):
         """Test that clients cannot connect with an invalid token."""
         # Arrange
@@ -70,10 +62,9 @@ class TestClientConnection:
         # Assert
         assert not connected, 'Communicator should not have connected'
         await communicator.disconnect()
-        await self.destroy()
 
     @pytest.mark.asyncio
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     async def test_connection_failed_for_invalid_password(self):
         """Test that clients cannot connect with an invalid password."""
         # Arrange
@@ -138,11 +129,6 @@ class TestClientConnection:
         await client1.disconnect()
         await client2.disconnect()
         await client3.disconnect()
-        await self.destroy()
-
-    @database_sync_to_async
-    def delete_token(self):
-        self.token.delete()
 
     @pytest.mark.asyncio
     @pytest.mark.django_db(transaction=True)
@@ -169,7 +155,8 @@ class TestClientConnection:
             assert connected, 'Error, client was not connected, test could not be completed'
 
         # ACT: delete de token
-        await self.delete_token()
+        # await self.delete_token()
+        await database_sync_to_async(self.token.delete)()
         await asyncio.sleep(1)  # Wait 1 second, to ensure the connection is closed before we continue
 
         # ASSERT
@@ -192,4 +179,3 @@ class TestClientConnection:
         await client1.disconnect()
         await client2.disconnect()
         await client3.disconnect()
-        await self.destroy()
