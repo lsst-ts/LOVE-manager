@@ -12,6 +12,7 @@ import os
 import glob
 import filecmp
 
+
 @override_settings(DEBUG=True)
 class ViewThumbnailTestCase(TestCase):
     """Thumbnail files are created and managed properly."""

@@ -110,8 +110,8 @@ class ViewViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     @swagger_auto_schema(
-    method='get',
-    responses={200: openapi.Response('Responsee', ViewSerializer)})
+        method='get',
+        responses={200: openapi.Response('Responsee', ViewSerializer)})
     @action(detail=False)
     def summary(self, request):
         """Serialize Views containing the query string.

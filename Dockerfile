@@ -29,6 +29,7 @@ EXPOSE 8000
 ENV ADMIN_USER_PASS=test
 ENV USER_USER_PASS=test
 ENV CMD_USER_PASS=test
+ENV NO_DEBUG=True
 
 # Run daphne server in runtime
 CMD ["./runserver.sh"]
