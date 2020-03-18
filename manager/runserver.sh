@@ -13,6 +13,8 @@ python manage.py migrate
 echo "Creating default users"
 python manage.py createusers --adminpass ${ADMIN_USER_PASS} --userpass ${USER_USER_PASS} --cmduserpass ${CMD_USER_PASS}
 echo "Applying fixtures"
+mkdir -p media/thumbnails
+cp -u ui_framework/fixtures/thumbnails/* media/thumbnails
 python manage.py loaddata ui_framework/fixtures/initial_data.json
 
 echo "Starting server"
