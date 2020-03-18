@@ -181,6 +181,7 @@ if TESTING:
     MEDIA_BASE = os.path.join(BASE_DIR, 'ui_framework', 'tests')
     MEDIA_ROOT = os.path.join(BASE_DIR, 'ui_framework', 'tests', 'media')
 else:
+    MEDIA_BASE = BASE_DIR
     MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # Channels
