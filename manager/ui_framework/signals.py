@@ -4,6 +4,7 @@ from django.dispatch import receiver
 from manager import settings
 from ui_framework.models import View
 
+
 @receiver(post_delete, sender=View)
 def hanlde_view_deletion(sender, **kwargs):
     """Receive signal when a View is deleted and delete its thumbnail image from disk.

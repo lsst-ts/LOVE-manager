@@ -3,6 +3,7 @@ import datetime
 import json
 from channels.layers import get_channel_layer
 
+
 class HeartbeatManager:
 
     heartbeat_task = None
