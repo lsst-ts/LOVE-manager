@@ -86,13 +86,6 @@ class ViewThumbnailTestCase(TestCase):
         self.assertTrue(filecmp.cmp(file_url, expected_url),
                         f'\nThe image was not saved as expected\nsaved at {file_url}\nexpected at {expected_url}')
 
-        # - retrieved file content from get/ endpoint
-        with open(file_url, 'rb') as f:
-            file_content = f.read()
-            png_response = self.client.get('/manager' + view.thumbnail.url)
-            stream = b''.join(png_response.streaming_content)
-            self.assertEqual(stream, file_content)
-
     def test_delete_view(self):
         """ Test thumbnail behavior when deleting a view """
         # Arrange
