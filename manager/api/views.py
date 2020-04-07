@@ -1,4 +1,5 @@
 """Defines the views exposed by the REST API exposed by this app."""
+import urllib.request
 import yaml
 import jsonschema
 import collections
@@ -128,3 +129,16 @@ def validate_config_schema(request):
                 "schema_path": [] if not error['schema_path'] else list(error['schema_path']),
             }
         })
+
+@swagger_auto_schema(method='post', responses={200: valid_response, 401: invalid_response})
+@api_view(['POST'])
+@permission_classes((IsAuthenticated,))
+def commander(request):
+    """Sends a command to the LOVE-commander according to the received parameters
+    """
+    req = urllib.request.Request('http://localhost/commander/cmd', method="POST", data=request.data)
+    req.add_header('Content-Type', f"application/json")
+    response = urllib.request.urlopen(req)
+    result = response.read()
+
+    return result
