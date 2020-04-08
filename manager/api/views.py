@@ -1,4 +1,6 @@
 """Defines the views exposed by the REST API exposed by this app."""
+import os
+import requests
 import yaml
 import jsonschema
 import collections
@@ -128,3 +130,14 @@ def validate_config_schema(request):
                 "schema_path": [] if not error['schema_path'] else list(error['schema_path']),
             }
         })
+
+
+@swagger_auto_schema(method='post', responses={200: valid_response, 401: invalid_response})
+@api_view(['POST'])
+@permission_classes((IsAuthenticated,))
+def commander(request):
+    """Sends a command to the LOVE-commander according to the received parameters
+    """
+    url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/cmd"
+    response = requests.post(url, json=request.data)
+    return Response(response.json(), status=response.status_code)
