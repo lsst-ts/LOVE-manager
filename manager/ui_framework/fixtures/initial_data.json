@@ -459,7 +459,7 @@
       "data": {
         "content": {
           "newPanel-2": {
-            "config": { "title": "ATMount over", "titleBar": true },
+            "config": { "title": "ATMount overview", "titleBar": true, "hasRawMode": true},
             "content": "Dome",
             "properties": {
               "h": 42,
@@ -498,7 +498,8 @@
             "config": {
               "title": "AT Lightpath",
               "margin": true,
-              "titleBar": true
+              "titleBar": true,
+              "hasRawMode": true
             },
             "content": "LightPath",
             "properties": {
@@ -548,7 +549,7 @@
       "data": {
         "content": {
           "newPanel-1": {
-            "config": { "title": "LATISS", "titleBar": true },
+            "config": { "title": "LATISS", "titleBar": true, "hasRawMode": true},
             "content": "LATISS",
             "properties": {
               "h": 31,
