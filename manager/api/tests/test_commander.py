@@ -29,9 +29,9 @@ class CommanderTestCase(TestCase):
                                        Permission.objects.get(codename='delete_view'),
                                        Permission.objects.get(codename='change_view'))
 
-    @patch('urllib.request.urlopen')
-    @patch('urllib.request.Request')
-    def test_commander_data(self, mock_Request, mock_urlopen):
+    @patch('os.environ.get', side_effect= lambda e: 'fakehost' if e=='COMMANDER_HOSTNAME' else 'fakeport')
+    @patch('requests.post')
+    def test_commander_data(self, mock_requests, mock_environ):
         """Test commander data can be sent"""
         # Act:
         url = reverse('commander')
@@ -45,9 +45,12 @@ class CommanderTestCase(TestCase):
             }
         }
 
-        with self.assertRaises(AssertionError):
+        with self.assertRaises(ValueError):
             response = self.client.post(url, data, format='json')
+        fakehostname = 'fakehost'
+        fakeport = 'fakeport'
+        expected_url = f"http://fakehost:fakeport/cmd"
         self.assertEqual(
-            mock_Request.call_args,
-            call('http://localhost/commander/cmd', method='POST', data=data)
+            mock_requests.call_args,
+            call(expected_url, json=data)
         )
