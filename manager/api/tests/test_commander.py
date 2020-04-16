@@ -61,7 +61,7 @@ class CommanderTestCase(TestCase):
     @patch('os.environ.get', side_effect= lambda arg: 'fakehost' if arg=='COMMANDER_HOSTNAME' else 'fakeport')
     @patch('requests.post')
     def test_unauthorized_commander(self, mock_requests, mock_environ):
-        """Test authorized user commander data is sent to love-commander"""
+        """Test an unauthorized user can't send commands"""
         # Act:
         url = reverse('commander')
         data = {
