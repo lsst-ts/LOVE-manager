@@ -138,6 +138,9 @@ def validate_config_schema(request):
 def commander(request):
     """Sends a command to the LOVE-commander according to the received parameters
     """
+    if not request.user.has_perm("api.command.execute_command"):
+        return Response({"ack": "User does not have permissions to execute commands."}, 401)
     url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/cmd"
     response = requests.post(url, json=request.data)
+
     return Response(response.json(), status=response.status_code)

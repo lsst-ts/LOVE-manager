@@ -20,7 +20,6 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
         """Handle connection, rejects connection if no authenticated user."""
         self.stream_group_names = []
-        self.pending_commands = set()
         # Reject connection if no authenticated user:
         if self.scope["user"].is_anonymous:
             if (
@@ -40,7 +39,6 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
     async def disconnect(self, close_code):
         """Handle disconnection."""
         # Leave telemetry_stream group
-        self.pending_commands = set()
         for telemetry_stream in self.stream_group_names:
             await self._leave_group(*telemetry_stream)
 
@@ -73,7 +71,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         The expected format of the message is as follows:
         {
             option: 'subscribe'/'unsubscribe'
-            category: 'event'/'telemetry'/'cmd',
+            category: 'event'/'telemetry',
             csc: 'ScriptQueue',
             salindex: 1,
             stream: 'stream1',
@@ -131,35 +129,11 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                     }
                 }]
             }
-            The expected format of the message for a command/ack is as follows:
-            {
-                category: 'cmd'/'ack',
-                data: [{
-                    csc: 'ScriptQueue',
-                    salindex: 1,
-                    data: {
-                        stream: {
-                            cmd: 'CommandPath',
-                            params: {
-                                'param1': 'value1',
-                                'param2': 'value2',
-                                ...
-                            },
-                        }
-                    }
-                }]
-            }
         """
         data = message["data"]
         category = message["category"]
         user = self.scope["user"]
-        if category == "cmd" and not await database_sync_to_async(user.has_perm)("api.command.execute_command"):
-            await self.send_json(
-                {
-                    "data": "Command not sent. User does not have permissions to send commands."
-                }
-            )
-            return
+
 
         # Send data to telemetry_stream groups
         for csc_message in data:
@@ -173,18 +147,6 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                 sub_category = category
                 msg_type = "subscription_data"
                 group_name = "-".join([sub_category, csc, str(salindex), stream])
-                if category == "cmd":
-                    await self._join_group("cmd_acks", "all", "all", "all")
-                    cmd_id = random.getrandbits(128)
-                    if "cmd_id" in data_csc[stream]:
-                        cmd_id = data_csc[stream]["cmd_id"]
-                    self.pending_commands.add(cmd_id)
-                    print("New Command", self.pending_commands)
-                if category == "ack":
-                    print("New Ack", self.pending_commands, message)
-                    sub_category = "cmd"  # Use sub group from cmds
-                    msg_type = "subscription_ack"
-                    group_name = "cmd_acks-all-all-all"
                 await self.channel_layer.group_send(
                     group_name,
                     {
@@ -221,7 +183,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         Parameters
         ----------
         category: `string`
-            category of the message, it can be either: 'cmd', 'event' or 'telemetry'
+            category of the message, it can be either: 'event' or 'telemetry'
         csc : `string`
             CSC associated to the message. E.g. 'ScriptQueue'
         salindex : `string`
@@ -260,7 +222,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         Parameters
         ----------
         category: `string`
-            category of the message, it can be either: 'cmd', 'event' or 'telemetry'
+            category of the message, it can be either: 'event' or 'telemetry'
         csc : `string`
             CSC associated to the message. E.g. 'ScriptQueue'
         salindex : `string`
@@ -300,37 +262,6 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                 }
             )
         )
-
-    async def subscription_ack(self, message):
-        """
-        Send a message to all the instances of a consumer that have joined the group.
-
-        It is used to send ack messages associated to subscriptions to all the groups of a particular category.
-        Only sends messages to those groups with a corresponding pending cmd.
-
-        Parameters
-        ----------
-        message: `dict`
-            dictionary containing the message parsed as json
-        """
-        data = message["data"]
-        category = message["category"]
-        salindex = message["salindex"]
-        csc = message["csc"]
-        for stream in data:
-            print("stream", data[stream])
-            cmd_id = data[stream]["cmd_id"]
-            if cmd_id in self.pending_commands:
-                self.pending_commands.discard(cmd_id)
-                await self.send(
-                    text_data=json.dumps(
-                        {
-                            "category": category,
-                            "data": [{"csc": csc, "salindex": salindex, "data": data}],
-                            "subscription": "cmd_acks-all-all-all",
-                        }
-                    )
-                )
 
     async def subscription_all_data(self, message):
         """

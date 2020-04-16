@@ -29,10 +29,13 @@ class CommanderTestCase(TestCase):
                                        Permission.objects.get(codename='delete_view'),
                                        Permission.objects.get(codename='change_view'))
 
-    @patch('os.environ.get', side_effect= lambda e: 'fakehost' if e=='COMMANDER_HOSTNAME' else 'fakeport')
+    @patch('os.environ.get', side_effect= lambda arg: 'fakehost' if arg=='COMMANDER_HOSTNAME' else 'fakeport')
     @patch('requests.post')
-    def test_commander_data(self, mock_requests, mock_environ):
-        """Test commander data can be sent"""
+    def test_authorized_commander_data(self, mock_requests, mock_environ):
+        """Test authorized user commander data is sent to love-commander"""
+        # Arrange:
+        self.user.user_permissions.add(Permission.objects.get(name='Execute Commands'))
+
         # Act:
         url = reverse('commander')
         data = {
@@ -53,4 +56,34 @@ class CommanderTestCase(TestCase):
         self.assertEqual(
             mock_requests.call_args,
             call(expected_url, json=data)
+        )
+    
+    @patch('os.environ.get', side_effect= lambda arg: 'fakehost' if arg=='COMMANDER_HOSTNAME' else 'fakeport')
+    @patch('requests.post')
+    def test_unauthorized_commander(self, mock_requests, mock_environ):
+        """Test authorized user commander data is sent to love-commander"""
+        # Act:
+        url = reverse('commander')
+        data = {
+            'csc': 'Test',
+            'salindex': 1,
+            'cmd': 'cmd_setScalars',
+            'params': {
+                'a': 1,
+                'b': 2
+            }
+        }
+
+        response = self.client.post(url, data, format='json')
+        result = response.json()
+
+        self.assertEqual(
+            response.status_code,
+            401
+        )
+        self.assertEqual(
+            result,
+            {
+                "ack": "User does not have permissions to execute commands."
+            }
         )
