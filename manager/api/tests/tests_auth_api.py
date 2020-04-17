@@ -67,11 +67,6 @@ class AuthApiTestCase(TestCase):
             {"username": self.user.username, "email": self.user.email},
             "The user is not as expected",
         )
-        self.assertEqual(
-            response.data["tai_to_utc"],
-            utils.get_tai_to_utc(),
-            "The taiToUTC transformation is not as expected",
-        )
         self.assertTrue(
             utils.assert_time_data(response.data["time_data"]),
             "Time data is not as expected",
@@ -159,11 +154,6 @@ class AuthApiTestCase(TestCase):
             response.data["user"],
             {"username": self.user.username, "email": self.user.email,},
             "The user is not as expected",
-        )
-        self.assertEqual(
-            response.data["tai_to_utc"],
-            utils.get_tai_to_utc(),
-            "The taiToUTC transformation is not as expected",
         )
         self.assertTrue(
             utils.assert_time_data(response.data["time_data"]),

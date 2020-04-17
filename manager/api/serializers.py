@@ -64,8 +64,6 @@ class TokenSerializer(serializers.Serializer):
 
     permissions = serializers.SerializerMethodField("get_permissions")
 
-    tai_to_utc = serializers.SerializerMethodField("get_tai_to_utc")
-
     time_data = serializers.SerializerMethodField("get_time_data")
 
     @swagger_serializer_method(serializer_or_field=UserPermissionsSerializer)
@@ -98,21 +96,6 @@ class TokenSerializer(serializers.Serializer):
             The token key
         """
         return token.key
-
-    def get_tai_to_utc(self, token) -> float:
-        """Return the difference in seconds between TAI and UTC Timestamps.
-
-        Params
-        ------
-        token: Token
-            The Token object
-
-        Returns
-        -------
-        Int
-            The number of seconds of difference between TAI and UTC times
-        """
-        return utils.get_tai_to_utc()
 
     @swagger_serializer_method(serializer_or_field=TimeDataSerializer)
     def get_time_data(self, token) -> dict:
