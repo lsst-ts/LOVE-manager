@@ -41,3 +41,20 @@ def get_times():
         "sidereal_greenwich": sidereal_greenwich.value,
         "tai_to_utc": t_utc - t_tai,
     }
+
+def assert_time_data(time_data):
+        """Asserts the structure of the time_data dictionary."""
+
+        if not isinstance(time_data["utc"], float):
+            return False
+        if not isinstance(time_data["tai"], float):
+            return False
+        if not isinstance(time_data["mjd"], float):
+            return False
+        if not isinstance(time_data["sidereal_summit"], float):
+            return False
+        if not isinstance(time_data["sidereal_greenwich"], float):
+            return False
+        if not isinstance(time_data["tai_to_utc"], float):
+            return False
+        return True

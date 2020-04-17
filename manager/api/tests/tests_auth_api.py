@@ -8,7 +8,7 @@ from rest_framework.test import APIClient
 from rest_framework import status
 from api.models import Token
 from django.conf import settings
-from astropy.time import Time
+from manager import utils
 
 
 class AuthApiTestCase(TestCase):
@@ -34,23 +34,6 @@ class AuthApiTestCase(TestCase):
         self.expected_permissions = {
             "execute_commands": True,
         }
-
-    def assert_time_data(self, time_data):
-        """Asserts the structure of the time_data dictionary."""
-
-        if not isinstance(time_data["utc"], float):
-            return False
-        if not isinstance(time_data["tai"], float):
-            return False
-        if not isinstance(time_data["mjd"], float):
-            return False
-        if not isinstance(time_data["sidereal_summit"], float):
-            return False
-        if not isinstance(time_data["sidereal_greenwich"], float):
-            return False
-        if not isinstance(time_data["tai_to_utc"], float):
-            return False
-        return True
 
     def test_user_login(self):
         """Test that a user can request a token using name and password."""
@@ -84,15 +67,13 @@ class AuthApiTestCase(TestCase):
             {"username": self.user.username, "email": self.user.email},
             "The user is not as expected",
         )
-        t = Time.now()
-        dt = t.datetime.timestamp() - t.tai.datetime.timestamp()
         self.assertEqual(
             response.data["tai_to_utc"],
-            dt,
+            utils.get_tai_to_utc(),
             "The taiToUTC transformation is not as expected",
         )
         self.assertTrue(
-            self.assert_time_data(response.data["time_data"]),
+            utils.assert_time_data(response.data["time_data"]),
             "Time data is not as expected",
         )
 
@@ -179,15 +160,13 @@ class AuthApiTestCase(TestCase):
             {"username": self.user.username, "email": self.user.email,},
             "The user is not as expected",
         )
-        t = Time.now()
-        dt = t.datetime.timestamp() - t.tai.datetime.timestamp()
         self.assertEqual(
             response.data["tai_to_utc"],
-            dt,
+            utils.get_tai_to_utc(),
             "The taiToUTC transformation is not as expected",
         )
         self.assertTrue(
-            self.assert_time_data(response.data["time_data"]),
+            utils.assert_time_data(response.data["time_data"]),
             "Time data is not as expected",
         )
 

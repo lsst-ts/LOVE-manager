@@ -1,5 +1,4 @@
 """Tests for the subscription of consumers to love_csc streams."""
-import asyncio
 import pytest
 from django.contrib.auth.models import User, Permission
 from channels.testing import WebsocketCommunicator
@@ -11,19 +10,21 @@ class TestLOVECscSubscriptions:
 
     def setup_method(self):
         """Set up the TestCase, executed before each test of the TestCase."""
-        self.user = User.objects.create_user('username', password='123', email='user@user.cl')
+        self.user = User.objects.create_user(
+            "username", password="123", email="user@user.cl"
+        )
         self.token = Token.objects.create(user=self.user)
-        self.user.user_permissions.add(Permission.objects.get(name='Execute Commands'))
-        self.url = 'manager/ws/subscription/?token={}'.format(self.token)
+        self.user.user_permissions.add(Permission.objects.get(name="Execute Commands"))
+        self.url = "manager/ws/subscription/?token={}".format(self.token)
 
     @pytest.mark.asyncio
     @pytest.mark.django_db(transaction=True)
     async def test_join_and_leave_subscription(self):
         # Arrange
-        category = 'love_csc'
-        csc = 'love'
+        category = "love_csc"
+        csc = "love"
         salindex = 0
-        stream = 'observingLog'
+        stream = "observingLog"
         communicator = WebsocketCommunicator(application, self.url)
         connected, subprotocol = await communicator.connect()
 
@@ -39,7 +40,9 @@ class TestLOVECscSubscriptions:
         response = await communicator.receive_json_from()
 
         # Assert 1
-        assert response['data'] == f'Successfully subscribed to {category}-{csc}-{salindex}-{stream}'
+        assert (
+            response["data"] == f"Successfully subscribed to {category}-{csc}-{salindex}-{stream}"
+        )
 
         # Act 2 (Unsubscribe)
         msg = {
@@ -47,13 +50,16 @@ class TestLOVECscSubscriptions:
             "csc": csc,
             "salindex": salindex,
             "stream": stream,
-            "category": category
+            "category": category,
         }
         await communicator.send_json_to(msg)
         response = await communicator.receive_json_from()
 
         # Assert 2
-        assert response['data'] == f'Successfully unsubscribed to {category}-{csc}-{salindex}-{stream}'
+        assert (
+            response["data"]
+            == f"Successfully unsubscribed to {category}-{csc}-{salindex}-{stream}"
+        )
 
         await communicator.disconnect()
 
@@ -70,34 +76,35 @@ class TestLOVECscSubscriptions:
         await lovecsc_communicator.connect()
 
         # Act 1: Subscribe love_csc and client
-        await lovecsc_communicator.send_json_to({
-            'option': 'subscribe',
-            'category': 'love_csc',
-            'csc': 'love',
-            'salindex': '0',
-            'stream': 'observingLog'
-        })
+        await lovecsc_communicator.send_json_to(
+            {
+                "option": "subscribe",
+                "category": "love_csc",
+                "csc": "love",
+                "salindex": "0",
+                "stream": "observingLog",
+            }
+        )
 
         subscription_response = await lovecsc_communicator.receive_json_from()
 
         # Assert 1:
         assert subscription_response == {
-            'data': 'Successfully subscribed to love_csc-love-0-observingLog'
+            "data": "Successfully subscribed to love_csc-love-0-observingLog"
         }
 
         # Act 2: Client sends observing logs
         message = {
-            "category": 'love_csc',
-            "data": [{
-                'csc': 'love',
-                'salindex': 0,
-                'data': {
-                    'observingLog': {
-                        'user': 'an user',
-                        'message': 'a message'
-                    }
+            "category": "love_csc",
+            "data": [
+                {
+                    "csc": "love",
+                    "salindex": 0,
+                    "data": {
+                        "observingLog": {"user": "an user", "message": "a message"}
+                    },
                 }
-            }]
+            ],
         }
         await client_communicator.send_json_to(message)
 
@@ -105,6 +112,6 @@ class TestLOVECscSubscriptions:
         log_response = await lovecsc_communicator.receive_json_from()
 
         expected_message = message.copy()
-        expected_message["subscription"] = 'love_csc-love-0-observingLog'
+        expected_message["subscription"] = "love_csc-love-0-observingLog"
 
         assert log_response == expected_message
