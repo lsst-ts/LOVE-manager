@@ -1,7 +1,7 @@
 from astropy.time import Time
 
 
-def tai_utc_offset() -> float:
+def get_tai_to_utc() -> float:
     """Return the difference in seconds between TAI and UTC Timestamps.
 
     Returns
@@ -15,6 +15,19 @@ def tai_utc_offset() -> float:
 
 
 def get_times():
+    """Return relevant time measures.
+
+        Returns
+        -------
+        Dict
+            Dictionary containing the following keys:
+            - utc: current time in UTC scale as a unix timestamp (seconds)
+            - tai: current time in UTC scale as a unix timestamp (seconds)
+            - mjd: current time as a modified julian date
+            - sidereal_summit: current time as a sidereal_time w/respect to the summit location (hourangles)
+            - sidereal_summit: current time as a sidereal_time w/respect to Greenwich location (hourangles)
+            - tai_to_utc: The number of seconds of difference between TAI and UTC times (seconds)
+    """
     t = Time.now()
     t_utc = t.datetime.timestamp()
     t_tai = t.tai.datetime.timestamp()

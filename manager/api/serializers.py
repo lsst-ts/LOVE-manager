@@ -2,7 +2,7 @@
 from drf_yasg.utils import swagger_serializer_method
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from manager.utils import tai_utc_offset
+from manager import utils
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -39,6 +39,22 @@ class UserPermissionsSerializer(serializers.Serializer):
         return user.has_perm("api.command.execute_command")
 
 
+class TimeDataSerializer(serializers.Serializer):
+    """Custom Serializer for responses to validate and get token requests."""
+
+    utc = serializers.FloatField()
+
+    tai = serializers.FloatField()
+
+    mjd = serializers.FloatField()
+
+    sidereal_summit = serializers.FloatField()
+
+    sidereal_greenwich = serializers.FloatField()
+
+    tai_to_utc = serializers.FloatField()
+
+
 class TokenSerializer(serializers.Serializer):
     """Custom Serializer for responses to validate and get token requests."""
 
@@ -49,6 +65,8 @@ class TokenSerializer(serializers.Serializer):
     permissions = serializers.SerializerMethodField("get_permissions")
 
     tai_to_utc = serializers.SerializerMethodField("get_tai_to_utc")
+
+    time_data = serializers.SerializerMethodField("get_time_data")
 
     @swagger_serializer_method(serializer_or_field=UserPermissionsSerializer)
     def get_permissions(self, token):
@@ -94,4 +112,26 @@ class TokenSerializer(serializers.Serializer):
         Int
             The number of seconds of difference between TAI and UTC times
         """
-        return tai_utc_offset()
+        return utils.get_tai_to_utc()
+
+    @swagger_serializer_method(serializer_or_field=TimeDataSerializer)
+    def get_time_data(self, token) -> dict:
+        """Return relevant time measures.
+
+        Params
+        ------
+        token: Token
+            The Token object
+
+        Returns
+        -------
+        Dict
+            Dictionary containing the following keys:
+            - utc: current time in UTC scale as a unix timestamp (seconds)
+            - tai: current time in UTC scale as a unix timestamp (seconds)
+            - mjd: current time as a modified julian date
+            - sidereal_summit: current time as a sidereal_time w/respect to the summit location (hourangles)
+            - sidereal_summit: current time as a sidereal_time w/respect to Greenwich location (hourangles)
+            - tai_to_utc: The number of seconds of difference between TAI and UTC times (seconds)
+        """
+        return utils.get_times()
