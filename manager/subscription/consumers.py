@@ -6,6 +6,7 @@ import datetime
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from manager.settings import PROCESS_CONNECTION_PASS
+from manager import utils
 from subscription.heartbeat_manager import HeartbeatManager
 
 
@@ -55,6 +56,8 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         """
         if "option" in message:
             await self.handle_subscription_message(message)
+        elif "action" in message:
+            await self.handle_action_message(message)
         else:
             await self.handle_data_message(message)
 
@@ -107,6 +110,16 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                 }
             )
             return
+    
+    async def handle_action_message(self, message):
+        time_data = utils.get_times()
+        await self.send_json(
+            {
+                "time_data": json.dumps(time_data)
+            }
+        )
+        return
+
 
     async def handle_data_message(self, message):
         """Handle a data message.

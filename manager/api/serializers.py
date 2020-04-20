@@ -2,7 +2,7 @@
 from drf_yasg.utils import swagger_serializer_method
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from astropy.time import Time
+from manager import utils
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -14,14 +14,14 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         """The model class to serialize"""
 
-        fields = ('username', 'email')
+        fields = ("username", "email")
         """The fields of the model class to serialize"""
 
 
 class UserPermissionsSerializer(serializers.Serializer):
     """Custom Serializer for user permissions."""
 
-    execute_commands = serializers.SerializerMethodField('can_execute_commands')
+    execute_commands = serializers.SerializerMethodField("can_execute_commands")
 
     def can_execute_commands(self, user) -> bool:
         """Define wether or not the given user has permissions to execute commands.
@@ -36,7 +36,23 @@ class UserPermissionsSerializer(serializers.Serializer):
         Bool
             True if the user can execute commands, False if not.
         """
-        return user.has_perm('api.command.execute_command')
+        return user.has_perm("api.command.execute_command")
+
+
+class TimeDataSerializer(serializers.Serializer):
+    """Custom Serializer for responses to validate and get token requests."""
+
+    utc = serializers.FloatField()
+
+    tai = serializers.FloatField()
+
+    mjd = serializers.FloatField()
+
+    sidereal_summit = serializers.FloatField()
+
+    sidereal_greenwich = serializers.FloatField()
+
+    tai_to_utc = serializers.FloatField()
 
 
 class TokenSerializer(serializers.Serializer):
@@ -44,11 +60,11 @@ class TokenSerializer(serializers.Serializer):
 
     user = UserSerializer()
 
-    token = serializers.SerializerMethodField('get_token')
+    token = serializers.SerializerMethodField("get_token")
 
-    permissions = serializers.SerializerMethodField('get_permissions')
+    permissions = serializers.SerializerMethodField("get_permissions")
 
-    tai_to_utc = serializers.SerializerMethodField('get_tai_to_utc')
+    time_data = serializers.SerializerMethodField("get_time_data")
 
     @swagger_serializer_method(serializer_or_field=UserPermissionsSerializer)
     def get_permissions(self, token):
@@ -81,8 +97,9 @@ class TokenSerializer(serializers.Serializer):
         """
         return token.key
 
-    def get_tai_to_utc(self, token) -> float:
-        """Return the difference in seconds between TAI and UTC Timestamps.
+    @swagger_serializer_method(serializer_or_field=TimeDataSerializer)
+    def get_time_data(self, token) -> dict:
+        """Return relevant time measures.
 
         Params
         ------
@@ -91,9 +108,13 @@ class TokenSerializer(serializers.Serializer):
 
         Returns
         -------
-        Int
-            The number of seconds of difference between TAI and UTC times
+        Dict
+            Dictionary containing the following keys:
+            - utc: current time in UTC scale as a unix timestamp (seconds)
+            - tai: current time in UTC scale as a unix timestamp (seconds)
+            - mjd: current time as a modified julian date
+            - sidereal_summit: current time as a sidereal_time w/respect to the summit location (hourangles)
+            - sidereal_summit: current time as a sidereal_time w/respect to Greenwich location (hourangles)
+            - tai_to_utc: The number of seconds of difference between TAI and UTC times (seconds)
         """
-        t = Time.now()
-        dt = (t.datetime.timestamp() - t.tai.datetime.timestamp())
-        return dt
+        return utils.get_times()
