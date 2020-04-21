@@ -26,7 +26,6 @@ class HeartbeatManager:
         while True:
             try:
                 self.set_heartbeat_timestamp('manager', datetime.datetime.now().timestamp())
-                # self.set_heartbeat_timestamp('producer', datetime.datetime.now().timestamp())
                 data = json.dumps({
                     'category': 'heartbeat',
                     'data': [
