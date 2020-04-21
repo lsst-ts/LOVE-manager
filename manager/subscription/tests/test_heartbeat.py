@@ -92,12 +92,12 @@ class TestHeartbeat:
 
         # Assert 2
         assert response['data'] == f'Successfully unsubscribed to heartbeat-manager-0-stream'
-
         await communicator.disconnect()
+        await HeartbeatManager.stop()
 
     @pytest.mark.asyncio
     @pytest.mark.django_db(transaction=True)
-    async def test_producer_heartbeat(self):
+    async def test_heartbeat_manager_setter(self):
         # Arrange
         await HeartbeatManager.reset()
         communicator = WebsocketCommunicator(application, self.url)
@@ -128,4 +128,43 @@ class TestHeartbeat:
         # Assert 2
         heartbeat_sources = [source['csc'] for source in response['data']]
         assert 'producer' in heartbeat_sources
+        await communicator.disconnect()
+        await HeartbeatManager.stop()
         
+    @pytest.mark.asyncio
+    @pytest.mark.django_db(transaction=True)
+    async def test_producer_heartbeat(self):
+        # Arrange
+        await HeartbeatManager.reset()
+        communicator = WebsocketCommunicator(application, self.url)
+        connected, subprotocol = await communicator.connect()
+
+        # Act 1 (Subscribe)
+        msg = {
+            "option": "subscribe",
+            "category": "heartbeat",
+            "csc": "manager",
+            "salindex": 0,
+            "stream": "stream",
+        }
+        await communicator.send_json_to(msg)
+        response = await communicator.receive_json_from()
+
+        # Assert 1
+        assert response['data'] == f'Successfully subscribed to heartbeat-manager-0-stream'
+        response = await communicator.receive_json_from(timeout=5)
+        assert response['data'][0]['data']['timestamp'] is not None
+
+        # Act 2 (Send producer heartbeat through websocket)
+        msg = {
+            "heartbeat": "producer",
+            "timestamp": 1000,
+        }
+        await communicator.send_json_to(msg)
+        response = await communicator.receive_json_from(timeout=5)
+
+        # Assert 2 (Get producer heartbeat data)
+        heartbeat_sources = [source['csc'] for source in response['data']]
+        assert 'producer' in heartbeat_sources
+        await communicator.disconnect()
+        await HeartbeatManager.stop()

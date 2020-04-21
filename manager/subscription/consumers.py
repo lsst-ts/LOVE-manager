@@ -16,7 +16,8 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.first_connection = asyncio.Future()
-        HeartbeatManager.initialize()
+        self.heartbeat_manager = HeartbeatManager()
+        self.heartbeat_manager.initialize()
 
     async def connect(self):
         """Handle connection, rejects connection if no authenticated user."""
@@ -58,6 +59,8 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             await self.handle_subscription_message(message)
         elif "action" in message:
             await self.handle_action_message(message)
+        elif "heartbeat" in message:
+            await self.handle_heartbeat_message(message)
         else:
             await self.handle_data_message(message)
 
@@ -119,7 +122,15 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             }
         )
         return
-
+            
+    # Expects a message with the format:
+    # {
+    #   heartbeat: <component_name>
+    #   timestamp: <last_heartbeat_timestamp> (optional)
+    # }
+    async def handle_heartbeat_message(self, message):
+        timestamp = message["timestamp"] if "timestamp" in message else datetime.datetime.now().timestamp()
+        self.heartbeat_manager.set_heartbeat_timestamp(message["heartbeat"], timestamp)
 
     async def handle_data_message(self, message):
         """Handle a data message.

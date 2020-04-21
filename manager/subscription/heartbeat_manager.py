@@ -53,4 +53,8 @@ class HeartbeatManager:
             self.heartbeat_task = None
         self.heartbeat_data = {}
 
+    @classmethod
+    async def stop(self):
+         if self.heartbeat_task:
+            self.heartbeat_task.cancel()
 
