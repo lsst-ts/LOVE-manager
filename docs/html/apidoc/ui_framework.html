@@ -1,0 +1,864 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>5.5. ui_framework package &mdash; LOVE-manager 0.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="5.5.1.1. ui_framework.tests package" href="ui_framework.tests.html" />
+    <link rel="prev" title="5.4. subscription package" href="subscription.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> LOVE-manager
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../modules/overview.html">1. Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/how_to_use_it.html">2. How to use it</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/how_it_works.html">3. How it works</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules/readme_link.html">4. Readme File</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">5. ApiDoc</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="api.html">5.1. api package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manage.html">5.2. manage module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manager.html">5.3. manager package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="subscription.html">5.4. subscription package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">5.5. ui_framework package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#subpackages">5.5.1. Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="ui_framework.tests.html">5.5.1.1. ui_framework.tests package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">5.5.2. Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-ui_framework.admin">5.5.3. ui_framework.admin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-ui_framework.apps">5.5.4. ui_framework.apps module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-ui_framework.models">5.5.5. ui_framework.models module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-ui_framework.serializers">5.5.6. ui_framework.serializers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-ui_framework.urls">5.5.7. ui_framework.urls module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#examples">5.5.7.1. Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-ui_framework.views">5.5.8. ui_framework.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-ui_framework">5.5.9. Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">LOVE-manager</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">5. ApiDoc</a> &raquo;</li>
+        
+      <li>5.5. ui_framework package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/apidoc/ui_framework.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="ui-framework-package">
+<h1>5.5. ui_framework package<a class="headerlink" href="#ui-framework-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>5.5.1. Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ui_framework.tests.html">5.5.1.1. ui_framework.tests package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ui_framework.tests.html#submodules">5.5.1.1.1. Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui_framework.tests.html#module-ui_framework.tests.tests_api">5.5.1.1.2. ui_framework.tests.tests_api module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui_framework.tests.html#module-ui_framework.tests.tests_models">5.5.1.1.3. ui_framework.tests.tests_models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui_framework.tests.html#module-ui_framework.tests.utils">5.5.1.1.4. ui_framework.tests.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui_framework.tests.html#module-ui_framework.tests">5.5.1.1.5. Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>5.5.2. Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-ui_framework.admin">
+<span id="ui-framework-admin-module"></span><h2>5.5.3. ui_framework.admin module<a class="headerlink" href="#module-ui_framework.admin" title="Permalink to this headline">¶</a></h2>
+<p>Defines the Django Admin model pages for this app .</p>
+<p>Registers the models that will be available throgh the Djangpo Admin interface.</p>
+<p>For more information see:
+<a class="reference external" href="https://docs.djangoproject.com/en/2.2/ref/contrib/admin/">https://docs.djangoproject.com/en/2.2/ref/contrib/admin/</a></p>
+</div>
+<div class="section" id="module-ui_framework.apps">
+<span id="ui-framework-apps-module"></span><h2>5.5.4. ui_framework.apps module<a class="headerlink" href="#module-ui_framework.apps" title="Permalink to this headline">¶</a></h2>
+<p>Django apps configuration for the ui_framework app.</p>
+<dl class="class">
+<dt id="ui_framework.apps.UiFrameworkConfig">
+<em class="property">class </em><code class="sig-prename descclassname">ui_framework.apps.</code><code class="sig-name descname">UiFrameworkConfig</code><span class="sig-paren">(</span><em class="sig-param">app_name</em>, <em class="sig-param">app_module</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.apps.UiFrameworkConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.apps.config.AppConfig</span></code></p>
+<p>General App config class. Currently defines the name of the app.</p>
+<dl class="attribute">
+<dt id="ui_framework.apps.UiFrameworkConfig.name">
+<code class="sig-name descname">name</code><em class="property"> = 'ui_framework'</em><a class="headerlink" href="#ui_framework.apps.UiFrameworkConfig.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ui_framework.models">
+<span id="ui-framework-models-module"></span><h2>5.5.5. ui_framework.models module<a class="headerlink" href="#module-ui_framework.models" title="Permalink to this headline">¶</a></h2>
+<p>Defines the Django models for this app.</p>
+<p>For more information see:
+<a class="reference external" href="https://docs.djangoproject.com/en/2.2/topics/db/models/">https://docs.djangoproject.com/en/2.2/topics/db/models/</a></p>
+<dl class="class">
+<dt id="ui_framework.models.BaseModel">
+<em class="property">class </em><code class="sig-prename descclassname">ui_framework.models.</code><code class="sig-name descname">BaseModel</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.models.BaseModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.db.models.base.Model</span></code></p>
+<p>Base Model for the models of this app.</p>
+<dl class="class">
+<dt id="ui_framework.models.BaseModel.Meta">
+<em class="property">class </em><code class="sig-name descname">Meta</code><a class="headerlink" href="#ui_framework.models.BaseModel.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Define attributes of the Meta class.</p>
+<dl class="attribute">
+<dt id="ui_framework.models.BaseModel.Meta.abstract">
+<code class="sig-name descname">abstract</code><em class="property"> = False</em><a class="headerlink" href="#ui_framework.models.BaseModel.Meta.abstract" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make this an abstract class in order to be used as an enhanced base model</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.models.BaseModel.creation_timestamp">
+<code class="sig-name descname">creation_timestamp</code><a class="headerlink" href="#ui_framework.models.BaseModel.creation_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creation timestamp, autogenerated upon creation</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ui_framework.models.BaseModel.get_next_by_creation_timestamp">
+<code class="sig-name descname">get_next_by_creation_timestamp</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">field=&lt;django.db.models.fields.DateTimeField: creation_timestamp&gt;</em>, <em class="sig-param">is_next=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.models.BaseModel.get_next_by_creation_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ui_framework.models.BaseModel.get_next_by_update_timestamp">
+<code class="sig-name descname">get_next_by_update_timestamp</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">field=&lt;django.db.models.fields.DateTimeField: update_timestamp&gt;</em>, <em class="sig-param">is_next=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.models.BaseModel.get_next_by_update_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ui_framework.models.BaseModel.get_previous_by_creation_timestamp">
+<code class="sig-name descname">get_previous_by_creation_timestamp</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">field=&lt;django.db.models.fields.DateTimeField: creation_timestamp&gt;</em>, <em class="sig-param">is_next=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.models.BaseModel.get_previous_by_creation_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ui_framework.models.BaseModel.get_previous_by_update_timestamp">
+<code class="sig-name descname">get_previous_by_update_timestamp</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">field=&lt;django.db.models.fields.DateTimeField: update_timestamp&gt;</em>, <em class="sig-param">is_next=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.models.BaseModel.get_previous_by_update_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.models.BaseModel.update_timestamp">
+<code class="sig-name descname">update_timestamp</code><a class="headerlink" href="#ui_framework.models.BaseModel.update_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update timestamp, autogenerated upon creation and autoupdated on every update</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ui_framework.models.View">
+<em class="property">class </em><code class="sig-prename descclassname">ui_framework.models.</code><code class="sig-name descname">View</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.models.View" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ui_framework.models.BaseModel" title="ui_framework.models.BaseModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">ui_framework.models.BaseModel</span></code></a></p>
+<p>View Model.</p>
+<dl class="exception">
+<dt id="ui_framework.models.View.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#ui_framework.models.View.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.core.exceptions.ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="ui_framework.models.View.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#ui_framework.models.View.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.models.View.data">
+<code class="sig-name descname">data</code><a class="headerlink" href="#ui_framework.models.View.data" title="Permalink to this definition">¶</a></dt>
+<dd><p>The data that constitutes the View, stored as a JSON</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ui_framework.models.View.get_next_by_creation_timestamp">
+<code class="sig-name descname">get_next_by_creation_timestamp</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">field=&lt;django.db.models.fields.DateTimeField: creation_timestamp&gt;</em>, <em class="sig-param">is_next=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.models.View.get_next_by_creation_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ui_framework.models.View.get_next_by_update_timestamp">
+<code class="sig-name descname">get_next_by_update_timestamp</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">field=&lt;django.db.models.fields.DateTimeField: update_timestamp&gt;</em>, <em class="sig-param">is_next=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.models.View.get_next_by_update_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ui_framework.models.View.get_previous_by_creation_timestamp">
+<code class="sig-name descname">get_previous_by_creation_timestamp</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">field=&lt;django.db.models.fields.DateTimeField: creation_timestamp&gt;</em>, <em class="sig-param">is_next=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.models.View.get_previous_by_creation_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ui_framework.models.View.get_previous_by_update_timestamp">
+<code class="sig-name descname">get_previous_by_update_timestamp</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">field=&lt;django.db.models.fields.DateTimeField: update_timestamp&gt;</em>, <em class="sig-param">is_next=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.models.View.get_previous_by_update_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.models.View.id">
+<code class="sig-name descname">id</code><a class="headerlink" href="#ui_framework.models.View.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.models.View.name">
+<code class="sig-name descname">name</code><a class="headerlink" href="#ui_framework.models.View.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name of the View. e.g ‘My View’</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.models.View.objects">
+<code class="sig-name descname">objects</code><em class="property"> = &lt;django.db.models.manager.Manager object&gt;</em><a class="headerlink" href="#ui_framework.models.View.objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.models.View.workspace_views">
+<code class="sig-name descname">workspace_views</code><a class="headerlink" href="#ui_framework.models.View.workspace_views" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Parent.children</span></code> is a <code class="docutils literal notranslate"><span class="pre">ReverseManyToOneDescriptor</span></code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code class="docutils literal notranslate"><span class="pre">create_forward_many_to_many_manager()</span></code> defined below.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.models.View.workspaces">
+<code class="sig-name descname">workspaces</code><a class="headerlink" href="#ui_framework.models.View.workspaces" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related objects manager on the forward and reverse sides of
+a many-to-many relation.</p>
+<p>In the example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Pizza</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">toppings</span> <span class="o">=</span> <span class="n">ManyToManyField</span><span class="p">(</span><span class="n">Topping</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;pizzas&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Pizza.toppings</span></code> and <code class="docutils literal notranslate"><span class="pre">Topping.pizzas</span></code> are <code class="docutils literal notranslate"><span class="pre">ManyToManyDescriptor</span></code>
+instances.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code class="docutils literal notranslate"><span class="pre">create_forward_many_to_many_manager()</span></code> defined below.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ui_framework.models.Workspace">
+<em class="property">class </em><code class="sig-prename descclassname">ui_framework.models.</code><code class="sig-name descname">Workspace</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.models.Workspace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ui_framework.models.BaseModel" title="ui_framework.models.BaseModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">ui_framework.models.BaseModel</span></code></a></p>
+<p>Workspace Model.</p>
+<dl class="exception">
+<dt id="ui_framework.models.Workspace.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#ui_framework.models.Workspace.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.core.exceptions.ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="ui_framework.models.Workspace.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#ui_framework.models.Workspace.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ui_framework.models.Workspace.get_next_by_creation_timestamp">
+<code class="sig-name descname">get_next_by_creation_timestamp</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">field=&lt;django.db.models.fields.DateTimeField: creation_timestamp&gt;</em>, <em class="sig-param">is_next=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.models.Workspace.get_next_by_creation_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ui_framework.models.Workspace.get_next_by_update_timestamp">
+<code class="sig-name descname">get_next_by_update_timestamp</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">field=&lt;django.db.models.fields.DateTimeField: update_timestamp&gt;</em>, <em class="sig-param">is_next=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.models.Workspace.get_next_by_update_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ui_framework.models.Workspace.get_previous_by_creation_timestamp">
+<code class="sig-name descname">get_previous_by_creation_timestamp</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">field=&lt;django.db.models.fields.DateTimeField: creation_timestamp&gt;</em>, <em class="sig-param">is_next=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.models.Workspace.get_previous_by_creation_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ui_framework.models.Workspace.get_previous_by_update_timestamp">
+<code class="sig-name descname">get_previous_by_update_timestamp</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">field=&lt;django.db.models.fields.DateTimeField: update_timestamp&gt;</em>, <em class="sig-param">is_next=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.models.Workspace.get_previous_by_update_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ui_framework.models.Workspace.get_sorted_views">
+<code class="sig-name descname">get_sorted_views</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.models.Workspace.get_sorted_views" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the views sorted by the sort_value of their corresponding WorkView.</p>
+<dl class="simple">
+<dt>list:</dt><dd><p>List of View objects associated to this Workspace</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ui_framework.models.Workspace.has_read_permission">
+<em class="property">static </em><code class="sig-name descname">has_read_permission</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.models.Workspace.has_read_permission" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.models.Workspace.id">
+<code class="sig-name descname">id</code><a class="headerlink" href="#ui_framework.models.Workspace.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.models.Workspace.name">
+<code class="sig-name descname">name</code><a class="headerlink" href="#ui_framework.models.Workspace.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The name of the Workspace. e.g ‘My Workspace’</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.models.Workspace.objects">
+<code class="sig-name descname">objects</code><em class="property"> = &lt;django.db.models.manager.Manager object&gt;</em><a class="headerlink" href="#ui_framework.models.Workspace.objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.models.Workspace.views">
+<code class="sig-name descname">views</code><a class="headerlink" href="#ui_framework.models.Workspace.views" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related objects manager on the forward and reverse sides of
+a many-to-many relation.</p>
+<p>In the example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Pizza</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">toppings</span> <span class="o">=</span> <span class="n">ManyToManyField</span><span class="p">(</span><span class="n">Topping</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;pizzas&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Pizza.toppings</span></code> and <code class="docutils literal notranslate"><span class="pre">Topping.pizzas</span></code> are <code class="docutils literal notranslate"><span class="pre">ManyToManyDescriptor</span></code>
+instances.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code class="docutils literal notranslate"><span class="pre">create_forward_many_to_many_manager()</span></code> defined below.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.models.Workspace.workspace_views">
+<code class="sig-name descname">workspace_views</code><a class="headerlink" href="#ui_framework.models.Workspace.workspace_views" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related objects manager on the reverse side of a
+many-to-one relation.</p>
+<p>In the example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Child</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">ForeignKey</span><span class="p">(</span><span class="n">Parent</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;children&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Parent.children</span></code> is a <code class="docutils literal notranslate"><span class="pre">ReverseManyToOneDescriptor</span></code> instance.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code class="docutils literal notranslate"><span class="pre">create_forward_many_to_many_manager()</span></code> defined below.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ui_framework.models.WorkspaceView">
+<em class="property">class </em><code class="sig-prename descclassname">ui_framework.models.</code><code class="sig-name descname">WorkspaceView</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.models.WorkspaceView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ui_framework.models.BaseModel" title="ui_framework.models.BaseModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">ui_framework.models.BaseModel</span></code></a></p>
+<p>WorkspaceView Model, that relates a Works with a View.</p>
+<dl class="exception">
+<dt id="ui_framework.models.WorkspaceView.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#ui_framework.models.WorkspaceView.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.core.exceptions.ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="ui_framework.models.WorkspaceView.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#ui_framework.models.WorkspaceView.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ui_framework.models.WorkspaceView.get_next_by_creation_timestamp">
+<code class="sig-name descname">get_next_by_creation_timestamp</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">field=&lt;django.db.models.fields.DateTimeField: creation_timestamp&gt;</em>, <em class="sig-param">is_next=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.models.WorkspaceView.get_next_by_creation_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ui_framework.models.WorkspaceView.get_next_by_update_timestamp">
+<code class="sig-name descname">get_next_by_update_timestamp</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">field=&lt;django.db.models.fields.DateTimeField: update_timestamp&gt;</em>, <em class="sig-param">is_next=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.models.WorkspaceView.get_next_by_update_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ui_framework.models.WorkspaceView.get_previous_by_creation_timestamp">
+<code class="sig-name descname">get_previous_by_creation_timestamp</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">field=&lt;django.db.models.fields.DateTimeField: creation_timestamp&gt;</em>, <em class="sig-param">is_next=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.models.WorkspaceView.get_previous_by_creation_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ui_framework.models.WorkspaceView.get_previous_by_update_timestamp">
+<code class="sig-name descname">get_previous_by_update_timestamp</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">field=&lt;django.db.models.fields.DateTimeField: update_timestamp&gt;</em>, <em class="sig-param">is_next=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.models.WorkspaceView.get_previous_by_update_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.models.WorkspaceView.id">
+<code class="sig-name descname">id</code><a class="headerlink" href="#ui_framework.models.WorkspaceView.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.models.WorkspaceView.objects">
+<code class="sig-name descname">objects</code><em class="property"> = &lt;django.db.models.manager.Manager object&gt;</em><a class="headerlink" href="#ui_framework.models.WorkspaceView.objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.models.WorkspaceView.sort_value">
+<code class="sig-name descname">sort_value</code><a class="headerlink" href="#ui_framework.models.WorkspaceView.sort_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Order of the View within the Workspace.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.models.WorkspaceView.view">
+<code class="sig-name descname">view</code><a class="headerlink" href="#ui_framework.models.WorkspaceView.view" title="Permalink to this definition">¶</a></dt>
+<dd><p>The corresponding View</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.models.WorkspaceView.view_id">
+<code class="sig-name descname">view_id</code><a class="headerlink" href="#ui_framework.models.WorkspaceView.view_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.models.WorkspaceView.view_name">
+<code class="sig-name descname">view_name</code><a class="headerlink" href="#ui_framework.models.WorkspaceView.view_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The custom name for the View within the Workspace</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.models.WorkspaceView.workspace">
+<code class="sig-name descname">workspace</code><a class="headerlink" href="#ui_framework.models.WorkspaceView.workspace" title="Permalink to this definition">¶</a></dt>
+<dd><p>The corresponding Workspace</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.models.WorkspaceView.workspace_id">
+<code class="sig-name descname">workspace_id</code><a class="headerlink" href="#ui_framework.models.WorkspaceView.workspace_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ui_framework.serializers">
+<span id="ui-framework-serializers-module"></span><h2>5.5.6. ui_framework.serializers module<a class="headerlink" href="#module-ui_framework.serializers" title="Permalink to this headline">¶</a></h2>
+<p>Defines the serializer used by the REST API exposed by this app.</p>
+<dl class="class">
+<dt id="ui_framework.serializers.ViewSerializer">
+<em class="property">class </em><code class="sig-prename descclassname">ui_framework.serializers.</code><code class="sig-name descname">ViewSerializer</code><span class="sig-paren">(</span><em class="sig-param">instance=None</em>, <em class="sig-param">data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.serializers.ViewSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">rest_framework.serializers.ModelSerializer</span></code></p>
+<p>Serializer for the View model.</p>
+<dl class="class">
+<dt id="ui_framework.serializers.ViewSerializer.Meta">
+<em class="property">class </em><code class="sig-name descname">Meta</code><a class="headerlink" href="#ui_framework.serializers.ViewSerializer.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Meta class to map serializer’s fields with the model fields.</p>
+<dl class="attribute">
+<dt id="ui_framework.serializers.ViewSerializer.Meta.fields">
+<code class="sig-name descname">fields</code><em class="property"> = '__all__'</em><a class="headerlink" href="#ui_framework.serializers.ViewSerializer.Meta.fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.serializers.ViewSerializer.Meta.model">
+<code class="sig-name descname">model</code><a class="headerlink" href="#ui_framework.serializers.ViewSerializer.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#ui_framework.models.View" title="ui_framework.models.View"><code class="xref py py-class docutils literal notranslate"><span class="pre">ui_framework.models.View</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ui_framework.serializers.WorkspaceSerializer">
+<em class="property">class </em><code class="sig-prename descclassname">ui_framework.serializers.</code><code class="sig-name descname">WorkspaceSerializer</code><span class="sig-paren">(</span><em class="sig-param">instance=None</em>, <em class="sig-param">data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.serializers.WorkspaceSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">rest_framework.serializers.ModelSerializer</span></code></p>
+<p>Serializer for the Workspace model.</p>
+<dl class="class">
+<dt id="ui_framework.serializers.WorkspaceSerializer.Meta">
+<em class="property">class </em><code class="sig-name descname">Meta</code><a class="headerlink" href="#ui_framework.serializers.WorkspaceSerializer.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Meta class to map serializer’s fields with the model fields.</p>
+<dl class="attribute">
+<dt id="ui_framework.serializers.WorkspaceSerializer.Meta.fields">
+<code class="sig-name descname">fields</code><em class="property"> = '__all__'</em><a class="headerlink" href="#ui_framework.serializers.WorkspaceSerializer.Meta.fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.serializers.WorkspaceSerializer.Meta.model">
+<code class="sig-name descname">model</code><a class="headerlink" href="#ui_framework.serializers.WorkspaceSerializer.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#ui_framework.models.Workspace" title="ui_framework.models.Workspace"><code class="xref py py-class docutils literal notranslate"><span class="pre">ui_framework.models.Workspace</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ui_framework.serializers.WorkspaceViewSerializer">
+<em class="property">class </em><code class="sig-prename descclassname">ui_framework.serializers.</code><code class="sig-name descname">WorkspaceViewSerializer</code><span class="sig-paren">(</span><em class="sig-param">instance=None</em>, <em class="sig-param">data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.serializers.WorkspaceViewSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">rest_framework.serializers.ModelSerializer</span></code></p>
+<p>Serializer for the WorkspaceView model.</p>
+<dl class="class">
+<dt id="ui_framework.serializers.WorkspaceViewSerializer.Meta">
+<em class="property">class </em><code class="sig-name descname">Meta</code><a class="headerlink" href="#ui_framework.serializers.WorkspaceViewSerializer.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Meta class to map serializer’s fields with the model fields.</p>
+<dl class="attribute">
+<dt id="ui_framework.serializers.WorkspaceViewSerializer.Meta.fields">
+<code class="sig-name descname">fields</code><em class="property"> = '__all__'</em><a class="headerlink" href="#ui_framework.serializers.WorkspaceViewSerializer.Meta.fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.serializers.WorkspaceViewSerializer.Meta.model">
+<code class="sig-name descname">model</code><a class="headerlink" href="#ui_framework.serializers.WorkspaceViewSerializer.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#ui_framework.models.WorkspaceView" title="ui_framework.models.WorkspaceView"><code class="xref py py-class docutils literal notranslate"><span class="pre">ui_framework.models.WorkspaceView</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ui_framework.urls">
+<span id="ui-framework-urls-module"></span><h2>5.5.7. ui_framework.urls module<a class="headerlink" href="#module-ui_framework.urls" title="Permalink to this headline">¶</a></h2>
+<p>API app URL Configuration.</p>
+<dl class="simple">
+<dt>The <cite>urlpatterns</cite> list routes URLs to views. For more information please see:</dt><dd><p><a class="reference external" href="https://docs.djangoproject.com/en/2.2/topics/http/urls/">https://docs.djangoproject.com/en/2.2/topics/http/urls/</a></p>
+</dd>
+</dl>
+<div class="section" id="examples">
+<h3>5.5.7.1. Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>Function views</dt><dd><ol class="arabic simple">
+<li><p>Add an import:  from my_app import views</p></li>
+<li><p>Add a URL to urlpatterns:  path(‘’, views.home, name=’home’)</p></li>
+</ol>
+</dd>
+<dt>Class-based views</dt><dd><ol class="arabic simple">
+<li><p>Add an import:  from other_app.views import Home</p></li>
+<li><p>Add a URL to urlpatterns:  path(‘’, Home.as_view(), name=’home’)</p></li>
+</ol>
+</dd>
+<dt>Including another URLconf</dt><dd><ol class="arabic simple">
+<li><p>Import the include() function: from django.urls import include, path</p></li>
+<li><p>Add a URL to urlpatterns:  path(‘blog/’, include(‘blog.urls’))</p></li>
+</ol>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="module-ui_framework.views">
+<span id="ui-framework-views-module"></span><h2>5.5.8. ui_framework.views module<a class="headerlink" href="#module-ui_framework.views" title="Permalink to this headline">¶</a></h2>
+<p>Defines the views exposed by the REST API exposed by this app.</p>
+<dl class="class">
+<dt id="ui_framework.views.ViewViewSet">
+<em class="property">class </em><code class="sig-prename descclassname">ui_framework.views.</code><code class="sig-name descname">ViewViewSet</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.views.ViewViewSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">rest_framework.viewsets.ModelViewSet</span></code></p>
+<p>Define API endpoints for the View model.</p>
+<dl class="attribute">
+<dt id="ui_framework.views.ViewViewSet.basename">
+<code class="sig-name descname">basename</code><em class="property"> = None</em><a class="headerlink" href="#ui_framework.views.ViewViewSet.basename" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.views.ViewViewSet.description">
+<code class="sig-name descname">description</code><em class="property"> = None</em><a class="headerlink" href="#ui_framework.views.ViewViewSet.description" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.views.ViewViewSet.detail">
+<code class="sig-name descname">detail</code><em class="property"> = None</em><a class="headerlink" href="#ui_framework.views.ViewViewSet.detail" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.views.ViewViewSet.name">
+<code class="sig-name descname">name</code><em class="property"> = None</em><a class="headerlink" href="#ui_framework.views.ViewViewSet.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.views.ViewViewSet.queryset">
+<code class="sig-name descname">queryset</code><em class="property"> = &lt;QuerySet []&gt;</em><a class="headerlink" href="#ui_framework.views.ViewViewSet.queryset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set of objects to be accessed by queries to this viewsets endpoints</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.views.ViewViewSet.serializer_class">
+<code class="sig-name descname">serializer_class</code><a class="headerlink" href="#ui_framework.views.ViewViewSet.serializer_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#ui_framework.serializers.ViewSerializer" title="ui_framework.serializers.ViewSerializer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ui_framework.serializers.ViewSerializer</span></code></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.views.ViewViewSet.suffix">
+<code class="sig-name descname">suffix</code><em class="property"> = None</em><a class="headerlink" href="#ui_framework.views.ViewViewSet.suffix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ui_framework.views.WorkspaceViewSet">
+<em class="property">class </em><code class="sig-prename descclassname">ui_framework.views.</code><code class="sig-name descname">WorkspaceViewSet</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.views.WorkspaceViewSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">rest_framework.viewsets.ModelViewSet</span></code></p>
+<p>Define API endpoints for the Workspace model.</p>
+<dl class="attribute">
+<dt id="ui_framework.views.WorkspaceViewSet.basename">
+<code class="sig-name descname">basename</code><em class="property"> = None</em><a class="headerlink" href="#ui_framework.views.WorkspaceViewSet.basename" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.views.WorkspaceViewSet.description">
+<code class="sig-name descname">description</code><em class="property"> = None</em><a class="headerlink" href="#ui_framework.views.WorkspaceViewSet.description" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.views.WorkspaceViewSet.detail">
+<code class="sig-name descname">detail</code><em class="property"> = None</em><a class="headerlink" href="#ui_framework.views.WorkspaceViewSet.detail" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.views.WorkspaceViewSet.name">
+<code class="sig-name descname">name</code><em class="property"> = None</em><a class="headerlink" href="#ui_framework.views.WorkspaceViewSet.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.views.WorkspaceViewSet.queryset">
+<code class="sig-name descname">queryset</code><em class="property"> = &lt;QuerySet []&gt;</em><a class="headerlink" href="#ui_framework.views.WorkspaceViewSet.queryset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set of objects to be accessed by queries to this viewsets endpoints</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.views.WorkspaceViewSet.serializer_class">
+<code class="sig-name descname">serializer_class</code><a class="headerlink" href="#ui_framework.views.WorkspaceViewSet.serializer_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#ui_framework.serializers.WorkspaceSerializer" title="ui_framework.serializers.WorkspaceSerializer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ui_framework.serializers.WorkspaceSerializer</span></code></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.views.WorkspaceViewSet.suffix">
+<code class="sig-name descname">suffix</code><em class="property"> = None</em><a class="headerlink" href="#ui_framework.views.WorkspaceViewSet.suffix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ui_framework.views.WorkspaceViewViewSet">
+<em class="property">class </em><code class="sig-prename descclassname">ui_framework.views.</code><code class="sig-name descname">WorkspaceViewViewSet</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.views.WorkspaceViewViewSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">rest_framework.viewsets.ModelViewSet</span></code></p>
+<p>Define API endpoints for the WorkspaceView model.</p>
+<dl class="attribute">
+<dt id="ui_framework.views.WorkspaceViewViewSet.basename">
+<code class="sig-name descname">basename</code><em class="property"> = None</em><a class="headerlink" href="#ui_framework.views.WorkspaceViewViewSet.basename" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.views.WorkspaceViewViewSet.description">
+<code class="sig-name descname">description</code><em class="property"> = None</em><a class="headerlink" href="#ui_framework.views.WorkspaceViewViewSet.description" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.views.WorkspaceViewViewSet.detail">
+<code class="sig-name descname">detail</code><em class="property"> = None</em><a class="headerlink" href="#ui_framework.views.WorkspaceViewViewSet.detail" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.views.WorkspaceViewViewSet.name">
+<code class="sig-name descname">name</code><em class="property"> = None</em><a class="headerlink" href="#ui_framework.views.WorkspaceViewViewSet.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.views.WorkspaceViewViewSet.queryset">
+<code class="sig-name descname">queryset</code><em class="property"> = &lt;QuerySet []&gt;</em><a class="headerlink" href="#ui_framework.views.WorkspaceViewViewSet.queryset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set of objects to be accessed by queries to this viewsets endpoints</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.views.WorkspaceViewViewSet.serializer_class">
+<code class="sig-name descname">serializer_class</code><a class="headerlink" href="#ui_framework.views.WorkspaceViewViewSet.serializer_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#ui_framework.serializers.WorkspaceViewSerializer" title="ui_framework.serializers.WorkspaceViewSerializer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ui_framework.serializers.WorkspaceViewSerializer</span></code></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.views.WorkspaceViewViewSet.suffix">
+<code class="sig-name descname">suffix</code><em class="property"> = None</em><a class="headerlink" href="#ui_framework.views.WorkspaceViewViewSet.suffix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ui_framework">
+<span id="module-contents"></span><h2>5.5.9. Module contents<a class="headerlink" href="#module-ui_framework" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ui_framework.tests.html" class="btn btn-neutral float-right" title="5.5.1.1. ui_framework.tests package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="subscription.html" class="btn btn-neutral float-left" title="5.4. subscription package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Inria Chile
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

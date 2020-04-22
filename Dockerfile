@@ -1,4 +1,4 @@
-FROM python:3.6.7-stretch
+FROM python:3.8.2-buster
 
 # Install required packages
 RUN apt-get update && \
@@ -22,12 +22,14 @@ RUN python manage.py collectstatic --noinput
 
 # Expose static files and port
 VOLUME /usr/src/love/manager/static
+VOLUME /usr/src/love/manager/media
 EXPOSE 8000
 
 # Set env variables for runtime (to be replaced in docker-cpomse files)
 ENV ADMIN_USER_PASS=test
 ENV USER_USER_PASS=test
 ENV CMD_USER_PASS=test
+ENV NO_DEBUG=True
 
 # Run daphne server in runtime
 CMD ["./runserver.sh"]

@@ -71,7 +71,7 @@ class TestSubscriptionCombinations:
         return response, response
 
     @pytest.mark.asyncio
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     async def test_join_and_leave_every_subscription(self):
         """Test that clients can join and then leave any subscription stream."""
         # Arrange
@@ -110,7 +110,7 @@ class TestSubscriptionCombinations:
         await communicator.disconnect()
 
     @pytest.mark.asyncio
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     async def test_join_and_leave_all_subscription(self):
         """Test that clients can subscribe and leave all streams."""
         # Arrange
@@ -145,7 +145,7 @@ class TestSubscriptionCombinations:
         await communicator.disconnect()
 
     @pytest.mark.asyncio
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     async def test_receive_messages_from_every_subscription(self):
         """Test that clients subscribed (individually) to every stream receive messages from all of them."""
         # Arrange
@@ -173,7 +173,7 @@ class TestSubscriptionCombinations:
         await communicator.disconnect()
 
     @pytest.mark.asyncio
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     async def test_receive_messages_from_all_subscription(self):
         """Test that clients subscribed to all streams receive messages from all of them."""
         # Arrange
@@ -198,13 +198,11 @@ class TestSubscriptionCombinations:
             expected['subscription'] = '{}-all-all-all'.format(combination['category'])
             response = await communicator.receive_json_from()
             # Assert
-            print(response)
-            print(expected)
             assert response == expected
         await communicator.disconnect()
 
     @pytest.mark.asyncio
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     async def test_receive_message_for_subscribed_group_only(self):
         """Test that clients subscribed to some groups only receive messages from those."""
         # Arrange
@@ -240,7 +238,7 @@ class TestSubscriptionCombinations:
         await communicator.disconnect()
 
     @pytest.mark.asyncio
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     async def test_receive_message_for_subscribed_groups_only(self):
         """Test that clients subscribed to some groups only receive messages from those."""
         # Arrange
@@ -282,7 +280,7 @@ class TestSubscriptionCombinations:
         await communicator.disconnect()
 
     @pytest.mark.asyncio
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     async def test_receive_part_of_message_for_subscribed_groups_only(self):
         """Test that clients subscribed to some groups only receive the corresponding part of incoming messages."""
         # Arrange
@@ -324,3 +322,69 @@ class TestSubscriptionCombinations:
             await communicator.send_json_to(subscription_msg)
             await communicator.receive_json_from()
         await communicator.disconnect()
+
+    @pytest.mark.asyncio
+    @pytest.mark.django_db(transaction=True)
+    async def test_request_initial_state_when_subscribing_to_event(self):
+        """
+        Must send  a request for initial_state to the Producer whenever
+        a client subscribes to events
+        """
+        # Arrange
+        client_communicator = WebsocketCommunicator(application, self.url)
+        producer_communicator = WebsocketCommunicator(application, self.url)
+        await client_communicator.connect()
+        await producer_communicator.connect()
+
+        # Act 1 (Subscribe producer)
+        await producer_communicator.send_json_to({
+            'option': 'subscribe',
+            'category': 'initial_state',
+            'csc': 'all',
+            'salindex': 'all',
+            'stream': 'all'
+        })
+        await producer_communicator.receive_json_from()
+
+        # Act 2  (Subscribe client)
+        for combination in self.combinations:
+            # initial state is only useful for events
+            if combination["category"] != "event":
+                continue
+
+            msg = {
+                "option": "subscribe",
+                "csc": combination["csc"],
+                "salindex": combination["salindex"],
+                "stream": combination["stream"],
+                "category": combination["category"]
+            }
+
+            # Subscribe the first time
+            await client_communicator.send_json_to(msg)
+            producer_consumer_response = await producer_communicator.receive_json_from()
+
+            # Assert first subscription
+            assert producer_consumer_response == {
+                'category': 'initial_state',
+                'data': [{
+                    'csc': combination["csc"],
+                    'salindex': combination["salindex"],
+                    'data': {
+                        'event_name': combination["stream"]
+                    },
+                }],
+                'subscription': 'initial_state-all-all-all'
+
+            }
+
+            # Assert second subscription doesn't produce a message
+            await client_communicator.send_json_to(msg)
+
+            with pytest.raises(asyncio.TimeoutError):
+                producer_consumer_response = await asyncio.wait_for(
+                    producer_communicator.receive_json_from(), timeout=self.no_reception_timeout
+                )
+
+        await client_communicator.disconnect()
+        await producer_communicator.disconnect()

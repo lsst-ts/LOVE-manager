@@ -1,30 +1,46 @@
 """Contains the Django Channels Consumers that handle the reception/sending of channels messages."""
 import json
 import random
+import asyncio
+import datetime
+from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from manager.settings import PROCESS_CONNECTION_PASS
+from manager import utils
+from subscription.heartbeat_manager import HeartbeatManager
 
 
 class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
     """Consumer that handles incoming websocket messages."""
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.first_connection = asyncio.Future()
+        self.heartbeat_manager = HeartbeatManager()
+        self.heartbeat_manager.initialize()
+
     async def connect(self):
         """Handle connection, rejects connection if no authenticated user."""
         self.stream_group_names = []
-        self.pending_commands = set()
         # Reject connection if no authenticated user:
-        if self.scope['user'].is_anonymous:
-            if self.scope['password'] and self.scope['password'] == PROCESS_CONNECTION_PASS:
+        if self.scope["user"].is_anonymous:
+            if (
+                self.scope["password"] and self.scope["password"] == PROCESS_CONNECTION_PASS
+            ):
                 await self.accept()
+                self.first_connection.set_result(True)
             else:
                 await self.close()
         else:
             await self.accept()
+            self.first_connection.set_result(True)
+            url_token = self.scope["query_string"][6:].decode()
+            personal_group_name = "token-{}".format(url_token)
+            await self.channel_layer.group_add(personal_group_name, self.channel_name)
 
     async def disconnect(self, close_code):
         """Handle disconnection."""
         # Leave telemetry_stream group
-        self.pending_commands = set()
         for telemetry_stream in self.stream_group_names:
             await self._leave_group(*telemetry_stream)
 
@@ -39,8 +55,12 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         message: `dict`
             dictionary containing the message parsed as json
         """
-        if 'option' in message:
+        if "option" in message:
             await self.handle_subscription_message(message)
+        elif "action" in message:
+            await self.handle_action_message(message)
+        elif "heartbeat" in message:
+            await self.handle_heartbeat_message(message)
         else:
             await self.handle_data_message(message)
 
@@ -57,37 +77,60 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         The expected format of the message is as follows:
         {
             option: 'subscribe'/'unsubscribe'
-            category: 'event'/'telemetry'/'cmd',
+            category: 'event'/'telemetry',
             csc: 'ScriptQueue',
             salindex: 1,
             stream: 'stream1',
         }
 
         """
-        option = message['option']
-        category = message['category']
+        option = message["option"]
+        category = message["category"]
 
-        if option == 'subscribe':
+        if option == "subscribe":
             # Subscribe and send confirmation
-            csc = message['csc']
-            salindex = message['salindex']
-            stream = message['stream']
+            csc = message["csc"]
+            salindex = message["salindex"]
+            stream = message["stream"]
             await self._join_group(category, csc, str(salindex), stream)
-            await self.send_json({
-                'data': 'Successfully subscribed to %s-%s-%s-%s' % (category, csc, salindex, stream)
-            })
-            return
+            await self.send_json(
+                {
+                    "data": "Successfully subscribed to %s-%s-%s-%s"
+                    % (category, csc, salindex, stream)
+                }
+            )
 
-        if option == 'unsubscribe':
+        if option == "unsubscribe":
             # Unsubscribe and send confirmation
-            csc = message['csc']
-            salindex = message['salindex']
-            stream = message['stream']
+            csc = message["csc"]
+            salindex = message["salindex"]
+            stream = message["stream"]
             await self._leave_group(category, csc, str(salindex), stream)
-            await self.send_json({
-                'data': 'Successfully unsubscribed to %s-%s-%s-%s' % (category, csc, salindex, stream)
-            })
+            await self.send_json(
+                {
+                    "data": "Successfully unsubscribed to %s-%s-%s-%s"
+                    % (category, csc, salindex, stream)
+                }
+            )
             return
+    
+    async def handle_action_message(self, message):
+        time_data = utils.get_times()
+        await self.send_json(
+            {
+                "time_data": json.dumps(time_data)
+            }
+        )
+        return
+            
+    # Expects a message with the format:
+    # {
+    #   heartbeat: <component_name>
+    #   timestamp: <last_heartbeat_timestamp> (optional)
+    # }
+    async def handle_heartbeat_message(self, message):
+        timestamp = message["timestamp"] if "timestamp" in message else datetime.datetime.now().timestamp()
+        self.heartbeat_manager.set_heartbeat_timestamp(message["heartbeat"], timestamp)
 
     async def handle_data_message(self, message):
         """Handle a data message.
@@ -110,90 +153,52 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                     }
                 }]
             }
-            The expected format of the message for a command/ack is as follows:
-            {
-                category: 'cmd'/'ack',
-                data: [{
-                    csc: 'ScriptQueue',
-                    salindex: 1,
-                    data: {
-                        stream: {
-                            cmd: 'CommandPath',
-                            params: {
-                                'param1': 'value1',
-                                'param2': 'value2',
-                                ...
-                            },
-                        }
-                    }
-                }]
-            }
         """
-        data = message['data']
-        category = message['category']
-        user = self.scope['user']
-        if category == 'cmd' and not user.has_perm('api.command.execute_command'):
-            await self.send_json({
-                'data': 'Command not sent. User does not have permissions to send commands.'
-            })
-            return
+        data = message["data"]
+        category = message["category"]
+        user = self.scope["user"]
+
 
         # Send data to telemetry_stream groups
         for csc_message in data:
-            csc = csc_message['csc']
-            salindex = csc_message['salindex']
-            data_csc = csc_message['data']
-            csc_message['data'] = data_csc
+            csc = csc_message["csc"]
+            salindex = csc_message["salindex"]
+            data_csc = csc_message["data"]
+            csc_message["data"] = data_csc
             streams = data_csc.keys()
             streams_data = {}
             for stream in streams:
                 sub_category = category
                 msg_type = "subscription_data"
-                group_name = '-'.join([sub_category, csc, str(salindex), stream])
-                if category == "cmd":
-                    await self._join_group("cmd_acks", "all", "all", "all")
-                    cmd_id = random.getrandbits(128)
-                    if 'cmd_id' in data_csc[stream]:
-                        cmd_id = data_csc[stream]['cmd_id']
-                    self.pending_commands.add(cmd_id)
-                    print('New Command', self.pending_commands)
-                if category == "ack":
-                    print('New Ack', self.pending_commands, message)
-                    sub_category = "cmd"  # Use sub group from cmds
-                    msg_type = "subscription_ack"
-                    group_name = 'cmd_acks-all-all-all'
+                group_name = "-".join([sub_category, csc, str(salindex), stream])
                 await self.channel_layer.group_send(
                     group_name,
                     {
-                        'type': msg_type,
-                        'category': category,
-                        'csc': csc,
-                        'salindex': salindex,
-                        'data': {stream: data_csc[stream]},
-                        'subscription': group_name
-                    }
+                        "type": msg_type,
+                        "category": category,
+                        "csc": csc,
+                        "salindex": salindex,
+                        "data": {stream: data_csc[stream]},
+                        "subscription": group_name,
+                    },
                 )
                 streams_data[stream] = data_csc[stream]
             await self.channel_layer.group_send(
-                '-'.join([category, csc, str(salindex), 'all']),
+                "-".join([category, csc, str(salindex), "all"]),
                 {
-                    'type': 'subscription_data',
-                    'category': category,
-                    'csc': csc,
-                    'salindex': salindex,
-                    'data': {csc: streams_data},
-                    'subscription': '-'.join([category, csc, str(salindex), 'all'])
-                }
+                    "type": "subscription_data",
+                    "category": category,
+                    "csc": csc,
+                    "salindex": salindex,
+                    "data": {csc: streams_data},
+                    "subscription": "-".join([category, csc, str(salindex), "all"]),
+                },
             )
 
         # Send all data to consumers subscribed to "all" subscriptions of the same category
         await self.channel_layer.group_send(
-            '{}-all-all-all'.format(category),
-            {
-                'type': 'subscription_all_data',
-                'category': category,
-                'data': data
-            }
+            "{}-all-all-all".format(category),
+            {"type": "subscription_all_data", "category": category, "data": data},
         )
 
     async def _join_group(self, category, csc, salindex, stream):
@@ -202,7 +207,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         Parameters
         ----------
         category: `string`
-            category of the message, it can be either: 'cmd', 'event' or 'telemetry'
+            category of the message, it can be either: 'event' or 'telemetry'
         csc : `string`
             CSC associated to the message. E.g. 'ScriptQueue'
         salindex : `string`
@@ -210,14 +215,30 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         stream : `string`
             Stream to subscribe to. E.g. 'stream_1'
         """
-        key = '-'.join([category, csc, salindex, stream])
+        key = "-".join([category, csc, salindex, stream])
         if [category, csc, salindex, stream] in self.stream_group_names:
             return
         self.stream_group_names.append([category, csc, salindex, stream])
-        await self.channel_layer.group_add(
-            key,
-            self.channel_name
-        )
+        await self.channel_layer.group_add(key, self.channel_name)
+
+        # If subscribing to an event, send the initial_state
+        if category == "event":
+            await self.channel_layer.group_send(
+                "initial_state-all-all-all",
+                {
+                    "type": "subscription_all_data",
+                    "category": "initial_state",
+                    "data": [
+                        {
+                            "csc": csc,
+                            "salindex": int(salindex)
+                            if salindex != "all"
+                            else salindex,
+                            "data": {"event_name": stream},
+                        }
+                    ],
+                },
+            )
 
     async def _leave_group(self, category, csc, salindex, stream):
         """Leave a group in order to receive messages from it.
@@ -225,7 +246,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         Parameters
         ----------
         category: `string`
-            category of the message, it can be either: 'cmd', 'event' or 'telemetry'
+            category of the message, it can be either: 'event' or 'telemetry'
         csc : `string`
             CSC associated to the message. E.g. 'ScriptQueue'
         salindex : `string`
@@ -233,13 +254,10 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         stream : `string`
             Stream to subscribe to. E.g. 'stream_1'
         """
-        key = '-'.join([category, csc, salindex, stream])
+        key = "-".join([category, csc, salindex, stream])
         if [category, csc, salindex, stream] in self.stream_group_names:
             self.stream_group_names.remove([category, csc, salindex, stream])
-        await self.channel_layer.group_discard(
-            key,
-            self.channel_name
-        )
+        await self.channel_layer.group_discard(key, self.channel_name)
 
     async def subscription_data(self, message):
         """
@@ -252,53 +270,22 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         message: `dict`
             dictionary containing the message parsed as json
         """
-        data = message['data']
-        category = message['category']
-        salindex = message['salindex']
-        csc = message['csc']
-        subscription = message['subscription']
+        data = message["data"]
+        category = message["category"]
+        salindex = message["salindex"]
+        csc = message["csc"]
+        subscription = message["subscription"]
 
         # Send data to WebSocket
-        await self.send(text_data=json.dumps({
-            'category': category,
-            'data': [{
-                'csc': csc,
-                'salindex': salindex,
-                'data': data
-            }],
-            'subscription': subscription
-        }))
-
-    async def subscription_ack(self, message):
-        """
-        Send a message to all the instances of a consumer that have joined the group.
-
-        It is used to send ack messages associated to subscriptions to all the groups of a particular category.
-        Only sends messages to those groups with a corresponding pending cmd.
-
-        Parameters
-        ----------
-        message: `dict`
-            dictionary containing the message parsed as json
-        """
-        data = message['data']
-        category = message['category']
-        salindex = message['salindex']
-        csc = message['csc']
-        for stream in data:
-            print('stream', data[stream])
-            cmd_id = data[stream]['cmd_id']
-            if cmd_id in self.pending_commands:
-                self.pending_commands.discard(cmd_id)
-                await self.send(text_data=json.dumps({
-                    'category': category,
-                    'data': [{
-                        'csc': csc,
-                        'salindex': salindex,
-                        'data': data,
-                    }],
-                    'subscription': 'cmd_acks-all-all-all'
-                }))
+        await self.send(
+            text_data=json.dumps(
+                {
+                    "category": category,
+                    "data": [{"csc": csc, "salindex": salindex, "data": data}],
+                    "subscription": subscription,
+                }
+            )
+        )
 
     async def subscription_all_data(self, message):
         """
@@ -311,13 +298,42 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         message: `dict`
             dictionary containing the message parsed as json
         """
-        data = message['data']
-        category = message['category']
+        data = message["data"]
+        category = message["category"]
         # subscription = '{}-all-all-all'.format(category)
 
         # Send data to WebSocket
-        await self.send(text_data=json.dumps({
-            'category': category,
-            'data': data,
-            'subscription': '{}-all-all-all'.format(category)
-        }))
+        await self.send(
+            text_data=json.dumps(
+                {
+                    "category": category,
+                    "data": data,
+                    "subscription": "{}-all-all-all".format(category),
+                }
+            )
+        )
+
+    async def send_heartbeat(self, message):
+        """
+        Send a heartbeat to all the instances of a consumer that have joined the heartbeat-manager-0-stream.
+
+        It is used to send messages associated to subscriptions to all the groups of a particular category
+
+        Parameters
+        ----------
+        message: `string`
+            dictionary containing the heartbeat message
+        """
+        # Send data to WebSocket
+        await self.send(text_data=message["data"])
+
+    async def logout(self, message):
+        """Closes the connection.
+
+        Parameters
+        ----------
+        message: `string`
+            message received, it is part of the API (as this function is called by a message reception)
+            but it is not used
+        """
+        await self.close()

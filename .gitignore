@@ -8,3 +8,10 @@ webpack-stats.*
 *.sqlite3
 **/__pycache__
 **/.DS_Store
+**/db_data
+
+# preserve folder structure with dummy gitinclude file
+manager/media/thumbnails/**
+!manager/media/thumbnails/.gitinclude
+manager/ui_framework/tests/media/thumbnails/**
+!manager/ui_framework/tests/media/thumbnails/.gitinclude

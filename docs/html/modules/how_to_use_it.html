@@ -105,6 +105,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#ui-framework">2.4. UI Framework</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="how_it_works.html">3. How it works</a></li>
@@ -377,6 +378,26 @@ In order to stablish the connection they must append the password to the websock
 <p>Where pairs <code class="code docutils literal notranslate"><span class="pre">param1</span></code> and <code class="code docutils literal notranslate"><span class="pre">value1</span></code> represent the parameters (name and value) to be passed to the command.</p>
 </div>
 </div>
+</div>
+<div class="section" id="ui-framework">
+<h2>2.4. UI Framework<a class="headerlink" href="#ui-framework" title="Permalink to this headline">¶</a></h2>
+<p>The UI Framework backend is composed of 3 models:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>Workspace:</strong> represents a workspace, composed by different views</p></li>
+<li><p><strong>View:</strong> represents a view, all the data of the view is contained in JSON format in the <code class="code docutils literal notranslate"><span class="pre">data</span></code> field of the view</p></li>
+<li><p><strong>WorkspaceView:</strong> relates a Workspace and a View, it is the intermediary table of the many-to-many relationship between Workspace and View.</p></li>
+</ul>
+</div></blockquote>
+<p>Currently the API provides a standard REST api for these models.
+For more info you can either:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Use the browsable API available in: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/ui_framework/</span></code></p></li>
+<li><p>See the apidoc in Swagger format, available in: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/apidoc/swagger/</span></code></p></li>
+<li><p>See the apidoc in ReDoc format, available in: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/apidoc/redoc/</span></code></p></li>
+</ul>
+</div></blockquote>
 </div>
 </div>
 

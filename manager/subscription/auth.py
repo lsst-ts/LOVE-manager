@@ -2,7 +2,20 @@
 import urllib.parse as urlparse
 from django.contrib.auth.models import AnonymousUser
 from django.db import close_old_connections
+from channels.db import database_sync_to_async
 from api.models import Token
+
+
+@database_sync_to_async
+def get_user(token):
+    if not token:
+        return AnonymousUser()
+
+    token_obj = Token.objects.filter(key=token).first()
+    if token_obj:
+        return token_obj.user
+    else:
+        return AnonymousUser()
 
 
 class TokenAuthMiddleware:
@@ -19,22 +32,20 @@ class TokenAuthMiddleware:
         scope: `dict`
             dictionary defining parameters for the authentication
         """
-        query_string = scope.get('query_string').decode()
-        data = urlparse.parse_qs(query_string)
-        token_key = None
-        scope['user'] = AnonymousUser()
-        scope['password'] = False
+        return TokenAuthMiddlewareInstance(scope, self)
 
-        if 'token' in data:
-            token_key = data['token'][0]
-            token = Token.objects.filter(key=token_key).first()
-            if token is not None:
-                scope['user'] = token.user
 
-        if 'password' in data:
-            password = data['password'][0]
-            if password is not None:
-                scope['password'] = password
+class TokenAuthMiddlewareInstance:
+    def __init__(self, scope, middleware):
+        self.middleware = middleware
+        self.scope = dict(scope)
+        self.inner = self.middleware.inner
 
+    async def __call__(self, receive, send):
         close_old_connections()
-        return self.inner(scope)
+        query_string = self.scope.get('query_string').decode()
+        data = urlparse.parse_qs(query_string)
+        self.scope['user'] = await get_user(data['token'][0] if 'token' in data else None)
+        self.scope['password'] = data['password'][0] if 'password' in data else None
+        inner = self.inner(self.scope)
+        return await inner(receive, send)
