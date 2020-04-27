@@ -115,12 +115,15 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             return
     
     async def handle_action_message(self, message):
-        time_data = utils.get_times()
-        await self.send_json(
-            {
-                "time_data": json.dumps(time_data)
-            }
-        )
+        if message["action"] == "get_time_data":
+            request_time = message["request_time"]
+            time_data = utils.get_times()
+            await self.send_json(
+                {
+                    "time_data": json.dumps(time_data),
+                    "request_time": json.dumps(request_time),
+                }
+            )
         return
             
     # Expects a message with the format:
