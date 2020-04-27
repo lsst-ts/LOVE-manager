@@ -32,8 +32,8 @@ class TestTimeData:
         }
         await communicator.send_json_to(msg)
         response = await communicator.receive_json_from()
-        time_data = json.loads(response["time_data"])
-        request_time = json.loads(response["request_time"])
+        time_data = response["time_data"]
+        request_time = response["request_time"]
 
         # Assert 1
         assert utils.assert_time_data(time_data)

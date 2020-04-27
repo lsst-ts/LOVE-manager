@@ -120,8 +120,8 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             time_data = utils.get_times()
             await self.send_json(
                 {
-                    "time_data": json.dumps(time_data),
-                    "request_time": json.dumps(request_time),
+                    "time_data": time_data,
+                    "request_time": request_time,
                 }
             )
         return
