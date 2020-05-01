@@ -3,6 +3,7 @@ import asyncio
 import datetime
 import pytest
 from django.contrib.auth.models import User, Permission
+from unittest.mock import patch
 from channels.testing import WebsocketCommunicator
 from manager.routing import application
 from api.models import Token
@@ -122,12 +123,12 @@ class TestHeartbeat:
 
         # Act 2 Set producer heartbeat
         timestamp = datetime.datetime.now().timestamp()
-        HeartbeatManager.set_heartbeat_timestamp('producer', timestamp)
+        HeartbeatManager.set_heartbeat_timestamp('Producer', timestamp)
         response = await communicator.receive_json_from(timeout=4)
         
         # Assert 2
         heartbeat_sources = [source['csc'] for source in response['data']]
-        assert 'producer' in heartbeat_sources
+        assert 'Producer' in heartbeat_sources
         await communicator.disconnect()
         await HeartbeatManager.stop()
         
@@ -157,7 +158,7 @@ class TestHeartbeat:
 
         # Act 2 (Send producer heartbeat through websocket)
         msg = {
-            "heartbeat": "producer",
+            "heartbeat": "Producer",
             "timestamp": 1000,
         }
         await communicator.send_json_to(msg)
@@ -165,6 +166,43 @@ class TestHeartbeat:
 
         # Assert 2 (Get producer heartbeat data)
         heartbeat_sources = [source['csc'] for source in response['data']]
-        assert 'producer' in heartbeat_sources
+        assert 'Producer' in heartbeat_sources
+        await communicator.disconnect()
+        await HeartbeatManager.stop()
+
+    @pytest.mark.asyncio
+    @pytest.mark.django_db(transaction=True)
+    @patch('requests.get', return_value = type('obj', (object,), {'json' : lambda: {'timestamp': 123123123}}))
+    async def test_unauthorized_commander(self, mock_requests):
+        # Arrange
+        await HeartbeatManager.reset()
+        communicator = WebsocketCommunicator(application, self.url)
+        connected, subprotocol = await communicator.connect()
+
+        # Act 1 (Subscribe)
+        msg = {
+            "option": "subscribe",
+            "category": "heartbeat",
+            "csc": "manager",
+            "salindex": 0,
+            "stream": "stream",
+        }
+        await communicator.send_json_to(msg)
+        response = await communicator.receive_json_from()
+
+        # Assert 1
+        assert response['data'] == f'Successfully subscribed to heartbeat-manager-0-stream'
+        response = await communicator.receive_json_from(timeout=5)
+        assert response['data'][0]['data']['timestamp'] is not None
+
+        # Act 2 (Wait for query to commander)
+        # await asyncio.sleep(3)
+        response = await communicator.receive_json_from(timeout=5)
+        # Assert 2 (Get producer heartbeat data)
+        heartbeat_sources = [source['csc'] for source in response['data']]
+        assert 'Commander' in heartbeat_sources
+        commander_heartbeat = [source['data'] for source in response['data'] if source['csc'] == 'Commander'][0]
+        commander_timestamp = commander_heartbeat['timestamp']
+        assert commander_timestamp == 123123123
         await communicator.disconnect()
         await HeartbeatManager.stop()
