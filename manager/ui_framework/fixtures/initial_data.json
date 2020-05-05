@@ -200,12 +200,38 @@
       "data": {
         "content": {
           "newPanel-1": {
-            "config": { "title": "Health status summary", "titleBar": true },
+            "config": {
+              "title": "Health status summary",
+              "titleBar": true,
+              "telemetryConfiguration": {
+                "ATMCS-0-mount_AzEl_Encoders": {
+                  "cRIO_timestamp": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
+                  "elevationCalculatedAngle": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;"
+                },
+                "ATDome-0-position": {
+                  "dropoutDoorOpeningPercentage": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
+                  "mainDoorOpeningPercentage": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
+                  "azimuthPosition": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
+                  "azimuthEncoderPosition": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;"
+                },
+                "ATMCS-0-mount_Nasmyth_Encoders": {
+                  "nasmyth1CalculatedAngle": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
+                  "nasmyth2CalculatedAngle": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
+                  "nasmyth1Encoder1Raw": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
+                  "nasmyth1Encoder2Raw": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
+                  "nasmyth1Encoder3Raw": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
+                  "nasmyth2Encoder1Raw": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
+                  "nasmyth2Encoder2Raw": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
+                  "nasmyth2Encoder3Raw": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
+                  "trackId": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;"
+                }
+              }
+            },
             "content": "HealthStatusSummary",
             "properties": {
-              "h": 44,
+              "h": 35,
               "i": 1,
-              "w": 78,
+              "w": 30,
               "x": 0,
               "y": 0,
               "type": "component"
@@ -459,7 +485,11 @@
       "data": {
         "content": {
           "newPanel-2": {
-            "config": { "title": "ATMount overview", "titleBar": true, "hasRawMode": true},
+            "config": {
+              "title": "ATMount overview",
+              "titleBar": true,
+              "hasRawMode": true
+            },
             "content": "Dome",
             "properties": {
               "h": 42,
@@ -549,7 +579,11 @@
       "data": {
         "content": {
           "newPanel-1": {
-            "config": { "title": "LATISS", "titleBar": true, "hasRawMode": true},
+            "config": {
+              "title": "LATISS",
+              "titleBar": true,
+              "hasRawMode": true
+            },
             "content": "LATISS",
             "properties": {
               "h": 31,
