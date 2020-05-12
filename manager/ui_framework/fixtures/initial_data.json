@@ -684,5 +684,112 @@
       },
       "thumbnail": "thumbnails/view_27.png"
     }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 28,
+    "fields": {
+      "creation_timestamp": "2020-02-06T19:17:11.021Z",
+      "update_timestamp": "2020-03-24T00:34:57.871Z",
+      "name": "Time Displays",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "title": "TimeDisplay",
+              "locale": "en-GB",
+              "margin": true,
+              "titleBar": true,
+              "clocks_layout": [
+                [
+                  {
+                    "name": "Local Time",
+                    "hideDate": false,
+                    "timezone": "local",
+                    "hideAnalog": false,
+                    "hideOffset": false
+                  },
+                  {
+                    "name": "Sidereal Time",
+                    "hideDate": true,
+                    "timezone": "sidereal-summit",
+                    "hideAnalog": false,
+                    "hideOffset": false
+                  }
+                ],
+                [
+                  [
+                    {
+                      "name": "La Serena",
+                      "hideDate": false,
+                      "timezone": "America/Santiago",
+                      "hideAnalog": true,
+                      "hideOffset": false
+                    },
+                    {
+                      "name": "Arizona",
+                      "hideDate": false,
+                      "timezone": "America/Phoenix",
+                      "hideAnalog": true,
+                      "hideOffset": false
+                    },
+                    {
+                      "name": "Illinois",
+                      "hideDate": false,
+                      "timezone": "America/Chicago",
+                      "hideAnalog": true,
+                      "hideOffset": false
+                    }
+                  ],
+                  [
+                    {
+                      "name": "Universal Time",
+                      "hideDate": false,
+                      "timezone": "UTC",
+                      "hideAnalog": true,
+                      "hideOffset": false
+                    },
+                    {
+                      "name": "International Atomic Time",
+                      "hideDate": false,
+                      "timezone": "TAI",
+                      "hideAnalog": true,
+                      "hideOffset": false
+                    },
+                    {
+                      "name": "Modified Julian Date",
+                      "hideDate": false,
+                      "timezone": "MJD",
+                      "hideAnalog": true,
+                      "hideOffset": false
+                    }
+                  ]
+                ]
+              ]
+            },
+            "content": "TimeDisplay",
+            "properties": {
+              "h": 17,
+              "i": 6,
+              "w": 63,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": "thumbnails/view_28.png"
+    }
   }
 ]
