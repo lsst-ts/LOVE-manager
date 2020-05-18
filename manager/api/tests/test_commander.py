@@ -87,3 +87,43 @@ class CommanderTestCase(TestCase):
                 "ack": "User does not have permissions to execute commands."
             }
         )
+
+
+@override_settings(DEBUG=True)
+class SalinfoTestCase(TestCase):
+    maxDiff = None
+
+    def setUp(self):
+        """Define the test suite setup."""
+        # Arrange
+        self.client = APIClient()
+        self.user = User.objects.create_user(
+            username='an user',
+            password='password',
+            email='test@user.cl',
+            first_name='First',
+            last_name='Last',
+        )
+        self.token = Token.objects.create(user=self.user)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        self.user.user_permissions.add(Permission.objects.get(codename='view_view'),
+                                       Permission.objects.get(codename='add_view'),
+                                       Permission.objects.get(codename='delete_view'),
+                                       Permission.objects.get(codename='change_view'))
+
+    @patch('os.environ.get', side_effect= lambda arg: 'fakehost' if arg=='COMMANDER_HOSTNAME' else 'fakeport')
+    @patch('requests.get')
+    def test_salinfo_metadata(self, mock_requests, mock_environ):
+        """Test authorized user can get salinfo metadata"""
+        # Act:
+        url = reverse('salinfo-metadata')
+
+        with self.assertRaises(ValueError):
+            response = self.client.get(url)
+        fakehostname = 'fakehost'
+        fakeport = 'fakeport'
+        expected_url = f"http://fakehost:fakeport/salinfo/metadata"
+        self.assertEqual(
+            mock_requests.call_args,
+            call(expected_url)
+        )

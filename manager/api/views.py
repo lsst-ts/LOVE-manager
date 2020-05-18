@@ -144,3 +144,15 @@ def commander(request):
     response = requests.post(url, json=request.data)
 
     return Response(response.json(), status=response.status_code)
+
+@swagger_auto_schema(method='get', responses={200: valid_response, 401: invalid_response})
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+def salinfo_metadata(request):
+    """Requests SalInfo.metadata from the commander containing a dict
+     of <csc name>: { "sal_version": ..., "xml_version": ....}
+    """
+    url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/salinfo/metadata"
+    response = requests.get(url)
+
+    return Response(response.json(), status=response.status_code)
