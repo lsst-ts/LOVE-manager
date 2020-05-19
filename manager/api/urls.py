@@ -36,6 +36,8 @@ urlpatterns = [
     path("auth/", include("rest_framework.urls", namespace="rest_framework")),
     path("cmd/", api.views.commander, name="commander"),
     path("salinfo/metadata", api.views.salinfo_metadata, name="salinfo-metadata"),
-    path("salinfo/topic_names", api.views.salinfo_metadata, name="salinfo-topic-names"),
+    path(
+        "salinfo/topic-names", api.views.salinfo_topic_names, name="salinfo-topic-names"
+    ),
 ]
 urlpatterns.append(path("", include(router.urls)))

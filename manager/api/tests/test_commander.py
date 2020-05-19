@@ -145,5 +145,5 @@ class SalinfoTestCase(TestCase):
             response = self.client.get(url)
         fakehostname = "fakehost"
         fakeport = "fakeport"
-        expected_url = f"http://fakehost:fakeport/salinfo/metadata"
+        expected_url = f"http://fakehost:fakeport/salinfo/topic-names"
         self.assertEqual(mock_requests.call_args, call(expected_url))
