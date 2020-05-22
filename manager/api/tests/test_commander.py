@@ -147,3 +147,65 @@ class SalinfoTestCase(TestCase):
         fakeport = "fakeport"
         expected_url = f"http://fakehost:fakeport/salinfo/topic-names"
         self.assertEqual(mock_requests.call_args, call(expected_url))
+
+    @patch(
+        "os.environ.get",
+        side_effect=lambda arg: "fakehost"
+        if arg == "COMMANDER_HOSTNAME"
+        else "fakeport",
+    )
+    @patch("requests.get")
+    def test_salinfo_topic_names_with_param(self, mock_requests, mock_environ):
+        """Test authorized user can get salinfo topic_names with query param"""
+        # Act:
+        url = reverse("salinfo-topic-names") + "?categories=telemetry"
+
+        with self.assertRaises(ValueError):
+            response = self.client.get(url)
+        fakehostname = "fakehost"
+        fakeport = "fakeport"
+        expected_url = (
+            f"http://fakehost:fakeport/salinfo/topic-names?categories=telemetry"
+        )
+        self.assertEqual(mock_requests.call_args, call(expected_url))
+
+    @patch(
+        "os.environ.get",
+        side_effect=lambda arg: "fakehost"
+        if arg == "COMMANDER_HOSTNAME"
+        else "fakeport",
+    )
+    @patch("requests.get")
+    def test_salinfo_topic_data(self, mock_requests, mock_environ):
+        """Test authorized user can get salinfo topic_data"""
+        # Act:
+        url = reverse("salinfo-topic-data")
+
+        with self.assertRaises(ValueError):
+            response = self.client.get(url)
+        fakehostname = "fakehost"
+        fakeport = "fakeport"
+        expected_url = f"http://fakehost:fakeport/salinfo/topic-data"
+        self.assertEqual(mock_requests.call_args, call(expected_url))
+
+    @patch(
+        "os.environ.get",
+        side_effect=lambda arg: "fakehost"
+        if arg == "COMMANDER_HOSTNAME"
+        else "fakeport",
+    )
+    @patch("requests.get")
+    def test_salinfo_topic_data_with_param(self, mock_requests, mock_environ):
+        """Test authorized user can get salinfo topic_data with query param"""
+        # Act:
+        url = reverse("salinfo-topic-data") + "?categories=telemetry"
+
+        with self.assertRaises(ValueError):
+            response = self.client.get(url)
+        fakehostname = "fakehost"
+        fakeport = "fakeport"
+        expected_url = (
+            f"http://fakehost:fakeport/salinfo/topic-data?categories=telemetry"
+        )
+        self.assertEqual(mock_requests.call_args, call(expected_url))
+
