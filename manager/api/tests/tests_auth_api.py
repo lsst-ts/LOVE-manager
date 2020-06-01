@@ -249,7 +249,7 @@ class AuthApiTestCase(TestCase):
 
     def test_user_swap(self):
         """Test that a logged user can be swapped"""
-        # Arrange:
+        # Arrange login:
         data = {"username": self.username, "password": self.password}
         user_1_tokens_num_0 = Token.objects.filter(user__username=self.username).count()
         user_2_tokens_num_0 = Token.objects.filter(user__username=self.username2).count()
@@ -276,12 +276,27 @@ class AuthApiTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
-    def test_forbidden_user_swap(self):
+    def test_user_swap_forbidden(self):
         """Test that a user that's not logged in cannot swap users"""
-        # Arrange:
+        # Arrange logout:
+        response = self.client.delete(self.logout_url, format="json")
+        self.client.logout()
         data = {"username": self.username, "password": self.password}
         # Act:
         response = self.client.post(self.swap_url, data, format="json")
         # Assert:
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+    def test_user_swap_wrong_credentials(self):
+        """Test that a user that's not logged in cannot swap users"""
+        # Arrange login:
+        data = {"username": self.username, "password": self.password}
+        response = self.client.post(self.login_url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # Act swap with wrong credentials:
+        data = {"username": self.username, "password": "wrong_password"}
+        response = self.client.post(self.swap_url, data, format="json")
+        # Assert:
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         

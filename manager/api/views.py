@@ -125,8 +125,8 @@ class CustomSwapAuthToken(ObtainAuthToken):
         Response
             The response containing the token and other user data.
         """
-        if not request.user.is_authenticated:
-            return Response(status.HTTP_401_UNAUTHORIZED)
+        if not request.user.is_authenticated or not request._auth:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
         serializer = self.serializer_class(
             data=request.data, context={"request": request}
         )
