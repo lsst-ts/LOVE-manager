@@ -98,6 +98,46 @@ class CustomObtainAuthToken(ObtainAuthToken):
         return Response(TokenSerializer(token).data)
 
 
+class CustomSwapAuthToken(ObtainAuthToken):
+    """API endpoint to obtain authorization tokens."""
+
+    login_response = openapi.Response("User swap succesful", TokenSerializer)
+    login_failed_response = openapi.Response("User swap failed")
+
+    @swagger_auto_schema(responses={200: login_response, 400: login_failed_response})
+    @permission_classes((IsAuthenticated,))
+    def post(self, request, *args, **kwargs):
+        """Handle the (post) request for token.
+
+        If the token is invalid this function is not executed (the request fails before)
+
+        Params
+        ------
+        request: Request
+            The Requets object
+        args: list
+            List of addittional arguments. Currently unused
+        kwargs: dict
+            Dictionary with addittional keyword arguments (indexed by keys in the dict). Currenlty unused
+
+        Returns
+        -------
+        Response
+            The response containing the token and other user data.
+        """
+        if not request.user.is_authenticated or not request._auth:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        serializer = self.serializer_class(
+            data=request.data, context={"request": request}
+        )
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data["user"]
+        token = Token.objects.create(user=user)
+        old_token = request._auth
+        old_token.delete()
+        return Response(TokenSerializer(token).data)
+
+
 @swagger_auto_schema(
     method="post", responses={200: valid_response, 401: invalid_response}
 )
