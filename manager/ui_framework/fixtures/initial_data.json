@@ -203,18 +203,18 @@
             "config": {
               "title": "Health status summary",
               "titleBar": true,
-              "telemetryConfiguration": {
-                "ATMCS-0-mount_AzEl_Encoders": {
+              "topicConfiguration": {
+                "telemetry-ATMCS-0-mount_AzEl_Encoders": {
                   "cRIO_timestamp": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
                   "elevationCalculatedAngle": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;"
                 },
-                "ATDome-0-position": {
+                "telemetry-ATDome-0-position": {
                   "dropoutDoorOpeningPercentage": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
                   "mainDoorOpeningPercentage": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
                   "azimuthPosition": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
                   "azimuthEncoderPosition": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;"
                 },
-                "ATMCS-0-mount_Nasmyth_Encoders": {
+                "telemetry-ATMCS-0-mount_Nasmyth_Encoders": {
                   "nasmyth1CalculatedAngle": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
                   "nasmyth2CalculatedAngle": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
                   "nasmyth1Encoder1Raw": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
