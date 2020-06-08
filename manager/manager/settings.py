@@ -178,9 +178,11 @@ MEDIA_URL = "/media/"
 if TESTING:
     MEDIA_BASE = os.path.join(BASE_DIR, "ui_framework", "tests")
     MEDIA_ROOT = os.path.join(BASE_DIR, "ui_framework", "tests", "media")
+    CONFIG_URL = os.path.join(BASE_DIR, "api", "tests", "config", "config.json")
 else:
     MEDIA_BASE = BASE_DIR
     MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+    CONFIG_URL = os.path.join(BASE_DIR, "config", "config.json")
 
 # Channels
 ASGI_APPLICATION = "manager.routing.application"

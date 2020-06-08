@@ -41,5 +41,6 @@ urlpatterns = [
         "salinfo/topic-names", api.views.salinfo_topic_names, name="salinfo-topic-names"
     ),
     path("salinfo/topic-data", api.views.salinfo_topic_data, name="salinfo-topic-data"),
+    path("config", api.views.get_config, name="config"),
 ]
 urlpatterns.append(path("", include(router.urls)))

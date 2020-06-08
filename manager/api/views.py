@@ -4,6 +4,8 @@ import requests
 import yaml
 import jsonschema
 import collections
+import json
+from django.conf import settings
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
@@ -252,3 +254,28 @@ def salinfo_topic_data(request):
     response = requests.get(url)
 
     return Response(response.json(), status=response.status_code)
+
+
+@swagger_auto_schema(
+    method="get", responses={200: valid_response, 401: invalid_response}
+)
+@api_view(["GET"])
+@permission_classes((IsAuthenticated,))
+def get_config(request):
+    """Requests SalInfo.topic_data from the commander containing a dict
+     of <csc name>: { "command_data": [], "event_data": [], "telemetry_data": []}
+    """
+
+    # response = requests.get(url)
+    url = settings.CONFIG_URL
+    with open(url) as f:
+        content = f.read()
+    try:
+        data = json.loads(content)
+    except ValueError:
+        return Response(None, status=status.HTTP_404_NOT_FOUND)
+    print("content: ", content)
+    print("content: ", type(content))
+    print("data: ", data)
+    print("data: ", type(data))
+    return Response(data, status=status.HTTP_200_OK)
