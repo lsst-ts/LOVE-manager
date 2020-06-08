@@ -53,7 +53,7 @@ class UserPermissionsSerializer(serializers.Serializer):
 
 
 class TimeDataSerializer(serializers.Serializer):
-    """Custom Serializer for responses to validate and get token requests."""
+    """Custom Serializer to describe the time data fields for the Apidocs."""
 
     utc = serializers.FloatField()
 
@@ -66,6 +66,12 @@ class TimeDataSerializer(serializers.Serializer):
     sidereal_greenwich = serializers.FloatField()
 
     tai_to_utc = serializers.FloatField()
+
+
+class ConfigSerializer(serializers.Serializer):
+    """Custom Serializer to describe the confi file field for the Apidocs."""
+
+    config_file = serializers.JSONField()
 
 
 class TokenSerializer(serializers.Serializer):
