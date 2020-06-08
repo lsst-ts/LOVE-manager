@@ -4,8 +4,6 @@ import requests
 import yaml
 import jsonschema
 import collections
-import json
-from django.conf import settings
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
@@ -15,15 +13,20 @@ from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from api.models import Token
-from api.serializers import TokenSerializer
+from api.serializers import TokenSerializer, read_config_file
 from .schema_validator import DefaultingValidator
 
 valid_response = openapi.Response("Valid token", TokenSerializer)
 invalid_response = openapi.Response("Invalid token")
+not_found_response = openapi.Response("Not found")
 
 
 @swagger_auto_schema(
-    method="get", responses={200: valid_response, 401: invalid_response}
+    method="get",
+    responses={
+        200: openapi.Response("Valid token", TokenSerializer),
+        401: openapi.Response("Invalid token"),
+    },
 )
 @api_view(["GET"])
 @permission_classes((IsAuthenticated,))
@@ -37,9 +40,11 @@ def validate_token(request):
     Response
         The response stating that the token is valid with a 200 status code.
     """
+    no_config = "no_config" in request.query_params
     token_key = request.META.get("HTTP_AUTHORIZATION")[6:]
     token = Token.objects.get(key=token_key)
-    return Response(TokenSerializer(token).data)
+    data = TokenSerializer(token, context={"no_config": no_config}).data
+    return Response(data)
 
 
 @swagger_auto_schema(
@@ -140,9 +145,6 @@ class CustomSwapAuthToken(ObtainAuthToken):
         return Response(TokenSerializer(token).data)
 
 
-@swagger_auto_schema(
-    method="post", responses={200: valid_response, 401: invalid_response}
-)
 @api_view(["POST"])
 @permission_classes((IsAuthenticated,))
 def validate_config_schema(request):
@@ -188,7 +190,12 @@ def validate_config_schema(request):
 
 
 @swagger_auto_schema(
-    method="post", responses={200: valid_response, 401: invalid_response}
+    method="post",
+    responses={
+        200: openapi.Response("Command sent"),
+        401: openapi.Response("Unauthenticated"),
+        403: openapi.Response("Unauthorized"),
+    },
 )
 @api_view(["POST"])
 @permission_classes((IsAuthenticated,))
@@ -257,21 +264,15 @@ def salinfo_topic_data(request):
 
 
 @swagger_auto_schema(
-    method="get", responses={200: valid_response, 401: invalid_response}
+    method="get",
+    responses={200: valid_response, 401: invalid_response, 404: not_found_response},
 )
 @api_view(["GET"])
 @permission_classes((IsAuthenticated,))
 def get_config(request):
-    """Requests SalInfo.topic_data from the commander containing a dict
-     of <csc name>: { "command_data": [], "event_data": [], "telemetry_data": []}
+    """Returns the config file
     """
-
-    # response = requests.get(url)
-    url = settings.CONFIG_URL
-    with open(url) as f:
-        content = f.read()
-    try:
-        data = json.loads(content)
-    except ValueError:
+    data = read_config_file()
+    if data is None:
         return Response(None, status=status.HTTP_404_NOT_FOUND)
     return Response(data, status=status.HTTP_200_OK)

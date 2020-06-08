@@ -1,8 +1,21 @@
 """Defines the serializer used by the REST API exposed by this app ('api')."""
+import json
+from django.conf import settings
 from drf_yasg.utils import swagger_serializer_method
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from manager import utils
+
+
+def read_config_file():
+    url = settings.CONFIG_URL
+    with open(url) as f:
+        content = f.read()
+    try:
+        data = json.loads(content)
+    except ValueError:
+        return None
+    return data
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -66,6 +79,8 @@ class TokenSerializer(serializers.Serializer):
 
     time_data = serializers.SerializerMethodField("get_time_data")
 
+    config = serializers.SerializerMethodField("get_config")
+
     @swagger_serializer_method(serializer_or_field=UserPermissionsSerializer)
     def get_permissions(self, token):
         """Return user permissions serialized as a dictionary with permission names as keys and bools as values.
@@ -118,3 +133,30 @@ class TokenSerializer(serializers.Serializer):
             - tai_to_utc: The number of seconds of difference between TAI and UTC times (seconds)
         """
         return utils.get_times()
+
+    @swagger_serializer_method(serializer_or_field=serializers.JSONField())
+    def get_config(self, token) -> dict:
+        """Return the config file.
+        If the query_param 'no_config' is present in the url of the original request, then the file is not read and the return value is None
+
+        Params
+        ------
+        token: Token
+            The Token object
+
+        Returns
+        -------
+        Dict
+            Dictionary containing the following keys:
+            - alarms_sounds: dictionary containing flags of sound ON/OF for each severity level. Eg:
+            alarms_sounds: {
+                critical: 1,
+                serious: 1,
+                warning: 0
+            }
+        """
+        no_config = self.context.get("no_config")
+        if no_config:
+            return None
+        else:
+            return read_config_file()
