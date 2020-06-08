@@ -25,20 +25,30 @@ class ConfigApiTestCase(TestCase):
             first_name="First",
             last_name="Last",
         )
+        self.url = reverse("config")
+        self.expected_data = {
+            "alarm_sounds": {"critical": 1, "serious": 1, "warning": 0}
+        }
         self.token = Token.objects.create(user=self.user)
-        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token.key)
+        # self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token.key)
 
     def test_get_config(self):
-        """Test that a user can get the config file."""
-        # Arrange:
-
+        """Test that an authenticated user can get the config file."""
+        # Arrange
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token.key)
         # Act:
-        url = reverse("config")
-        response = self.client.get(url, format="json")
+        response = self.client.get(self.url, format="json")
 
         # Assert:
-        expected_data = {
-            "alarm_sounds": {"critical": "true", "serious": "true", "warning": "false"}
-        }
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, expected_data)
+        self.assertEqual(response.data, self.expected_data)
+
+    def test_unauthenticated_cannot_get_config(self):
+        """Test that an unauthenticated user cannot get the config file."""
+        # Act:
+        response = self.client.get(self.url, format="json")
+
+        # Assert:
+        print("response: ", response.data)
+        self.assertEqual(response.status_code, 401)
+        self.assertNotEqual(response.data, self.expected_data)

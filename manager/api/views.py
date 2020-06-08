@@ -274,8 +274,4 @@ def get_config(request):
         data = json.loads(content)
     except ValueError:
         return Response(None, status=status.HTTP_404_NOT_FOUND)
-    print("content: ", content)
-    print("content: ", type(content))
-    print("data: ", data)
-    print("data: ", type(data))
     return Response(data, status=status.HTTP_200_OK)
