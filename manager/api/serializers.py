@@ -137,7 +137,7 @@ class TokenSerializer(serializers.Serializer):
     @swagger_serializer_method(serializer_or_field=serializers.JSONField())
     def get_config(self, token) -> dict:
         """Return the config file.
-        If the query_param 'no_config' is present in the url of the original request, then the file is not read and the return value is None
+        If the 'no_config' flag is present in the url of the original request, then the file is not read and the return value is None
 
         Params
         ------

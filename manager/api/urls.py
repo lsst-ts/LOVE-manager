@@ -27,6 +27,7 @@ router = DefaultRouter()
 urlpatterns = [
     path("get-token/", api.views.CustomObtainAuthToken.as_view(), name="login"),
     path("validate-token/", api.views.validate_token, name="validate-token"),
+    path("validate-token/<flags>/", api.views.validate_token, name="validate-token"),
     path(
         "validate-config-schema/",
         api.views.validate_config_schema,

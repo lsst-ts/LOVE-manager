@@ -30,7 +30,7 @@ not_found_response = openapi.Response("Not found")
 )
 @api_view(["GET"])
 @permission_classes((IsAuthenticated,))
-def validate_token(request):
+def validate_token(request, *args, **kwargs):
     """Validate the token and return 200 code if valid.
 
     If the token is invalid this function is not executed (the request fails before)
@@ -40,7 +40,8 @@ def validate_token(request):
     Response
         The response stating that the token is valid with a 200 status code.
     """
-    no_config = "no_config" in request.query_params
+    flags = kwargs.get("flags", None)
+    no_config = flags == "no_config"
     token_key = request.META.get("HTTP_AUTHORIZATION")[6:]
     token = Token.objects.get(key=token_key)
     data = TokenSerializer(token, context={"no_config": no_config}).data
