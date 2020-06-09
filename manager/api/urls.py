@@ -35,6 +35,9 @@ urlpatterns = [
     ),
     path("logout/", api.views.logout, name="logout"),
     path("swap-user/", api.views.CustomSwapAuthToken.as_view(), name="swap-user"),
+    path(
+        "swap-user/<flags>/", api.views.CustomSwapAuthToken.as_view(), name="swap-user"
+    ),
     path("auth/", include("rest_framework.urls", namespace="rest_framework")),
     path("cmd/", api.views.commander, name="commander"),
     path("salinfo/metadata", api.views.salinfo_metadata, name="salinfo-metadata"),

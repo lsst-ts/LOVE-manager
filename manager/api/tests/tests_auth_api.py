@@ -330,6 +330,48 @@ class AuthApiTestCase(TestCase):
         response = self.client.get(self.validate_token_url)
         # Assert 2:
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            response.data["config"], self.expected_config,
+        )
+
+    def test_user_swap_no_config(self):
+        """Test that a logged user can be swapped and not request config"""
+        # Arrange login:
+        data = {"username": self.username, "password": self.password}
+        user_1_tokens_num_0 = Token.objects.filter(user__username=self.username).count()
+        user_2_tokens_num_0 = Token.objects.filter(
+            user__username=self.username2
+        ).count()
+        response = self.client.post(self.login_url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Act:
+        data = {"username": self.username2, "password": self.password}
+        token = Token.objects.filter(user__username=self.username).first()
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
+        response = self.client.post(self.swap_url, data, format="json")
+        user_1_tokens_num_1 = Token.objects.filter(user__username=self.username).count()
+        user_2_tokens_num_1 = Token.objects.filter(
+            user__username=self.username2
+        ).count()
+        # Assert:
+        self.assertEqual(
+            user_1_tokens_num_1,
+            user_1_tokens_num_0,
+            "User 1 has the same number of tokens as before logging in",
+        )
+        self.assertEqual(
+            user_2_tokens_num_1, user_2_tokens_num_0 + 1, "User 2 has one more token"
+        )
+        # Act 2:
+        token = Token.objects.filter(user__username=self.username2).first()
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
+        response = self.client.get(self.validate_token_url)
+        # Assert 2:
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            response.data["config"], self.expected_config,
+        )
 
     def test_user_swap_forbidden(self):
         """Test that a user that's not logged in cannot swap users"""
