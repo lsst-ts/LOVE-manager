@@ -51,10 +51,26 @@ api.models module
    :undoc-members:
    :show-inheritance:
 
+api.schema\_validator module
+----------------------------
+
+.. automodule:: api.schema_validator
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 api.serializers module
 ----------------------
 
 .. automodule:: api.serializers
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+api.signals module
+------------------
+
+.. automodule:: api.signals
    :members:
    :undoc-members:
    :show-inheritance:

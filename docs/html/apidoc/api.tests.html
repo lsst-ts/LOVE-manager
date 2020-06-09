@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -98,10 +98,12 @@
 <li class="toctree-l3"><a class="reference internal" href="api.html#module-api.authentication">5.1.5. api.authentication module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api.html#module-api.middleware">5.1.6. api.middleware module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api.html#module-api.models">5.1.7. api.models module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.html#module-api.serializers">5.1.8. api.serializers module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.html#module-api.urls">5.1.9. api.urls module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.html#module-api.views">5.1.10. api.views module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api.html#module-api">5.1.11. Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#module-api.schema_validator">5.1.8. api.schema_validator module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#module-api.serializers">5.1.9. api.serializers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#module-api.signals">5.1.10. api.signals module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#module-api.urls">5.1.11. api.urls module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#module-api.views">5.1.12. api.views module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api.html#module-api">5.1.13. Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="manage.html">5.2. manage module</a></li>
@@ -155,11 +157,11 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="modules.html">5. ApiDoc</a> &raquo;</li>
+          <li><a href="modules.html"><span class="section-number">5. </span>ApiDoc</a> &raquo;</li>
         
-          <li><a href="api.html">5.1. api package</a> &raquo;</li>
+          <li><a href="api.html"><span class="section-number">5.1. </span>api package</a> &raquo;</li>
         
-      <li>5.1.1.1. api.tests package</li>
+      <li><span class="section-number">5.1.1.1. </span>api.tests package</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -179,12 +181,134 @@
            <div itemprop="articleBody">
             
   <div class="section" id="api-tests-package">
-<h1>5.1.1.1. api.tests package<a class="headerlink" href="#api-tests-package" title="Permalink to this headline">¶</a></h1>
+<h1><span class="section-number">5.1.1.1. </span>api.tests package<a class="headerlink" href="#api-tests-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="submodules">
-<h2>5.1.1.1.1. Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">5.1.1.1.1. </span>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-api.tests.test_commander">
+<span id="api-tests-test-commander-module"></span><h2><span class="section-number">5.1.1.1.2. </span>api.tests.test_commander module<a class="headerlink" href="#module-api.tests.test_commander" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="api.tests.test_commander.CommanderTestCase">
+<em class="property">class </em><code class="sig-prename descclassname">api.tests.test_commander.</code><code class="sig-name descname">CommanderTestCase</code><span class="sig-paren">(</span><em class="sig-param">methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_commander.CommanderTestCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.test.testcases.TestCase</span></code></p>
+<dl class="attribute">
+<dt id="api.tests.test_commander.CommanderTestCase.maxDiff">
+<code class="sig-name descname">maxDiff</code><em class="property"> = None</em><a class="headerlink" href="#api.tests.test_commander.CommanderTestCase.maxDiff" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_commander.CommanderTestCase.setUp">
+<code class="sig-name descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_commander.CommanderTestCase.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define the test suite setup.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_commander.CommanderTestCase.test_authorized_commander_data">
+<code class="sig-name descname">test_authorized_commander_data</code><span class="sig-paren">(</span><em class="sig-param">mock_requests</em>, <em class="sig-param">mock_environ</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_commander.CommanderTestCase.test_authorized_commander_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test authorized user commander data is sent to love-commander</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_commander.CommanderTestCase.test_unauthorized_commander">
+<code class="sig-name descname">test_unauthorized_commander</code><span class="sig-paren">(</span><em class="sig-param">mock_requests</em>, <em class="sig-param">mock_environ</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_commander.CommanderTestCase.test_unauthorized_commander" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test an unauthorized user can’t send commands</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="api.tests.test_commander.SalinfoTestCase">
+<em class="property">class </em><code class="sig-prename descclassname">api.tests.test_commander.</code><code class="sig-name descname">SalinfoTestCase</code><span class="sig-paren">(</span><em class="sig-param">methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_commander.SalinfoTestCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.test.testcases.TestCase</span></code></p>
+<dl class="attribute">
+<dt id="api.tests.test_commander.SalinfoTestCase.maxDiff">
+<code class="sig-name descname">maxDiff</code><em class="property"> = None</em><a class="headerlink" href="#api.tests.test_commander.SalinfoTestCase.maxDiff" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_commander.SalinfoTestCase.setUp">
+<code class="sig-name descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_commander.SalinfoTestCase.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define the test suite setup.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_commander.SalinfoTestCase.test_salinfo_metadata">
+<code class="sig-name descname">test_salinfo_metadata</code><span class="sig-paren">(</span><em class="sig-param">mock_requests</em>, <em class="sig-param">mock_environ</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_commander.SalinfoTestCase.test_salinfo_metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test authorized user can get salinfo metadata</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_commander.SalinfoTestCase.test_salinfo_topic_data">
+<code class="sig-name descname">test_salinfo_topic_data</code><span class="sig-paren">(</span><em class="sig-param">mock_requests</em>, <em class="sig-param">mock_environ</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_commander.SalinfoTestCase.test_salinfo_topic_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test authorized user can get salinfo topic_data</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_commander.SalinfoTestCase.test_salinfo_topic_data_with_param">
+<code class="sig-name descname">test_salinfo_topic_data_with_param</code><span class="sig-paren">(</span><em class="sig-param">mock_requests</em>, <em class="sig-param">mock_environ</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_commander.SalinfoTestCase.test_salinfo_topic_data_with_param" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test authorized user can get salinfo topic_data with query param</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_commander.SalinfoTestCase.test_salinfo_topic_names">
+<code class="sig-name descname">test_salinfo_topic_names</code><span class="sig-paren">(</span><em class="sig-param">mock_requests</em>, <em class="sig-param">mock_environ</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_commander.SalinfoTestCase.test_salinfo_topic_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test authorized user can get salinfo topic_names</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_commander.SalinfoTestCase.test_salinfo_topic_names_with_param">
+<code class="sig-name descname">test_salinfo_topic_names_with_param</code><span class="sig-paren">(</span><em class="sig-param">mock_requests</em>, <em class="sig-param">mock_environ</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_commander.SalinfoTestCase.test_salinfo_topic_names_with_param" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test authorized user can get salinfo topic_names with query param</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-api.tests.test_schema_validation">
+<span id="api-tests-test-schema-validation-module"></span><h2><span class="section-number">5.1.1.1.3. </span>api.tests.test_schema_validation module<a class="headerlink" href="#module-api.tests.test_schema_validation" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="api.tests.test_schema_validation.SchemaValidationTestCase">
+<em class="property">class </em><code class="sig-prename descclassname">api.tests.test_schema_validation.</code><code class="sig-name descname">SchemaValidationTestCase</code><span class="sig-paren">(</span><em class="sig-param">methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_schema_validation.SchemaValidationTestCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.test.testcases.TestCase</span></code></p>
+<dl class="attribute">
+<dt id="api.tests.test_schema_validation.SchemaValidationTestCase.maxDiff">
+<code class="sig-name descname">maxDiff</code><em class="property"> = None</em><a class="headerlink" href="#api.tests.test_schema_validation.SchemaValidationTestCase.maxDiff" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="api.tests.test_schema_validation.SchemaValidationTestCase.script_schema">
+<code class="sig-name descname">script_schema</code><em class="property"> = '\n    $id: https://github.com/lsst-ts/ts_salobj/TestScript.yaml\n    $schema: http://json-schema.org/draft-07/schema#\n    additionalProperties: false\n    description: Configuration for TestScript\n    properties:\n        fail_cleanup:\n            default: false\n            description: If true then raise an exception in the &quot;cleanup&quot; method.\n            type: boolean\n        fail_run:\n            default: false\n            description: If true then raise an exception in the &quot;run&quot; method afer the &quot;start&quot; checkpoint but before waiting.\n            type: boolean\n        wait_time:\n            default: 0\n            description: Time to wait, in seconds\n            minimum: 0\n            type: number\n    required:\n    - wait_time\n    - fail_run\n    - fail_cleanup\n    title: TestScript v1\n    type: object\n    '</em><a class="headerlink" href="#api.tests.test_schema_validation.SchemaValidationTestCase.script_schema" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_schema_validation.SchemaValidationTestCase.setUp">
+<code class="sig-name descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_schema_validation.SchemaValidationTestCase.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define the test suite setup.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_schema_validation.SchemaValidationTestCase.test_invalid_config">
+<code class="sig-name descname">test_invalid_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_schema_validation.SchemaValidationTestCase.test_invalid_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test validation output of an invalid config file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_schema_validation.SchemaValidationTestCase.test_syntax_error">
+<code class="sig-name descname">test_syntax_error</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_schema_validation.SchemaValidationTestCase.test_syntax_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test validation output of an unparsable config file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_schema_validation.SchemaValidationTestCase.test_valid_config">
+<code class="sig-name descname">test_valid_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_schema_validation.SchemaValidationTestCase.test_valid_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test schema validation works for a valid config yaml string</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-api.tests.tests_auth_api">
-<span id="api-tests-tests-auth-api-module"></span><h2>5.1.1.1.2. api.tests.tests_auth_api module<a class="headerlink" href="#module-api.tests.tests_auth_api" title="Permalink to this headline">¶</a></h2>
+<span id="api-tests-tests-auth-api-module"></span><h2><span class="section-number">5.1.1.1.4. </span>api.tests.tests_auth_api module<a class="headerlink" href="#module-api.tests.tests_auth_api" title="Permalink to this headline">¶</a></h2>
 <p>Test users’ authentication through the API.</p>
 <dl class="class">
 <dt id="api.tests.tests_auth_api.AuthApiTestCase">
@@ -234,6 +358,30 @@
 </dd></dl>
 
 <dl class="method">
+<dt id="api.tests.tests_auth_api.AuthApiTestCase.test_user_swap">
+<code class="sig-name descname">test_user_swap</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_auth_api.AuthApiTestCase.test_user_swap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test that a logged user can be swapped</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.tests_auth_api.AuthApiTestCase.test_user_swap_forbidden">
+<code class="sig-name descname">test_user_swap_forbidden</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_auth_api.AuthApiTestCase.test_user_swap_forbidden" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test that a user that’s not logged in cannot swap users</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.tests_auth_api.AuthApiTestCase.test_user_swap_no_config">
+<code class="sig-name descname">test_user_swap_no_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_auth_api.AuthApiTestCase.test_user_swap_no_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test that a logged user can be swapped and not request config</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.tests_auth_api.AuthApiTestCase.test_user_swap_wrong_credentials">
+<code class="sig-name descname">test_user_swap_wrong_credentials</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_auth_api.AuthApiTestCase.test_user_swap_wrong_credentials" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test that a user that’s not logged in cannot swap users</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="api.tests.tests_auth_api.AuthApiTestCase.test_user_validate_token">
 <code class="sig-name descname">test_user_validate_token</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_auth_api.AuthApiTestCase.test_user_validate_token" title="Permalink to this definition">¶</a></dt>
 <dd><p>Test that a user can validate a token.</p>
@@ -245,11 +393,46 @@
 <dd><p>Test that a user fails to validate an invalid token.</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="api.tests.tests_auth_api.AuthApiTestCase.test_user_validate_token_no_config">
+<code class="sig-name descname">test_user_validate_token_no_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_auth_api.AuthApiTestCase.test_user_validate_token_no_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test that a user can validate a token and not receive the config passing the no_config query param.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-api.tests.tests_config">
+<span id="api-tests-tests-config-module"></span><h2><span class="section-number">5.1.1.1.5. </span>api.tests.tests_config module<a class="headerlink" href="#module-api.tests.tests_config" title="Permalink to this headline">¶</a></h2>
+<p>Test users’ authentication through the API.</p>
+<dl class="class">
+<dt id="api.tests.tests_config.ConfigApiTestCase">
+<em class="property">class </em><code class="sig-prename descclassname">api.tests.tests_config.</code><code class="sig-name descname">ConfigApiTestCase</code><span class="sig-paren">(</span><em class="sig-param">methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_config.ConfigApiTestCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.test.testcases.TestCase</span></code></p>
+<p>Test suite for config files handling.</p>
+<dl class="method">
+<dt id="api.tests.tests_config.ConfigApiTestCase.setUp">
+<code class="sig-name descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_config.ConfigApiTestCase.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define the test suite setup.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.tests_config.ConfigApiTestCase.test_get_config">
+<code class="sig-name descname">test_get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_config.ConfigApiTestCase.test_get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test that an authenticated user can get the config file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.tests_config.ConfigApiTestCase.test_unauthenticated_cannot_get_config">
+<code class="sig-name descname">test_unauthenticated_cannot_get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_config.ConfigApiTestCase.test_unauthenticated_cannot_get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test that an unauthenticated user cannot get the config file.</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
 <div class="section" id="module-api.tests">
-<span id="module-contents"></span><h2>5.1.1.1.3. Module contents<a class="headerlink" href="#module-api.tests" title="Permalink to this headline">¶</a></h2>
+<span id="module-contents"></span><h2><span class="section-number">5.1.1.1.6. </span>Module contents<a class="headerlink" href="#module-api.tests" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 

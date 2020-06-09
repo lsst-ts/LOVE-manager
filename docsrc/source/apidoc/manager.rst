@@ -36,6 +36,14 @@ manager.urls module
    :undoc-members:
    :show-inheritance:
 
+manager.utils module
+--------------------
+
+.. automodule:: manager.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 manager.wsgi module
 -------------------
 

@@ -43,6 +43,14 @@ ui\_framework.serializers module
    :undoc-members:
    :show-inheritance:
 
+ui\_framework.signals module
+----------------------------
+
+.. automodule:: ui_framework.signals
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 ui\_framework.urls module
 -------------------------
 

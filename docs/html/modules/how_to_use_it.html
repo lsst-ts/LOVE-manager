@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -87,7 +87,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#authentication">2.1. Authentication</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#request-token">2.1.1. Request token</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#validate-token">2.1.2. Validate token</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#logout">2.1.3. Logout</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#swap-token">2.1.3. Swap token</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#logout">2.1.4. Logout</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#websockets-connection">2.2. Websockets Connection</a><ul>
@@ -156,7 +157,7 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>2. How to use it</li>
+      <li><span class="section-number">2. </span>How to use it</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -176,14 +177,14 @@
            <div itemprop="articleBody">
             
   <div class="section" id="how-to-use-it">
-<h1>2. How to use it<a class="headerlink" href="#how-to-use-it" title="Permalink to this headline">¶</a></h1>
+<h1><span class="section-number">2. </span>How to use it<a class="headerlink" href="#how-to-use-it" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="authentication">
-<h2>2.1. Authentication<a class="headerlink" href="#authentication" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">2.1. </span>Authentication<a class="headerlink" href="#authentication" title="Permalink to this headline">¶</a></h2>
 <p>LOVE-manager provides a token-based authentication mechanism.
 Clients may request a token providing their credentials (username and password).</p>
 <p>Token request, validation and logout operations are done via HTTP requests as follows:</p>
 <div class="section" id="request-token">
-<h3>2.1.1. Request token<a class="headerlink" href="#request-token" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">2.1.1. </span>Request token<a class="headerlink" href="#request-token" title="Permalink to this headline">¶</a></h3>
 <p>Requests a new authorization token.
 Returns token, user data and permissions</p>
 <ul class="simple">
@@ -203,13 +204,28 @@ Returns token, user data and permissions</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
   <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;username&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;email&gt;&quot;</span>
+    <span class="p">},</span>
     <span class="nt">&quot;token&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;token&gt;&quot;</span><span class="p">,</span>
     <span class="nt">&quot;permissions&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;execute_commands&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;True/False&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;execute_commands&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;true or false&gt;&quot;</span>
     <span class="p">},</span>
-    <span class="nt">&quot;user_data&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;username&gt;&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;password&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;password&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;time_data&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;utc&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;server UTC time as a unix timestamp (seconds)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;tai&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;server TAI time as a unix timestamp (seconds)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;mjd&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;server time as Modified Julian Date&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;sidereal_summit&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;server sidereal time w/respect to the summit (hourangles)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;sidereal_greenwich&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;server sidereal time w/respect to Greenwich (hourangles)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;tai_to_utc&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Difference between TAI and UTC times (seconds)&gt;&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;config&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;alarm_sounds&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;critical&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;1 or 0&gt;&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;serious&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;1 or 0&gt;&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;warning&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;1 or 0&gt;&quot;</span>
+      <span class="p">}</span>
     <span class="p">}</span>
   <span class="p">}</span>
 <span class="p">}</span>
@@ -217,11 +233,12 @@ Returns token, user data and permissions</p>
 </div>
 </div>
 <div class="section" id="validate-token">
-<h3>2.1.2. Validate token<a class="headerlink" href="#validate-token" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">2.1.2. </span>Validate token<a class="headerlink" href="#validate-token" title="Permalink to this headline">¶</a></h3>
 <p>Validates a given authorization token, passed through HTTP Headers.
-Returns a confirmation of validity, user data and permissions.</p>
+Returns a confirmation of validity, user data, permissions, server_time and (optionally) the LOVE configuraiton file.
+If the <code class="code docutils literal notranslate"><span class="pre">no_config</span></code> flag is added to the end of the URL, then the LOVE config files is not read and the corresponding value is returned as <code class="code docutils literal notranslate"><span class="pre">null</span></code></p>
 <ul class="simple">
-<li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/api/validate-token/</span></code></p></li>
+<li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/api/validate-token/</span></code> or <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/api/validate-token/no_config/</span></code></p></li>
 <li><p>HTTP Operation: get</p></li>
 <li><p>Message HTTP Headers:</p></li>
 </ul>
@@ -238,13 +255,79 @@ Returns a confirmation of validity, user data and permissions.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
   <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;detail&quot;</span><span class="p">:</span> <span class="s2">&quot;Token is valid&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;permissions&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;execute_commands&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;True/False&gt;&quot;</span><span class="p">,</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;user_data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="p">{</span>
       <span class="nt">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;username&gt;&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;password&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;password&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;email&gt;&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;token&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;token&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;permissions&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;execute_commands&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;true or false&gt;&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;time_data&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;utc&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;server UTC time as a unix timestamp (seconds)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;tai&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;server TAI time as a unix timestamp (seconds)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;mjd&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;server time as Modified Julian Date&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;sidereal_summit&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;server sidereal time w/respect to the summit (hourangles)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;sidereal_greenwich&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;server sidereal time w/respect to Greenwich (hourangles)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;tai_to_utc&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Difference between TAI and UTC times (seconds)&gt;&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;config&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;alarm_sounds&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;critical&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;1 or 0&gt;&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;serious&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;1 or 0&gt;&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;warning&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;1 or 0&gt;&quot;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="swap-token">
+<h3><span class="section-number">2.1.3. </span>Swap token<a class="headerlink" href="#swap-token" title="Permalink to this headline">¶</a></h3>
+<p>Validates a given authorization token, passed through HTTP Headers.
+Returns a confirmation of validity, user data, permissions, server_time and (optionally) the LOVE configuraiton file.
+If the <code class="code docutils literal notranslate"><span class="pre">no_config</span></code> flag is added to the end of the URL, then the LOVE config files is not read and the corresponding value is returned as <code class="code docutils literal notranslate"><span class="pre">null</span></code></p>
+<ul class="simple">
+<li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/api/swap-token/</span></code> or <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/api/swap-token/no_config/</span></code></p></li>
+<li><p>HTTP Operation: get</p></li>
+<li><p>Message HTTP Headers:</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;Accept&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;Authorization&quot;</span><span class="p">:</span> <span class="s2">&quot;Token &lt;token&gt;&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Expected Response:</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;username&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;email&gt;&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;token&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;token&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;permissions&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;execute_commands&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;true or false&gt;&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;time_data&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;utc&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;server UTC time as a unix timestamp (seconds)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;tai&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;server TAI time as a unix timestamp (seconds)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;mjd&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;server time as Modified Julian Date&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;sidereal_summit&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;server sidereal time w/respect to the summit (hourangles)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;sidereal_greenwich&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;server sidereal time w/respect to Greenwich (hourangles)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;tai_to_utc&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Difference between TAI and UTC times (seconds)&gt;&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;config&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;alarm_sounds&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;critical&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;1 or 0&gt;&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;serious&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;1 or 0&gt;&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;warning&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;1 or 0&gt;&quot;</span>
+      <span class="p">}</span>
     <span class="p">}</span>
   <span class="p">}</span>
 <span class="p">}</span>
@@ -252,7 +335,7 @@ Returns a confirmation of validity, user data and permissions.</p>
 </div>
 </div>
 <div class="section" id="logout">
-<h3>2.1.3. Logout<a class="headerlink" href="#logout" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">2.1.4. </span>Logout<a class="headerlink" href="#logout" title="Permalink to this headline">¶</a></h3>
 <p>Requests deletion of a given token, passed through HTTP Headers.
 The token is deleted and a confirmation is replied.</p>
 <ul class="simple">
@@ -281,25 +364,25 @@ The token is deleted and a confirmation is replied.</p>
 </div>
 </div>
 <div class="section" id="websockets-connection">
-<h2>2.2. Websockets Connection<a class="headerlink" href="#websockets-connection" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">2.2. </span>Websockets Connection<a class="headerlink" href="#websockets-connection" title="Permalink to this headline">¶</a></h2>
 <p>Currently there are 2 ways to establish a websocket connection:</p>
 <div class="section" id="authenticate-with-user-token">
-<h3>2.2.1. Authenticate with user token<a class="headerlink" href="#authenticate-with-user-token" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">2.2.1. </span>Authenticate with user token<a class="headerlink" href="#authenticate-with-user-token" title="Permalink to this headline">¶</a></h3>
 <p>This is the mechanism intended for end users. It requires them to have an authentication token.
 In order to stablish the connection they must append the token to the websocket url as follows:</p>
 <p><code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/ws/subscription/?token=&lt;my-token&gt;</span></code></p>
 </div>
 <div class="section" id="authenticate-with-password">
-<h3>2.2.2. Authenticate with password<a class="headerlink" href="#authenticate-with-password" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">2.2.2. </span>Authenticate with password<a class="headerlink" href="#authenticate-with-password" title="Permalink to this headline">¶</a></h3>
 <p>This is the mechanism intended for other applications. It requires them to have the password token.
 In order to stablish the connection they must append the password to the websocket url as follows:</p>
 <p><code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/ws/subscription/?password=&lt;my-password&gt;</span></code></p>
 </div>
 </div>
 <div class="section" id="websockets-group-subscriptions">
-<h2>2.3. Websockets Group Subscriptions<a class="headerlink" href="#websockets-group-subscriptions" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">2.3. </span>Websockets Group Subscriptions<a class="headerlink" href="#websockets-group-subscriptions" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="love-manager-subscriptions-scheme">
-<h3>2.3.1. LOVE-manager Subscriptions scheme<a class="headerlink" href="#love-manager-subscriptions-scheme" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">2.3.1. </span>LOVE-manager Subscriptions scheme<a class="headerlink" href="#love-manager-subscriptions-scheme" title="Permalink to this headline">¶</a></h3>
 <p>Group subscriptions are characterized by 4 variables:
 * <strong>category:</strong> describe the category or type of stream:</p>
 <blockquote>
@@ -317,10 +400,10 @@ In order to stablish the connection they must append the password to the websock
 <p>The reasoning behind this scheme is that for a given CSC instance e.g. <code class="code docutils literal notranslate"><span class="pre">ScriptQueue</span> <span class="pre">1</span></code> (salindex 1), there could be a number of telemetries, events or commands, each identified by a different <code class="code docutils literal notranslate"><span class="pre">stream</span></code>.</p>
 </div>
 <div class="section" id="accepted-messages">
-<h3>2.3.2. Accepted messages<a class="headerlink" href="#accepted-messages" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">2.3.2. </span>Accepted messages<a class="headerlink" href="#accepted-messages" title="Permalink to this headline">¶</a></h3>
 <p>The consumers accept the following types of messages:</p>
 <div class="section" id="subscription-messages">
-<h4>2.3.2.1. Subscription messages<a class="headerlink" href="#subscription-messages" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">2.3.2.1. </span>Subscription messages<a class="headerlink" href="#subscription-messages" title="Permalink to this headline">¶</a></h4>
 <p>Specifying the variables necessary to subscribe a to a group in a JSON message, as follows:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;option&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;subscribe/unsubscribe&gt;&quot;</span><span class="p">,</span>
@@ -333,7 +416,7 @@ In order to stablish the connection they must append the password to the websock
 </div>
 </div>
 <div class="section" id="telemetry-or-event-messages">
-<h4>2.3.2.2. Telemetry or Event messages<a class="headerlink" href="#telemetry-or-event-messages" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">2.3.2.2. </span>Telemetry or Event messages<a class="headerlink" href="#telemetry-or-event-messages" title="Permalink to this headline">¶</a></h4>
 <p>Specifying the variables necessary to subscribe a to a group in a JSON message, as follows:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;event/telemetry&quot;</span><span class="p">,</span>
@@ -357,7 +440,7 @@ In order to stablish the connection they must append the password to the websock
 <p>Where <code class="code docutils literal notranslate"><span class="pre">{...&lt;data&gt;...}</span></code> represents the JSON message that is sent as data.</p>
 </div>
 <div class="section" id="command-messages">
-<h4>2.3.2.3. Command messages<a class="headerlink" href="#command-messages" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">2.3.2.3. </span>Command messages<a class="headerlink" href="#command-messages" title="Permalink to this headline">¶</a></h4>
 <p>Specifying the variables necessary to subscribe a to a group in a JSON message, as follows:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;cmd&quot;</span><span class="p">,</span>
@@ -380,7 +463,7 @@ In order to stablish the connection they must append the password to the websock
 </div>
 </div>
 <div class="section" id="ui-framework">
-<h2>2.4. UI Framework<a class="headerlink" href="#ui-framework" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">2.4. </span>UI Framework<a class="headerlink" href="#ui-framework" title="Permalink to this headline">¶</a></h2>
 <p>The UI Framework backend is composed of 3 models:</p>
 <blockquote>
 <div><ul class="simple">

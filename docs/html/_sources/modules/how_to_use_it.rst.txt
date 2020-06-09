@@ -33,13 +33,28 @@ Returns token, user data and permissions
   {
     "status": 200,
     "data": {
+      "user": {
+        "username": "<username>",
+        "email": "<email>"
+      },
       "token": "<token>",
       "permissions": {
-        "execute_commands": "<True/False>",
+        "execute_commands": "<true or false>"
       },
-      "user_data": {
-        "username": "<username>",
-        "password": "<password>",
+      "time_data": {
+        "utc": "<server UTC time as a unix timestamp (seconds)>",
+        "tai": "<server TAI time as a unix timestamp (seconds)>",
+        "mjd": "<server time as Modified Julian Date>",
+        "sidereal_summit": "<server sidereal time w/respect to the summit (hourangles)>",
+        "sidereal_greenwich": "<server sidereal time w/respect to Greenwich (hourangles)>",
+        "tai_to_utc": "<Difference between TAI and UTC times (seconds)>"
+      },
+      "config": {
+        "alarm_sounds": {
+          "critical": "<1 or 0>",
+          "serious": "<1 or 0>",
+          "warning": "<1 or 0>"
+        }
       }
     }
   }
@@ -47,9 +62,10 @@ Returns token, user data and permissions
 Validate token
 --------------
 Validates a given authorization token, passed through HTTP Headers.
-Returns a confirmation of validity, user data and permissions.
+Returns a confirmation of validity, user data, permissions, server_time and (optionally) the LOVE configuraiton file.
+If the :code:`no_config` flag is added to the end of the URL, then the LOVE config files is not read and the corresponding value is returned as :code:`null`
 
-- Url: :code:`<IP>/manager/api/validate-token/`
+- Url: :code:`<IP>/manager/api/validate-token/` or :code:`<IP>/manager/api/validate-token/no_config/`
 - HTTP Operation: get
 - Message HTTP Headers:
 
@@ -68,13 +84,79 @@ Returns a confirmation of validity, user data and permissions.
   {
     "status": 200,
     "data": {
-      "detail": "Token is valid",
-      "permissions": {
-        "execute_commands": "<True/False>",
-      },
-      "user_data": {
+      "user": {
         "username": "<username>",
-        "password": "<password>",
+        "email": "<email>"
+      },
+      "token": "<token>",
+      "permissions": {
+        "execute_commands": "<true or false>"
+      },
+      "time_data": {
+        "utc": "<server UTC time as a unix timestamp (seconds)>",
+        "tai": "<server TAI time as a unix timestamp (seconds)>",
+        "mjd": "<server time as Modified Julian Date>",
+        "sidereal_summit": "<server sidereal time w/respect to the summit (hourangles)>",
+        "sidereal_greenwich": "<server sidereal time w/respect to Greenwich (hourangles)>",
+        "tai_to_utc": "<Difference between TAI and UTC times (seconds)>"
+      },
+      "config": {
+        "alarm_sounds": {
+          "critical": "<1 or 0>",
+          "serious": "<1 or 0>",
+          "warning": "<1 or 0>"
+        }
+      }
+    }
+  }
+
+Swap token
+--------------
+Validates a given authorization token, passed through HTTP Headers.
+Returns a confirmation of validity, user data, permissions, server_time and (optionally) the LOVE configuraiton file.
+If the :code:`no_config` flag is added to the end of the URL, then the LOVE config files is not read and the corresponding value is returned as :code:`null`
+
+- Url: :code:`<IP>/manager/api/swap-token/` or :code:`<IP>/manager/api/swap-token/no_config/`
+- HTTP Operation: get
+- Message HTTP Headers:
+
+.. code-block:: json
+
+  {
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+    "Authorization": "Token <token>"
+  }
+
+- Expected Response:
+
+.. code-block:: json
+
+  {
+    "status": 200,
+    "data": {
+      "user": {
+        "username": "<username>",
+        "email": "<email>"
+      },
+      "token": "<token>",
+      "permissions": {
+        "execute_commands": "<true or false>"
+      },
+      "time_data": {
+        "utc": "<server UTC time as a unix timestamp (seconds)>",
+        "tai": "<server TAI time as a unix timestamp (seconds)>",
+        "mjd": "<server time as Modified Julian Date>",
+        "sidereal_summit": "<server sidereal time w/respect to the summit (hourangles)>",
+        "sidereal_greenwich": "<server sidereal time w/respect to Greenwich (hourangles)>",
+        "tai_to_utc": "<Difference between TAI and UTC times (seconds)>"
+      },
+      "config": {
+        "alarm_sounds": {
+          "critical": "<1 or 0>",
+          "serious": "<1 or 0>",
+          "warning": "<1 or 0>"
+        }
       }
     }
   }

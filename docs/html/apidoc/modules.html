@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -139,7 +139,7 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>5. ApiDoc</li>
+      <li><span class="section-number">5. </span>ApiDoc</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -159,7 +159,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="apidoc">
-<h1>5. ApiDoc<a class="headerlink" href="#apidoc" title="Permalink to this headline">¶</a></h1>
+<h1><span class="section-number">5. </span>ApiDoc<a class="headerlink" href="#apidoc" title="Permalink to this headline">¶</a></h1>
 <p>These are the ApiDocs of the project.</p>
 <div class="toctree-wrapper compound">
 <ul>
@@ -167,8 +167,11 @@
 <li class="toctree-l2"><a class="reference internal" href="api.html#subpackages">5.1.1. Subpackages</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="api.tests.html">5.1.1.1. api.tests package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="api.tests.html#submodules">5.1.1.1.1. Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api.tests.html#module-api.tests.tests_auth_api">5.1.1.1.2. api.tests.tests_auth_api module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api.tests.html#module-api.tests">5.1.1.1.3. Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.tests.html#module-api.tests.test_commander">5.1.1.1.2. api.tests.test_commander module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.tests.html#module-api.tests.test_schema_validation">5.1.1.1.3. api.tests.test_schema_validation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.tests.html#module-api.tests.tests_auth_api">5.1.1.1.4. api.tests.tests_auth_api module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.tests.html#module-api.tests.tests_config">5.1.1.1.5. api.tests.tests_config module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api.tests.html#module-api.tests">5.1.1.1.6. Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -179,13 +182,15 @@
 <li class="toctree-l2"><a class="reference internal" href="api.html#module-api.authentication">5.1.5. api.authentication module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api.html#module-api.middleware">5.1.6. api.middleware module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api.html#module-api.models">5.1.7. api.models module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#module-api.serializers">5.1.8. api.serializers module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#module-api.urls">5.1.9. api.urls module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api.html#examples">5.1.9.1. Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-api.schema_validator">5.1.8. api.schema_validator module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-api.serializers">5.1.9. api.serializers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-api.signals">5.1.10. api.signals module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-api.urls">5.1.11. api.urls module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api.html#examples">5.1.11.1. Examples</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#module-api.views">5.1.10. api.views module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#module-api">5.1.11. Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-api.views">5.1.12. api.views module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-api">5.1.13. Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="manage.html">5.2. manage module</a></li>
@@ -198,26 +203,31 @@
 <li class="toctree-l3"><a class="reference internal" href="manager.html#examples">5.3.5.1. Examples</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="manager.html#module-manager.wsgi">5.3.6. manager.wsgi module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="manager.html#module-manager">5.3.7. Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manager.html#module-manager.utils">5.3.6. manager.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manager.html#module-manager.wsgi">5.3.7. manager.wsgi module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manager.html#module-manager">5.3.8. Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="subscription.html">5.4. subscription package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="subscription.html#submodules">5.4.1. Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="subscription.html#module-subscription.auth">5.4.2. subscription.auth module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="subscription.html#module-subscription.consumers">5.4.3. subscription.consumers module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="subscription.html#module-subscription.routing">5.4.4. subscription.routing module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="subscription.html#module-subscription">5.4.5. Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="subscription.html#module-subscription.apps">5.4.2. subscription.apps module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="subscription.html#module-subscription.auth">5.4.3. subscription.auth module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="subscription.html#module-subscription.consumers">5.4.4. subscription.consumers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="subscription.html#module-subscription.heartbeat_manager">5.4.5. subscription.heartbeat_manager module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="subscription.html#module-subscription.routing">5.4.6. subscription.routing module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="subscription.html#module-subscription">5.4.7. Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ui_framework.html">5.5. ui_framework package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="ui_framework.html#subpackages">5.5.1. Subpackages</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="ui_framework.tests.html">5.5.1.1. ui_framework.tests package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="ui_framework.tests.html#submodules">5.5.1.1.1. Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ui_framework.tests.html#module-ui_framework.tests.tests_api">5.5.1.1.2. ui_framework.tests.tests_api module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ui_framework.tests.html#module-ui_framework.tests.tests_models">5.5.1.1.3. ui_framework.tests.tests_models module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ui_framework.tests.html#module-ui_framework.tests.utils">5.5.1.1.4. ui_framework.tests.utils module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="ui_framework.tests.html#module-ui_framework.tests">5.5.1.1.5. Module contents</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ui_framework.tests.html#module-ui_framework.tests.test_view_thumbnail">5.5.1.1.2. ui_framework.tests.test_view_thumbnail module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ui_framework.tests.html#module-ui_framework.tests.tests_api">5.5.1.1.3. ui_framework.tests.tests_api module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ui_framework.tests.html#module-ui_framework.tests.tests_custom_api">5.5.1.1.4. ui_framework.tests.tests_custom_api module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ui_framework.tests.html#module-ui_framework.tests.tests_models">5.5.1.1.5. ui_framework.tests.tests_models module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ui_framework.tests.html#module-ui_framework.tests.utils">5.5.1.1.6. ui_framework.tests.utils module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ui_framework.tests.html#module-ui_framework.tests">5.5.1.1.7. Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -227,12 +237,13 @@
 <li class="toctree-l2"><a class="reference internal" href="ui_framework.html#module-ui_framework.apps">5.5.4. ui_framework.apps module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ui_framework.html#module-ui_framework.models">5.5.5. ui_framework.models module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ui_framework.html#module-ui_framework.serializers">5.5.6. ui_framework.serializers module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ui_framework.html#module-ui_framework.urls">5.5.7. ui_framework.urls module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="ui_framework.html#examples">5.5.7.1. Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui_framework.html#module-ui_framework.signals">5.5.7. ui_framework.signals module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui_framework.html#module-ui_framework.urls">5.5.8. ui_framework.urls module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ui_framework.html#examples">5.5.8.1. Examples</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="ui_framework.html#module-ui_framework.views">5.5.8. ui_framework.views module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ui_framework.html#module-ui_framework">5.5.9. Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui_framework.html#module-ui_framework.views">5.5.9. ui_framework.views module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui_framework.html#module-ui_framework">5.5.10. Module contents</a></li>
 </ul>
 </li>
 </ul>
