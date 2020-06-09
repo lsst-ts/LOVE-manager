@@ -44,6 +44,7 @@ class AuthApiTestCase(TestCase):
         )
         self.logout_url = reverse("logout")
         self.swap_url = reverse("swap-user")
+        self.swap_no_config_url = reverse("swap-user", kwargs={"flags": "no_config"})
         self.expected_permissions = {
             "execute_commands": True,
         }
@@ -88,7 +89,9 @@ class AuthApiTestCase(TestCase):
             "Time data is not as expected",
         )
         self.assertEqual(
-            response.data["config"], self.expected_config,
+            response.data["config"],
+            self.expected_config,
+            "The config was not requested",
         )
 
     def test_user_login_failed(self):
@@ -179,7 +182,9 @@ class AuthApiTestCase(TestCase):
             "Time data is not as expected",
         )
         self.assertEqual(
-            response.data["config"], self.expected_config,
+            response.data["config"],
+            self.expected_config,
+            "The config was not requested",
         )
 
     def test_user_validate_token_no_config(self):
@@ -215,9 +220,7 @@ class AuthApiTestCase(TestCase):
             utils.assert_time_data(response.data["time_data"]),
             "Time data is not as expected",
         )
-        self.assertEqual(
-            response.data["config"], None,
-        )
+        self.assertEqual(response.data["config"], None, "The config was requested")
 
     def test_user_validate_token_fail(self):
         """Test that a user fails to validate an invalid token."""
@@ -349,7 +352,7 @@ class AuthApiTestCase(TestCase):
         data = {"username": self.username2, "password": self.password}
         token = Token.objects.filter(user__username=self.username).first()
         self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
-        response = self.client.post(self.swap_url, data, format="json")
+        response = self.client.post(self.swap_no_config_url, data, format="json")
         user_1_tokens_num_1 = Token.objects.filter(user__username=self.username).count()
         user_2_tokens_num_1 = Token.objects.filter(
             user__username=self.username2
@@ -363,15 +366,14 @@ class AuthApiTestCase(TestCase):
         self.assertEqual(
             user_2_tokens_num_1, user_2_tokens_num_0 + 1, "User 2 has one more token"
         )
+        self.assertEqual(response.data["config"], None, "The config was requested")
         # Act 2:
         token = Token.objects.filter(user__username=self.username2).first()
         self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
-        response = self.client.get(self.validate_token_url)
+        response = self.client.get(self.validate_token_no_config_url)
         # Assert 2:
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(
-            response.data["config"], self.expected_config,
-        )
+        self.assertEqual(response.data["config"], None, "The config was requested")
 
     def test_user_swap_forbidden(self):
         """Test that a user that's not logged in cannot swap users"""

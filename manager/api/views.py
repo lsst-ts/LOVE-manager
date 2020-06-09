@@ -144,7 +144,11 @@ class CustomSwapAuthToken(ObtainAuthToken):
         token = Token.objects.create(user=user)
         old_token = request._auth
         old_token.delete()
-        return Response(TokenSerializer(token).data)
+
+        flags = kwargs.get("flags", None)
+        no_config = flags == "no_config" or flags == "no-config"
+        data = TokenSerializer(token, context={"no_config": no_config}).data
+        return Response(data)
 
 
 @api_view(["POST"])
