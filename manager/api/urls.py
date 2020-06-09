@@ -27,6 +27,7 @@ router = DefaultRouter()
 urlpatterns = [
     path("get-token/", api.views.CustomObtainAuthToken.as_view(), name="login"),
     path("validate-token/", api.views.validate_token, name="validate-token"),
+    path("validate-token/<flags>/", api.views.validate_token, name="validate-token"),
     path(
         "validate-config-schema/",
         api.views.validate_config_schema,
@@ -34,6 +35,9 @@ urlpatterns = [
     ),
     path("logout/", api.views.logout, name="logout"),
     path("swap-user/", api.views.CustomSwapAuthToken.as_view(), name="swap-user"),
+    path(
+        "swap-user/<flags>/", api.views.CustomSwapAuthToken.as_view(), name="swap-user"
+    ),
     path("auth/", include("rest_framework.urls", namespace="rest_framework")),
     path("cmd/", api.views.commander, name="commander"),
     path("salinfo/metadata", api.views.salinfo_metadata, name="salinfo-metadata"),
@@ -41,5 +45,6 @@ urlpatterns = [
         "salinfo/topic-names", api.views.salinfo_topic_names, name="salinfo-topic-names"
     ),
     path("salinfo/topic-data", api.views.salinfo_topic_data, name="salinfo-topic-data"),
+    path("config", api.views.get_config, name="config"),
 ]
 urlpatterns.append(path("", include(router.urls)))

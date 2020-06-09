@@ -1,5 +1,6 @@
 """Defines the views exposed by the REST API exposed by this app."""
 import os
+import json
 import requests
 import yaml
 import jsonschema
@@ -13,19 +14,24 @@ from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from api.models import Token
-from api.serializers import TokenSerializer
+from api.serializers import TokenSerializer, read_config_file, ConfigSerializer
 from .schema_validator import DefaultingValidator
 
 valid_response = openapi.Response("Valid token", TokenSerializer)
 invalid_response = openapi.Response("Invalid token")
+not_found_response = openapi.Response("Not found")
 
 
 @swagger_auto_schema(
-    method="get", responses={200: valid_response, 401: invalid_response}
+    method="get",
+    responses={
+        200: openapi.Response("Valid token", TokenSerializer),
+        401: openapi.Response("Invalid token"),
+    },
 )
 @api_view(["GET"])
 @permission_classes((IsAuthenticated,))
-def validate_token(request):
+def validate_token(request, *args, **kwargs):
     """Validate the token and return 200 code if valid.
 
     If the token is invalid this function is not executed (the request fails before)
@@ -35,9 +41,12 @@ def validate_token(request):
     Response
         The response stating that the token is valid with a 200 status code.
     """
+    flags = kwargs.get("flags", None)
+    no_config = flags == "no_config" or flags == "no-config"
     token_key = request.META.get("HTTP_AUTHORIZATION")[6:]
     token = Token.objects.get(key=token_key)
-    return Response(TokenSerializer(token).data)
+    data = TokenSerializer(token, context={"no_config": no_config}).data
+    return Response(data)
 
 
 @swagger_auto_schema(
@@ -135,12 +144,13 @@ class CustomSwapAuthToken(ObtainAuthToken):
         token = Token.objects.create(user=user)
         old_token = request._auth
         old_token.delete()
-        return Response(TokenSerializer(token).data)
+
+        flags = kwargs.get("flags", None)
+        no_config = flags == "no_config" or flags == "no-config"
+        data = TokenSerializer(token, context={"no_config": no_config}).data
+        return Response(data)
 
 
-@swagger_auto_schema(
-    method="post", responses={200: valid_response, 401: invalid_response}
-)
 @api_view(["POST"])
 @permission_classes((IsAuthenticated,))
 def validate_config_schema(request):
@@ -186,7 +196,12 @@ def validate_config_schema(request):
 
 
 @swagger_auto_schema(
-    method="post", responses={200: valid_response, 401: invalid_response}
+    method="post",
+    responses={
+        200: openapi.Response("Command sent"),
+        401: openapi.Response("Unauthenticated"),
+        403: openapi.Response("Unauthorized"),
+    },
 )
 @api_view(["POST"])
 @permission_classes((IsAuthenticated,))
@@ -204,7 +219,18 @@ def commander(request):
 
 
 @swagger_auto_schema(
-    method="get", responses={200: valid_response, 401: invalid_response}
+    method="get",
+    responses={
+        200: openapi.Response(
+            "Response of the form: "
+            + json.dumps(
+                {"<csc_name>": {"sal_version": "x.x.x", "xml_version": "x.x.x"}},
+                indent=4,
+            )
+        ),
+        401: openapi.Response("Unauthenticated"),
+        403: openapi.Response("Unauthorized"),
+    },
 )
 @api_view(["GET"])
 @permission_classes((IsAuthenticated,))
@@ -219,7 +245,24 @@ def salinfo_metadata(request):
 
 
 @swagger_auto_schema(
-    method="get", responses={200: valid_response, 401: invalid_response}
+    method="get",
+    responses={
+        200: openapi.Response(
+            "Response of the form: "
+            + json.dumps(
+                {
+                    "<csc_name>": {
+                        "command_names": [],
+                        "event_names": [],
+                        "telemetry_names": [],
+                    }
+                },
+                indent=4,
+            )
+        ),
+        401: openapi.Response("Unauthenticated"),
+        403: openapi.Response("Unauthorized"),
+    },
 )
 @api_view(["GET"])
 @permission_classes((IsAuthenticated,))
@@ -237,7 +280,24 @@ def salinfo_topic_names(request):
 
 
 @swagger_auto_schema(
-    method="get", responses={200: valid_response, 401: invalid_response}
+    method="get",
+    responses={
+        200: openapi.Response(
+            "Response of the form: "
+            + json.dumps(
+                {
+                    "<csc_name>": {
+                        "command_data": [],
+                        "event_data": [],
+                        "telemetry_data": [],
+                    }
+                },
+                indent=4,
+            )
+        ),
+        401: openapi.Response("Unauthenticated"),
+        403: openapi.Response("Unauthorized"),
+    },
 )
 @api_view(["GET"])
 @permission_classes((IsAuthenticated,))
@@ -252,3 +312,22 @@ def salinfo_topic_data(request):
     response = requests.get(url)
 
     return Response(response.json(), status=response.status_code)
+
+
+@swagger_auto_schema(
+    method="get",
+    responses={
+        200: openapi.Response("Config file", ConfigSerializer),
+        401: openapi.Response("Unauthenticated"),
+        404: not_found_response,
+    },
+)
+@api_view(["GET"])
+@permission_classes((IsAuthenticated,))
+def get_config(request):
+    """Returns the config file
+    """
+    data = read_config_file()
+    if data is None:
+        return Response(None, status=status.HTTP_404_NOT_FOUND)
+    return Response(data, status=status.HTTP_200_OK)
