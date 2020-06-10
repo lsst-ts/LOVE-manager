@@ -25,7 +25,8 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         # Reject connection if no authenticated user:
         if self.scope["user"].is_anonymous:
             if (
-                self.scope["password"] and self.scope["password"] == PROCESS_CONNECTION_PASS
+                self.scope["password"]
+                and self.scope["password"] == PROCESS_CONNECTION_PASS
             ):
                 await self.accept()
                 self.first_connection.set_result(True)
@@ -40,9 +41,9 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
 
     async def disconnect(self, close_code):
         """Handle disconnection."""
-        # Leave telemetry_stream group
-        for telemetry_stream in self.stream_group_names:
-            await self._leave_group(*telemetry_stream)
+        await asyncio.gather(
+            *[self._leave_group(*stream) for stream in self.stream_group_names]
+        )
 
     async def receive_json(self, message):
         """Handle a received message.
@@ -113,26 +114,27 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                 }
             )
             return
-    
+
     async def handle_action_message(self, message):
         if message["action"] == "get_time_data":
             request_time = message["request_time"]
             time_data = utils.get_times()
             await self.send_json(
-                {
-                    "time_data": time_data,
-                    "request_time": request_time,
-                }
+                {"time_data": time_data, "request_time": request_time,}
             )
         return
-            
+
     # Expects a message with the format:
     # {
     #   heartbeat: <component_name>
     #   timestamp: <last_heartbeat_timestamp> (optional)
     # }
     async def handle_heartbeat_message(self, message):
-        timestamp = message["timestamp"] if "timestamp" in message else datetime.datetime.now().timestamp()
+        timestamp = (
+            message["timestamp"]
+            if "timestamp" in message
+            else datetime.datetime.now().timestamp()
+        )
         self.heartbeat_manager.set_heartbeat_timestamp(message["heartbeat"], timestamp)
 
     async def handle_data_message(self, message):
@@ -160,7 +162,6 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         data = message["data"]
         category = message["category"]
         user = self.scope["user"]
-
 
         # Send data to telemetry_stream groups
         for csc_message in data:
@@ -244,6 +245,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             )
 
     async def _leave_group(self, category, csc, salindex, stream):
+
         """Leave a group in order to receive messages from it.
 
         Parameters
