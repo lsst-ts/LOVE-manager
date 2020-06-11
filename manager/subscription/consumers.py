@@ -268,9 +268,8 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             Stream to subscribe to. E.g. 'stream_1'
         """
         key = "-".join([category, csc, salindex, stream])
-        if [category, csc, salindex, stream] in self.stream_group_names:
-            return
-        self.stream_group_names.append([category, csc, salindex, stream])
+        if [category, csc, salindex, stream] not in self.stream_group_names:
+            self.stream_group_names.append([category, csc, salindex, stream])
         await self.channel_layer.group_add(key, self.channel_name)
 
         # If subscribing to an event, send the initial_state
