@@ -101,7 +101,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                 }
             )
 
-        if option == "unsubscribe":
+        elif option == "unsubscribe":
             # Unsubscribe and send confirmation
             csc = message["csc"]
             salindex = message["salindex"]
@@ -113,23 +113,63 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                     % (category, csc, salindex, stream)
                 }
             )
-            return
 
     async def handle_action_message(self, message):
+        """Handle an action message.
+
+        Receives an action message and reacts according to each different action.
+
+        Currently supported actions: 
+        - get_time_data: sends a message with the time_data and passes though a request_time received with the message.
+            - Expected input message:
+            {
+                "action": "get_time_data",
+                "request_time": <timestamp with the request time, e.g. 123243423.123>
+            }
+            - Message sent (output):
+            {
+                "time_data": {
+                    utc: <current time in UTC scale as a unix timestamp (seconds)>,
+                    tai: <current time in UTC scale as a unix timestamp (seconds)>,
+                    mjd: <current time as a modified julian date>,
+                    sidereal_summit: <current time as a sidereal_time w/respect to the summit location (hourangles)>,
+                    sidereal_summit: <current time as a sidereal_time w/respect to Greenwich location (hourangles)>,
+                    tai_to_utc: <The number of seconds of difference between TAI and UTC times (seconds)>,
+                },
+                "request_time": <timestamp with the request time, e.g. 123243423.123>
+            }
+
+        Parameters
+        ----------
+        message: `dict`
+            dictionary containing the message parsed as json.
+            The expected format of the message is as follows:
+            {
+                action: '<string defining the action>'
+            }
+        """
         if message["action"] == "get_time_data":
             request_time = message["request_time"]
             time_data = utils.get_times()
             await self.send_json(
                 {"time_data": time_data, "request_time": request_time,}
             )
-        return
 
-    # Expects a message with the format:
-    # {
-    #   heartbeat: <component_name>
-    #   timestamp: <last_heartbeat_timestamp> (optional)
-    # }
     async def handle_heartbeat_message(self, message):
+        """Handle a heartbeat message.
+
+        Receives a heartbeat message and sets it in the heartbeat manager.
+
+        Parameters
+        ----------
+        message: `dict`
+            dictionary containing the message parsed as json.
+            The expected format of the message is as follows:
+            {
+                heartbeat: '<component name>',
+                timestamp: <timestamp of the last heartbeat> (optional)
+            }
+        """
         timestamp = (
             message["timestamp"]
             if "timestamp" in message
@@ -163,7 +203,10 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         category = message["category"]
         user = self.scope["user"]
 
-        # Send data to telemetry_stream groups
+        # Store pairs of group, message to send:
+        to_send = []
+
+        # Iterate over all stream groups
         for csc_message in data:
             csc = csc_message["csc"]
             salindex = csc_message["salindex"]
@@ -171,38 +214,43 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             csc_message["data"] = data_csc
             streams = data_csc.keys()
             streams_data = {}
+
+            # Individual groups for each stream
             for stream in streams:
                 sub_category = category
                 msg_type = "subscription_data"
                 group_name = "-".join([sub_category, csc, str(salindex), stream])
-                await self.channel_layer.group_send(
-                    group_name,
-                    {
-                        "type": msg_type,
-                        "category": category,
-                        "csc": csc,
-                        "salindex": salindex,
-                        "data": {stream: data_csc[stream]},
-                        "subscription": group_name,
-                    },
-                )
-                streams_data[stream] = data_csc[stream]
-            await self.channel_layer.group_send(
-                "-".join([category, csc, str(salindex), "all"]),
-                {
-                    "type": "subscription_data",
+                msg = {
+                    "type": msg_type,
                     "category": category,
                     "csc": csc,
                     "salindex": salindex,
-                    "data": {csc: streams_data},
-                    "subscription": "-".join([category, csc, str(salindex), "all"]),
-                },
-            )
+                    "data": {stream: data_csc[stream]},
+                    "subscription": group_name,
+                }
+                to_send.append({"group": group_name, "message": msg})
+                streams_data[stream] = data_csc[stream]
 
-        # Send all data to consumers subscribed to "all" subscriptions of the same category
-        await self.channel_layer.group_send(
-            "{}-all-all-all".format(category),
-            {"type": "subscription_all_data", "category": category, "data": data},
+            # Higher level groups for all streams of a category-csc-salindex
+            group_name = "-".join([category, csc, str(salindex), "all"])
+            msg = {
+                "type": "subscription_data",
+                "category": category,
+                "csc": csc,
+                "salindex": salindex,
+                "data": {csc: streams_data},
+                "subscription": group_name,
+            }
+            to_send.append({"group": group_name, "message": msg})
+
+        # Top level for "all" subscriptions of the same category
+        group_name = "{}-all-all-all".format(category)
+        msg = {"type": "subscription_all_data", "category": category, "data": data}
+        to_send.append({"group": group_name, "message": msg})
+
+        # Send all group-message pairs concurrently:
+        await asyncio.gather(
+            *[self.channel_layer.group_send(**group_msg) for group_msg in to_send]
         )
 
     async def _join_group(self, category, csc, salindex, stream):
