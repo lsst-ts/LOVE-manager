@@ -163,17 +163,16 @@
                 { "name": "ATPneumatics", "salindex": 0 },
                 { "name": "ATHexapod", "salindex": 0 }
               ],
-              "name": "CSC group"
+              "name": "CSC group",
+              "title": "CSC group",
+              "margin": true,
+              "titleBar": false,
+              "hasRawMode": false,
+              "_functionProps": ["subscribeToStreamCallback"],
+              "subscribeToStreamCallback": "() => {}"
             },
             "content": "CSCGroup",
-            "properties": {
-              "h": 19,
-              "i": 1,
-              "w": 12,
-              "x": 0,
-              "y": 0,
-              "type": "component"
-            }
+            "properties": { "h": 19, "i": 1, "w": 25, "x": 0, "y": 0, "type": "component" }
           }
         },
         "properties": {
