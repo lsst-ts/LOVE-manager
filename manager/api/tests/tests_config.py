@@ -26,9 +26,7 @@ class ConfigApiTestCase(TestCase):
             last_name="Last",
         )
         self.url = reverse("config")
-        self.expected_data = {
-            "alarm_sounds": {"critical": 1, "serious": 1, "warning": 0}
-        }
+        self.expected_data = {"setting1": {"setting11": 1, "setting12": 2}}
         self.token = Token.objects.create(user=self.user)
         # self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token.key)
 
@@ -49,6 +47,5 @@ class ConfigApiTestCase(TestCase):
         response = self.client.get(self.url, format="json")
 
         # Assert:
-        print("response: ", response.data)
         self.assertEqual(response.status_code, 401)
         self.assertNotEqual(response.data, self.expected_data)
