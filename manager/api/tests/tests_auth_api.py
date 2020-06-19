@@ -48,9 +48,7 @@ class AuthApiTestCase(TestCase):
         self.expected_permissions = {
             "execute_commands": True,
         }
-        self.expected_config = {
-            "alarm_sounds": {"critical": 1, "serious": 1, "warning": 0}
-        }
+        self.expected_config = {"setting1": {"setting11": 1, "setting12": 2}}
 
     def test_user_login(self):
         """Test that a user can request a token using name and password."""
