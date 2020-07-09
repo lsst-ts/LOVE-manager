@@ -18,7 +18,7 @@ class HeartbeatManager:
         if not self.heartbeat_task:
             self.heartbeat_task = asyncio.create_task(self.dispatch_heartbeats())
         if not self.commander_heartbeat_task:
-            self.heartbeat_task = asyncio.create_task(self.query_commander())
+            self.commander_heartbeat_task = asyncio.create_task(self.query_commander())
 
     @classmethod
     def set_heartbeat_timestamp(self, source, timestamp):
