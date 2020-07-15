@@ -3,9 +3,10 @@ import json
 import random
 import asyncio
 import datetime
+from astropy.time import Time
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
-from manager.settings import PROCESS_CONNECTION_PASS
+from django.conf import settings
 from manager import utils
 from subscription.heartbeat_manager import HeartbeatManager
 
@@ -26,7 +27,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         if self.scope["user"].is_anonymous:
             if (
                 self.scope["password"]
-                and self.scope["password"] == PROCESS_CONNECTION_PASS
+                and self.scope["password"] == settings.PROCESS_CONNECTION_PASS
             ):
                 await self.accept()
                 self.first_connection.set_result(True)
@@ -56,6 +57,9 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         message: `dict`
             dictionary containing the message parsed as json
         """
+        manager_rcv = (
+            Time.now().tai.datetime.timestamp() if settings.TRACE_TIMESTAMPS else None
+        )
         if "option" in message:
             await self.handle_subscription_message(message)
         elif "action" in message:
@@ -63,7 +67,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         elif "heartbeat" in message:
             await self.handle_heartbeat_message(message)
         else:
-            await self.handle_data_message(message)
+            await self.handle_data_message(message, manager_rcv)
 
     async def handle_subscription_message(self, message):
         """Handle a subscription/unsubscription message.
@@ -177,7 +181,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         )
         self.heartbeat_manager.set_heartbeat_timestamp(message["heartbeat"], timestamp)
 
-    async def handle_data_message(self, message):
+    async def handle_data_message(self, message, manager_rcv):
         """Handle a data message.
 
         Sends the message to the corresponding groups based on the data of the message.
@@ -202,9 +206,11 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         data = message["data"]
         category = message["category"]
         user = self.scope["user"]
+        producer_snd = message["producer_snd"] if "producer_snd" in message else None
 
         # Store pairs of group, message to send:
         to_send = []
+        tracing = {}
 
         # Iterate over all stream groups
         for csc_message in data:
@@ -228,6 +234,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                     "data": {stream: data_csc[stream]},
                     "subscription": group_name,
                 }
+
                 to_send.append({"group": group_name, "message": msg})
                 streams_data[stream] = data_csc[stream]
 
@@ -247,6 +254,17 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         group_name = "{}-all-all-all".format(category)
         msg = {"type": "subscription_all_data", "category": category, "data": data}
         to_send.append({"group": group_name, "message": msg})
+
+        if settings.TRACE_TIMESTAMPS:
+            tracing = {
+                "producer_snd": producer_snd,
+                "manager_rcv_from_producer": manager_rcv,
+                "manager_snd_to_group": Time.now().tai.datetime.timestamp(),
+            }
+            for group_msg in to_send:
+                group_msg["message"]["tracing"] = tracing
+
+        # print("to_send: ", to_send, flush=True)
 
         # Send all group-message pairs concurrently:
         await asyncio.gather(
@@ -322,22 +340,28 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         message: `dict`
             dictionary containing the message parsed as json
         """
+        if settings.TRACE_TIMESTAMPS:
+            manager_rcv_from_group = Time.now().tai.datetime.timestamp()
+            tracing = message["tracing"]
+
         data = message["data"]
         category = message["category"]
         salindex = message["salindex"]
         csc = message["csc"]
         subscription = message["subscription"]
+        msg = {
+            "category": category,
+            "data": [{"csc": csc, "salindex": salindex, "data": data}],
+            "subscription": subscription,
+        }
+
+        if settings.TRACE_TIMESTAMPS:
+            tracing["manager_rcv_from_group"] = manager_rcv_from_group
+            tracing["manager_snd_to_client"] = Time.now().tai.datetime.timestamp()
+            msg["tracing"] = tracing
 
         # Send data to WebSocket
-        await self.send(
-            text_data=json.dumps(
-                {
-                    "category": category,
-                    "data": [{"csc": csc, "salindex": salindex, "data": data}],
-                    "subscription": subscription,
-                }
-            )
-        )
+        await self.send(text_data=json.dumps(msg))
 
     async def subscription_all_data(self, message):
         """
@@ -350,20 +374,25 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         message: `dict`
             dictionary containing the message parsed as json
         """
+        if settings.TRACE_TIMESTAMPS:
+            manager_rcv_from_group = Time.now().tai.datetime.timestamp()
+            tracing = message["tracing"]
+
         data = message["data"]
         category = message["category"]
-        # subscription = '{}-all-all-all'.format(category)
+        msg = {
+            "category": category,
+            "data": data,
+            "subscription": "{}-all-all-all".format(category),
+        }
+
+        if settings.TRACE_TIMESTAMPS:
+            tracing["manager_rcv_from_group"] = manager_rcv_from_group
+            tracing["manager_snd_to_client"] = Time.now().tai.datetime.timestamp()
+            msg["tracing"] = tracing
 
         # Send data to WebSocket
-        await self.send(
-            text_data=json.dumps(
-                {
-                    "category": category,
-                    "data": data,
-                    "subscription": "{}-all-all-all".format(category),
-                }
-            )
-        )
+        await self.send(text_data=json.dumps(msg))
 
     async def send_heartbeat(self, message):
         """
