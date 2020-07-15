@@ -6,7 +6,7 @@ import datetime
 from astropy.time import Time
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
-from manager.settings import PROCESS_CONNECTION_PASS, TRACE_TIMESTAMPS
+from django.conf import settings
 from manager import utils
 from subscription.heartbeat_manager import HeartbeatManager
 
@@ -27,7 +27,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         if self.scope["user"].is_anonymous:
             if (
                 self.scope["password"]
-                and self.scope["password"] == PROCESS_CONNECTION_PASS
+                and self.scope["password"] == settings.PROCESS_CONNECTION_PASS
             ):
                 await self.accept()
                 self.first_connection.set_result(True)
@@ -57,7 +57,9 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         message: `dict`
             dictionary containing the message parsed as json
         """
-        manager_rcv = Time.now().tai.datetime.timestamp() if TRACE_TIMESTAMPS else None
+        manager_rcv = (
+            Time.now().tai.datetime.timestamp() if settings.TRACE_TIMESTAMPS else None
+        )
         if "option" in message:
             await self.handle_subscription_message(message)
         elif "action" in message:
@@ -253,7 +255,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         msg = {"type": "subscription_all_data", "category": category, "data": data}
         to_send.append({"group": group_name, "message": msg})
 
-        if TRACE_TIMESTAMPS:
+        if settings.TRACE_TIMESTAMPS:
             tracing = {
                 "producer_snd": producer_snd,
                 "manager_rcv_from_producer": manager_rcv,
@@ -338,7 +340,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         message: `dict`
             dictionary containing the message parsed as json
         """
-        if TRACE_TIMESTAMPS:
+        if settings.TRACE_TIMESTAMPS:
             manager_rcv_from_group = Time.now().tai.datetime.timestamp()
             tracing = message["tracing"]
 
@@ -353,7 +355,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             "subscription": subscription,
         }
 
-        if TRACE_TIMESTAMPS:
+        if settings.TRACE_TIMESTAMPS:
             tracing["manager_rcv_from_group"] = manager_rcv_from_group
             tracing["manager_snd_to_client"] = Time.now().tai.datetime.timestamp()
             msg["tracing"] = tracing
@@ -372,7 +374,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         message: `dict`
             dictionary containing the message parsed as json
         """
-        if TRACE_TIMESTAMPS:
+        if settings.TRACE_TIMESTAMPS:
             manager_rcv_from_group = Time.now().tai.datetime.timestamp()
             tracing = message["tracing"]
 
@@ -384,7 +386,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             "subscription": "{}-all-all-all".format(category),
         }
 
-        if TRACE_TIMESTAMPS:
+        if settings.TRACE_TIMESTAMPS:
             tracing["manager_rcv_from_group"] = manager_rcv_from_group
             tracing["manager_snd_to_client"] = Time.now().tai.datetime.timestamp()
             msg["tracing"] = tracing
