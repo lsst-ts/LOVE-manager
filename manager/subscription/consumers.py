@@ -256,12 +256,13 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         if TRACE_TIMESTAMPS:
             tracing = {
                 "producer_snd": producer_snd,
-                "manager_rcv": manager_rcv,
-                "manager_snd": Time.now().tai.datetime.timestamp(),
+                "manager_rcv_from_producer": manager_rcv,
+                "manager_snd_to_group": Time.now().tai.datetime.timestamp(),
             }
-            for pair in to_send:
-                pair["message"]["tracing"] = tracing
-            print("to_send: ", to_send, flush=True)
+            for group_msg in to_send:
+                group_msg["message"]["tracing"] = tracing
+
+        # print("to_send: ", to_send, flush=True)
 
         # Send all group-message pairs concurrently:
         await asyncio.gather(
@@ -337,22 +338,28 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         message: `dict`
             dictionary containing the message parsed as json
         """
+        if TRACE_TIMESTAMPS:
+            manager_rcv_from_group = Time.now().tai.datetime.timestamp()
+            tracing = message["tracing"]
+
         data = message["data"]
         category = message["category"]
         salindex = message["salindex"]
         csc = message["csc"]
         subscription = message["subscription"]
+        msg = {
+            "category": category,
+            "data": [{"csc": csc, "salindex": salindex, "data": data}],
+            "subscription": subscription,
+        }
+
+        if TRACE_TIMESTAMPS:
+            tracing["manager_rcv_from_group"] = manager_rcv_from_group
+            tracing["manager_snd_to_client"] = Time.now().tai.datetime.timestamp()
+            msg["tracing"] = tracing
 
         # Send data to WebSocket
-        await self.send(
-            text_data=json.dumps(
-                {
-                    "category": category,
-                    "data": [{"csc": csc, "salindex": salindex, "data": data}],
-                    "subscription": subscription,
-                }
-            )
-        )
+        await self.send(text_data=json.dumps(msg))
 
     async def subscription_all_data(self, message):
         """
@@ -365,20 +372,25 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         message: `dict`
             dictionary containing the message parsed as json
         """
+        if TRACE_TIMESTAMPS:
+            manager_rcv_from_group = Time.now().tai.datetime.timestamp()
+            tracing = message["tracing"]
+
         data = message["data"]
         category = message["category"]
-        # subscription = '{}-all-all-all'.format(category)
+        msg = {
+            "category": category,
+            "data": data,
+            "subscription": "{}-all-all-all".format(category),
+        }
+
+        if TRACE_TIMESTAMPS:
+            tracing["manager_rcv_from_group"] = manager_rcv_from_group
+            tracing["manager_snd_to_client"] = Time.now().tai.datetime.timestamp()
+            msg["tracing"] = tracing
 
         # Send data to WebSocket
-        await self.send(
-            text_data=json.dumps(
-                {
-                    "category": category,
-                    "data": data,
-                    "subscription": "{}-all-all-all".format(category),
-                }
-            )
-        )
+        await self.send(text_data=json.dumps(msg))
 
     async def send_heartbeat(self, message):
         """
