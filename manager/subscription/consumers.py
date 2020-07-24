@@ -342,7 +342,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         """
         if settings.TRACE_TIMESTAMPS:
             manager_rcv_from_group = Time.now().tai.datetime.timestamp()
-            tracing = message["tracing"]
+            tracing = message["tracing"] if "tracing" in message else {}
 
         data = message["data"]
         category = message["category"]
@@ -376,7 +376,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         """
         if settings.TRACE_TIMESTAMPS:
             manager_rcv_from_group = Time.now().tai.datetime.timestamp()
-            tracing = message["tracing"]
+            tracing = message["tracing"] if "tracing" in message else {}
 
         data = message["data"]
         category = message["category"]
