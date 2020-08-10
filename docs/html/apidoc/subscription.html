@@ -235,11 +235,52 @@
 <dl class="method">
 <dt id="subscription.consumers.SubscriptionConsumer.handle_action_message">
 <em class="property">async </em><code class="sig-name descname">handle_action_message</code><span class="sig-paren">(</span><em class="sig-param">message</em><span class="sig-paren">)</span><a class="headerlink" href="#subscription.consumers.SubscriptionConsumer.handle_action_message" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Handle an action message.</p>
+<p>Receives an action message and reacts according to each different action.</p>
+<p>Currently supported actions: 
+- get_time_data: sends a message with the time_data and passes though a request_time received with the message.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Expected input message:</p></li>
+</ul>
+<dl class="simple">
+<dt>{</dt><dd><p>“action”: “get_time_data”,
+“request_time”: &lt;timestamp with the request time, e.g. 123243423.123&gt;</p>
+</dd>
+</dl>
+<p>}
+- Message sent (output):
+{</p>
+<blockquote>
+<div><dl class="simple">
+<dt>“time_data”: {</dt><dd><p>utc: &lt;current time in UTC scale as a unix timestamp (seconds)&gt;,
+tai: &lt;current time in UTC scale as a unix timestamp (seconds)&gt;,
+mjd: &lt;current time as a modified julian date&gt;,
+sidereal_summit: &lt;current time as a sidereal_time w/respect to the summit location (hourangles)&gt;,
+sidereal_summit: &lt;current time as a sidereal_time w/respect to Greenwich location (hourangles)&gt;,
+tai_to_utc: &lt;The number of seconds of difference between TAI and UTC times (seconds)&gt;,</p>
+</dd>
+</dl>
+<p>},
+“request_time”: &lt;timestamp with the request time, e.g. 123243423.123&gt;</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<dl>
+<dt>message: <cite>dict</cite></dt><dd><p>dictionary containing the message parsed as json.
+The expected format of the message is as follows:
+{</p>
+<blockquote>
+<div><p>action: ‘&lt;string defining the action&gt;’</p>
+</div></blockquote>
+<p>}</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="method">
 <dt id="subscription.consumers.SubscriptionConsumer.handle_data_message">
-<em class="property">async </em><code class="sig-name descname">handle_data_message</code><span class="sig-paren">(</span><em class="sig-param">message</em><span class="sig-paren">)</span><a class="headerlink" href="#subscription.consumers.SubscriptionConsumer.handle_data_message" title="Permalink to this definition">¶</a></dt>
+<em class="property">async </em><code class="sig-name descname">handle_data_message</code><span class="sig-paren">(</span><em class="sig-param">message</em>, <em class="sig-param">manager_rcv</em><span class="sig-paren">)</span><a class="headerlink" href="#subscription.consumers.SubscriptionConsumer.handle_data_message" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handle a data message.</p>
 <p>Sends the message to the corresponding groups based on the data of the message.</p>
 <dl>
@@ -269,7 +310,20 @@ stream2: {….},</p>
 <dl class="method">
 <dt id="subscription.consumers.SubscriptionConsumer.handle_heartbeat_message">
 <em class="property">async </em><code class="sig-name descname">handle_heartbeat_message</code><span class="sig-paren">(</span><em class="sig-param">message</em><span class="sig-paren">)</span><a class="headerlink" href="#subscription.consumers.SubscriptionConsumer.handle_heartbeat_message" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Handle a heartbeat message.</p>
+<p>Receives a heartbeat message and sets it in the heartbeat manager.</p>
+<dl>
+<dt>message: <cite>dict</cite></dt><dd><p>dictionary containing the message parsed as json.
+The expected format of the message is as follows:
+{</p>
+<blockquote>
+<div><p>heartbeat: ‘&lt;component name&gt;’,
+timestamp: &lt;timestamp of the last heartbeat&gt; (optional)</p>
+</div></blockquote>
+<p>}</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="method">
 <dt id="subscription.consumers.SubscriptionConsumer.handle_subscription_message">
