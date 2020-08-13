@@ -91,13 +91,10 @@
 <li class="toctree-l2"><a class="reference internal" href="manage.html">5.2. manage module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">5.3. manager package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">5.3.1. Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#manager-asgi-module">5.3.2. manager.asgi module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#manager-routing-module">5.3.3. manager.routing module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-manager.asgi">5.3.2. manager.asgi module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-manager.routing">5.3.3. manager.routing module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-manager.settings">5.3.4. manager.settings module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-manager.urls">5.3.5. manager.urls module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#examples">5.3.5.1. Examples</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-manager.urls">5.3.5. manager.urls module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-manager.utils">5.3.6. manager.utils module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-manager.wsgi">5.3.7. manager.wsgi module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-manager">5.3.8. Module contents</a></li>
@@ -178,11 +175,14 @@
 <div class="section" id="submodules">
 <h2><span class="section-number">5.3.1. </span>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="manager-asgi-module">
-<h2><span class="section-number">5.3.2. </span>manager.asgi module<a class="headerlink" href="#manager-asgi-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-manager.asgi">
+<span id="manager-asgi-module"></span><h2><span class="section-number">5.3.2. </span>manager.asgi module<a class="headerlink" href="#module-manager.asgi" title="Permalink to this headline">¶</a></h2>
+<p>ASGI entrypoint.</p>
+<p>Configures Django and then runs the application defined in the ASGI_APPLICATION setting.</p>
 </div>
-<div class="section" id="manager-routing-module">
-<h2><span class="section-number">5.3.3. </span>manager.routing module<a class="headerlink" href="#manager-routing-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-manager.routing">
+<span id="manager-routing-module"></span><h2><span class="section-number">5.3.3. </span>manager.routing module<a class="headerlink" href="#module-manager.routing" title="Permalink to this headline">¶</a></h2>
+<p>Defines the rules for routing of channels messages (websockets) in the whole project.</p>
 </div>
 <div class="section" id="module-manager.settings">
 <span id="manager-settings-module"></span><h2><span class="section-number">5.3.4. </span>manager.settings module<a class="headerlink" href="#module-manager.settings" title="Permalink to this headline">¶</a></h2>
@@ -200,8 +200,7 @@
 <dt>The <cite>urlpatterns</cite> list routes URLs to views. For more information please see:</dt><dd><p><a class="reference external" href="https://docs.djangoproject.com/en/2.1/topics/http/urls/">https://docs.djangoproject.com/en/2.1/topics/http/urls/</a></p>
 </dd>
 </dl>
-<div class="section" id="examples">
-<h3><span class="section-number">5.3.5.1. </span>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
+<p class="rubric">Examples</p>
 <dl class="simple">
 <dt>Function views</dt><dd><ol class="arabic simple">
 <li><p>Add an import:  from my_app import views</p></li>
@@ -220,7 +219,6 @@
 </dd>
 </dl>
 </div>
-</div>
 <div class="section" id="module-manager.utils">
 <span id="manager-utils-module"></span><h2><span class="section-number">5.3.6. </span>manager.utils module<a class="headerlink" href="#module-manager.utils" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
@@ -233,8 +231,12 @@
 <dt id="manager.utils.get_tai_to_utc">
 <code class="sig-prename descclassname">manager.utils.</code><code class="sig-name descname">get_tai_to_utc</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#manager.utils.get_tai_to_utc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the difference in seconds between TAI and UTC Timestamps.</p>
-<dl class="simple">
-<dt>Int</dt><dd><p>The number of seconds of difference between TAI and UTC times</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The number of seconds of difference between TAI and UTC times</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Int</p>
 </dd>
 </dl>
 </dd></dl>
@@ -243,14 +245,18 @@
 <dt id="manager.utils.get_times">
 <code class="sig-prename descclassname">manager.utils.</code><code class="sig-name descname">get_times</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#manager.utils.get_times" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return relevant time measures.</p>
-<dl class="simple">
-<dt>Dict</dt><dd><p>Dictionary containing the following keys:
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Dictionary containing the following keys:
 - utc: current time in UTC scale as a unix timestamp (seconds)
 - tai: current time in UTC scale as a unix timestamp (seconds)
 - mjd: current time as a modified julian date
 - sidereal_summit: current time as a sidereal_time w/respect to the summit location (hourangles)
 - sidereal_summit: current time as a sidereal_time w/respect to Greenwich location (hourangles)
 - tai_to_utc: The number of seconds of difference between TAI and UTC times (seconds)</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Dict</p>
 </dd>
 </dl>
 </dd></dl>

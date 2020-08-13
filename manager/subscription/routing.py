@@ -4,9 +4,6 @@ from subscription.auth import TokenAuthMiddleware
 from .consumers import SubscriptionConsumer
 
 websocket_urlpatterns = [
-    """List of url patterns that match a URL to a Consumer (in this case only 1)."""
-    url(
-        '^manager/ws/subscription/?$',
-        TokenAuthMiddleware(SubscriptionConsumer)
-    ),
+    url("^manager/ws/subscription/?$", TokenAuthMiddleware(SubscriptionConsumer)),
 ]
+"""List of url patterns that match a URL to a Consumer (in this case only 1)."""

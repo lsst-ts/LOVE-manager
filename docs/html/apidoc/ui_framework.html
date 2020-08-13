@@ -102,10 +102,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#module-ui_framework.models">5.5.5. ui_framework.models module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-ui_framework.serializers">5.5.6. ui_framework.serializers module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-ui_framework.signals">5.5.7. ui_framework.signals module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-ui_framework.urls">5.5.8. ui_framework.urls module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#examples">5.5.8.1. Examples</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-ui_framework.urls">5.5.8. ui_framework.urls module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-ui_framework.views">5.5.9. ui_framework.views module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-ui_framework">5.5.10. Module contents</a></li>
 </ul>
@@ -458,8 +455,12 @@ class built by <code class="docutils literal notranslate"><span class="pre">crea
 <dt id="ui_framework.models.Workspace.get_sorted_views">
 <code class="sig-name descname">get_sorted_views</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.models.Workspace.get_sorted_views" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the views sorted by the sort_value of their corresponding WorkView.</p>
-<dl class="simple">
-<dt>list:</dt><dd><p>List of View objects associated to this Workspace</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of View objects associated to this Workspace</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
 </dd>
 </dl>
 </dd></dl>
@@ -794,11 +795,13 @@ It uses base64 for encoding and decoding the contents of the file.</p>
 <dt id="ui_framework.signals.hanlde_view_deletion">
 <code class="sig-prename descclassname">ui_framework.signals.</code><code class="sig-name descname">hanlde_view_deletion</code><span class="sig-paren">(</span><em class="sig-param">sender</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.signals.hanlde_view_deletion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Receive signal when a View is deleted and delete its thumbnail image from disk.</p>
-<dl class="simple">
-<dt>sender: <cite>object</cite></dt><dd><p>class of the sender, in this case ‘View’</p>
-</dd>
-<dt>kwargs: <cite>dict</cite></dt><dd><p>arguments dictionary sent with the signal. It contains the key ‘instance’ with the View instance
-that was deleted</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sender</strong> (<cite>object</cite>) – class of the sender, in this case ‘View’</p></li>
+<li><p><strong>kwargs</strong> (<cite>dict</cite>) – arguments dictionary sent with the signal. It contains the key ‘instance’ with the View instance
+that was deleted</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -811,8 +814,7 @@ that was deleted</p>
 <dt>The <cite>urlpatterns</cite> list routes URLs to views. For more information please see:</dt><dd><p><a class="reference external" href="https://docs.djangoproject.com/en/2.2/topics/http/urls/">https://docs.djangoproject.com/en/2.2/topics/http/urls/</a></p>
 </dd>
 </dl>
-<div class="section" id="examples">
-<h3><span class="section-number">5.5.8.1. </span>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
+<p class="rubric">Examples</p>
 <dl class="simple">
 <dt>Function views</dt><dd><ol class="arabic simple">
 <li><p>Add an import:  from my_app import views</p></li>
@@ -830,7 +832,6 @@ that was deleted</p>
 </ol>
 </dd>
 </dl>
-</div>
 </div>
 <div class="section" id="module-ui_framework.views">
 <span id="ui-framework-views-module"></span><h2><span class="section-number">5.5.9. </span>ui_framework.views module<a class="headerlink" href="#module-ui_framework.views" title="Permalink to this headline">¶</a></h2>
@@ -874,8 +875,12 @@ that was deleted</p>
 <dt>request: Request</dt><dd><p>The Requets object</p>
 </dd>
 </dl>
-<dl class="simple">
-<dt>Response</dt><dd><p>The response containing the serialized Views.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The response containing the serialized Views.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
 </dd>
 </dl>
 </dd></dl>
@@ -895,8 +900,12 @@ that was deleted</p>
 <dt id="ui_framework.views.ViewViewSet.summary">
 <code class="sig-name descname">summary</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.views.ViewViewSet.summary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Serialize Views with summarized information, that is without their “data” field.</p>
-<dl class="simple">
-<dt>Response</dt><dd><p>The response containing the serialized Views.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The response containing the serialized Views.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
 </dd>
 </dl>
 </dd></dl>
@@ -933,8 +942,12 @@ that was deleted</p>
 <dt>pk: int</dt><dd><p>The corresponding Workspace pk</p>
 </dd>
 </dl>
-<dl class="simple">
-<dt>Response</dt><dd><p>The response containing the serialized Workspaces, with the views fully subserialized</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The response containing the serialized Workspaces, with the views fully subserialized</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
 </dd>
 </dl>
 </dd></dl>
@@ -969,9 +982,13 @@ that was deleted</p>
 <dt>request: Request</dt><dd><p>The Requets object</p>
 </dd>
 </dl>
-<dl class="simple">
-<dt>Response</dt><dd><p>The response containing the serialized Workspaces,
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The response containing the serialized Workspaces,
 but returning a list of dicts with each view’s id and name</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
 </dd>
 </dl>
 </dd></dl>
