@@ -923,7 +923,7 @@ Create Workspace
 
 
 Retrieve Workspaces
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
 - Url: :code:`<IP>/manager/ui_framework/workspaces/<id>/`, where the optional parameter :code:`<id>` can be used to retrieve detailed data of a particular workspace
 - HTTP Operation: GET
 
@@ -958,7 +958,7 @@ Retrieve Workspaces
   }
 
 Update Workspace
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~
 - Url: :code:`<IP>/manager/ui_framework/workspaces/<id>/`, where the parameter :code:`<id>` defines the workspace to edit
 - HTTP Operation: PUT
 - Request payload: JSON with the fields to change in the workspace
@@ -988,7 +988,7 @@ Update Workspace
   }
 
 Delete Workspace
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~
 - Url: :code:`<IP>/manager/ui_framework/workspaces/<id>/`, where the parameter :code:`<id>` defines the workspace to delete
 - HTTP Operation: DELETE
 
