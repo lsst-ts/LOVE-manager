@@ -50,10 +50,13 @@ Returns token, user data and permissions
         "tai_to_utc": "<Difference between TAI and UTC times (seconds)>"
       },
       "config": {
-        "alarm_sounds": {
-          "critical": "<1 or 0>",
-          "serious": "<1 or 0>",
-          "warning": "<1 or 0>"
+        "alarms": {
+          "minSeveritySound": "serious",
+          "minSeverityNotification": "serious"
+        },
+        "camFeeds": {
+          "generic": "/gencam",
+          "allSky": "/gencam"
         }
       }
     }
@@ -101,10 +104,13 @@ If the :code:`no_config` flag is added to the end of the URL, then the LOVE conf
         "tai_to_utc": "<Difference between TAI and UTC times (seconds)>"
       },
       "config": {
-        "alarm_sounds": {
-          "critical": "<1 or 0>",
-          "serious": "<1 or 0>",
-          "warning": "<1 or 0>"
+        "alarms": {
+          "minSeveritySound": "serious",
+          "minSeverityNotification": "serious"
+        },
+        "camFeeds": {
+          "generic": "/gencam",
+          "allSky": "/gencam"
         }
       }
     }
@@ -152,10 +158,13 @@ If the :code:`no_config` flag is added to the end of the URL, then the LOVE conf
         "tai_to_utc": "<Difference between TAI and UTC times (seconds)>"
       },
       "config": {
-        "alarm_sounds": {
-          "critical": "<1 or 0>",
-          "serious": "<1 or 0>",
-          "warning": "<1 or 0>"
+        "alarms": {
+          "minSeveritySound": "serious",
+          "minSeverityNotification": "serious"
+        },
+        "camFeeds": {
+          "generic": "/gencam",
+          "allSky": "/gencam"
         }
       }
     }
@@ -211,7 +220,7 @@ In order to stablish the connection they must append the password to the websock
 :code:`<IP>/manager/ws/subscription/?password=<my-password>`
 
 
-Websockets Group Subscriptions
+Websockets Messages
 ==============================
 
 LOVE-manager Subscriptions scheme
@@ -221,7 +230,6 @@ Group subscriptions are characterized by 4 variables:
 * **category:** describe the category or type of stream:
   * ***telemetry:*** streams that transfer data from telemetry systems
   * ***event:*** streams that transfer data from events triggered asynchronously in the system
-  * ***cmd:*** streams that transfer acknowledgement messages from sent commands
 
 * **csc:** describes the type of the source CSC, e.g. :code:`ScriptQueue`
 * **salindex:** describes the instance number (salindex) of a given the CSC, e.g. :code:`1`
@@ -229,9 +237,9 @@ Group subscriptions are characterized by 4 variables:
 
 The reasoning behind this scheme is that for a given CSC instance e.g. :code:`ScriptQueue 1` (salindex 1), there could be a number of telemetries, events or commands, each identified by a different :code:`stream`.
 
-Accepted messages
------------------
-The consumers accept the following types of messages:
+Messages types
+--------------
+The consumers accept/send the following types of messages:
 
 Subscription messages
 ~~~~~~~~~~~~~~~~~~~~~
@@ -249,7 +257,9 @@ Specifying the variables necessary to subscribe a to a group in a JSON message, 
 
 Telemetry or Event messages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Specifying the variables necessary to subscribe a to a group in a JSON message, as follows:
+Specifying the data and the group where the message should be sent in a JSON message.
+Consumer that receive these type of messages from their clients will forward them to the corresponding group. If consumers receive the message from the Channel Layer, then they will forward it to their clients.
+They are defined as follows:
 
 .. code-block:: json
 
@@ -271,30 +281,408 @@ Specifying the variables necessary to subscribe a to a group in a JSON message, 
     }]
   }
 
-Where :code:`{...<data>...}` represents the JSON message that is sent as data.
+Heartbeat messages
+~~~~~~~~~~~~~~~~~~
+The :code:`LOVE-Manager` receives heartbeat messages from the different :code:`LOVE-Producer` and :code:`LOVE-Commander` instances.
+The heartbeats are stored internally and sent with a certain frequency to the clients subscribed to the :code:`heartbeat-manager-0-stream` group.
 
-Command messages
-~~~~~~~~~~~~~~~~
-Specifying the variables necessary to subscribe a to a group in a JSON message, as follows:
+The input messages to be received from :code:`LOVE-Producer` and :code:`LOVE-Commander` instances have the following structure:
 
 .. code-block:: json
 
   {
-    "category": "cmd",
-    "data": [{
-      "csc": "ScriptQueue",
-      "salindex": 1,
-      "data": {
-        "cmd": "CommandPath",
-        "params": {
-          "param1": "value1",
-          "param2": "value2",
-        },
-      }
-    }]
+    "heartbeat": "<component name, e.g. Telemetries>",
+    "timestamp": "<timestamp of the last heartbeat>"
   }
 
-Where pairs :code:`param1` and :code:`value1` represent the parameters (name and value) to be passed to the command.
+
+
+The output messages that are sent to clients, have the following structure:
+
+.. code-block:: json
+
+  {
+    "category": "heartbeat",
+    "data": [
+      {
+        "csc": "<component name, e.g. Telemetries>",
+        "salindex": 0,
+        "data": {
+          "timestamp": "<timestamp of the last heartbeat>"
+        }
+      }
+    ],
+    "subscription": "heartbeat"
+  }
+
+Where :code:`data` contains data for each instance of the :code:`LOVE-Producer` and :code:`LOVE-Commander`.
+
+Action messages
+~~~~~~~~~~~~~~~
+Action messages allow clients to request certain actions from the consumers.
+At the moment there is only one action available "get time data", which returns the current server time in various formats.
+
+The expected input message, to be sent by a client, is specified as follows:
+
+.. code-block:: json
+
+  {
+    "action": "get_time_data",
+    "request_time": "<timestamp with the request time, e.g. 123243423.123>",
+  }
+
+And the the expected output, or response, message is specified as follows:
+
+.. code-block:: json
+
+  {
+    "time_data": {
+      "utc": "<current time in UTC scale as a unix timestamp (seconds)>",
+      "tai": "<current time in UTC scale as a unix timestamp (seconds)>",
+      "mjd": "<current time as a modified julian date>",
+      "sidereal_summit": "<current time as a sidereal_time w/respect to the summit location (hourangles)>",
+      "sidereal_summit": "<current time as a sidereal_time w/respect to Greenwich location (hourangles)>",
+      "tai_to_utc": "<The number of seconds of difference between TAI and UTC times (seconds)>",
+    },
+    "request_time": "<timestamp with the request time, e.g. 123243423.123>",
+  }
+
+Observing Log messages
+~~~~~~~~~~~~~~~~~~~~~~
+Observing Log messages are treated by the :code:`LOVE-Manager` like a regular subscription message.
+The :code:`LOVE-CSC` subscribes to the group :code:`love_csc-love-0-observingLog`, and clients can send observing logs by sending messages to that group.
+
+The message structure clients must use to send observing logs is the following:
+
+The expected input message, to be sent by a client, is specified as follows:
+
+.. code-block:: json
+
+  {
+    "category": "love_csc",
+    "data": [
+      {
+        "csc": "love",
+        "salindex": 0,
+        "data": {
+          "observingLog": {
+            "user": "admin",
+            "message": "hola"
+          }
+        }
+      }
+    ]
+  }
+
+
+Commander and Other actions API
+===============================
+
+The :code:`LOVE-Manager` provides HTTP endpoints for requests to the :code:`LOVE-Commander`, as well as other actions.
+
+
+Command
+-------
+Requests a command to the :code:`LOVE-Commander`
+
+- Url: :code:`<IP>/manager/api/cmd/`
+- HTTP Operation: post
+- Message JSON data:
+
+.. code-block:: json
+
+  {
+    "cmd": "<Command name, e.g: cmd_acknowledge>",
+    "csc": "<Name of the CSC, e.g: Watcher>",
+    "salindex": "<SAL Index in numeric format, e.g. 0>",
+    "params": {
+      "key1": "value1",
+      "key2": "value2",
+    },
+  }
+
+- Expected Response, if command successful:
+
+.. code-block:: json
+
+  {
+    "status": 200,
+    "data": {
+      "ack": "Done",
+    }
+  }
+
+- Expected Response, if command timed-out:
+
+.. code-block:: json
+
+  {
+    "status": 504,
+    "data": {
+      "ack": "Command time out",
+    }
+  }
+
+- Expected Response, command failure:
+
+.. code-block:: json
+
+  {
+    "status": 200,
+    "data": {
+      "ack": "<Text with command result/message>",
+    }
+  }
+
+Validate Config Schema
+----------------------
+Validates a given configuration in YAML format with a given schema
+
+- Url: :code:`<IP>/manager/api/validate-config-schema/`
+- HTTP Operation: post
+- Message JSON data:
+
+.. code-block:: json
+
+  {
+    "config": "<Configuration to validate, in YAML format>",
+    "schema": "<Schema to to validate the config against, in YAML format>",
+  }
+
+- Expected Response for valid config:
+
+.. code-block:: json
+
+  {
+    "status": 200,
+    "data": {
+      "title": "None",
+      "output": "<output message fo the validator>",
+    }
+  }
+
+- Expected Response for invalid config:
+
+.. code-block:: json
+
+  {
+    "status": 200,
+    "data": {
+      "title": "INVALID CONFIG YAML",
+      "error": {
+        "message": "<Error message>",
+        "path": ["<config_paths>"],
+        "schema_path": ["<schema_paths>"],
+      },
+    }
+  }
+
+
+SAL Info - Metadata
+----------------------
+Requests SalInfo.metadata from the :code:`LOVE-Commander`.
+The response contains the SAL and XML version of the different CSCs.
+
+- Url: :code:`<IP>/manager/api/salinfo/metadata/`
+- HTTP Operation: get
+
+- Expected Response:
+
+.. code-block:: json
+
+  {
+    "status": 200,
+    "data": {
+      "<CSC_1>": {
+        "sal_version": "<SAL version in format x.x.x>",
+        "xml_version": "<XML version in format x.x.x>"
+      },
+      "<CSC_2>": {
+        "sal_version": "<SAL version in format x.x.x>",
+        "xml_version": "<XML version in format x.x.x>"
+      },
+    },
+  }
+
+For example:
+
+.. code-block:: json
+
+  {
+    "status": 200,
+    "data": {
+      "Watcher": {
+        "sal_version": "4.1.3",
+        "xml_version": "1.0.0"
+      },
+      "MTM1M3": {
+        "sal_version": "4.1.3",
+        "xml_version": "1.0.0"
+      },
+      "ATPtg": {
+        "sal_version": "4.1.3",
+        "xml_version": "1.0.0"
+      },
+      "ATPneumatics": {
+        "sal_version": "4.1.3",
+        "xml_version": "1.0.0"
+      },
+    },
+  }
+
+
+SAL Info - Topic Names
+----------------------
+Requests SalInfo.topic_names from the :code:`LOVE-Commander`.
+The response contains the events, telemetries and command names of each CSC.
+The URL accepts :code:`<categories>` as query params, which can be any combination of the following strings separated by "-":
+:code:`event`, :code:`telemetry` and :code:`command`. If there is no query param, then all topics are selected.
+
+- Url: :code:`<IP>/manager/api/salinfo/topic-names?categories=<categories>`
+- HTTP Operation: get
+
+- Expected Response:
+
+.. code-block:: json
+
+  {
+    "status": 200,
+    "data": {
+      "<CSC_1>": {
+        "event_names": ["<event_name_1>", "<event_name_2>"],
+        "telemetry_names": ["<telemetry_name_1>", "<telemetry_name_2>"],
+        "command_names": ["<command_name_1>", "<command_name_2>"]
+      },
+      "<CSC_2>": {
+        "event_names": ["<event_name_1>", "<event_name_2>"],
+        "telemetry_names": ["<telemetry_name_1>", "<telemetry_name_2>"],
+        "command_names": ["<command_name_1>", "<command_name_2>"]
+      },
+    },
+  }
+
+For example:
+
+.. code-block:: json
+
+  {
+    "status": 200,
+    "data": {
+      "Watcher": {
+        "event_names": [
+            "alarm",
+            "appliedSettingsMatchStart",
+            "authList",
+            "errorCode",
+            "heartbeat",
+            "logLevel",
+            "logMessage",
+            "settingVersions",
+            "settingsApplied",
+            "simulationMode",
+            "softwareVersions",
+            "summaryState"
+        ],
+        "telemetry_names": [],
+        "command_names": [
+            "abort",
+            "acknowledge",
+            "disable",
+            "enable",
+            "enterControl",
+            "exitControl",
+            "mute",
+            "setAuthList",
+            "setLogLevel",
+            "setValue",
+            "showAlarms",
+            "standby",
+            "start",
+            "unacknowledge",
+            "unmute"
+        ]
+      },
+    },
+  }
+
+SAL Info - Topic Data
+----------------------
+Requests SalInfo.topic_data from the :code:`LOVE-Commander`.
+The response contains the events, teelemetries and command data of each CSC.
+The URL accepts :code:`<categories>` as query params, which can be any combination of the following strings separated by "-":
+:code:`event`, :code:`telemetry` and :code:`command`. If there is no query param, then all topics are selected.
+
+- Url: :code:`<IP>/manager/api/salinfo/topic-data?categories=<categories>`
+- HTTP Operation: get
+
+- Expected Response:
+
+.. code-block:: json
+
+  {
+    "status": 200,
+    "data": {
+      "<CSC_1>": {
+        "event_data": {
+          "<parameter_1>": {
+            "<field_11>": "<value_11>",
+            "<field_12>": "<value_12>",
+          },
+          "<parameter_2>": {
+            "<field_21>": "<value_21>",
+            "<field_22>": "<value_22>",
+          },
+        },
+        "telemetry_data": {
+          "<parameter_1>": {
+            "<field_11>": "<value_11>",
+            "<field_12>": "<value_12>",
+          },
+          "<parameter_2>": {
+            "<field_21>": "<value_21>",
+            "<field_22>": "<value_22>",
+          },
+        },
+        "command_data": {
+          "<parameter_1>": {
+            "<field_11>": "<value_11>",
+            "<field_12>": "<value_12>",
+          },
+          "<parameter_2>": {
+            "<field_21>": "<value_21>",
+            "<field_22>": "<value_22>",
+          },
+        },
+      },
+    },
+  }
+
+
+LOVE Config File
+----------------------
+Requests the LOVE config file.
+The response contains the contentes fo the config file (:code:`json` format) as :code:`json`.
+
+- Url: :code:`<IP>/manager/api/config`
+- HTTP Operation: get
+
+- Expected Response:
+
+.. code-block:: json
+
+  {
+    "status": 200,
+    "data": {
+      "alarms": {
+        "minSeveritySound": "<'warning', 'serious' or 'critical'>",
+        "minSeverityNotification": "<'warning', 'serious' or 'critical'>",
+      },
+      "camFeeds": {
+        "generic": "<URL to the stream for the generic camera, can be a relative URL. E.g: /gencam>",
+        "allSky": "<URL to the stream for the all sky camera, can be a relative URL. E.g: /skycam>"
+      }
+    },
+  }
 
 
 UI Framework

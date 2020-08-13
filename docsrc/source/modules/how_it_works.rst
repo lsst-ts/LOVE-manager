@@ -62,7 +62,8 @@ Code organization
 
 Currently the application is divided in the following modules and files:
 
-* :code:`api`: This module contains the :code:`API` Django app, which defines the models and API endpoints for authentication (:code:`Auth API`), UI Framework views (:code:`UI Framework API`) and Commander (:code:`Commander API`) APIs. For more details please refer to the :ref:`ApiDoc` section
+* :code:`api`: This module contains the :code:`API` Django app, which defines the models and API endpoints for authentication (:code:`Auth API`) and Commander (:code:`Commander API`) APIs. For more details please refer to the :ref:`ApiDoc` section
+* :code:`ui_framework`: This module contains the :code:`UI Framework` Django app, which defines the models and API endpoints for the UI Framework views (:code:`UI Framework API`) API. For more details please refer to the :ref:`ApiDoc` section
 * :code:`subscription`: This module contains the Django app that defines the consumers that handle the websocket communication.
 * :code:`manager`: This module contains basic Django configuration files, such as urls and channels routing, etc.
 * :code:`manage.py`: This module is the main executable of the Django application, used mostly for development purposes, but also to execute some actions over the database, such as applying migrations, saving data from fixtures, etc.
