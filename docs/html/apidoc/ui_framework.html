@@ -862,7 +862,7 @@ that was deleted</p>
 
 <dl class="attribute">
 <dt id="ui_framework.views.ViewViewSet.queryset">
-<code class="sig-name descname">queryset</code><em class="property"> = &lt;QuerySet [&lt;View: LATISS&gt;, &lt;View: ATCamera&gt;, &lt;View: AT Lightpath&gt;, &lt;View: ATMount overview&gt;, &lt;View: HealthStatusSummary&gt;, &lt;View: ObservingLog&gt;, &lt;View: AT generic camera&gt;, &lt;View: Time Displays&gt;, &lt;View: CSCSummary&gt;, &lt;View: ScripQueue&gt;, &lt;View: Watcher&gt;, &lt;View: CSCGroup&gt;, &lt;View: TimeSeriesPlot&gt;, &lt;View: Int. TimeSeries&gt;, &lt;View: ATMount state&gt;]&gt;</em><a class="headerlink" href="#ui_framework.views.ViewViewSet.queryset" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">queryset</code><em class="property"> = &lt;QuerySet [&lt;View: Seba&gt;, &lt;View: Scheduler&gt;, &lt;View: HealthStatusSummary&gt;, &lt;View: LATISS&gt;, &lt;View: ATCamera&gt;, &lt;View: AT Lightpath&gt;, &lt;View: ATMount overview&gt;, &lt;View: HealthStatusSummary&gt;, &lt;View: ObservingLog&gt;, &lt;View: Time Displays&gt;, &lt;View: AT generic camera&gt;, &lt;View: CSCSummary&gt;, &lt;View: ScripQueue&gt;, &lt;View: Watcher&gt;, &lt;View: CSCGroup&gt;, &lt;View: TimeSeriesPlot&gt;, &lt;View: Int. TimeSeries&gt;, &lt;View: ATMount state&gt;]&gt;</em><a class="headerlink" href="#ui_framework.views.ViewViewSet.queryset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set of objects to be accessed by queries to this viewsets endpoints</p>
 </dd></dl>
 
@@ -894,11 +894,7 @@ that was deleted</p>
 <dl class="method">
 <dt id="ui_framework.views.ViewViewSet.summary">
 <code class="sig-name descname">summary</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.views.ViewViewSet.summary" title="Permalink to this definition">¶</a></dt>
-<dd><p>Serialize Views containing the query string.</p>
-<dl class="simple">
-<dt>request: Request</dt><dd><p>The Requets object</p>
-</dd>
-</dl>
+<dd><p>Serialize Views with summarized information, that is without their “data” field.</p>
 <dl class="simple">
 <dt>Response</dt><dd><p>The response containing the serialized Views.</p>
 </dd>
@@ -950,7 +946,7 @@ that was deleted</p>
 
 <dl class="attribute">
 <dt id="ui_framework.views.WorkspaceViewSet.queryset">
-<code class="sig-name descname">queryset</code><em class="property"> = &lt;QuerySet []&gt;</em><a class="headerlink" href="#ui_framework.views.WorkspaceViewSet.queryset" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">queryset</code><em class="property"> = &lt;QuerySet [&lt;Workspace: My Workspace&gt;]&gt;</em><a class="headerlink" href="#ui_framework.views.WorkspaceViewSet.queryset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set of objects to be accessed by queries to this viewsets endpoints</p>
 </dd></dl>
 
@@ -1009,7 +1005,7 @@ but returning a list of dicts with each view’s id and name</p>
 
 <dl class="attribute">
 <dt id="ui_framework.views.WorkspaceViewViewSet.queryset">
-<code class="sig-name descname">queryset</code><em class="property"> = &lt;QuerySet []&gt;</em><a class="headerlink" href="#ui_framework.views.WorkspaceViewViewSet.queryset" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">queryset</code><em class="property"> = &lt;QuerySet [&lt;WorkspaceView: My Workspace - HealthStatusSummary&gt;, &lt;WorkspaceView: My Workspace - Watcher&gt;]&gt;</em><a class="headerlink" href="#ui_framework.views.WorkspaceViewViewSet.queryset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set of objects to be accessed by queries to this viewsets endpoints</p>
 </dd></dl>
 

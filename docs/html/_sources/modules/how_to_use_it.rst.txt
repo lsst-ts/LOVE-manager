@@ -16,7 +16,7 @@ Requests a new authorization token.
 Returns token, user data and permissions
 
 - Url: :code:`<IP>/manager/api/get-token/`
-- HTTP Operation: post
+- HTTP Operation: POST
 - Message JSON data:
 
 .. code-block:: json
@@ -123,7 +123,7 @@ Returns a confirmation of validity, user data, permissions, server_time and (opt
 If the :code:`no_config` flag is added to the end of the URL, then the LOVE config files is not read and the corresponding value is returned as :code:`null`
 
 - Url: :code:`<IP>/manager/api/swap-token/` or :code:`<IP>/manager/api/swap-token/no_config/`
-- HTTP Operation: get
+- HTTP Operation: GET
 - Message HTTP Headers:
 
 .. code-block:: json
@@ -176,7 +176,7 @@ Requests deletion of a given token, passed through HTTP Headers.
 The token is deleted and a confirmation is replied.
 
 - Url: :code:`<IP>/manager/api/logout/`
-- HTTP Operation: delete
+- HTTP Operation: DELETE
 - Message HTTP Headers:
 
 .. code-block:: json
@@ -227,10 +227,11 @@ LOVE-manager Subscriptions scheme
 ---------------------------------
 
 Group subscriptions are characterized by 4 variables:
-* **category:** describe the category or type of stream:
-  * ***telemetry:*** streams that transfer data from telemetry systems
-  * ***event:*** streams that transfer data from events triggered asynchronously in the system
 
+* **category:** describe the category or type of stream.
+
+    * ***telemetry:*** streams that transfer data from telemetry systems
+    * ***event:*** streams that transfer data from events triggered asynchronously in the system
 * **csc:** describes the type of the source CSC, e.g. :code:`ScriptQueue`
 * **salindex:** describes the instance number (salindex) of a given the CSC, e.g. :code:`1`
 * **stream:** describes the particular stream of the subscription.
@@ -386,7 +387,7 @@ Command
 Requests a command to the :code:`LOVE-Commander`
 
 - Url: :code:`<IP>/manager/api/cmd/`
-- HTTP Operation: post
+- HTTP Operation: POST
 - Message JSON data:
 
 .. code-block:: json
@@ -439,7 +440,7 @@ Validate Config Schema
 Validates a given configuration in YAML format with a given schema
 
 - Url: :code:`<IP>/manager/api/validate-config-schema/`
-- HTTP Operation: post
+- HTTP Operation: POST
 - Message JSON data:
 
 .. code-block:: json
@@ -484,7 +485,7 @@ Requests SalInfo.metadata from the :code:`LOVE-Commander`.
 The response contains the SAL and XML version of the different CSCs.
 
 - Url: :code:`<IP>/manager/api/salinfo/metadata/`
-- HTTP Operation: get
+- HTTP Operation: GET
 
 - Expected Response:
 
@@ -539,7 +540,7 @@ The URL accepts :code:`<categories>` as query params, which can be any combinati
 :code:`event`, :code:`telemetry` and :code:`command`. If there is no query param, then all topics are selected.
 
 - Url: :code:`<IP>/manager/api/salinfo/topic-names?categories=<categories>`
-- HTTP Operation: get
+- HTTP Operation: GET
 
 - Expected Response:
 
@@ -613,7 +614,7 @@ The URL accepts :code:`<categories>` as query params, which can be any combinati
 :code:`event`, :code:`telemetry` and :code:`command`. If there is no query param, then all topics are selected.
 
 - Url: :code:`<IP>/manager/api/salinfo/topic-data?categories=<categories>`
-- HTTP Operation: get
+- HTTP Operation: GET
 
 - Expected Response:
 
@@ -664,7 +665,7 @@ Requests the LOVE config file.
 The response contains the contentes fo the config file (:code:`json` format) as :code:`json`.
 
 - Url: :code:`<IP>/manager/api/config`
-- HTTP Operation: get
+- HTTP Operation: GET
 
 - Expected Response:
 
@@ -694,9 +695,510 @@ The UI Framework backend is composed of 3 models:
   - **View:** represents a view, all the data of the view is contained in JSON format in the :code:`data` field of the view
   - **WorkspaceView:** relates a Workspace and a View, it is the intermediary table of the many-to-many relationship between Workspace and View.
 
-Currently the API provides a standard REST api for these models.
-For more info you can either:
+Currently the API provides a standard REST api to perform CRUD (Create, Retrieve, Update, Delete) operations over these models, plus some other actions.
+
+To try out the API you can either:
 
   - Use the browsable API available in: :code:`<IP>/manager/ui_framework/`
   - See the apidoc in Swagger format, available in: :code:`<IP>/manager/apidoc/swagger/`
   - See the apidoc in ReDoc format, available in: :code:`<IP>/manager/apidoc/redoc/`
+
+
+Unauthenticated responses
+-------------------------
+All requests from unauthenticated users should receive the following response:
+
+.. code-block:: json
+
+  {
+    "status": 401
+  }
+
+
+Unauthorized responses
+-----------------------
+All requests from users who are authenticated but do not have permissions to perform a particular request, should receive the following response:
+
+.. code-block:: json
+
+  {
+    "status": 403
+  }
+
+Views Requests
+--------------
+Endpoints to perform CRUD over Views
+
+
+Create View
+~~~~~~~~~~~~~~
+- Url: :code:`<IP>/manager/ui_framework/views/`
+- HTTP Operation: POST
+- Request payload: JSON with the fields of the view
+
+.. code-block:: json
+
+  {
+    "name": "<View 1 name>",
+    "thumbnail": "<location location of the thumbnail, e.g. /media/thumbnails/view_1.png>",
+    "data": "<dictionary containing the data of the view>",
+  }
+
+- Expected Response: the full content of the view (including its :code:`<id>`)
+
+.. code-block:: json
+
+  {
+    "status": 201,
+    "data": {
+      "id": "<Numeric ID of the view, e.g. 1>",
+      "name": "<View 1 name>",
+      "thumbnail": "<location of the view thumbnail, e.g. /media/thumbnails/view_1.png>",
+      "data": "<dictionary containing the data of the view>",
+    }
+  }
+
+
+Retrieve Views
+~~~~~~~~~~~~~~
+- Url: :code:`<IP>/manager/ui_framework/views/<id>/`, where the optional parameter :code:`<id>` can be used to retrieve detailed data of a particular view
+- HTTP Operation: GET
+
+- Expected Response: if no :code:`<id>` parameter is attached to the URL, then the response is a list of JSONs, 1 for each view. If there is an :code:`<id>` parameter, then response is only the JSON corresponding to that view
+
+.. code-block:: json
+
+  {
+    "status": 200,
+    "data": [
+      {
+        "id": "<Numeric ID of the view, e.g. 1>",
+        "name": "<View 1 name>",
+        "thumbnail": "<location of the view thumbnail, e.g. /media/thumbnails/view_1.png>",
+        "data": "<dictionary containing the data of the view>",
+      },
+      {
+        "id": "<Numeric ID of the view, e.g. 2>",
+        "name": "<View 2 name>",
+        "thumbnail": "<location of the view thumbnail, e.g. /media/thumbnails/view_2.png>",
+        "data": "<dictionary containing the data of the view>",
+      },
+    ]
+  }
+
+Update View
+~~~~~~~~~~~~~~
+- Url: :code:`<IP>/manager/ui_framework/views/<id>/`, where the parameter :code:`<id>` defines the view to edit
+- HTTP Operation: PUT
+- Request payload: JSON with the fields to change in the view
+
+.. code-block:: json
+
+  {
+    "name": "<View 1 name>",
+    "thumbnail": "<new location location of the thumbnail>",
+    "data": "<dictionary containing the new data of the view>",
+  }
+
+- Expected Response: the new content of the view
+
+.. code-block:: json
+
+  {
+    "status": 200,
+    "data": {
+      "id": "<Numeric ID of the view, e.g. 1>",
+      "name": "<View 1 name>",
+      "thumbnail": "<location of the view thumbnail, e.g. /media/thumbnails/view_1.png>",
+      "data": "<dictionary containing the data of the view>",
+    }
+  }
+
+Delete View
+~~~~~~~~~~~~~~
+- Url: :code:`<IP>/manager/ui_framework/views/<id>/`, where the parameter :code:`<id>` defines the view to delete
+- HTTP Operation: DELETE
+
+- Expected Response: the new content of the view
+
+.. code-block:: json
+
+  {
+    "status": 204
+  }
+
+Get Views Summary
+~~~~~~~~~~~~~~~~~
+- Url: :code:`<IP>/manager/ui_framework/views/summary/`
+- HTTP Operation: GET
+
+- Expected Response: a list of summarized information of the views, contianing only their :code:`<name>`, :code:`<id>` and :code:`<thumbnail>` 
+
+.. code-block:: json
+
+  {
+    "status": 200,
+    "data": [
+      {
+        "id": "<Numeric ID of the view, e.g. 1>",
+        "name": "<View 1 name>",
+        "thumbnail": "<location of the view thumbnail, e.g. /media/thumbnails/view_1.png>",
+      },
+      {
+        "id": "<Numeric ID of the view, e.g. 2>",
+        "name": "<View 2 name>",
+        "thumbnail": "<location of the view thumbnail, e.g. /media/thumbnails/view_2.png>",
+      },
+      {
+        "id": "<Numeric ID of the view, e.g. 3>",
+        "name": "<View 3 name>",
+        "thumbnail": "<location of the view thumbnail, e.g. /media/thumbnails/view_3.png>",
+      },
+    ]
+  }
+
+Search View
+~~~~~~~~~~~~~~~~
+- Url: :code:`<IP>/manager/ui_framework/views/search/?query=<search_text>`
+- HTTP Operation: GET
+
+- Expected Response: a list of views whise names contain the :code:`<search_text>`t passed in the URL.
+
+.. code-block:: json
+
+  {
+    "status": 200,
+    "data": [
+      {
+        "id": "<Numeric ID of the view, e.g. 1>",
+        "name": "<View 1 name>",
+        "thumbnail": "<location of the view thumbnail, e.g. /media/thumbnails/view_1.png>",
+        "data": "<dictionary containing the data of the view>",
+      },
+      {
+        "id": "<Numeric ID of the view, e.g. 2>",
+        "name": "<View 2 name>",
+        "thumbnail": "<location of the view thumbnail, e.g. /media/thumbnails/view_2.png>",
+        "data": "<dictionary containing the data of the view>",
+      },
+    ]
+  }
+
+
+
+Workspaces Requests
+-------------------
+Endpoints to perform CRUD over Workspaces
+
+
+Create Workspace
+~~~~~~~~~~~~~~~~
+- Url: :code:`<IP>/manager/ui_framework/workspaces/`
+- HTTP Operation: POST
+- Request payload: JSON with the fields of the workspace
+
+.. code-block:: json
+
+  {
+    "name": "<Workspace 1 name>",
+  }
+
+- Expected Response: the full content of the workspace (including its :code:`<id>`)
+
+.. code-block:: json
+
+  {
+    "status": 201,
+    "data": {
+      "id": "<Numeric ID of the workspace, e.g. 1>",
+      "name": "<Workspace 1 name>",
+      "views": [
+        "<view_id1 (this is a list of ids of views)>",
+        "<view_id2>",
+      ],
+      "creation_timestamp": "<Timestamp of the creation of the workspace, in ISO format (UTC)>",
+      "update_timestamp": "<Timestamp of the last update of the workspace, in ISO format (UTC)>",
+    }
+  }
+
+
+Retrieve Workspaces
+~~~~~~~~~~~~~~
+- Url: :code:`<IP>/manager/ui_framework/workspaces/<id>/`, where the optional parameter :code:`<id>` can be used to retrieve detailed data of a particular workspace
+- HTTP Operation: GET
+
+- Expected Response: if no :code:`<id>` parameter is attached to the URL, then the response is a list of JSONs, 1 for each workspace. If there is an :code:`<id>` parameter, then response is only the JSON corresponding to that workspace
+
+.. code-block:: json
+
+  {
+    "status": 200,
+    "data": [
+      {
+        "id": "<Numeric ID of the workspace, e.g. 1>",
+        "name": "<Workspace 1 name>",
+        "views": [
+          "<view_id1>",
+          "<view_id2>",
+        ],
+        "creation_timestamp": "<Timestamp of the creation of the workspace, in ISO format (UTC)>",
+        "update_timestamp": "<Timestamp of the last update of the workspace, in ISO format (UTC)>",
+      },
+      {
+        "id": "<Numeric ID of the workspace, e.g. 2>",
+        "name": "<Workspace 2 name>",
+        "views": [
+          "<view_id3>",
+          "<view_id2>",
+        ],
+        "creation_timestamp": "<Timestamp of the creation of the workspace, in ISO format (UTC)>",
+        "update_timestamp": "<Timestamp of the last update of the workspace, in ISO format (UTC)>",
+      }
+    ]
+  }
+
+Update Workspace
+~~~~~~~~~~~~~~
+- Url: :code:`<IP>/manager/ui_framework/workspaces/<id>/`, where the parameter :code:`<id>` defines the workspace to edit
+- HTTP Operation: PUT
+- Request payload: JSON with the fields to change in the workspace
+
+.. code-block:: json
+
+  {
+    "name": "<New Workspace 1 name>",
+  }
+
+- Expected Response: the new content of the workspace
+
+.. code-block:: json
+
+  {
+    "status": 200,
+    "data": {
+      "id": "<Numeric ID of the workspace, e.g. 1>",
+      "name": "<New Workspace 1 name>",
+      "views": [
+        "<view_id1>",
+        "<view_id2>",
+      ],
+      "creation_timestamp": "<Timestamp of the creation of the workspace, in ISO format (UTC)>",
+      "update_timestamp": "<Timestamp of the last update of the workspace, in ISO format (UTC)>",
+    }
+  }
+
+Delete Workspace
+~~~~~~~~~~~~~~
+- Url: :code:`<IP>/manager/ui_framework/workspaces/<id>/`, where the parameter :code:`<id>` defines the workspace to delete
+- HTTP Operation: DELETE
+
+- Expected Response: the new content of the workspace
+
+.. code-block:: json
+
+  {
+    "status": 204
+  }
+
+
+Get Full Workspace
+~~~~~~~~~~~~~~~~~~
+- Url: :code:`<IP>/manager/ui_framework/workspaces/<id>/full/`, where the parameter :code:`<id>` defines the workspace to retrieve
+- HTTP Operation: GET
+
+- Expected Response: the workspace with its views fully subserialized (list of JSON, instead of list of ids)
+
+.. code-block:: json
+
+  {
+    "status": 200,
+    "data": {
+      "id": "<Numeric ID of the workspace, e.g. 1>",
+      "name": "<New Workspace 1 name>",
+      "views": [
+        {
+          "id": "<view_id1>",
+          "name": "<View 1 name>",
+          "thumbnail": "<location of the view thumbnail, e.g. /media/thumbnails/view_1.png>",
+          "data": "<dictionary containing the data of the view>",
+        },
+        {
+          "id": "<view_id2>",
+          "name": "<View 2 name>",
+          "thumbnail": "<location of the view thumbnail, e.g. /media/thumbnails/view_2.png>",
+          "data": "<dictionary containing the data of the view>",
+        },
+      ],
+      "creation_timestamp": "<Timestamp of the creation of the workspace, in ISO format (UTC)>",
+      "update_timestamp": "<Timestamp of the last update of the workspace, in ISO format (UTC)>",
+    }
+  }
+
+
+Get Workspace with Views names
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- Url: :code:`<IP>/manager/ui_framework/workspaces/with_view_name/`.
+- HTTP Operation: GET
+
+- Expected Response: the workspace with its views subserialized as summary, that is without their :code:`data` fields
+
+.. code-block:: json
+
+  {
+    "status": 200,
+    "data": [
+      {
+        "id": "<Numeric ID of the workspace, e.g. 1>",
+        "name": "<New Workspace 1 name>",
+        "views": [
+          {
+            "id": "<view_id1>",
+            "name": "<View 1 name>",
+            "thumbnail": "<location of the view thumbnail, e.g. /media/thumbnails/view_1.png>",
+          },
+          {
+            "id": "<view_id2>",
+            "name": "<View 2 name>",
+            "thumbnail": "<location of the view thumbnail, e.g. /media/thumbnails/view_2.png>",
+          },
+        ],
+        "creation_timestamp": "<Timestamp of the creation of the workspace, in ISO format (UTC)>",
+        "update_timestamp": "<Timestamp of the last update of the workspace, in ISO format (UTC)>",
+      },
+      {
+        "id": "<Numeric ID of the workspace, e.g. 2>",
+        "name": "<New Workspace 2 name>",
+        "views": [
+          {
+            "id": "<view_id1>",
+            "name": "<View 1 name>",
+            "thumbnail": "<location of the view thumbnail, e.g. /media/thumbnails/view_1.png>",
+          },
+          {
+            "id": "<view_id2>",
+            "name": "<View 2 name>",
+            "thumbnail": "<location of the view thumbnail, e.g. /media/thumbnails/view_2.png>",
+          },
+        ],
+        "creation_timestamp": "<Timestamp of the creation of the workspace, in ISO format (UTC)>",
+        "update_timestamp": "<Timestamp of the last update of the workspace, in ISO format (UTC)>",
+      },
+    ]
+  }
+
+
+WorkspaceViews Requests
+-----------------------
+Endpoints to perform CRUD over WorkspaceViews
+
+
+Create WorkspaceView
+~~~~~~~~~~~~~~~~~~~~
+- Url: :code:`<IP>/manager/ui_framework/workspaceviews/`
+- HTTP Operation: POST
+- Request payload: JSON with the fields of the WorkspaceView
+
+.. code-block:: json
+
+  {
+    "view_name": "<Optional name for the view within the conext of the workspace, empty string by default>",
+    "sort_value": "<Optional numeric sort vaue to define the order of the views within the workspace, 0 by default>",
+    "workspace": "<workspace_id>",
+    "view": "<view_id>",
+  }
+
+- Expected Response: the full content of the workspace (including its :code:`<id>`)
+
+.. code-block:: json
+
+  {
+    "status": 201,
+    "data": {
+      "id": "<Id of the WorkspaceView>",
+      "creation_timestamp": "<Timestamp of the creation of the WorkspaceView, in ISO format (UTC)>",
+      "update_timestamp": "<Timestamp of the last update of the WorkspaceView, in ISO format (UTC)>",
+      "view_name": "<Optional name for the view within the conext of the workspace, empty string by default>",
+      "sort_value": "<Optional numeric sort vaue to define the order of the views within the workspace, 0 by default>",
+      "workspace": "<workspace_id>",
+      "view": "<view_id>",
+    }
+  }
+
+
+Retrieve WorkspaceViews
+~~~~~~~~~~~~~~~~~~~~~~~
+- Url: :code:`<IP>/manager/ui_framework/workspaceviews/<id>/`, where the optional parameter :code:`<id>` can be used to retrieve detailed data of a particular WorkspaceView
+- HTTP Operation: GET
+
+- Expected Response: if no :code:`<id>` parameter is attached to the URL, then the response is a list of JSONs, 1 for each WorkspaceView. If there is an :code:`<id>` parameter, then response is only the JSON corresponding to that workspace
+
+.. code-block:: json
+
+  {
+    "status": 200,
+    "data": [
+      {
+        "id": "<WorkspaceView 1 ID>",
+        "creation_timestamp": "<Timestamp of the creation of the WorkspaceView, in ISO format (UTC)>",
+        "update_timestamp": "<Timestamp of the last update of the WorkspaceView, in ISO format (UTC)>",
+        "view_name": "<View name (optional)>",
+        "sort_value": "<Optional sort value>",
+        "workspace": "<workspace_id1>",
+        "view": "<view_id1>",
+      },
+      {
+        "id": "<WorkspaceView 2 ID>",
+        "creation_timestamp": "<Timestamp of the creation of the WorkspaceView, in ISO format (UTC)>",
+        "update_timestamp": "<Timestamp of the last update of the WorkspaceView, in ISO format (UTC)>",
+        "view_name": "<View name (optional)>",
+        "sort_value": "<Optional sort value>",
+        "workspace": "<workspace_id1>",
+        "view": "<view_id2>",
+      },
+    ]
+  }
+
+Update WorkspaceView
+~~~~~~~~~~~~~~~~~~~~
+- Url: :code:`<IP>/manager/ui_framework/workspaceviews/<id>/`, where the parameter :code:`<id>` defines the WorkspaceView to edit
+- HTTP Operation: PUT
+- Request payload: JSON with the fields to change in the WorkspaceView
+
+.. code-block:: json
+
+  {
+    "view_name": "<Optional new name for the view within the conext of the workspace, empty string by default>",
+    "sort_value": "<Optional new numeric sort vaue to define the order of the views within the workspace, 0 by default>",
+    "workspace": "<workspace_id>",
+    "view": "<view_id>",
+  }
+
+- Expected Response: the new content of the workspace
+
+.. code-block:: json
+
+  {
+    "status": 200,
+    "data": {
+      "id": "<Id of the WorkspaceView>",
+      "creation_timestamp": "<Timestamp of the creation of the WorkspaceView, in ISO format (UTC)>",
+      "update_timestamp": "<Timestamp of the last update of the WorkspaceView, in ISO format (UTC)>",
+      "view_name": "<Optional name for the view within the conext of the workspace, empty string by default>",
+      "sort_value": "<Optional numeric sort vaue to define the order of the views within the workspace, 0 by default>",
+      "workspace": "<workspace_id>",
+      "view": "<view_id>",
+    }
+  }
+
+Delete WorkspaceView
+~~~~~~~~~~~~~~~~~~~~
+- Url: :code:`<IP>/manager/ui_framework/workspaceviews/<id>/`, where the parameter :code:`<id>` defines the WorkspaceView to delete
+- HTTP Operation: DELETE
+
+- Expected Response: the new content of the workspace
+
+.. code-block:: json
+
+  {
+    "status": 204
+  }

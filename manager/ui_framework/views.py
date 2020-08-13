@@ -116,12 +116,7 @@ class ViewViewSet(viewsets.ModelViewSet):
     )
     @action(detail=False)
     def summary(self, request):
-        """Serialize Views containing the query string.
-
-        Params
-        ------
-        request: Request
-            The Requets object
+        """Serialize Views with summarized information, that is without their "data" field.
 
         Returns
         -------
