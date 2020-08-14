@@ -58,7 +58,7 @@ class Base64ImageField(serializers.ImageField):
 
         Parameters
         ----------
-        data : dictionary
+        data : dict
             The serialized image
 
         Returns

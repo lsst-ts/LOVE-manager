@@ -192,6 +192,90 @@
 <a class="reference external" href="https://docs.djangoproject.com/en/2.2/topics/settings/">https://docs.djangoproject.com/en/2.2/topics/settings/</a></p>
 <p>For the full list of settings and their values, see
 <a class="reference external" href="https://docs.djangoproject.com/en/2.2/ref/settings/">https://docs.djangoproject.com/en/2.2/ref/settings/</a></p>
+<dl class="data">
+<dt id="manager.settings.ALLOWED_HOSTS">
+<code class="sig-prename descclassname">manager.settings.</code><code class="sig-name descname">ALLOWED_HOSTS</code><em class="property"> = ['localhost', '0.0.0.0', '127.0.0.1', 'love-nginx-mount', 'love-nginx', '*']</em><a class="headerlink" href="#manager.settings.ALLOWED_HOSTS" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of Django allowed hosts (<cite>list</cite> of <cite>string</cite>)</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="manager.settings.AUTH_LDAP_SERVER_URI">
+<code class="sig-prename descclassname">manager.settings.</code><code class="sig-name descname">AUTH_LDAP_SERVER_URI</code><em class="property"> = ''</em><a class="headerlink" href="#manager.settings.AUTH_LDAP_SERVER_URI" title="Permalink to this definition">¶</a></dt>
+<dd><p>URL for the LDAP server. Read from <cite>AUTH_LDAP_SERVER_URI</cite> environment variable (<cite>bool</cite>)</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="manager.settings.CHANNEL_LAYERS">
+<code class="sig-prename descclassname">manager.settings.</code><code class="sig-name descname">CHANNEL_LAYERS</code><em class="property"> = {'default': {'BACKEND': 'channels_redis.core.RedisChannelLayer', 'CONFIG': {'hosts': ['redis://:admin123&#64;redis:6379/0'], 'symmetric_encryption_keys': ['tbder3gzppu)kl%(u3awhhg^^zu#j&amp;!ceh&#64;$n&amp;v0d38sjx43s8']}}}</em><a class="headerlink" href="#manager.settings.CHANNEL_LAYERS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Django Channels Channel Layer configuration (<cite>dict</cite>)</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="manager.settings.DATABASES">
+<code class="sig-prename descclassname">manager.settings.</code><code class="sig-name descname">DATABASES</code><em class="property"> = {'default': {'ATOMIC_REQUESTS': False, 'AUTOCOMMIT': True, 'CONN_MAX_AGE': 0, 'ENGINE': 'django.db.backends.postgresql', 'HOST': 'love-database', 'NAME': 'postgres', 'OPTIONS': {}, 'PASSWORD': 'postgres', 'PORT': '5432', 'TEST': {'CHARSET': None, 'COLLATION': None, 'MIRROR': None, 'NAME': None}, 'TIME_ZONE': None, 'USER': 'postgres'}}</em><a class="headerlink" href="#manager.settings.DATABASES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Databases configuration (<cite>dict</cite>)</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="manager.settings.LANGUAGE_CODE">
+<code class="sig-prename descclassname">manager.settings.</code><code class="sig-name descname">LANGUAGE_CODE</code><em class="property"> = 'en-us'</em><a class="headerlink" href="#manager.settings.LANGUAGE_CODE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Language of the Django app (<cite>string</cite>)</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="manager.settings.MEDIA_URL">
+<code class="sig-prename descclassname">manager.settings.</code><code class="sig-name descname">MEDIA_URL</code><em class="property"> = '/media/'</em><a class="headerlink" href="#manager.settings.MEDIA_URL" title="Permalink to this definition">¶</a></dt>
+<dd><p>URL for media files access (<cite>string</cite>)</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="manager.settings.PROCESS_CONNECTION_PASS">
+<code class="sig-prename descclassname">manager.settings.</code><code class="sig-name descname">PROCESS_CONNECTION_PASS</code><em class="property"> = 'my_dev_password'</em><a class="headerlink" href="#manager.settings.PROCESS_CONNECTION_PASS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Password that Producers use to connect to eh Manager, read from the <cite>PROCESS_CONNECTION_PASS</cite> environment variable (<cite>string</cite>)</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="manager.settings.SECRET_KEY">
+<code class="sig-prename descclassname">manager.settings.</code><code class="sig-name descname">SECRET_KEY</code><em class="property"> = 'tbder3gzppu)kl%(u3awhhg^^zu#j&amp;!ceh&#64;$n&amp;v0d38sjx43s8'</em><a class="headerlink" href="#manager.settings.SECRET_KEY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Secret Key for Django, read from the <cite>SECRET_KEY</cite> environment variable (<cite>string</cite>)</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="manager.settings.STATIC_ROOT">
+<code class="sig-prename descclassname">manager.settings.</code><code class="sig-name descname">STATIC_ROOT</code><em class="property"> = '/usr/src/love/manager/static'</em><a class="headerlink" href="#manager.settings.STATIC_ROOT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Location of static files (<cite>string</cite>)</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="manager.settings.STATIC_URL">
+<code class="sig-prename descclassname">manager.settings.</code><code class="sig-name descname">STATIC_URL</code><em class="property"> = '/manager/static/'</em><a class="headerlink" href="#manager.settings.STATIC_URL" title="Permalink to this definition">¶</a></dt>
+<dd><p>URL to access Django static files (<cite>string</cite>)</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="manager.settings.TESTING">
+<code class="sig-prename descclassname">manager.settings.</code><code class="sig-name descname">TESTING</code><em class="property"> = False</em><a class="headerlink" href="#manager.settings.TESTING" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define wether or not this instance is being created for testing or not, get from the <cite>TESTING</cite> environment variable (<cite>string</cite>)</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="manager.settings.TIME_ZONE">
+<code class="sig-prename descclassname">manager.settings.</code><code class="sig-name descname">TIME_ZONE</code><em class="property"> = 'UTC'</em><a class="headerlink" href="#manager.settings.TIME_ZONE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Timezone of the Django app (<cite>string</cite>)</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="manager.settings.TOKEN_EXPIRED_AFTER_DAYS">
+<code class="sig-prename descclassname">manager.settings.</code><code class="sig-name descname">TOKEN_EXPIRED_AFTER_DAYS</code><em class="property"> = 30</em><a class="headerlink" href="#manager.settings.TOKEN_EXPIRED_AFTER_DAYS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Duration of users tokens, in days (<cite>int</cite>)</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="manager.settings.TRACE_TIMESTAMPS">
+<code class="sig-prename descclassname">manager.settings.</code><code class="sig-name descname">TRACE_TIMESTAMPS</code><em class="property"> = True</em><a class="headerlink" href="#manager.settings.TRACE_TIMESTAMPS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define wether or not to add tracing timestamps to websocket messages. Read from TRACE_TIMESTAMPS` environment variable (<cite>bool</cite>)</p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-manager.urls">
 <span id="manager-urls-module"></span><h2><span class="section-number">5.3.5. </span>manager.urls module<a class="headerlink" href="#module-manager.urls" title="Permalink to this headline">¶</a></h2>
@@ -224,7 +308,29 @@
 <dl class="function">
 <dt id="manager.utils.assert_time_data">
 <code class="sig-prename descclassname">manager.utils.</code><code class="sig-name descname">assert_time_data</code><span class="sig-paren">(</span><em class="sig-param">time_data</em><span class="sig-paren">)</span><a class="headerlink" href="#manager.utils.assert_time_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Asserts the structure of the time_data dictionary.</p>
+<dd><p>Asserts the structure of the time_data dictionary</p>
+<p>The expected structure is the following:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;utc&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;current time in UTC scale as a unix timestamp (seconds), in float format&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;tai&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;current time in UTC scale as a unix timestamp (seconds), in float format&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;mjd&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;current time as a modified julian date, in float format&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;sidereal_summit&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;current time as a sidereal_time w/respect to the summit location (hourangles), in float format&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;sidereal_summit&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;current time as a sidereal_time w/respect to Greenwich location (hourangles), in float format&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;tai_to_utc&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;The number of seconds of difference between TAI and UTC times (seconds), in float format&gt;&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>time_data</strong> (<em>dict</em>) – dictionary containing the time data in different formats, indexed by format</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if the time data has the correct format, False if not</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
