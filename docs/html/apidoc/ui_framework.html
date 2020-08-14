@@ -215,7 +215,8 @@
 <dl class="attribute">
 <dt id="ui_framework.apps.UiFrameworkConfig.name">
 <code class="sig-name descname">name</code><em class="property"> = 'ui_framework'</em><a class="headerlink" href="#ui_framework.apps.UiFrameworkConfig.name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>The name of the app.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="ui_framework.apps.UiFrameworkConfig.ready">
@@ -290,8 +291,7 @@
 <dl class="method">
 <dt id="ui_framework.models.OverwriteStorage.get_available_name">
 <code class="sig-name descname">get_available_name</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">max_length</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.models.OverwriteStorage.get_available_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a filename that’s free on the target storage system, and
-available for new content to be written to.</p>
+<dd><p>Returns a filename that’s free on the target storage system, and available for new content to be written to.</p>
 <p>Found at <a class="reference external" href="http://djangosnippets.org/snippets/976/">http://djangosnippets.org/snippets/976/</a></p>
 <p>This file storage solves overwrite on upload problem. Another
 proposed solution was to override the save method on the model
@@ -307,6 +307,20 @@ if this.MyImageFieldName != self.MyImageFieldName:</p>
 </dl>
 <p>except: pass
 super(MyModelName, self).save(<a href="#id5"><span class="problematic" id="id6">*</span></a>args, <a href="#id7"><span class="problematic" id="id8">**</span></a>kwargs)</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>string</em>) – name of the file</p></li>
+<li><p><strong>max_length</strong> (<em>int</em>) – maximum length of the file (currently unused but needed to match the expected API)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The name of the file</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>string</p>
 </dd>
 </dl>
 </dd></dl>
@@ -377,8 +391,7 @@ object the first time, the query is executed.</p>
 <dl class="attribute">
 <dt id="ui_framework.models.View.thumbnail">
 <code class="sig-name descname">thumbnail</code><a class="headerlink" href="#ui_framework.models.View.thumbnail" title="Permalink to this definition">¶</a></dt>
-<dd><p>Just like the FileDescriptor, but for ImageFields. The only difference is
-assigning the width/height to the width_field/height_field, if appropriate.</p>
+<dd><p>A reference to the image thumbnail of the view</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -468,7 +481,19 @@ class built by <code class="docutils literal notranslate"><span class="pre">crea
 <dl class="method">
 <dt id="ui_framework.models.Workspace.has_read_permission">
 <em class="property">static </em><code class="sig-name descname">has_read_permission</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.models.Workspace.has_read_permission" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Check if the given user has read permissions over WOrkspace objects</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>request</strong> (<em>object</em>) – The request object, with the user</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if request.user has read permissions over Workspace objects, False if not</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="ui_framework.models.Workspace.id">
@@ -622,18 +647,56 @@ It uses base64 for encoding and decoding the contents of the file.</p>
 <dl class="method">
 <dt id="ui_framework.serializers.Base64ImageField.get_file_extension">
 <code class="sig-name descname">get_file_extension</code><span class="sig-paren">(</span><em class="sig-param">file_name</em>, <em class="sig-param">decoded_file</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.serializers.Base64ImageField.get_file_extension" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Return the file extension of an image, given its filename and decoded_file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_name</strong> (<em>string</em>) – The name of the image file</p></li>
+<li><p><strong>decoded_file</strong> (<em>bytes</em>) – The decoded image</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the image extension, e.g. “jpg”</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="method">
 <dt id="ui_framework.serializers.Base64ImageField.to_internal_value">
 <code class="sig-name descname">to_internal_value</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.serializers.Base64ImageField.to_internal_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Transform the <em>incoming</em> primitive data into a native value.</p>
+<dd><p>Transform a serialized image to the internal Base64ImageField object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>dictionary</em>) – The serialized image</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the object value</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>object</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="ui_framework.serializers.Base64ImageField.to_representation">
 <code class="sig-name descname">to_representation</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.serializers.Base64ImageField.to_representation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Transform the <em>outgoing</em> native value into primitive data.</p>
+<dd><p>Return a string representation of the image based on a given value.
+The returned value is the centralized MEDIA_URL concatenated with a string representation of the given value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>object</em>) – The given value for the string representation</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The string representation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -659,6 +722,12 @@ It uses base64 for encoding and decoding the contents of the file.</p>
 <dd><p>alias of <a class="reference internal" href="#ui_framework.models.View" title="ui_framework.models.View"><code class="xref py py-class docutils literal notranslate"><span class="pre">ui_framework.models.View</span></code></a></p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.serializers.ViewSerializer.thumbnail">
+<code class="sig-name descname">thumbnail</code><em class="property"> = None</em><a class="headerlink" href="#ui_framework.serializers.ViewSerializer.thumbnail" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serializer for the thumbnail field.</p>
 </dd></dl>
 
 </dd></dl>
