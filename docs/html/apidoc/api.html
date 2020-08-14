@@ -101,10 +101,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#module-api.schema_validator">5.1.8. api.schema_validator module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-api.serializers">5.1.9. api.serializers module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-api.signals">5.1.10. api.signals module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-api.urls">5.1.11. api.urls module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#examples">5.1.11.1. Examples</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-api.urls">5.1.11. api.urls module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-api.views">5.1.12. api.views module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-api">5.1.13. Module contents</a></li>
 </ul>
@@ -220,7 +217,8 @@
 <dl class="attribute">
 <dt id="api.apps.ApiConfig.name">
 <code class="sig-name descname">name</code><em class="property"> = 'api'</em><a class="headerlink" href="#api.apps.ApiConfig.name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>The name of the app (<cite>string</cite>)</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="api.apps.ApiConfig.ready">
@@ -251,8 +249,12 @@
 <dt>key: string</dt><dd><p>the token key to validate_token</p>
 </dd>
 </dl>
-<dl class="simple">
-<dt>User, Token</dt><dd><p>The corresponding user and token objects</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The corresponding user and token objects</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>User, <a class="reference internal" href="#api.models.Token" title="api.models.Token">Token</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -265,8 +267,12 @@
 <dt>token: Token</dt><dd><p>The token object to check remianing time</p>
 </dd>
 </dl>
-<dl class="simple">
-<dt>int</dt><dd><p>The number of remaining seconds for the token</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The number of remaining seconds for the token</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
 </dd>
 </dl>
 </dd></dl>
@@ -279,8 +285,12 @@
 <dt>token: Token</dt><dd><p>The token object to check expiration</p>
 </dd>
 </dl>
-<dl class="simple">
-<dt>boolean</dt><dd><p>True if it is expired, False if not</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if it is expired, False if not</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>boolean</p>
 </dd>
 </dl>
 </dd></dl>
@@ -299,8 +309,12 @@
 <dt>token: Token object</dt><dd><p>The token object to check expiration</p>
 </dd>
 </dl>
-<dl class="simple">
-<dt>boolean, Token:</dt><dd><p>True if it is expired, False if not; and the Token object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if it is expired, False if not; and the Token object</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>boolean, <a class="reference internal" href="#api.models.Token" title="api.models.Token">Token</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -423,12 +437,15 @@ object the first time, the query is executed.</p>
 <em class="property">class </em><code class="sig-prename descclassname">api.schema_validator.</code><code class="sig-name descname">DefaultingValidator</code><span class="sig-paren">(</span><em class="sig-param">schema</em>, <em class="sig-param">ValidatorClass=&lt;class 'jsonschema.validators.create.&lt;locals&gt;.Validator'&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#api.schema_validator.DefaultingValidator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A wrapper for jsonschema validators that applies default values.</p>
-<dl>
-<dt>schema<span class="classifier"><cite>dict</cite></span></dt><dd><p>Schema against which to validate.</p>
-</dd>
-<dt>ValidatorClass<span class="classifier"><code class="docutils literal notranslate"><span class="pre">jsonschema.IValidator</span></code> (optional)</span></dt><dd><p>jsonschema validator class, e.g. <code class="docutils literal notranslate"><span class="pre">jsonschema.Draft7Validator</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>schema</strong> (<cite>dict</cite>) – Schema against which to validate.</p></li>
+<li><p><strong>ValidatorClass</strong> (<code class="docutils literal notranslate"><span class="pre">jsonschema.IValidator</span></code> (optional)) – jsonschema validator class, e.g. <code class="docutils literal notranslate"><span class="pre">jsonschema.Draft7Validator</span></code>.</p></li>
+</ul>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
 <p>This class is not a <code class="docutils literal notranslate"><span class="pre">jsonschema.IValidator</span></code> but it contains two
 validators:</p>
 <ul class="simple">
@@ -444,18 +461,20 @@ the data being validated.</p></li>
 <p>Set missing values based on defaults in the schema,
 then check the final result against the schema
 (in case any defaults are not valid).</p>
-<dl>
-<dt>data_dict<span class="classifier"><cite>dict</cite></span></dt><dd><p>Data to validate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data_dict</strong> (<cite>dict</cite>) – Data to validate.</p>
 </dd>
-</dl>
-<dl>
-<dt>result<span class="classifier"><cite>dict</cite> or <cite>None</cite></span></dt><dd><p>Validated data. A copy of data_dict with missing values
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>result</strong> – Validated data. A copy of data_dict with missing values
 that have defaults set to those defaults.
 If None then an empty dict is used.</p>
 </dd>
-</dl>
-<dl class="simple">
-<dt>jsonschema.exceptions.ValidationError</dt><dd><p>If the data does not match the schema.</p>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><cite>dict</cite> or <cite>None</cite></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>jsonschema.exceptions.ValidationError</strong> – If the data does not match the schema.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -494,8 +513,9 @@ If the ‘no_config’ flag is present in the url of the original request, then 
 <dt>token: Token</dt><dd><p>The Token object</p>
 </dd>
 </dl>
-<dl>
-<dt>Dict</dt><dd><p>Dictionary containing the following keys:
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><p>Dictionary containing the following keys:
 - alarms_sounds: dictionary containing flags of sound ON/OF for each severity level. Eg:
 alarms_sounds: {</p>
 <blockquote>
@@ -504,6 +524,10 @@ serious: 1,
 warning: 0</p>
 </div></blockquote>
 <p>}</p>
+</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Dict</p>
 </dd>
 </dl>
 </dd></dl>
@@ -516,8 +540,12 @@ warning: 0</p>
 <dt>token: Token</dt><dd><p>The Token object</p>
 </dd>
 </dl>
-<dl class="simple">
-<dt>Bool</dt><dd><p>True if the user can execute commands, False if not.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if the user can execute commands, False if not.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Bool</p>
 </dd>
 </dl>
 </dd></dl>
@@ -530,14 +558,18 @@ warning: 0</p>
 <dt>token: Token</dt><dd><p>The Token object</p>
 </dd>
 </dl>
-<dl class="simple">
-<dt>Dict</dt><dd><p>Dictionary containing the following keys:
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Dictionary containing the following keys:
 - utc: current time in UTC scale as a unix timestamp (seconds)
 - tai: current time in UTC scale as a unix timestamp (seconds)
 - mjd: current time as a modified julian date
 - sidereal_summit: current time as a sidereal_time w/respect to the summit location (hourangles)
 - sidereal_summit: current time as a sidereal_time w/respect to Greenwich location (hourangles)
 - tai_to_utc: The number of seconds of difference between TAI and UTC times (seconds)</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Dict</p>
 </dd>
 </dl>
 </dd></dl>
@@ -550,8 +582,12 @@ warning: 0</p>
 <dt>token: Token</dt><dd><p>The Token object</p>
 </dd>
 </dl>
-<dl class="simple">
-<dt>String</dt><dd><p>The token key</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The token key</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>String</p>
 </dd>
 </dl>
 </dd></dl>
@@ -571,8 +607,12 @@ warning: 0</p>
 <dt>user: User</dt><dd><p>The User object</p>
 </dd>
 </dl>
-<dl class="simple">
-<dt>Bool</dt><dd><p>True if the user can execute commands, False if not.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if the user can execute commands, False if not.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Bool</p>
 </dd>
 </dl>
 </dd></dl>
@@ -618,11 +658,13 @@ warning: 0</p>
 <code class="sig-prename descclassname">api.signals.</code><code class="sig-name descname">handle_token_deletion</code><span class="sig-paren">(</span><em class="sig-param">sender</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.signals.handle_token_deletion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Receive signal when a Token is deleted and send a message to consumers subscribed to the Tokne’s group,
 instructing them to logout.</p>
-<dl class="simple">
-<dt>sender: <cite>object</cite></dt><dd><p>class of the sender, in this case ‘Token’</p>
-</dd>
-<dt>kwargs: <cite>dict</cite></dt><dd><p>arguments dictionary sent with the signal. It contains the key ‘instance’ with the Token instance
-that was deleted</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sender</strong> (<cite>object</cite>) – class of the sender, in this case ‘Token’</p></li>
+<li><p><strong>kwargs</strong> (<cite>dict</cite>) – arguments dictionary sent with the signal. It contains the key ‘instance’ with the Token instance
+that was deleted</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -635,8 +677,7 @@ that was deleted</p>
 <dt>The <cite>urlpatterns</cite> list routes URLs to views. For more information please see:</dt><dd><p><a class="reference external" href="https://docs.djangoproject.com/en/2.1/topics/http/urls/">https://docs.djangoproject.com/en/2.1/topics/http/urls/</a></p>
 </dd>
 </dl>
-<div class="section" id="examples">
-<h3><span class="section-number">5.1.11.1. </span>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
+<p class="rubric">Examples</p>
 <dl class="simple">
 <dt>Function views</dt><dd><ol class="arabic simple">
 <li><p>Add an import:  from my_app import views</p></li>
@@ -654,7 +695,6 @@ that was deleted</p>
 </ol>
 </dd>
 </dl>
-</div>
 </div>
 <div class="section" id="module-api.views">
 <span id="api-views-module"></span><h2><span class="section-number">5.1.12. </span>api.views module<a class="headerlink" href="#module-api.views" title="Permalink to this headline">¶</a></h2>
@@ -680,15 +720,19 @@ that was deleted</p>
 <dd><p>Handle the (post) request for token.</p>
 <p>If the token is invalid this function is not executed (the request fails before)</p>
 <dl class="simple">
-<dt>request: Request</dt><dd><p>The Requets object</p>
+<dt>request: Request</dt><dd><p>The Request object</p>
 </dd>
 <dt>args: list</dt><dd><p>List of addittional arguments. Currenlty unused</p>
 </dd>
 <dt>kwargs: dict</dt><dd><p>Dictionary with addittional keyword arguments (indexed by keys in the dict). Currenlty unused</p>
 </dd>
 </dl>
-<dl class="simple">
-<dt>Response</dt><dd><p>The response containing the token and other user data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The response containing the token and other user data.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
 </dd>
 </dl>
 </dd></dl>
@@ -716,15 +760,19 @@ that was deleted</p>
 <dd><p>Handle the (post) request for token.</p>
 <p>If the token is invalid this function is not executed (the request fails before)</p>
 <dl class="simple">
-<dt>request: Request</dt><dd><p>The Requets object</p>
+<dt>request: Request</dt><dd><p>The Request object</p>
 </dd>
 <dt>args: list</dt><dd><p>List of addittional arguments. Currently unused</p>
 </dd>
 <dt>kwargs: dict</dt><dd><p>Dictionary with addittional keyword arguments (indexed by keys in the dict). Currenlty unused</p>
 </dd>
 </dl>
-<dl class="simple">
-<dt>Response</dt><dd><p>The response containing the token and other user data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The response containing the token and other user data.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
 </dd>
 </dl>
 </dd></dl>
@@ -735,12 +783,36 @@ that was deleted</p>
 <dt id="api.views.commander">
 <code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">commander</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">request</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.commander" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sends a command to the LOVE-commander according to the received parameters</p>
+<dl class="simple">
+<dt>request: Request</dt><dd><p>The Request object</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The response and status code of the request to the LOVE-Commander</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="api.views.get_config">
 <code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">get_config</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">request</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.get_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the config file</p>
+<dl class="simple">
+<dt>request: Request</dt><dd><p>The Request object</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Containing the contents of the config file</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
@@ -749,7 +821,15 @@ that was deleted</p>
 <dd><p>Logout and delete the token. And returns 204 code if valid.</p>
 <p>If the token is invalid this function is not executed (the request fails before)</p>
 <dl class="simple">
-<dt>Response</dt><dd><p>The response stating that the token has been deleted, with a 204 status code.</p>
+<dt>request: Request</dt><dd><p>The Request object</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The response stating that the token has been deleted, with a 204 status code.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
 </dd>
 </dl>
 </dd></dl>
@@ -759,13 +839,39 @@ that was deleted</p>
 <code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">salinfo_metadata</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">request</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.salinfo_metadata" title="Permalink to this definition">¶</a></dt>
 <dd><p>Requests SalInfo.metadata from the commander containing a dict
 of &lt;csc name&gt;: { “sal_version”: …, “xml_version”: ….}</p>
+<dl class="simple">
+<dt>request: Request</dt><dd><p>The Request object</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The response and status code of the request to the LOVE-Commander</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="api.views.salinfo_topic_data">
 <code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">salinfo_topic_data</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">request</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.salinfo_topic_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Requests SalInfo.topic_data from the commander containing a dict
-of &lt;csc name&gt;: { “command_data”: [], “event_data”: [], “telemetry_data”: []}</p>
+<dd><dl class="simple">
+<dt>Requests SalInfo.topic_data from the commander containing a dict</dt><dd><p>of &lt;csc name&gt;: { “command_data”: [], “event_data”: [], “telemetry_data”: []}</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>request: Request</dt><dd><p>The Request object</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The response and status code of the request to the LOVE-Commander</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
@@ -773,6 +879,18 @@ of &lt;csc name&gt;: { “command_data”: [], “event_data”: [], “telemetr
 <code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">salinfo_topic_names</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">request</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.salinfo_topic_names" title="Permalink to this definition">¶</a></dt>
 <dd><p>Requests SalInfo.topic_names from the commander containing a dict
 of &lt;csc name&gt;: { “command_names”: [], “event_names”: [], “telemetry_names”: []}</p>
+<dl class="simple">
+<dt>request: Request</dt><dd><p>The Request object</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The response and status code of the request to the LOVE-Commander</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
@@ -780,8 +898,16 @@ of &lt;csc name&gt;: { “command_names”: [], “event_names”: [], “teleme
 <code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">validate_config_schema</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">request</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.validate_config_schema" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate a configuration yaml with using a schema</p>
 <dl class="simple">
-<dt>Response</dt><dd><p>Dictionary containing a ‘title’ and an ‘error’ key (if any)
+<dt>request: Request</dt><dd><p>The Request object</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Dictionary containing a ‘title’ and an ‘error’ key (if any)
 or an ‘output’ with the output of the validator (config with defaults-autocomplete)</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
 </dd>
 </dl>
 </dd></dl>
@@ -792,7 +918,20 @@ or an ‘output’ with the output of the validator (config with defaults-autoco
 <dd><p>Validate the token and return 200 code if valid.</p>
 <p>If the token is invalid this function is not executed (the request fails before)</p>
 <dl class="simple">
-<dt>Response</dt><dd><p>The response stating that the token is valid with a 200 status code.</p>
+<dt>request: Request</dt><dd><p>The Request object</p>
+</dd>
+<dt>args: list</dt><dd><p>List of addittional arguments. Currenlty unused</p>
+</dd>
+<dt>kwargs: dict</dt><dd><p>Dictionary with addittional keyword arguments (indexed by keys in the dict),
+one optional parameter that could be expeted is <cite>flags</cite></p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The response stating that the token is valid with a 200 status code.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
 </dd>
 </dl>
 </dd></dl>

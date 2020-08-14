@@ -102,10 +102,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#module-ui_framework.models">5.5.5. ui_framework.models module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-ui_framework.serializers">5.5.6. ui_framework.serializers module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-ui_framework.signals">5.5.7. ui_framework.signals module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-ui_framework.urls">5.5.8. ui_framework.urls module</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#examples">5.5.8.1. Examples</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-ui_framework.urls">5.5.8. ui_framework.urls module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-ui_framework.views">5.5.9. ui_framework.views module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-ui_framework">5.5.10. Module contents</a></li>
 </ul>
@@ -218,7 +215,8 @@
 <dl class="attribute">
 <dt id="ui_framework.apps.UiFrameworkConfig.name">
 <code class="sig-name descname">name</code><em class="property"> = 'ui_framework'</em><a class="headerlink" href="#ui_framework.apps.UiFrameworkConfig.name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>The name of the app.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="ui_framework.apps.UiFrameworkConfig.ready">
@@ -293,8 +291,7 @@
 <dl class="method">
 <dt id="ui_framework.models.OverwriteStorage.get_available_name">
 <code class="sig-name descname">get_available_name</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">max_length</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.models.OverwriteStorage.get_available_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a filename that’s free on the target storage system, and
-available for new content to be written to.</p>
+<dd><p>Returns a filename that’s free on the target storage system, and available for new content to be written to.</p>
 <p>Found at <a class="reference external" href="http://djangosnippets.org/snippets/976/">http://djangosnippets.org/snippets/976/</a></p>
 <p>This file storage solves overwrite on upload problem. Another
 proposed solution was to override the save method on the model
@@ -310,6 +307,20 @@ if this.MyImageFieldName != self.MyImageFieldName:</p>
 </dl>
 <p>except: pass
 super(MyModelName, self).save(<a href="#id5"><span class="problematic" id="id6">*</span></a>args, <a href="#id7"><span class="problematic" id="id8">**</span></a>kwargs)</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>string</em>) – name of the file</p></li>
+<li><p><strong>max_length</strong> (<em>int</em>) – maximum length of the file (currently unused but needed to match the expected API)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The name of the file</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>string</p>
 </dd>
 </dl>
 </dd></dl>
@@ -380,8 +391,7 @@ object the first time, the query is executed.</p>
 <dl class="attribute">
 <dt id="ui_framework.models.View.thumbnail">
 <code class="sig-name descname">thumbnail</code><a class="headerlink" href="#ui_framework.models.View.thumbnail" title="Permalink to this definition">¶</a></dt>
-<dd><p>Just like the FileDescriptor, but for ImageFields. The only difference is
-assigning the width/height to the width_field/height_field, if appropriate.</p>
+<dd><p>A reference to the image thumbnail of the view</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -458,8 +468,12 @@ class built by <code class="docutils literal notranslate"><span class="pre">crea
 <dt id="ui_framework.models.Workspace.get_sorted_views">
 <code class="sig-name descname">get_sorted_views</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.models.Workspace.get_sorted_views" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the views sorted by the sort_value of their corresponding WorkView.</p>
-<dl class="simple">
-<dt>list:</dt><dd><p>List of View objects associated to this Workspace</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of View objects associated to this Workspace</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
 </dd>
 </dl>
 </dd></dl>
@@ -467,7 +481,19 @@ class built by <code class="docutils literal notranslate"><span class="pre">crea
 <dl class="method">
 <dt id="ui_framework.models.Workspace.has_read_permission">
 <em class="property">static </em><code class="sig-name descname">has_read_permission</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.models.Workspace.has_read_permission" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Check if the given user has read permissions over WOrkspace objects</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>request</strong> (<em>object</em>) – The request object, with the user</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if request.user has read permissions over Workspace objects, False if not</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="ui_framework.models.Workspace.id">
@@ -621,18 +647,56 @@ It uses base64 for encoding and decoding the contents of the file.</p>
 <dl class="method">
 <dt id="ui_framework.serializers.Base64ImageField.get_file_extension">
 <code class="sig-name descname">get_file_extension</code><span class="sig-paren">(</span><em class="sig-param">file_name</em>, <em class="sig-param">decoded_file</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.serializers.Base64ImageField.get_file_extension" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Return the file extension of an image, given its filename and decoded_file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_name</strong> (<em>string</em>) – The name of the image file</p></li>
+<li><p><strong>decoded_file</strong> (<em>bytes</em>) – The decoded image</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the image extension, e.g. “jpg”</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="method">
 <dt id="ui_framework.serializers.Base64ImageField.to_internal_value">
 <code class="sig-name descname">to_internal_value</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.serializers.Base64ImageField.to_internal_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Transform the <em>incoming</em> primitive data into a native value.</p>
+<dd><p>Transform a serialized image to the internal Base64ImageField object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>dict</em>) – The serialized image</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the object value</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>object</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="ui_framework.serializers.Base64ImageField.to_representation">
 <code class="sig-name descname">to_representation</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.serializers.Base64ImageField.to_representation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Transform the <em>outgoing</em> native value into primitive data.</p>
+<dd><p>Return a string representation of the image based on a given value.
+The returned value is the centralized MEDIA_URL concatenated with a string representation of the given value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>object</em>) – The given value for the string representation</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The string representation</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -658,6 +722,12 @@ It uses base64 for encoding and decoding the contents of the file.</p>
 <dd><p>alias of <a class="reference internal" href="#ui_framework.models.View" title="ui_framework.models.View"><code class="xref py py-class docutils literal notranslate"><span class="pre">ui_framework.models.View</span></code></a></p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ui_framework.serializers.ViewSerializer.thumbnail">
+<code class="sig-name descname">thumbnail</code><em class="property"> = None</em><a class="headerlink" href="#ui_framework.serializers.ViewSerializer.thumbnail" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serializer for the thumbnail field.</p>
 </dd></dl>
 
 </dd></dl>
@@ -794,11 +864,13 @@ It uses base64 for encoding and decoding the contents of the file.</p>
 <dt id="ui_framework.signals.hanlde_view_deletion">
 <code class="sig-prename descclassname">ui_framework.signals.</code><code class="sig-name descname">hanlde_view_deletion</code><span class="sig-paren">(</span><em class="sig-param">sender</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.signals.hanlde_view_deletion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Receive signal when a View is deleted and delete its thumbnail image from disk.</p>
-<dl class="simple">
-<dt>sender: <cite>object</cite></dt><dd><p>class of the sender, in this case ‘View’</p>
-</dd>
-<dt>kwargs: <cite>dict</cite></dt><dd><p>arguments dictionary sent with the signal. It contains the key ‘instance’ with the View instance
-that was deleted</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sender</strong> (<cite>object</cite>) – class of the sender, in this case ‘View’</p></li>
+<li><p><strong>kwargs</strong> (<cite>dict</cite>) – arguments dictionary sent with the signal. It contains the key ‘instance’ with the View instance
+that was deleted</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -811,8 +883,7 @@ that was deleted</p>
 <dt>The <cite>urlpatterns</cite> list routes URLs to views. For more information please see:</dt><dd><p><a class="reference external" href="https://docs.djangoproject.com/en/2.2/topics/http/urls/">https://docs.djangoproject.com/en/2.2/topics/http/urls/</a></p>
 </dd>
 </dl>
-<div class="section" id="examples">
-<h3><span class="section-number">5.5.8.1. </span>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
+<p class="rubric">Examples</p>
 <dl class="simple">
 <dt>Function views</dt><dd><ol class="arabic simple">
 <li><p>Add an import:  from my_app import views</p></li>
@@ -830,7 +901,6 @@ that was deleted</p>
 </ol>
 </dd>
 </dl>
-</div>
 </div>
 <div class="section" id="module-ui_framework.views">
 <span id="ui-framework-views-module"></span><h2><span class="section-number">5.5.9. </span>ui_framework.views module<a class="headerlink" href="#module-ui_framework.views" title="Permalink to this headline">¶</a></h2>
@@ -862,7 +932,7 @@ that was deleted</p>
 
 <dl class="attribute">
 <dt id="ui_framework.views.ViewViewSet.queryset">
-<code class="sig-name descname">queryset</code><em class="property"> = &lt;QuerySet [&lt;View: HealthStatusSummary&gt;, &lt;View: Seba&gt;, &lt;View: LATISS&gt;, &lt;View: ATCamera&gt;, &lt;View: AT Lightpath&gt;, &lt;View: ATMount overview&gt;, &lt;View: HealthStatusSummary&gt;, &lt;View: ObservingLog&gt;, &lt;View: Time Displays&gt;, &lt;View: AT generic camera&gt;, &lt;View: CSCSummary&gt;, &lt;View: ScripQueue&gt;, &lt;View: Watcher&gt;, &lt;View: CSCGroup&gt;, &lt;View: TimeSeriesPlot&gt;, &lt;View: Int. TimeSeries&gt;, &lt;View: ATMount state&gt;]&gt;</em><a class="headerlink" href="#ui_framework.views.ViewViewSet.queryset" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">queryset</code><em class="property"> = &lt;QuerySet [&lt;View: Seba&gt;, &lt;View: Scheduler&gt;, &lt;View: HealthStatusSummary&gt;, &lt;View: LATISS&gt;, &lt;View: ATCamera&gt;, &lt;View: AT Lightpath&gt;, &lt;View: ATMount overview&gt;, &lt;View: HealthStatusSummary&gt;, &lt;View: ObservingLog&gt;, &lt;View: Time Displays&gt;, &lt;View: AT generic camera&gt;, &lt;View: CSCSummary&gt;, &lt;View: ScripQueue&gt;, &lt;View: Watcher&gt;, &lt;View: CSCGroup&gt;, &lt;View: TimeSeriesPlot&gt;, &lt;View: Int. TimeSeries&gt;, &lt;View: ATMount state&gt;]&gt;</em><a class="headerlink" href="#ui_framework.views.ViewViewSet.queryset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set of objects to be accessed by queries to this viewsets endpoints</p>
 </dd></dl>
 
@@ -874,8 +944,12 @@ that was deleted</p>
 <dt>request: Request</dt><dd><p>The Requets object</p>
 </dd>
 </dl>
-<dl class="simple">
-<dt>Response</dt><dd><p>The response containing the serialized Views.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The response containing the serialized Views.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
 </dd>
 </dl>
 </dd></dl>
@@ -894,13 +968,13 @@ that was deleted</p>
 <dl class="method">
 <dt id="ui_framework.views.ViewViewSet.summary">
 <code class="sig-name descname">summary</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.views.ViewViewSet.summary" title="Permalink to this definition">¶</a></dt>
-<dd><p>Serialize Views containing the query string.</p>
-<dl class="simple">
-<dt>request: Request</dt><dd><p>The Requets object</p>
+<dd><p>Serialize Views with summarized information, that is without their “data” field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The response containing the serialized Views.</p>
 </dd>
-</dl>
-<dl class="simple">
-<dt>Response</dt><dd><p>The response containing the serialized Views.</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
 </dd>
 </dl>
 </dd></dl>
@@ -937,8 +1011,12 @@ that was deleted</p>
 <dt>pk: int</dt><dd><p>The corresponding Workspace pk</p>
 </dd>
 </dl>
-<dl class="simple">
-<dt>Response</dt><dd><p>The response containing the serialized Workspaces, with the views fully subserialized</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The response containing the serialized Workspaces, with the views fully subserialized</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
 </dd>
 </dl>
 </dd></dl>
@@ -950,7 +1028,7 @@ that was deleted</p>
 
 <dl class="attribute">
 <dt id="ui_framework.views.WorkspaceViewSet.queryset">
-<code class="sig-name descname">queryset</code><em class="property"> = &lt;QuerySet []&gt;</em><a class="headerlink" href="#ui_framework.views.WorkspaceViewSet.queryset" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">queryset</code><em class="property"> = &lt;QuerySet [&lt;Workspace: My Workspace&gt;]&gt;</em><a class="headerlink" href="#ui_framework.views.WorkspaceViewSet.queryset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set of objects to be accessed by queries to this viewsets endpoints</p>
 </dd></dl>
 
@@ -973,9 +1051,13 @@ that was deleted</p>
 <dt>request: Request</dt><dd><p>The Requets object</p>
 </dd>
 </dl>
-<dl class="simple">
-<dt>Response</dt><dd><p>The response containing the serialized Workspaces,
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The response containing the serialized Workspaces,
 but returning a list of dicts with each view’s id and name</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1009,7 +1091,7 @@ but returning a list of dicts with each view’s id and name</p>
 
 <dl class="attribute">
 <dt id="ui_framework.views.WorkspaceViewViewSet.queryset">
-<code class="sig-name descname">queryset</code><em class="property"> = &lt;QuerySet []&gt;</em><a class="headerlink" href="#ui_framework.views.WorkspaceViewViewSet.queryset" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">queryset</code><em class="property"> = &lt;QuerySet [&lt;WorkspaceView: My Workspace - HealthStatusSummary&gt;, &lt;WorkspaceView: My Workspace - Watcher&gt;]&gt;</em><a class="headerlink" href="#ui_framework.views.WorkspaceViewViewSet.queryset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set of objects to be accessed by queries to this viewsets endpoints</p>
 </dd></dl>
 

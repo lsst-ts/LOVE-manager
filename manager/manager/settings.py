@@ -14,18 +14,21 @@ import os
 import ldap
 from django_auth_ldap.config import LDAPSearch
 
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Define wether the system is being tested or not:
 TESTING = os.environ.get("TESTING", False)
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
+"""Define wether or not this instance is being created for testing or not, get from the `TESTING` environment variable (`string`)"""
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv(
     "SECRET_KEY", "tbder3gzppu)kl%(u3awhhg^^zu#j&!ceh@$n&v0d38sjx43s8"
 )
+"""Secret Key for Django, read from the `SECRET_KEY` environment variable (`string`)"""
 
 # SECURITY WARNING: don't run with debug turned on in production!
 if os.environ.get("NO_DEBUG"):
@@ -46,6 +49,7 @@ if os.environ.get("DB_ENGINE") == "postgresql":
             "PASSWORD": os.getenv("DB_PASS", "postgres"),
         }
     }
+    """Databases configuration (`dict`)"""
 else:
     DATABASES = {
         "default": {
@@ -62,6 +66,7 @@ ALLOWED_HOSTS = [
     "love-nginx",
     os.environ.get("SERVER_URL", None),
 ]
+"""List of Django allowed hosts (`list` of `string`)"""
 
 # Application definition
 INSTALLED_APPS = [
@@ -82,6 +87,7 @@ INSTALLED_APPS = [
     "ui_framework",
 ]
 
+
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
@@ -93,6 +99,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
 
 ROOT_URLCONF = "manager.urls"
 
@@ -133,13 +140,17 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Password for other processes
 PROCESS_CONNECTION_PASS = os.environ.get("PROCESS_CONNECTION_PASS", "dev_pass")
-
+"""Password that Producers use to connect to eh Manager, read from the `PROCESS_CONNECTION_PASS` environment variable (`string`)"""
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
 LANGUAGE_CODE = "en-us"
+"""Language of the Django app (`string`)"""
+
 TIME_ZONE = "UTC"
+"""Timezone of the Django app (`string`)"""
+
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
@@ -157,13 +168,19 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
     ),
 }
+
 TOKEN_EXPIRED_AFTER_DAYS = 30
+"""Duration of users tokens, in days (`int`)"""
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 STATIC_URL = "/manager/static/"
+"""URL to access Django static files (`string`)"""
+
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
+"""Location of static files (`string`)"""
+
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
 STATICFILES_FINDERS = (
@@ -175,6 +192,8 @@ STATICFILES_DIRS = [
 ]
 
 MEDIA_URL = "/media/"
+"""URL for media files access (`string`)"""
+
 if TESTING:
     MEDIA_BASE = os.path.join(BASE_DIR, "ui_framework", "tests")
     MEDIA_ROOT = os.path.join(BASE_DIR, "ui_framework", "tests", "media")
@@ -207,6 +226,8 @@ if REDIS_HOST and not TESTING:
             },
         },
     }
+    """Django Channels Channel Layer configuration (`dict`)"""
+
 else:
     CHANNEL_LAYERS = {
         "default": {"BACKEND": "channels.layers.InMemoryChannelLayer",},
@@ -215,6 +236,7 @@ else:
 # LDAP
 # Baseline configuration:
 AUTH_LDAP_SERVER_URI = os.environ.get("AUTH_LDAP_SERVER_URI", False)
+"""URL for the LDAP server. Read from `AUTH_LDAP_SERVER_URI` environment variable (`bool`)"""
 
 # Only use LDAP activation backend if there is an AUTH_LDAP_SERVER_URI
 # configured in the OS ENV:
@@ -231,6 +253,8 @@ if AUTH_LDAP_SERVER_URI and not TESTING:
     )
 
 TRACE_TIMESTAMPS = True
+"""Define wether or not to add tracing timestamps to websocket messages. Read from TRACE_TIMESTAMPS` environment variable (`bool`)"""
+
 if os.environ.get("HIDE_TRACE_TIMESTAMPS", False):
     TRACE_TIMESTAMPS = False
 
