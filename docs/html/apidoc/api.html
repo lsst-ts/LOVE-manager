@@ -217,7 +217,8 @@
 <dl class="attribute">
 <dt id="api.apps.ApiConfig.name">
 <code class="sig-name descname">name</code><em class="property"> = 'api'</em><a class="headerlink" href="#api.apps.ApiConfig.name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>The name of the app (<cite>string</cite>)</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="api.apps.ApiConfig.ready">
@@ -719,7 +720,7 @@ that was deleted</p></li>
 <dd><p>Handle the (post) request for token.</p>
 <p>If the token is invalid this function is not executed (the request fails before)</p>
 <dl class="simple">
-<dt>request: Request</dt><dd><p>The Requets object</p>
+<dt>request: Request</dt><dd><p>The Request object</p>
 </dd>
 <dt>args: list</dt><dd><p>List of addittional arguments. Currenlty unused</p>
 </dd>
@@ -759,7 +760,7 @@ that was deleted</p></li>
 <dd><p>Handle the (post) request for token.</p>
 <p>If the token is invalid this function is not executed (the request fails before)</p>
 <dl class="simple">
-<dt>request: Request</dt><dd><p>The Requets object</p>
+<dt>request: Request</dt><dd><p>The Request object</p>
 </dd>
 <dt>args: list</dt><dd><p>List of addittional arguments. Currently unused</p>
 </dd>
@@ -782,12 +783,36 @@ that was deleted</p></li>
 <dt id="api.views.commander">
 <code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">commander</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">request</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.commander" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sends a command to the LOVE-commander according to the received parameters</p>
+<dl class="simple">
+<dt>request: Request</dt><dd><p>The Request object</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The response and status code of the request to the LOVE-Commander</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="api.views.get_config">
 <code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">get_config</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">request</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.get_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the config file</p>
+<dl class="simple">
+<dt>request: Request</dt><dd><p>The Request object</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Containing the contents of the config file</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
@@ -795,6 +820,10 @@ that was deleted</p></li>
 <code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">logout</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">request</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.logout" title="Permalink to this definition">¶</a></dt>
 <dd><p>Logout and delete the token. And returns 204 code if valid.</p>
 <p>If the token is invalid this function is not executed (the request fails before)</p>
+<dl class="simple">
+<dt>request: Request</dt><dd><p>The Request object</p>
+</dd>
+</dl>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>The response stating that the token has been deleted, with a 204 status code.</p>
@@ -810,13 +839,39 @@ that was deleted</p></li>
 <code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">salinfo_metadata</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">request</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.salinfo_metadata" title="Permalink to this definition">¶</a></dt>
 <dd><p>Requests SalInfo.metadata from the commander containing a dict
 of &lt;csc name&gt;: { “sal_version”: …, “xml_version”: ….}</p>
+<dl class="simple">
+<dt>request: Request</dt><dd><p>The Request object</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The response and status code of the request to the LOVE-Commander</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="api.views.salinfo_topic_data">
 <code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">salinfo_topic_data</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">request</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.salinfo_topic_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Requests SalInfo.topic_data from the commander containing a dict
-of &lt;csc name&gt;: { “command_data”: [], “event_data”: [], “telemetry_data”: []}</p>
+<dd><dl class="simple">
+<dt>Requests SalInfo.topic_data from the commander containing a dict</dt><dd><p>of &lt;csc name&gt;: { “command_data”: [], “event_data”: [], “telemetry_data”: []}</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>request: Request</dt><dd><p>The Request object</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The response and status code of the request to the LOVE-Commander</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
@@ -824,12 +879,28 @@ of &lt;csc name&gt;: { “command_data”: [], “event_data”: [], “telemetr
 <code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">salinfo_topic_names</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">request</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.salinfo_topic_names" title="Permalink to this definition">¶</a></dt>
 <dd><p>Requests SalInfo.topic_names from the commander containing a dict
 of &lt;csc name&gt;: { “command_names”: [], “event_names”: [], “telemetry_names”: []}</p>
+<dl class="simple">
+<dt>request: Request</dt><dd><p>The Request object</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The response and status code of the request to the LOVE-Commander</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="api.views.validate_config_schema">
 <code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">validate_config_schema</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">request</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.validate_config_schema" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate a configuration yaml with using a schema</p>
+<dl class="simple">
+<dt>request: Request</dt><dd><p>The Request object</p>
+</dd>
+</dl>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Dictionary containing a ‘title’ and an ‘error’ key (if any)
@@ -846,6 +917,15 @@ or an ‘output’ with the output of the validator (config with defaults-autoco
 <code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">validate_token</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">request</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.validate_token" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate the token and return 200 code if valid.</p>
 <p>If the token is invalid this function is not executed (the request fails before)</p>
+<dl class="simple">
+<dt>request: Request</dt><dd><p>The Request object</p>
+</dd>
+<dt>args: list</dt><dd><p>List of addittional arguments. Currenlty unused</p>
+</dd>
+<dt>kwargs: dict</dt><dd><p>Dictionary with addittional keyword arguments (indexed by keys in the dict),
+one optional parameter that could be expeted is <cite>flags</cite></p>
+</dd>
+</dl>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>The response stating that the token is valid with a 200 status code.</p>

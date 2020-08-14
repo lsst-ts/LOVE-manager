@@ -36,6 +36,17 @@ def validate_token(request, *args, **kwargs):
 
     If the token is invalid this function is not executed (the request fails before)
 
+
+    Params
+    ------
+    request: Request
+        The Request object
+    args: list
+        List of addittional arguments. Currenlty unused
+    kwargs: dict
+        Dictionary with addittional keyword arguments (indexed by keys in the dict),
+        one optional parameter that could be expeted is `flags`
+
     Returns
     -------
     Response
@@ -58,6 +69,11 @@ def logout(request):
     """Logout and delete the token. And returns 204 code if valid.
 
     If the token is invalid this function is not executed (the request fails before)
+
+    Params
+    ------
+    request: Request
+        The Request object
 
     Returns
     -------
@@ -87,7 +103,7 @@ class CustomObtainAuthToken(ObtainAuthToken):
         Params
         ------
         request: Request
-            The Requets object
+            The Request object
         args: list
             List of addittional arguments. Currenlty unused
         kwargs: dict
@@ -123,7 +139,7 @@ class CustomSwapAuthToken(ObtainAuthToken):
         Params
         ------
         request: Request
-            The Requets object
+            The Request object
         args: list
             List of addittional arguments. Currently unused
         kwargs: dict
@@ -155,6 +171,11 @@ class CustomSwapAuthToken(ObtainAuthToken):
 @permission_classes((IsAuthenticated,))
 def validate_config_schema(request):
     """Validate a configuration yaml with using a schema
+
+    Params
+    ------
+    request: Request
+        The Request object
 
     Returns
     -------
@@ -207,6 +228,16 @@ def validate_config_schema(request):
 @permission_classes((IsAuthenticated,))
 def commander(request):
     """Sends a command to the LOVE-commander according to the received parameters
+
+    Params
+    ------
+    request: Request
+        The Request object
+    
+    Returns
+    -------
+    Response
+        The response and status code of the request to the LOVE-Commander
     """
     if not request.user.has_perm("api.command.execute_command"):
         return Response(
@@ -236,7 +267,17 @@ def commander(request):
 @permission_classes((IsAuthenticated,))
 def salinfo_metadata(request):
     """Requests SalInfo.metadata from the commander containing a dict
-     of <csc name>: { "sal_version": ..., "xml_version": ....}
+    of <csc name>: { "sal_version": ..., "xml_version": ....}
+    
+    Params
+    ------
+    request: Request
+        The Request object
+    
+    Returns
+    -------
+    Response
+        The response and status code of the request to the LOVE-Commander
     """
     url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/salinfo/metadata"
     response = requests.get(url)
@@ -268,7 +309,17 @@ def salinfo_metadata(request):
 @permission_classes((IsAuthenticated,))
 def salinfo_topic_names(request):
     """Requests SalInfo.topic_names from the commander containing a dict
-     of <csc name>: { "command_names": [], "event_names": [], "telemetry_names": []}
+    of <csc name>: { "command_names": [], "event_names": [], "telemetry_names": []}
+    
+    Params
+    ------
+    request: Request
+        The Request object
+    
+    Returns
+    -------
+    Response
+        The response and status code of the request to the LOVE-Commander
     """
     query = ""
     if "categories" in request.query_params:
@@ -304,6 +355,16 @@ def salinfo_topic_names(request):
 def salinfo_topic_data(request):
     """Requests SalInfo.topic_data from the commander containing a dict
      of <csc name>: { "command_data": [], "event_data": [], "telemetry_data": []}
+    
+    Params
+    ------
+    request: Request
+        The Request object
+    
+    Returns
+    -------
+    Response
+        The response and status code of the request to the LOVE-Commander
     """
     query = ""
     if "categories" in request.query_params:
@@ -326,6 +387,16 @@ def salinfo_topic_data(request):
 @permission_classes((IsAuthenticated,))
 def get_config(request):
     """Returns the config file
+
+    Params
+    ------
+    request: Request
+        The Request object
+    
+    Returns
+    -------
+    Response
+        Containing the contents of the config file
     """
     data = read_config_file()
     if data is None:
