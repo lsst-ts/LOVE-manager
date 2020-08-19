@@ -18,17 +18,33 @@ Including another URLconf
 from django.conf.urls import include
 from django.urls import path
 from rest_framework.routers import DefaultRouter
-from api.views import validate_token, logout, CustomObtainAuthToken, validate_config_schema, commander
 
+# from api.views import validate_token, logout, CustomObtainAuthToken, validate_config_schema, commander, salinfo_metadata
+import api.views
 
 router = DefaultRouter()
 
 urlpatterns = [
-    path('get-token/', CustomObtainAuthToken.as_view(), name='login'),
-    path('validate-token/', validate_token, name='validate-token'),
-    path('validate-config-schema/', validate_config_schema, name='validate-config-schema'),
-    path('logout/', logout, name='logout'),
-    path('auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('cmd/', commander, name='commander'),
+    path("get-token/", api.views.CustomObtainAuthToken.as_view(), name="login"),
+    path("validate-token/", api.views.validate_token, name="validate-token"),
+    path("validate-token/<flags>/", api.views.validate_token, name="validate-token"),
+    path(
+        "validate-config-schema/",
+        api.views.validate_config_schema,
+        name="validate-config-schema",
+    ),
+    path("logout/", api.views.logout, name="logout"),
+    path("swap-user/", api.views.CustomSwapAuthToken.as_view(), name="swap-user"),
+    path(
+        "swap-user/<flags>/", api.views.CustomSwapAuthToken.as_view(), name="swap-user"
+    ),
+    path("auth/", include("rest_framework.urls", namespace="rest_framework")),
+    path("cmd/", api.views.commander, name="commander"),
+    path("salinfo/metadata", api.views.salinfo_metadata, name="salinfo-metadata"),
+    path(
+        "salinfo/topic-names", api.views.salinfo_topic_names, name="salinfo-topic-names"
+    ),
+    path("salinfo/topic-data", api.views.salinfo_topic_data, name="salinfo-topic-data"),
+    path("config", api.views.get_config, name="config"),
 ]
-urlpatterns.append(path('', include(router.urls)))
+urlpatterns.append(path("", include(router.urls)))

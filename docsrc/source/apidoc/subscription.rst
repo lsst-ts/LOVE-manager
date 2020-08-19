@@ -4,6 +4,14 @@ subscription package
 Submodules
 ----------
 
+subscription.apps module
+------------------------
+
+.. automodule:: subscription.apps
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 subscription.auth module
 ------------------------
 
@@ -16,6 +24,14 @@ subscription.consumers module
 -----------------------------
 
 .. automodule:: subscription.consumers
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+subscription.heartbeat\_manager module
+--------------------------------------
+
+.. automodule:: subscription.heartbeat_manager
    :members:
    :undoc-members:
    :show-inheritance:

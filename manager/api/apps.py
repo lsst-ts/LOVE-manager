@@ -5,7 +5,8 @@ from django.apps import AppConfig
 class ApiConfig(AppConfig):
     """General App config class. Currently defines the name of the app."""
 
-    name = 'api'
+    name = "api"
+    """The name of the app (`string`)"""
 
     def ready(self):
         """Import the signals module when the application is ready."""

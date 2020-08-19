@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -86,10 +86,12 @@
 <li class="toctree-l1"><a class="reference internal" href="how_to_use_it.html">2. How to use it</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">3. How it works</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#love-manager-parts">3.1. LOVE-manager parts</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#api">3.1.1. API</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#consumers">3.1.2. Consumers</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#channel-layer">3.1.3. Channel Layer</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#db">3.1.4. DB</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#auth-api">3.1.1. Auth API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ui-framework-api">3.1.2. UI Framework API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#commander-api">3.1.3. Commander API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#consumers">3.1.4. Consumers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#channel-layer">3.1.5. Channel Layer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#database">3.1.6. Database</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#example">3.2. Example</a></li>
@@ -143,7 +145,7 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>3. How it works</li>
+      <li><span class="section-number">3. </span>How it works</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -163,47 +165,61 @@
            <div itemprop="articleBody">
             
   <div class="section" id="how-it-works">
-<h1>3. How it works<a class="headerlink" href="#how-it-works" title="Permalink to this headline">¶</a></h1>
+<h1><span class="section-number">3. </span>How it works<a class="headerlink" href="#how-it-works" title="Permalink to this headline">¶</a></h1>
 <img alt="../_images/Manager_Details.svg" src="../_images/Manager_Details.svg" /><div class="section" id="love-manager-parts">
-<h2>3.1. LOVE-manager parts<a class="headerlink" href="#love-manager-parts" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">3.1. </span>LOVE-manager parts<a class="headerlink" href="#love-manager-parts" title="Permalink to this headline">¶</a></h2>
 <p>The LOVE-manager is composed by different software components, as explained below.</p>
-<div class="section" id="api">
-<h3>3.1.1. API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h3>
-<p>Provides a REST API with endpoints to request and validate access tokens.
-When a client (LOVE-frontend) tries to login it sends the users credentials (user and password) through an HTTP request to the API, which responds with the token (if the credentials are valid) or an error (if the credentials are invalid). The validation is done comparing searching the given user in the <code class="code docutils literal notranslate"><span class="pre">DB</span></code> and comparing the given password.</p>
+<div class="section" id="auth-api">
+<h3><span class="section-number">3.1.1. </span>Auth API<a class="headerlink" href="#auth-api" title="Permalink to this headline">¶</a></h3>
+<p>Provides an HTTP API with endpoints to request and validate access tokens.</p>
+<p>When a client (LOVE-frontend) tries to login it sends the users credentials (user and password) through an HTTP request to the API, which responds with the token (if the credentials are valid) or an error (if the credentials are invalid). The validation is performed by searching the given user in the <code class="code docutils literal notranslate"><span class="pre">DB</span></code> and comparing the given password with the user’s password in the <code class="code docutils literal notranslate"><span class="pre">DB</span></code>.</p>
+<p>The Auth API also provides additional information in its responses, such as the users permissions and the current server time in diffent formats (UTC, TAI, Sidereal, among others). For more details please see the <a class="reference internal" href="how_to_use_it.html#authentication"><span class="std std-ref">Authentication</span></a> section.</p>
+</div>
+<div class="section" id="ui-framework-api">
+<h3><span class="section-number">3.1.2. </span>UI Framework API<a class="headerlink" href="#ui-framework-api" title="Permalink to this headline">¶</a></h3>
+<p>Provides a REST API with endpoints to perform CRUD (Create, Retrieve, Update, Delete) operations on UI Frmework Views. The views contents, layout and configuration are saved as a JSON string in the database.</p>
+</div>
+<div class="section" id="commander-api">
+<h3><span class="section-number">3.1.3. </span>Commander API<a class="headerlink" href="#commander-api" title="Permalink to this headline">¶</a></h3>
+<p>Provides an HTTP API with endpoints to run Commands.
+When a client (like a <code class="code docutils literal notranslate"><span class="pre">LOVE-Frontend</span></code> instance) requests a Command, the <code class="code docutils literal notranslate"><span class="pre">Commander</span> <span class="pre">API</span></code> sends the request to the <code class="code docutils literal notranslate"><span class="pre">LOVE-Commander</span></code>.</p>
+<p>When the <code class="code docutils literal notranslate"><span class="pre">LOVE-Commander</span></code> receives the request, it runs the Command using <code class="code docutils literal notranslate"><span class="pre">salobj</span></code> and waits for its acknowledgement. Once the acknowledgement is received, the <code class="code docutils literal notranslate"><span class="pre">LOVE-Commander</span></code> sends the acknowledgement in the request’s response.
+Similarly, the :code:<a href="#id1"><span class="problematic" id="id2">`</span></a>Commander API`sends the acknowledgement in its response to the client request.</p>
+<p>Additionally, the <code class="code docutils literal notranslate"><span class="pre">Commander</span> <span class="pre">API</span></code> provides endpoints to request genera information from SAL (SAL Info). These requests are also handled by the <code class="code docutils literal notranslate"><span class="pre">LOVE-Commander</span></code>.</p>
 </div>
 <div class="section" id="consumers">
-<h3>3.1.2. Consumers<a class="headerlink" href="#consumers" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">3.1.4. </span>Consumers<a class="headerlink" href="#consumers" title="Permalink to this headline">¶</a></h3>
 <p>Once the client (LOVE-frontend) has an access token, it can establish a websocket connection with LOVE-manager’s <code class="code docutils literal notranslate"><span class="pre">Channels</span> <span class="pre">Layer</span></code>. Each client (LOVE-frontend) instance is connected to a unique <code class="code docutils literal notranslate"><span class="pre">Consumer</span></code> instance, which handles the communication with that particular client.
-Similarly, a <code class="code docutils literal notranslate"><span class="pre">Consumer</span></code> also handle the communication with a LOVE-producer instance.</p>
-<p>Each <code class="code docutils literal notranslate"><span class="pre">consumer</span></code> communicates only with their corresponding clients. In order to receive messages from other clients, the consumer of a client must subscribe to a given group.
+Similarly, a <code class="code docutils literal notranslate"><span class="pre">Consumer</span></code> also handles the communication with a LOVE-producer instance.</p>
+<p>Each <code class="code docutils literal notranslate"><span class="pre">consumer</span></code> communicates only with its corresponding client. In order to receive messages, the consumer of a client must subscribe to a given group.
 When a client sends a message to a group, it is forwarded to all the consumers subscribed to that group, which in turn send the message to their corresponding clients. All the message routing is done in the <code class="code docutils literal notranslate"><span class="pre">Channels</span> <span class="pre">Layer</span></code>.</p>
 </div>
 <div class="section" id="channel-layer">
-<h3>3.1.3. Channel Layer<a class="headerlink" href="#channel-layer" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">3.1.5. </span>Channel Layer<a class="headerlink" href="#channel-layer" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="code docutils literal notranslate"><span class="pre">Channels</span> <span class="pre">Layer</span></code> acts as the message handler, and is in charge of making sure every consumer receives the messages from the groups it has subscribed to.
 When a client sends a message to its <code class="code docutils literal notranslate"><span class="pre">Consumer</span></code>, it is forwarded to the <code class="code docutils literal notranslate"><span class="pre">Channels</span> <span class="pre">Layer</span></code>. The <code class="code docutils literal notranslate"><span class="pre">Channels</span> <span class="pre">Layer</span></code> forwards the message to all the consumers subscribed to the group, and each consumer forwards the messages to its corresponding client.</p>
 </div>
-<div class="section" id="db">
-<h3>3.1.4. DB<a class="headerlink" href="#db" title="Permalink to this headline">¶</a></h3>
-<p>The <code class="code docutils literal notranslate"><span class="pre">DB</span></code> is used to model and store the users data (username, password and permissions). It is currently implemented in a simple <code class="code docutils literal notranslate"><span class="pre">.sqlite3</span></code> file, and is initialized with default users and groups.</p>
+<div class="section" id="database">
+<h3><span class="section-number">3.1.6. </span>Database<a class="headerlink" href="#database" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="code docutils literal notranslate"><span class="pre">DB</span></code> is used to model and store the users data (username, password and permissions), and the UI Framework views. It is currently configured to be a <code class="code docutils literal notranslate"><span class="pre">PostgreSQL</span></code> instance, and it is initialized with default users and groups.</p>
 </div>
 </div>
 <div class="section" id="example">
-<h2>3.2. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">3.2. </span>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <p>In the figure above, we can see that <code class="code docutils literal notranslate"><span class="pre">Frontend</span> <span class="pre">1</span></code> subscribes to telemetry <code class="code docutils literal notranslate"><span class="pre">tel1</span></code> while <code class="code docutils literal notranslate"><span class="pre">Frontend</span> <span class="pre">2</span></code> subscribes to telemetries <code class="code docutils literal notranslate"><span class="pre">tel1</span></code> and <code class="code docutils literal notranslate"><span class="pre">tel2</span></code>.
 When <code class="code docutils literal notranslate"><span class="pre">Producer</span></code> sends a value for <code class="code docutils literal notranslate"><span class="pre">tel1</span></code> to its consumer <code class="code docutils literal notranslate"><span class="pre">Consumer</span> <span class="pre">producer</span></code>, the latter forwards <code class="code docutils literal notranslate"><span class="pre">tel1</span></code> to the <code class="code docutils literal notranslate"><span class="pre">Channels</span> <span class="pre">Layer</span></code>, which forwards <code class="code docutils literal notranslate"><span class="pre">tel1</span></code> to <code class="code docutils literal notranslate"><span class="pre">Consumer</span> <span class="pre">1</span></code> and <code class="code docutils literal notranslate"><span class="pre">Consumer</span> <span class="pre">2</span></code>, each of which send <code class="code docutils literal notranslate"><span class="pre">tel1</span></code> to  <code class="code docutils literal notranslate"><span class="pre">Frontend</span> <span class="pre">1</span></code> and <code class="code docutils literal notranslate"><span class="pre">Frontend</span> <span class="pre">2</span></code> respectively.</p>
 <p>Then, when <code class="code docutils literal notranslate"><span class="pre">Producer</span></code> sends a value for <code class="code docutils literal notranslate"><span class="pre">tel2</span></code> to <code class="code docutils literal notranslate"><span class="pre">Consumer</span> <span class="pre">producer</span></code>, the latter forwards <code class="code docutils literal notranslate"><span class="pre">tel2</span></code> to the <code class="code docutils literal notranslate"><span class="pre">Channels</span> <span class="pre">Layer</span></code>, which forwards <code class="code docutils literal notranslate"><span class="pre">tel2</span></code> to <code class="code docutils literal notranslate"><span class="pre">Consumer</span> <span class="pre">2</span></code> only. Then <code class="code docutils literal notranslate"><span class="pre">Consumer</span> <span class="pre">2</span></code> forwards the message to <code class="code docutils literal notranslate"><span class="pre">Frontend</span> <span class="pre">2</span></code>.
 In this case <code class="code docutils literal notranslate"><span class="pre">Frontend</span> <span class="pre">1</span></code> (and <code class="code docutils literal notranslate"><span class="pre">Consumer</span> <span class="pre">1</span></code>) never received <code class="code docutils literal notranslate"><span class="pre">tel2</span></code> because its not part of <code class="code docutils literal notranslate"><span class="pre">Consumer</span> <span class="pre">1</span></code> subscriptions.</p>
 </div>
 <div class="section" id="code-organization">
-<h2>3.3. Code organization<a class="headerlink" href="#code-organization" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">3.3. </span>Code organization<a class="headerlink" href="#code-organization" title="Permalink to this headline">¶</a></h2>
 <p>Currently the application is divided in the following modules and files:</p>
 <ul class="simple">
-<li><p><code class="code docutils literal notranslate"><span class="pre">api</span></code>: This module contains the <code class="code docutils literal notranslate"><span class="pre">API</span></code> Django app, which defines the models and API endpoints for authentication. For more details please refer to the ApiDoc section</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">api</span></code>: This module contains the <code class="code docutils literal notranslate"><span class="pre">API</span></code> Django app, which defines the models and API endpoints for authentication (<code class="code docutils literal notranslate"><span class="pre">Auth</span> <span class="pre">API</span></code>) and Commander (<code class="code docutils literal notranslate"><span class="pre">Commander</span> <span class="pre">API</span></code>) APIs. For more details please refer to the <a class="reference internal" href="../apidoc/modules.html#apidoc"><span class="std std-ref">ApiDoc</span></a> section</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">ui_framework</span></code>: This module contains the <code class="code docutils literal notranslate"><span class="pre">UI</span> <span class="pre">Framework</span></code> Django app, which defines the models and API endpoints for the UI Framework views (<code class="code docutils literal notranslate"><span class="pre">UI</span> <span class="pre">Framework</span> <span class="pre">API</span></code>) API. For more details please refer to the <a class="reference internal" href="../apidoc/modules.html#apidoc"><span class="std std-ref">ApiDoc</span></a> section</p></li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">subscription</span></code>: This module contains the Django app that defines the consumers that handle the websocket communication.</p></li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">manager</span></code>: This module contains basic Django configuration files, such as urls and channels routing, etc.</p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">manage.py</span></code>: This module is the main executable of the Django application, used mostly for development purposes, but also to execute some actions over the database, such as applying migrations, creating data, etc.</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">manage.py</span></code>: This module is the main executable of the Django application, used mostly for development purposes, but also to execute some actions over the database, such as applying migrations, saving data from fixtures, etc.</p></li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">pytest.ini</span></code>: This is the configuration file for the Pytest testing module.</p></li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">requierements.txt</span></code>: This file defines the python libraries required by the application.</p></li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">runserver.sh</span></code> and <code class="code docutils literal notranslate"><span class="pre">runserver-dev.sh</span></code>: These are simple scripts used to run the application inside the docker images.</p></li>

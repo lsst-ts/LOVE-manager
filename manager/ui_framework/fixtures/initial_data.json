@@ -1,20 +1,25 @@
 [
   {
     "model": "ui_framework.view",
-    "pk": 1,
+    "pk": 30,
     "fields": {
-      "creation_timestamp": "2020-01-14T19:47:37.600Z",
-      "update_timestamp": "2020-03-18T20:22:48.437Z",
-      "name": "Watcher",
+      "creation_timestamp": "2020-08-19T00:38:07.360Z",
+      "update_timestamp": "2020-08-19T00:38:07.360Z",
+      "name": "Dome-Mount test",
       "data": {
         "content": {
           "newPanel-1": {
-            "config": {},
-            "content": "Watcher",
+            "config": {
+              "title": "ScriptQueue",
+              "margin": true,
+              "salindex": 1,
+              "titleBar": true
+            },
+            "content": "ScriptQueue",
             "properties": {
-              "h": 41,
+              "h": 54,
               "i": 1,
-              "w": 64,
+              "w": 56,
               "x": 0,
               "y": 0,
               "type": "component"
@@ -22,17 +27,105 @@
           },
           "newPanel-2": {
             "config": {
-              "name": "Watcher",
+              "link": "",
+              "name": "Script",
+              "title": "Script.0 Logs",
+              "margin": true,
               "salindex": 0,
+              "titleBar": true,
+              "hasRawMode": false,
               "_functionProps": []
             },
             "content": "CSCExpanded",
             "properties": {
-              "h": 29,
+              "h": 45,
               "i": 2,
-              "w": 24,
-              "x": 64,
+              "w": 32,
+              "x": 56,
+              "y": 9,
+              "type": "component"
+            }
+          },
+          "newPanel-3": {
+            "config": {
+              "cscs": [
+                { "name": "ATMCS", "salindex": 0 },
+                { "name": "ATDome", "salindex": 0 },
+                { "name": "Watcher", "salindex": 0 },
+                { "name": "ScriptQueue", "salindex": 1 }
+              ],
+              "link": "",
+              "name": "CSC Summary",
+              "title": "CSC Summary",
+              "margin": true,
+              "titleBar": false,
+              "hasRawMode": false,
+              "_functionProps": ["subscribeToStreamCallback"],
+              "subscribeToStreamCallback": "() => {}"
+            },
+            "content": "CSCGroup",
+            "properties": {
+              "h": 9,
+              "i": 3,
+              "w": 25,
+              "x": 56,
               "y": 0,
+              "type": "component"
+            }
+          },
+          "newPanel-4": {
+            "config": {
+              "link": "",
+              "title": "Dome",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "Dome",
+            "properties": {
+              "h": 46,
+              "i": 4,
+              "w": 49,
+              "x": 0,
+              "y": 54,
+              "type": "component"
+            }
+          },
+          "newPanel-5": {
+            "config": {
+              "link": "",
+              "title": "AT Lightpath",
+              "margin": true,
+              "titleBar": true,
+              "lightPath": true,
+              "hasRawMode": true
+            },
+            "content": "LightPath",
+            "properties": {
+              "h": 33,
+              "i": 5,
+              "w": 20,
+              "x": 49,
+              "y": 54,
+              "type": "component",
+              "allowOverflow": true
+            }
+          },
+          "newPanel-6": {
+            "config": {
+              "link": "",
+              "title": "AT summary",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "MountSummaryPanel",
+            "properties": {
+              "h": 26,
+              "i": 6,
+              "w": 19,
+              "x": 69,
+              "y": 54,
               "type": "component"
             }
           }
@@ -53,24 +146,27 @@
   },
   {
     "model": "ui_framework.view",
-    "pk": 13,
+    "pk": 31,
     "fields": {
-      "creation_timestamp": "2020-01-28T18:20:02.787Z",
-      "update_timestamp": "2020-03-24T00:28:56.810Z",
-      "name": "ScripQueue",
+      "creation_timestamp": "2020-08-19T00:38:09.319Z",
+      "update_timestamp": "2020-08-19T00:38:09.319Z",
+      "name": "WeatherStation",
       "data": {
         "content": {
           "newPanel-1": {
             "config": {
-              "title": "ScriptQueue",
+              "link": "",
+              "title": "Weather station component",
+              "margin": true,
               "salindex": 1,
-              "titleBar": true
+              "titleBar": true,
+              "hasRawMode": false
             },
-            "content": "ScriptQueue",
+            "content": "WeatherStation",
             "properties": {
-              "h": 41,
+              "h": 57,
               "i": 1,
-              "w": 74,
+              "w": 56,
               "x": 0,
               "y": 0,
               "type": "component"
@@ -88,42 +184,68 @@
           "allowOverflow": true
         }
       },
-      "thumbnail": "thumbnails/view_13.png"
+      "thumbnail": "thumbnails/view_31.png"
     }
   },
   {
     "model": "ui_framework.view",
-    "pk": 15,
+    "pk": 33,
     "fields": {
-      "creation_timestamp": "2020-01-29T14:37:29.977Z",
-      "update_timestamp": "2020-03-24T00:35:39.815Z",
-      "name": "ObservingLog",
+      "creation_timestamp": "2020-08-19T00:39:09.619Z",
+      "update_timestamp": "2020-08-19T00:39:09.619Z",
+      "name": "Watcher + ObsLogs",
       "data": {
         "content": {
           "newPanel-1": {
             "config": {
-              "title": "Log input",
+              "link": "",
+              "title": "Watcher",
               "margin": true,
-              "titleBar": true
+              "titleBar": true,
+              "hasRawMode": true
             },
-            "content": "ObservingLogInput",
+            "content": "Watcher",
             "properties": {
-              "h": 30,
+              "h": 52,
               "i": 1,
-              "w": 42,
+              "w": 50,
               "x": 0,
               "y": 0,
               "type": "component"
             }
           },
           "newPanel-2": {
-            "config": { "title": "Log", "margin": true, "titleBar": true },
+            "config": {
+              "link": "",
+              "title": "Observing log",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
             "content": "ObservingLogMessages",
             "properties": {
-              "h": 30,
+              "h": 52,
               "i": 2,
-              "w": 34,
-              "x": 42,
+              "w": 20,
+              "x": 50,
+              "y": 0,
+              "type": "component"
+            }
+          },
+          "newPanel-3": {
+            "config": {
+              "link": "",
+              "title": "Observing log input",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "ObservingLogInput",
+            "properties": {
+              "h": 25,
+              "i": 3,
+              "w": 21,
+              "x": 70,
               "y": 0,
               "type": "component"
             }
@@ -140,36 +262,96 @@
           "allowOverflow": true
         }
       },
-      "thumbnail": "thumbnails/view_15.png"
+      "thumbnail": "thumbnails/view_32.png"
     }
   },
   {
     "model": "ui_framework.view",
-    "pk": 17,
+    "pk": 34,
     "fields": {
-      "creation_timestamp": "2020-01-30T20:50:00.479Z",
-      "update_timestamp": "2020-03-18T20:22:21.035Z",
-      "name": "CSCGroup",
+      "creation_timestamp": "2020-08-19T00:39:44.681Z",
+      "update_timestamp": "2020-08-19T00:39:44.681Z",
+      "name": "TimeDisplay",
       "data": {
         "content": {
           "newPanel-1": {
             "config": {
-              "cscs": [
-                { "name": "ATMCS", "salindex": 0 },
-                { "name": "ATPtg", "salindex": 0 },
-                { "name": "ATDome", "salindex": 0 },
-                { "name": "ATDomeTrajectory", "salindex": 0 },
-                { "name": "ATAOS", "salindex": 0 },
-                { "name": "ATPneumatics", "salindex": 0 },
-                { "name": "ATHexapod", "salindex": 0 }
-              ],
-              "name": "CSC group"
+              "title": "TimeDisplay",
+              "locale": "en-GB",
+              "margin": true,
+              "titleBar": true,
+              "clocks_layout": [
+                [
+                  {
+                    "name": "Local Time",
+                    "hideDate": false,
+                    "timezone": "local",
+                    "hideAnalog": false,
+                    "hideOffset": false
+                  },
+                  {
+                    "name": "Sidereal Time",
+                    "hideDate": true,
+                    "timezone": "sidereal-summit",
+                    "hideAnalog": false,
+                    "hideOffset": false
+                  }
+                ],
+                [
+                  [
+                    {
+                      "name": "La Serena",
+                      "hideDate": false,
+                      "timezone": "America/Santiago",
+                      "hideAnalog": true,
+                      "hideOffset": false
+                    },
+                    {
+                      "name": "Arizona",
+                      "hideDate": false,
+                      "timezone": "America/Phoenix",
+                      "hideAnalog": true,
+                      "hideOffset": false
+                    },
+                    {
+                      "name": "Illinois",
+                      "hideDate": false,
+                      "timezone": "America/Chicago",
+                      "hideAnalog": true,
+                      "hideOffset": false
+                    }
+                  ],
+                  [
+                    {
+                      "name": "Universal Time",
+                      "hideDate": false,
+                      "timezone": "UTC",
+                      "hideAnalog": true,
+                      "hideOffset": false
+                    },
+                    {
+                      "name": "International Atomic Time",
+                      "hideDate": false,
+                      "timezone": "TAI",
+                      "hideAnalog": true,
+                      "hideOffset": false
+                    },
+                    {
+                      "name": "Modified Julian Date",
+                      "hideDate": false,
+                      "timezone": "MJD",
+                      "hideAnalog": true,
+                      "hideOffset": false
+                    }
+                  ]
+                ]
+              ]
             },
-            "content": "CSCGroup",
+            "content": "TimeDisplay",
             "properties": {
-              "h": 19,
+              "h": 16,
               "i": 1,
-              "w": 12,
+              "w": 45,
               "x": 0,
               "y": 0,
               "type": "component"
@@ -187,25 +369,176 @@
           "allowOverflow": true
         }
       },
-      "thumbnail": "thumbnails/view_17.png"
+      "thumbnail": "thumbnails/view_34.png"
     }
   },
   {
     "model": "ui_framework.view",
-    "pk": 18,
+    "pk": 35,
     "fields": {
-      "creation_timestamp": "2020-02-06T18:25:23.153Z",
-      "update_timestamp": "2020-03-24T00:36:24.016Z",
+      "creation_timestamp": "2020-08-19T00:40:10.493Z",
+      "update_timestamp": "2020-08-19T00:40:28.975Z",
+      "name": "Network + Scheduler",
+      "data": {
+        "content": {
+          "newPanel-6": {
+            "config": {
+              "url": "https://dashboard.ampath.net/maddash-webui/index.cgi",
+              "link": "",
+              "title": "Network component",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": false
+            },
+            "content": "Network",
+            "properties": {
+              "h": 61,
+              "i": 6,
+              "w": 40,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          },
+          "newPanel-7": {
+            "config": {
+              "link": "",
+              "title": "Scheduler",
+              "margin": true,
+              "feedKey": "allSky",
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "Scheduler",
+            "properties": {
+              "h": 45,
+              "i": 7,
+              "w": 52,
+              "x": 40,
+              "y": 0,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": "thumbnails/view_35.png"
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 36,
+    "fields": {
+      "creation_timestamp": "2020-08-19T00:40:57.108Z",
+      "update_timestamp": "2020-08-19T00:40:57.108Z",
+      "name": "LATISS + Camera",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "title": "LATISS",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "LATISS",
+            "properties": {
+              "h": 33,
+              "i": 1,
+              "w": 49,
+              "x": 0,
+              "y": 12,
+              "type": "component"
+            }
+          },
+          "newPanel-2": {
+            "config": {
+              "link": "",
+              "title": "Camera",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "Camera",
+            "properties": {
+              "h": 12,
+              "i": 2,
+              "w": 49,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": "thumbnails/view_36.png"
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 37,
+    "fields": {
+      "creation_timestamp": "2020-08-19T00:41:33.170Z",
+      "update_timestamp": "2020-08-19T00:41:33.170Z",
       "name": "HealthStatusSummary",
       "data": {
         "content": {
           "newPanel-1": {
-            "config": { "title": "Health status summary", "titleBar": true },
+            "config": {
+              "link": "",
+              "title": "Health status summary",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true,
+              "topicConfiguration": {
+                "telemetry-ATDome-0-position": {
+                  "azimuthPosition": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
+                  "azimuthEncoderPosition": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
+                  "mainDoorOpeningPercentage": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
+                  "dropoutDoorOpeningPercentage": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;"
+                },
+                "telemetry-ATMCS-0-mount_AzEl_Encoders": {
+                  "cRIO_timestamp": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
+                  "elevationCalculatedAngle": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;"
+                },
+                "telemetry-ATMCS-0-mount_Nasmyth_Encoders": {
+                  "trackId": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
+                  "nasmyth1Encoder1Raw": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
+                  "nasmyth1Encoder2Raw": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
+                  "nasmyth1Encoder3Raw": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
+                  "nasmyth2Encoder1Raw": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
+                  "nasmyth2Encoder2Raw": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
+                  "nasmyth2Encoder3Raw": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
+                  "nasmyth1CalculatedAngle": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
+                  "nasmyth2CalculatedAngle": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;"
+                }
+              }
+            },
             "content": "HealthStatusSummary",
             "properties": {
-              "h": 44,
+              "h": 35,
               "i": 1,
-              "w": 78,
+              "w": 24,
               "x": 0,
               "y": 0,
               "type": "component"
@@ -223,42 +556,88 @@
           "allowOverflow": true
         }
       },
-      "thumbnail": "thumbnails/view_18.png"
+      "thumbnail": "thumbnails/view_37.png"
     }
   },
   {
     "model": "ui_framework.view",
-    "pk": 19,
+    "pk": 38,
     "fields": {
-      "creation_timestamp": "2020-02-06T18:27:24.173Z",
-      "update_timestamp": "2020-03-18T20:15:38.101Z",
-      "name": "TimeSeriesPlot",
+      "creation_timestamp": "2020-08-19T00:42:03.101Z",
+      "update_timestamp": "2020-08-19T00:42:29.834Z",
+      "name": "Dome & Mount",
       "data": {
         "content": {
           "newPanel-1": {
             "config": {
-              "layers": {
-                "Dome Azimuth": { "mark": { "interpolate": "linear" } }
-              },
-              "encoding": {
-                "color": {
-                  "scale": {
-                    "range": ["hsl(201, 70%, 40%)"],
-                    "domain": ["Dome Azimuth"]
-                  }
-                }
-              },
-              "accessors": "{ \"Dome Azimuth\": (data) => data.azimuthPosition.value }",
-              "groupNames": { "Dome Azimuth": "telemetry-ATDome-0-position" },
-              "dataSources": ["Dome Azimuth"],
-              "_functionProps": ["accessors"]
+              "link": "",
+              "title": "Dome",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
             },
-            "content": "TimeSeriesPlot",
+            "content": "Dome",
             "properties": {
-              "h": 8,
+              "h": 48,
               "i": 1,
-              "w": 31,
+              "w": 44,
               "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          },
+          "newPanel-2": {
+            "config": {
+              "link": "",
+              "title": "ATMount motors",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "MotorTable",
+            "properties": {
+              "h": 14,
+              "i": 2,
+              "w": 55,
+              "x": 44,
+              "y": 34,
+              "type": "component"
+            }
+          },
+          "newPanel-3": {
+            "config": {
+              "link": "",
+              "title": "AT Lightpath",
+              "margin": true,
+              "titleBar": true,
+              "lightPath": true,
+              "hasRawMode": true
+            },
+            "content": "LightPath",
+            "properties": {
+              "h": 34,
+              "i": 3,
+              "w": 20,
+              "x": 44,
+              "y": 0,
+              "type": "component",
+              "allowOverflow": true
+            }
+          },
+          "newPanel-4": {
+            "config": {
+              "link": "",
+              "title": "AT summary",
+              "margin": true,
+              "titleBar": false,
+              "hasRawMode": true
+            },
+            "content": "MountSummaryPanel",
+            "properties": {
+              "h": 34,
+              "i": 4,
+              "w": 15,
+              "x": 66,
               "y": 0,
               "type": "component"
             }
@@ -275,56 +654,21 @@
           "allowOverflow": true
         }
       },
-      "thumbnail": "thumbnails/view_19.png"
+      "thumbnail": "thumbnails/view_38.png"
     }
   },
   {
     "model": "ui_framework.view",
-    "pk": 20,
+    "pk": 39,
     "fields": {
-      "creation_timestamp": "2020-02-06T18:38:24.784Z",
-      "update_timestamp": "2020-03-18T20:15:31.100Z",
-      "name": "Int. TimeSeries",
-      "data": {
-        "content": {
-          "newPanel-1": {
-            "config": {},
-            "content": "InteractiveTimeSeries",
-            "properties": {
-              "h": 44,
-              "i": 1,
-              "w": 78,
-              "x": 0,
-              "y": 0,
-              "type": "component"
-            }
-          }
-        },
-        "properties": {
-          "h": 2,
-          "i": 0,
-          "w": 100,
-          "x": 0,
-          "y": 0,
-          "cols": 100,
-          "type": "container",
-          "allowOverflow": true
-        }
-      },
-      "thumbnail": "thumbnails/view_20.png"
-    }
-  },
-  {
-    "model": "ui_framework.view",
-    "pk": 21,
-    "fields": {
-      "creation_timestamp": "2020-02-06T18:39:27.152Z",
-      "update_timestamp": "2020-03-24T00:34:29.182Z",
-      "name": "CSCSummary",
+      "creation_timestamp": "2020-08-19T00:42:57.339Z",
+      "update_timestamp": "2020-08-19T00:42:57.339Z",
+      "name": "CSCSummary + CSCG",
       "data": {
         "content": {
           "newPanel-1": {
             "config": {
+              "link": "",
               "title": "CSC summary",
               "margin": true,
               "titleBar": true,
@@ -374,63 +718,87 @@
                   ],
                   "CSC Group 2": []
                 }
-              }
+              },
+              "hasRawMode": true
             },
             "content": "CSCSummary",
             "properties": {
-              "h": 43,
+              "h": 39,
               "i": 1,
-              "w": 79,
+              "w": 55,
               "x": 0,
-              "y": 0,
-              "type": "component"
-            }
-          }
-        },
-        "properties": {
-          "h": 2,
-          "i": 0,
-          "w": 100,
-          "x": 0,
-          "y": 0,
-          "cols": 100,
-          "type": "container",
-          "allowOverflow": true
-        }
-      },
-      "thumbnail": "thumbnails/view_21.png"
-    }
-  },
-  {
-    "model": "ui_framework.view",
-    "pk": 22,
-    "fields": {
-      "creation_timestamp": "2020-02-06T18:41:02.213Z",
-      "update_timestamp": "2020-03-18T20:15:15.774Z",
-      "name": "ATMount state",
-      "data": {
-        "content": {
-          "newPanel-1": {
-            "config": {},
-            "content": "MountSummaryPanel",
-            "properties": {
-              "h": 22,
-              "i": 1,
-              "w": 16,
-              "x": 54,
               "y": 0,
               "type": "component"
             }
           },
           "newPanel-2": {
-            "config": {},
-            "content": "MotorTable",
+            "config": {
+              "cscs": [
+                { "name": "ATMCS", "salindex": 0 },
+                { "name": "ATPtg", "salindex": 0 },
+                { "name": "ATDome", "salindex": 0 },
+                { "name": "ATDomeTrajectory", "salindex": 0 },
+                { "name": "ATAOS", "salindex": 0 },
+                { "name": "ATPneumatics", "salindex": 0 },
+                { "name": "ATHexapod", "salindex": 0 }
+              ],
+              "link": "",
+              "name": "CSC ATTCS",
+              "title": "CSC Aux Telescope",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": false,
+              "_functionProps": ["subscribeToStreamCallback"],
+              "subscribeToStreamCallback": "() => {}"
+            },
+            "content": "CSCGroup",
             "properties": {
-              "h": 11,
+              "h": 21,
               "i": 2,
-              "w": 53,
-              "x": 0,
+              "w": 13,
+              "x": 56,
               "y": 0,
+              "type": "component"
+            }
+          },
+          "newPanel-3": {
+            "config": {
+              "link": "",
+              "group": "CSC group",
+              "title": "CSC group log",
+              "margin": true,
+              "cscList": [{ "name": "ATMCS", "salindex": 0 }],
+              "titleBar": false,
+              "hasRawMode": false
+            },
+            "content": "CSCGroupLog",
+            "properties": {
+              "h": 17,
+              "i": 3,
+              "w": 24,
+              "x": 0,
+              "y": 39,
+              "type": "component"
+            }
+          },
+          "newPanel-4": {
+            "config": {
+              "link": "",
+              "name": "Test",
+              "title": "CSC expanded",
+              "margin": true,
+              "salindex": 1,
+              "titleBar": false,
+              "hasRawMode": false,
+              "_functionProps": []
+            },
+            "content": "CSCExpanded",
+            "properties": {
+              "h": 17,
+              "i": 4,
+              "w": 22,
+              "x": 24,
+              "y": 39,
               "type": "component"
             }
           }
@@ -446,193 +814,69 @@
           "allowOverflow": true
         }
       },
-      "thumbnail": "thumbnails/view_22.png"
+      "thumbnail": "thumbnails/view_39.png"
     }
   },
   {
     "model": "ui_framework.view",
-    "pk": 23,
+    "pk": 40,
     "fields": {
-      "creation_timestamp": "2020-02-06T18:44:05.822Z",
-      "update_timestamp": "2020-03-24T00:37:51.090Z",
-      "name": "ATMount overview",
-      "data": {
-        "content": {
-          "newPanel-2": {
-            "config": { "title": "ATMount overview", "titleBar": true, "hasRawMode": true},
-            "content": "Dome",
-            "properties": {
-              "h": 42,
-              "i": 2,
-              "w": 57,
-              "x": 0,
-              "y": 0,
-              "type": "component"
-            }
-          }
-        },
-        "properties": {
-          "h": 2,
-          "i": 0,
-          "w": 100,
-          "x": 0,
-          "y": 0,
-          "cols": 100,
-          "type": "container",
-          "allowOverflow": true
-        }
-      },
-      "thumbnail": "thumbnails/view_23.png"
-    }
-  },
-  {
-    "model": "ui_framework.view",
-    "pk": 24,
-    "fields": {
-      "creation_timestamp": "2020-02-06T18:45:04.971Z",
-      "update_timestamp": "2020-03-24T00:39:19.128Z",
-      "name": "AT Lightpath",
+      "creation_timestamp": "2020-08-19T00:44:16.660Z",
+      "update_timestamp": "2020-08-19T00:44:16.660Z",
+      "name": "Random view",
       "data": {
         "content": {
           "newPanel-1": {
             "config": {
-              "title": "AT Lightpath",
+              "link": "",
+              "title": "Dome",
               "margin": true,
               "titleBar": true,
               "hasRawMode": true
             },
-            "content": "LightPath",
+            "content": "Dome",
             "properties": {
-              "h": 36,
+              "h": 44,
               "i": 1,
-              "w": 23,
+              "w": 50,
               "x": 0,
               "y": 0,
-              "type": "component",
-              "allowOverflow": true
+              "type": "component"
             }
           },
           "newPanel-2": {
-            "config": {},
-            "content": "MountSummaryPanel",
-            "properties": {
-              "h": 22,
-              "i": 2,
-              "w": 15,
-              "x": 23,
-              "y": 1,
-              "type": "component"
-            }
-          }
-        },
-        "properties": {
-          "h": 2,
-          "i": 0,
-          "w": 100,
-          "x": 0,
-          "y": 0,
-          "cols": 100,
-          "type": "container",
-          "allowOverflow": true
-        }
-      },
-      "thumbnail": "thumbnails/view_24.png"
-    }
-  },
-  {
-    "model": "ui_framework.view",
-    "pk": 25,
-    "fields": {
-      "creation_timestamp": "2020-02-06T18:45:55.011Z",
-      "update_timestamp": "2020-03-24T00:40:17.172Z",
-      "name": "LATISS",
-      "data": {
-        "content": {
-          "newPanel-1": {
-            "config": { "title": "LATISS", "titleBar": true, "hasRawMode": true},
+            "config": {
+              "link": "",
+              "title": "LATISS",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
             "content": "LATISS",
             "properties": {
-              "h": 31,
-              "i": 1,
-              "w": 61,
-              "x": 0,
+              "h": 29,
+              "i": 2,
+              "w": 50,
+              "x": 50,
               "y": 0,
               "type": "component"
             }
-          }
-        },
-        "properties": {
-          "h": 2,
-          "i": 0,
-          "w": 100,
-          "x": 0,
-          "y": 0,
-          "cols": 100,
-          "type": "container",
-          "allowOverflow": true
-        }
-      },
-      "thumbnail": "thumbnails/view_25.png"
-    }
-  },
-  {
-    "model": "ui_framework.view",
-    "pk": 26,
-    "fields": {
-      "creation_timestamp": "2020-02-06T18:46:23.602Z",
-      "update_timestamp": "2020-03-24T00:39:59.273Z",
-      "name": "ATCamera",
-      "data": {
-        "content": {
-          "newPanel-1": {
-            "config": { "title": "AT camera", "titleBar": true },
-            "content": "Camera",
-            "properties": {
-              "h": 23,
-              "i": 1,
-              "w": 44,
-              "x": 0,
-              "y": 0,
-              "type": "component"
-            }
-          }
-        },
-        "properties": {
-          "h": 2,
-          "i": 0,
-          "w": 100,
-          "x": 0,
-          "y": 0,
-          "cols": 100,
-          "type": "container",
-          "allowOverflow": true
-        }
-      },
-      "thumbnail": "thumbnails/view_26.png"
-    }
-  },
-  {
-    "model": "ui_framework.view",
-    "pk": 27,
-    "fields": {
-      "creation_timestamp": "2020-02-06T19:17:11.021Z",
-      "update_timestamp": "2020-03-24T00:34:57.871Z",
-      "name": "AT generic camera",
-      "data": {
-        "content": {
-          "newPanel-1": {
+          },
+          "newPanel-3": {
             "config": {
-              "title": "Generic Camera",
+              "link": "",
+              "title": "ATMount motors",
+              "margin": true,
               "titleBar": true,
-              "serverURL": "http://localhost/gencam"
+              "hasRawMode": true
             },
-            "content": "GenericCamera",
+            "content": "MotorTable",
             "properties": {
-              "h": 36,
-              "i": 1,
-              "w": 52,
-              "x": 0,
-              "y": 0,
+              "h": 15,
+              "i": 3,
+              "w": 49,
+              "x": 50,
+              "y": 29,
               "type": "component"
             }
           }
@@ -648,7 +892,7 @@
           "allowOverflow": true
         }
       },
-      "thumbnail": "thumbnails/view_27.png"
+      "thumbnail": "thumbnails/view_40.png"
     }
   }
 ]

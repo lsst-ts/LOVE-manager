@@ -8,6 +8,18 @@ from api.models import Token
 
 @database_sync_to_async
 def get_user(token):
+    """Get the user associated to a given token.
+
+    Parameters
+    ----------
+    token: `string`
+        The token used for authentication.
+
+    Returns
+    -------
+    `User`
+        The User associated to the token, or AnonymousUser if the token was not found.
+    """
     if not token:
         return AnonymousUser()
 
@@ -36,16 +48,27 @@ class TokenAuthMiddleware:
 
 
 class TokenAuthMiddlewareInstance:
+    """Class that builds the instance of the TokenAuthMiddleware."""
+
     def __init__(self, scope, middleware):
         self.middleware = middleware
         self.scope = dict(scope)
         self.inner = self.middleware.inner
 
     async def __call__(self, receive, send):
+        """Verify if the user is authenticated.
+
+        Parameters
+        ----------
+        scope: `dict`
+            dictionary defining parameters for the authentication
+        """
         close_old_connections()
-        query_string = self.scope.get('query_string').decode()
+        query_string = self.scope.get("query_string").decode()
         data = urlparse.parse_qs(query_string)
-        self.scope['user'] = await get_user(data['token'][0] if 'token' in data else None)
-        self.scope['password'] = data['password'][0] if 'password' in data else None
+        self.scope["user"] = await get_user(
+            data["token"][0] if "token" in data else None
+        )
+        self.scope["password"] = data["password"][0] if "password" in data else None
         inner = self.inner(self.scope)
         return await inner(receive, send)

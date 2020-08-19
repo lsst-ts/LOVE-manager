@@ -16,74 +16,196 @@ class CommanderTestCase(TestCase):
         # Arrange
         self.client = APIClient()
         self.user = User.objects.create_user(
-            username='an user',
-            password='password',
-            email='test@user.cl',
-            first_name='First',
-            last_name='Last',
+            username="an user",
+            password="password",
+            email="test@user.cl",
+            first_name="First",
+            last_name="Last",
         )
         self.token = Token.objects.create(user=self.user)
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
-        self.user.user_permissions.add(Permission.objects.get(codename='view_view'),
-                                       Permission.objects.get(codename='add_view'),
-                                       Permission.objects.get(codename='delete_view'),
-                                       Permission.objects.get(codename='change_view'))
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token.key)
+        self.user.user_permissions.add(
+            Permission.objects.get(codename="view_view"),
+            Permission.objects.get(codename="add_view"),
+            Permission.objects.get(codename="delete_view"),
+            Permission.objects.get(codename="change_view"),
+        )
 
-    @patch('os.environ.get', side_effect= lambda arg: 'fakehost' if arg=='COMMANDER_HOSTNAME' else 'fakeport')
-    @patch('requests.post')
+    @patch(
+        "os.environ.get",
+        side_effect=lambda arg: "fakehost"
+        if arg == "COMMANDER_HOSTNAME"
+        else "fakeport",
+    )
+    @patch("requests.post")
     def test_authorized_commander_data(self, mock_requests, mock_environ):
         """Test authorized user commander data is sent to love-commander"""
         # Arrange:
-        self.user.user_permissions.add(Permission.objects.get(name='Execute Commands'))
+        self.user.user_permissions.add(Permission.objects.get(name="Execute Commands"))
 
         # Act:
-        url = reverse('commander')
+        url = reverse("commander")
         data = {
-            'csc': 'Test',
-            'salindex': 1,
-            'cmd': 'cmd_setScalars',
-            'params': {
-                'a': 1,
-                'b': 2
-            }
+            "csc": "Test",
+            "salindex": 1,
+            "cmd": "cmd_setScalars",
+            "params": {"a": 1, "b": 2},
         }
 
         with self.assertRaises(ValueError):
-            response = self.client.post(url, data, format='json')
-        fakehostname = 'fakehost'
-        fakeport = 'fakeport'
+            response = self.client.post(url, data, format="json")
+        fakehostname = "fakehost"
+        fakeport = "fakeport"
         expected_url = f"http://fakehost:fakeport/cmd"
-        self.assertEqual(
-            mock_requests.call_args,
-            call(expected_url, json=data)
-        )
-    
-    @patch('os.environ.get', side_effect= lambda arg: 'fakehost' if arg=='COMMANDER_HOSTNAME' else 'fakeport')
-    @patch('requests.post')
+        self.assertEqual(mock_requests.call_args, call(expected_url, json=data))
+
+    @patch(
+        "os.environ.get",
+        side_effect=lambda arg: "fakehost"
+        if arg == "COMMANDER_HOSTNAME"
+        else "fakeport",
+    )
+    @patch("requests.post")
     def test_unauthorized_commander(self, mock_requests, mock_environ):
         """Test an unauthorized user can't send commands"""
         # Act:
-        url = reverse('commander')
+        url = reverse("commander")
         data = {
-            'csc': 'Test',
-            'salindex': 1,
-            'cmd': 'cmd_setScalars',
-            'params': {
-                'a': 1,
-                'b': 2
-            }
+            "csc": "Test",
+            "salindex": 1,
+            "cmd": "cmd_setScalars",
+            "params": {"a": 1, "b": 2},
         }
 
-        response = self.client.post(url, data, format='json')
+        response = self.client.post(url, data, format="json")
         result = response.json()
 
+        self.assertEqual(response.status_code, 401)
         self.assertEqual(
-            response.status_code,
-            401
+            result, {"ack": "User does not have permissions to execute commands."}
         )
-        self.assertEqual(
-            result,
-            {
-                "ack": "User does not have permissions to execute commands."
-            }
+
+
+@override_settings(DEBUG=True)
+class SalinfoTestCase(TestCase):
+    maxDiff = None
+
+    def setUp(self):
+        """Define the test suite setup."""
+        # Arrange
+        self.client = APIClient()
+        self.user = User.objects.create_user(
+            username="an user",
+            password="password",
+            email="test@user.cl",
+            first_name="First",
+            last_name="Last",
         )
+        self.token = Token.objects.create(user=self.user)
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token.key)
+        self.user.user_permissions.add(
+            Permission.objects.get(codename="view_view"),
+            Permission.objects.get(codename="add_view"),
+            Permission.objects.get(codename="delete_view"),
+            Permission.objects.get(codename="change_view"),
+        )
+
+    @patch(
+        "os.environ.get",
+        side_effect=lambda arg: "fakehost"
+        if arg == "COMMANDER_HOSTNAME"
+        else "fakeport",
+    )
+    @patch("requests.get")
+    def test_salinfo_metadata(self, mock_requests, mock_environ):
+        """Test authorized user can get salinfo metadata"""
+        # Act:
+        url = reverse("salinfo-metadata")
+
+        with self.assertRaises(ValueError):
+            response = self.client.get(url)
+        fakehostname = "fakehost"
+        fakeport = "fakeport"
+        expected_url = f"http://fakehost:fakeport/salinfo/metadata"
+        self.assertEqual(mock_requests.call_args, call(expected_url))
+
+    @patch(
+        "os.environ.get",
+        side_effect=lambda arg: "fakehost"
+        if arg == "COMMANDER_HOSTNAME"
+        else "fakeport",
+    )
+    @patch("requests.get")
+    def test_salinfo_topic_names(self, mock_requests, mock_environ):
+        """Test authorized user can get salinfo topic_names"""
+        # Act:
+        url = reverse("salinfo-topic-names")
+
+        with self.assertRaises(ValueError):
+            response = self.client.get(url)
+        fakehostname = "fakehost"
+        fakeport = "fakeport"
+        expected_url = f"http://fakehost:fakeport/salinfo/topic-names"
+        self.assertEqual(mock_requests.call_args, call(expected_url))
+
+    @patch(
+        "os.environ.get",
+        side_effect=lambda arg: "fakehost"
+        if arg == "COMMANDER_HOSTNAME"
+        else "fakeport",
+    )
+    @patch("requests.get")
+    def test_salinfo_topic_names_with_param(self, mock_requests, mock_environ):
+        """Test authorized user can get salinfo topic_names with query param"""
+        # Act:
+        url = reverse("salinfo-topic-names") + "?categories=telemetry"
+
+        with self.assertRaises(ValueError):
+            response = self.client.get(url)
+        fakehostname = "fakehost"
+        fakeport = "fakeport"
+        expected_url = (
+            f"http://fakehost:fakeport/salinfo/topic-names?categories=telemetry"
+        )
+        self.assertEqual(mock_requests.call_args, call(expected_url))
+
+    @patch(
+        "os.environ.get",
+        side_effect=lambda arg: "fakehost"
+        if arg == "COMMANDER_HOSTNAME"
+        else "fakeport",
+    )
+    @patch("requests.get")
+    def test_salinfo_topic_data(self, mock_requests, mock_environ):
+        """Test authorized user can get salinfo topic_data"""
+        # Act:
+        url = reverse("salinfo-topic-data")
+
+        with self.assertRaises(ValueError):
+            response = self.client.get(url)
+        fakehostname = "fakehost"
+        fakeport = "fakeport"
+        expected_url = f"http://fakehost:fakeport/salinfo/topic-data"
+        self.assertEqual(mock_requests.call_args, call(expected_url))
+
+    @patch(
+        "os.environ.get",
+        side_effect=lambda arg: "fakehost"
+        if arg == "COMMANDER_HOSTNAME"
+        else "fakeport",
+    )
+    @patch("requests.get")
+    def test_salinfo_topic_data_with_param(self, mock_requests, mock_environ):
+        """Test authorized user can get salinfo topic_data with query param"""
+        # Act:
+        url = reverse("salinfo-topic-data") + "?categories=telemetry"
+
+        with self.assertRaises(ValueError):
+            response = self.client.get(url)
+        fakehostname = "fakehost"
+        fakeport = "fakeport"
+        expected_url = (
+            f"http://fakehost:fakeport/salinfo/topic-data?categories=telemetry"
+        )
+        self.assertEqual(mock_requests.call_args, call(expected_url))
+

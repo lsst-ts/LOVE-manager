@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -144,7 +144,7 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>4. Readme File</li>
+      <li><span class="section-number">4. </span>Readme File</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -164,14 +164,14 @@
            <div itemprop="articleBody">
             
   <div class="section" id="readme-file">
-<h1>4. Readme File<a class="headerlink" href="#readme-file" title="Permalink to this headline">¶</a></h1>
+<h1><span class="section-number">4. </span>Readme File<a class="headerlink" href="#readme-file" title="Permalink to this headline">¶</a></h1>
 <p>This repository contains the code of the Django Channels project that acts as middleware for the LOVE-frontend</p>
 <p>See the documentation here: <a class="reference external" href="https://lsst-ts.github.io/LOVE-manager/html/index.html">https://lsst-ts.github.io/LOVE-manager/html/index.html</a></p>
 <div class="section" id="use-as-part-of-the-love-system">
-<h2>4.1. Use as part of the LOVE system<a class="headerlink" href="#use-as-part-of-the-love-system" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">4.1. </span>Use as part of the LOVE system<a class="headerlink" href="#use-as-part-of-the-love-system" title="Permalink to this headline">¶</a></h2>
 <p>In order to use the LOVE-manager as part of the LOVE system we recommend to use the docker-compose and configuration files provided in the <a class="reference external" href="https://github.com/lsst-ts/LOVE-integration-tools">LOVE-integration-tools</a> repo. Please follow the instructions there.</p>
 <div class="section" id="initialize-environment-variables">
-<h3>4.1.1. Initialize Environment variables<a class="headerlink" href="#initialize-environment-variables" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">4.1.1. </span>Initialize Environment variables<a class="headerlink" href="#initialize-environment-variables" title="Permalink to this headline">¶</a></h3>
 <p>In order to use the LOVE-manager, some environment variables must be defined before it is run.
 All these variables are initialized with default variables defined in <code class="code docutils literal notranslate"><span class="pre">.env</span></code> files defined in the corresponding deployment environment defined in <a class="reference external" href="https://github.com/lsst-ts/LOVE-integration-tools">LOVE-integration-tools</a>. The are:</p>
 <ul class="simple">
@@ -194,29 +194,29 @@ All these variables are initialized with default variables defined in <code clas
 </div>
 </div>
 <div class="section" id="local-load-for-development">
-<h2>4.2. Local load for development<a class="headerlink" href="#local-load-for-development" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">4.2. </span>Local load for development<a class="headerlink" href="#local-load-for-development" title="Permalink to this headline">¶</a></h2>
 <p>We provide a docker image and a docker-compose file in order to load the LOVE-manager with a Postgres database locally, for development purposes, such as run tests and build documentation.</p>
 <p>This docker-compose does not copy the code into the image, but instead it mounts the repository inside the image, this way you can edit the code from outside the docker container with no need to rebuild or restart.</p>
 <div class="section" id="load-and-get-into-the-docker-image">
-<h3>4.2.1. Load and get into the docker image<a class="headerlink" href="#load-and-get-into-the-docker-image" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">4.2.1. </span>Load and get into the docker image<a class="headerlink" href="#load-and-get-into-the-docker-image" title="Permalink to this headline">¶</a></h3>
 <p>Follow these instructions to run the application in a docker container and get into it:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span><span class="o">-</span><span class="n">compose</span> <span class="n">up</span> <span class="o">-</span><span class="n">d</span>
-<span class="n">docker</span><span class="o">-</span><span class="k">exec</span> <span class="n">manager</span> <span class="n">bash</span>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>docker-compose up -d
+docker-compose exec manager bash
 </pre></div>
 </div>
 </div>
 <div class="section" id="run-tests">
-<h3>4.2.2. Run tests<a class="headerlink" href="#run-tests" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">4.2.2. </span>Run tests<a class="headerlink" href="#run-tests" title="Permalink to this headline">¶</a></h3>
 <p>Once inside the container you will be in the <code class="docutils literal notranslate"><span class="pre">/usr/src/love/manager</span></code> folder, where you can run the tests as follows:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">pytest</span>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>pytest
 </pre></div>
 </div>
 </div>
 <div class="section" id="build-documentation">
-<h3>4.2.3. Build documentation<a class="headerlink" href="#build-documentation" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">4.2.3. </span>Build documentation<a class="headerlink" href="#build-documentation" title="Permalink to this headline">¶</a></h3>
 <p>Once inside the container you will be in the <code class="docutils literal notranslate"><span class="pre">/usr/src/love/manager</span></code> folder, where you can move out to the <code class="docutils literal notranslate"><span class="pre">docsrc</span></code> folder and build the documentation as follows:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="p">..</span><span class="o">/</span><span class="n">docsrc</span>
-<span class="p">.</span><span class="o">/</span><span class="n">create_docs</span><span class="p">.</span><span class="n">sh</span>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>cd ../docsrc
+./create_docs.sh
 </pre></div>
 </div>
 </div>

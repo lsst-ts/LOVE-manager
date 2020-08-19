@@ -19,6 +19,7 @@ class AuthApiTestCase(TestCase):
         # Arrange:
         self.client = APIClient()
         self.username = "test"
+        self.username2 = "test2"
         self.password = "password"
         self.user = User.objects.create_user(
             username=self.username,
@@ -27,13 +28,27 @@ class AuthApiTestCase(TestCase):
             first_name="First",
             last_name="Last",
         )
+        self.user2 = User.objects.create_user(
+            username=self.username2,
+            password="password",
+            email="test2@user.cl",
+            first_name="First2",
+            last_name="Last2",
+        )
         self.user.user_permissions.add(Permission.objects.get(name="Execute Commands"))
+        self.user2.user_permissions.add(Permission.objects.get(name="Execute Commands"))
         self.login_url = reverse("login")
         self.validate_token_url = reverse("validate-token")
+        self.validate_token_no_config_url = reverse(
+            "validate-token", kwargs={"flags": "no_config"}
+        )
         self.logout_url = reverse("logout")
+        self.swap_url = reverse("swap-user")
+        self.swap_no_config_url = reverse("swap-user", kwargs={"flags": "no_config"})
         self.expected_permissions = {
             "execute_commands": True,
         }
+        self.expected_config = {"setting1": {"setting11": 1, "setting12": 2}}
 
     def test_user_login(self):
         """Test that a user can request a token using name and password."""
@@ -70,6 +85,11 @@ class AuthApiTestCase(TestCase):
         self.assertTrue(
             utils.assert_time_data(response.data["time_data"]),
             "Time data is not as expected",
+        )
+        self.assertEqual(
+            response.data["config"],
+            self.expected_config,
+            "The config was not requested",
         )
 
     def test_user_login_failed(self):
@@ -159,6 +179,46 @@ class AuthApiTestCase(TestCase):
             utils.assert_time_data(response.data["time_data"]),
             "Time data is not as expected",
         )
+        self.assertEqual(
+            response.data["config"],
+            self.expected_config,
+            "The config was not requested",
+        )
+
+    def test_user_validate_token_no_config(self):
+        """Test that a user can validate a token and not receive the config passing the no_config query param."""
+        # Arrange:
+        data = {"username": self.username, "password": self.password}
+        response = self.client.post(self.login_url, data, format="json")
+        token = Token.objects.filter(user__username=self.username).first()
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
+
+        # Act:
+        print("self.validate_token_no_config_url: ", self.validate_token_no_config_url)
+        response = self.client.get(
+            self.validate_token_no_config_url, data, format="json"
+        )
+
+        # Assert after request:
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            response.data["token"], token.key, "The response is not as expected"
+        )
+        self.assertEqual(
+            response.data["permissions"],
+            self.expected_permissions,
+            "The permissions are not as expected",
+        )
+        self.assertEqual(
+            response.data["user"],
+            {"username": self.user.username, "email": self.user.email,},
+            "The user is not as expected",
+        )
+        self.assertTrue(
+            utils.assert_time_data(response.data["time_data"]),
+            "Time data is not as expected",
+        )
+        self.assertEqual(response.data["config"], None, "The config was requested")
 
     def test_user_validate_token_fail(self):
         """Test that a user fails to validate an invalid token."""
@@ -236,3 +296,102 @@ class AuthApiTestCase(TestCase):
             old_tokens_count - 1, new_tokens_count, "The token was not deleted"
         )
 
+    def test_user_swap(self):
+        """Test that a logged user can be swapped"""
+        # Arrange login:
+        data = {"username": self.username, "password": self.password}
+        user_1_tokens_num_0 = Token.objects.filter(user__username=self.username).count()
+        user_2_tokens_num_0 = Token.objects.filter(
+            user__username=self.username2
+        ).count()
+        response = self.client.post(self.login_url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Act:
+        data = {"username": self.username2, "password": self.password}
+        token = Token.objects.filter(user__username=self.username).first()
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
+        response = self.client.post(self.swap_url, data, format="json")
+        user_1_tokens_num_1 = Token.objects.filter(user__username=self.username).count()
+        user_2_tokens_num_1 = Token.objects.filter(
+            user__username=self.username2
+        ).count()
+        # Assert:
+        self.assertEqual(
+            user_1_tokens_num_1,
+            user_1_tokens_num_0,
+            "User 1 has the same number of tokens as before logging in",
+        )
+        self.assertEqual(
+            user_2_tokens_num_1, user_2_tokens_num_0 + 1, "User 2 has one more token"
+        )
+        # Act 2:
+        token = Token.objects.filter(user__username=self.username2).first()
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
+        response = self.client.get(self.validate_token_url)
+        # Assert 2:
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            response.data["config"], self.expected_config,
+        )
+
+    def test_user_swap_no_config(self):
+        """Test that a logged user can be swapped and not request config"""
+        # Arrange login:
+        data = {"username": self.username, "password": self.password}
+        user_1_tokens_num_0 = Token.objects.filter(user__username=self.username).count()
+        user_2_tokens_num_0 = Token.objects.filter(
+            user__username=self.username2
+        ).count()
+        response = self.client.post(self.login_url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Act:
+        data = {"username": self.username2, "password": self.password}
+        token = Token.objects.filter(user__username=self.username).first()
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
+        response = self.client.post(self.swap_no_config_url, data, format="json")
+        user_1_tokens_num_1 = Token.objects.filter(user__username=self.username).count()
+        user_2_tokens_num_1 = Token.objects.filter(
+            user__username=self.username2
+        ).count()
+        # Assert:
+        self.assertEqual(
+            user_1_tokens_num_1,
+            user_1_tokens_num_0,
+            "User 1 has the same number of tokens as before logging in",
+        )
+        self.assertEqual(
+            user_2_tokens_num_1, user_2_tokens_num_0 + 1, "User 2 has one more token"
+        )
+        self.assertEqual(response.data["config"], None, "The config was requested")
+        # Act 2:
+        token = Token.objects.filter(user__username=self.username2).first()
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
+        response = self.client.get(self.validate_token_no_config_url)
+        # Assert 2:
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["config"], None, "The config was requested")
+
+    def test_user_swap_forbidden(self):
+        """Test that a user that's not logged in cannot swap users"""
+        # Arrange logout:
+        response = self.client.delete(self.logout_url, format="json")
+        self.client.logout()
+        data = {"username": self.username, "password": self.password}
+        # Act:
+        response = self.client.post(self.swap_url, data, format="json")
+        # Assert:
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_user_swap_wrong_credentials(self):
+        """Test that a user that's not logged in cannot swap users"""
+        # Arrange login:
+        data = {"username": self.username, "password": self.password}
+        response = self.client.post(self.login_url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # Act swap with wrong credentials:
+        data = {"username": self.username, "password": "wrong_password"}
+        response = self.client.post(self.swap_url, data, format="json")
+        # Assert:
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)

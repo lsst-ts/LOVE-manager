@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -87,7 +87,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#authentication">2.1. Authentication</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#request-token">2.1.1. Request token</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#validate-token">2.1.2. Validate token</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#logout">2.1.3. Logout</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#swap-token">2.1.3. Swap token</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#logout">2.1.4. Logout</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#websockets-connection">2.2. Websockets Connection</a><ul>
@@ -95,17 +96,57 @@
 <li class="toctree-l3"><a class="reference internal" href="#authenticate-with-password">2.2.2. Authenticate with password</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#websockets-group-subscriptions">2.3. Websockets Group Subscriptions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#websockets-messages">2.3. Websockets Messages</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#love-manager-subscriptions-scheme">2.3.1. LOVE-manager Subscriptions scheme</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#accepted-messages">2.3.2. Accepted messages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#messages-types">2.3.2. Messages types</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#subscription-messages">2.3.2.1. Subscription messages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#telemetry-or-event-messages">2.3.2.2. Telemetry or Event messages</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#command-messages">2.3.2.3. Command messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#heartbeat-messages">2.3.2.3. Heartbeat messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#action-messages">2.3.2.4. Action messages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#observing-log-messages">2.3.2.5. Observing Log messages</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#ui-framework">2.4. UI Framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#commander-and-other-actions-api">2.4. Commander and Other actions API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#command">2.4.1. Command</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#validate-config-schema">2.4.2. Validate Config Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sal-info-metadata">2.4.3. SAL Info - Metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sal-info-topic-names">2.4.4. SAL Info - Topic Names</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sal-info-topic-data">2.4.5. SAL Info - Topic Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#love-config-file">2.4.6. LOVE Config File</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ui-framework">2.5. UI Framework</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#unauthenticated-responses">2.5.1. Unauthenticated responses</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#unauthorized-responses">2.5.2. Unauthorized responses</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#views-requests">2.5.3. Views Requests</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#create-view">2.5.3.1. Create View</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#retrieve-views">2.5.3.2. Retrieve Views</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#update-view">2.5.3.3. Update View</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#delete-view">2.5.3.4. Delete View</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#get-views-summary">2.5.3.5. Get Views Summary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#search-view">2.5.3.6. Search View</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#workspaces-requests">2.5.4. Workspaces Requests</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#create-workspace">2.5.4.1. Create Workspace</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#retrieve-workspaces">2.5.4.2. Retrieve Workspaces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#update-workspace">2.5.4.3. Update Workspace</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#delete-workspace">2.5.4.4. Delete Workspace</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#get-full-workspace">2.5.4.5. Get Full Workspace</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#get-workspace-with-views-names">2.5.4.6. Get Workspace with Views names</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#workspaceviews-requests">2.5.5. WorkspaceViews Requests</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#create-workspaceview">2.5.5.1. Create WorkspaceView</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#retrieve-workspaceviews">2.5.5.2. Retrieve WorkspaceViews</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#update-workspaceview">2.5.5.3. Update WorkspaceView</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#delete-workspaceview">2.5.5.4. Delete WorkspaceView</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="how_it_works.html">3. How it works</a></li>
@@ -156,7 +197,7 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>2. How to use it</li>
+      <li><span class="section-number">2. </span>How to use it</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -176,19 +217,19 @@
            <div itemprop="articleBody">
             
   <div class="section" id="how-to-use-it">
-<h1>2. How to use it<a class="headerlink" href="#how-to-use-it" title="Permalink to this headline">¶</a></h1>
+<h1><span class="section-number">2. </span>How to use it<a class="headerlink" href="#how-to-use-it" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="authentication">
-<h2>2.1. Authentication<a class="headerlink" href="#authentication" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">2.1. </span>Authentication<a class="headerlink" href="#authentication" title="Permalink to this headline">¶</a></h2>
 <p>LOVE-manager provides a token-based authentication mechanism.
 Clients may request a token providing their credentials (username and password).</p>
 <p>Token request, validation and logout operations are done via HTTP requests as follows:</p>
 <div class="section" id="request-token">
-<h3>2.1.1. Request token<a class="headerlink" href="#request-token" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">2.1.1. </span>Request token<a class="headerlink" href="#request-token" title="Permalink to this headline">¶</a></h3>
 <p>Requests a new authorization token.
 Returns token, user data and permissions</p>
 <ul class="simple">
 <li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/api/get-token/</span></code></p></li>
-<li><p>HTTP Operation: post</p></li>
+<li><p>HTTP Operation: POST</p></li>
 <li><p>Message JSON data:</p></li>
 </ul>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -203,13 +244,31 @@ Returns token, user data and permissions</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
   <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;username&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;email&gt;&quot;</span>
+    <span class="p">},</span>
     <span class="nt">&quot;token&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;token&gt;&quot;</span><span class="p">,</span>
     <span class="nt">&quot;permissions&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;execute_commands&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;True/False&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;execute_commands&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;true or false&gt;&quot;</span>
     <span class="p">},</span>
-    <span class="nt">&quot;user_data&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;username&gt;&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;password&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;password&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;time_data&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;utc&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;server UTC time as a unix timestamp (seconds)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;tai&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;server TAI time as a unix timestamp (seconds)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;mjd&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;server time as Modified Julian Date&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;sidereal_summit&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;server sidereal time w/respect to the summit (hourangles)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;sidereal_greenwich&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;server sidereal time w/respect to Greenwich (hourangles)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;tai_to_utc&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Difference between TAI and UTC times (seconds)&gt;&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;config&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;alarms&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;minSeveritySound&quot;</span><span class="p">:</span> <span class="s2">&quot;serious&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;minSeverityNotification&quot;</span><span class="p">:</span> <span class="s2">&quot;serious&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;camFeeds&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;generic&quot;</span><span class="p">:</span> <span class="s2">&quot;/gencam&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;allSky&quot;</span><span class="p">:</span> <span class="s2">&quot;/gencam&quot;</span>
+      <span class="p">}</span>
     <span class="p">}</span>
   <span class="p">}</span>
 <span class="p">}</span>
@@ -217,11 +276,12 @@ Returns token, user data and permissions</p>
 </div>
 </div>
 <div class="section" id="validate-token">
-<h3>2.1.2. Validate token<a class="headerlink" href="#validate-token" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">2.1.2. </span>Validate token<a class="headerlink" href="#validate-token" title="Permalink to this headline">¶</a></h3>
 <p>Validates a given authorization token, passed through HTTP Headers.
-Returns a confirmation of validity, user data and permissions.</p>
+Returns a confirmation of validity, user data, permissions, server_time and (optionally) the LOVE configuraiton file.
+If the <code class="code docutils literal notranslate"><span class="pre">no_config</span></code> flag is added to the end of the URL, then the LOVE config files is not read and the corresponding value is returned as <code class="code docutils literal notranslate"><span class="pre">null</span></code></p>
 <ul class="simple">
-<li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/api/validate-token/</span></code></p></li>
+<li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/api/validate-token/</span></code> or <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/api/validate-token/no_config/</span></code></p></li>
 <li><p>HTTP Operation: get</p></li>
 <li><p>Message HTTP Headers:</p></li>
 </ul>
@@ -238,13 +298,85 @@ Returns a confirmation of validity, user data and permissions.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
   <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;detail&quot;</span><span class="p">:</span> <span class="s2">&quot;Token is valid&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;permissions&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;execute_commands&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;True/False&gt;&quot;</span><span class="p">,</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;user_data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="p">{</span>
       <span class="nt">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;username&gt;&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;password&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;password&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;email&gt;&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;token&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;token&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;permissions&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;execute_commands&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;true or false&gt;&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;time_data&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;utc&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;server UTC time as a unix timestamp (seconds)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;tai&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;server TAI time as a unix timestamp (seconds)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;mjd&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;server time as Modified Julian Date&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;sidereal_summit&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;server sidereal time w/respect to the summit (hourangles)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;sidereal_greenwich&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;server sidereal time w/respect to Greenwich (hourangles)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;tai_to_utc&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Difference between TAI and UTC times (seconds)&gt;&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;config&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;alarms&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;minSeveritySound&quot;</span><span class="p">:</span> <span class="s2">&quot;serious&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;minSeverityNotification&quot;</span><span class="p">:</span> <span class="s2">&quot;serious&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;camFeeds&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;generic&quot;</span><span class="p">:</span> <span class="s2">&quot;/gencam&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;allSky&quot;</span><span class="p">:</span> <span class="s2">&quot;/gencam&quot;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="swap-token">
+<h3><span class="section-number">2.1.3. </span>Swap token<a class="headerlink" href="#swap-token" title="Permalink to this headline">¶</a></h3>
+<p>Validates a given authorization token, passed through HTTP Headers.
+Returns a confirmation of validity, user data, permissions, server_time and (optionally) the LOVE configuraiton file.
+If the <code class="code docutils literal notranslate"><span class="pre">no_config</span></code> flag is added to the end of the URL, then the LOVE config files is not read and the corresponding value is returned as <code class="code docutils literal notranslate"><span class="pre">null</span></code></p>
+<ul class="simple">
+<li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/api/swap-token/</span></code> or <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/api/swap-token/no_config/</span></code></p></li>
+<li><p>HTTP Operation: GET</p></li>
+<li><p>Message HTTP Headers:</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;Accept&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;Authorization&quot;</span><span class="p">:</span> <span class="s2">&quot;Token &lt;token&gt;&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Expected Response:</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;username&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;email&gt;&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;token&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;token&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;permissions&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;execute_commands&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;true or false&gt;&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;time_data&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;utc&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;server UTC time as a unix timestamp (seconds)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;tai&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;server TAI time as a unix timestamp (seconds)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;mjd&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;server time as Modified Julian Date&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;sidereal_summit&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;server sidereal time w/respect to the summit (hourangles)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;sidereal_greenwich&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;server sidereal time w/respect to Greenwich (hourangles)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;tai_to_utc&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Difference between TAI and UTC times (seconds)&gt;&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;config&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;alarms&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;minSeveritySound&quot;</span><span class="p">:</span> <span class="s2">&quot;serious&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;minSeverityNotification&quot;</span><span class="p">:</span> <span class="s2">&quot;serious&quot;</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;camFeeds&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;generic&quot;</span><span class="p">:</span> <span class="s2">&quot;/gencam&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;allSky&quot;</span><span class="p">:</span> <span class="s2">&quot;/gencam&quot;</span>
+      <span class="p">}</span>
     <span class="p">}</span>
   <span class="p">}</span>
 <span class="p">}</span>
@@ -252,12 +384,12 @@ Returns a confirmation of validity, user data and permissions.</p>
 </div>
 </div>
 <div class="section" id="logout">
-<h3>2.1.3. Logout<a class="headerlink" href="#logout" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">2.1.4. </span>Logout<a class="headerlink" href="#logout" title="Permalink to this headline">¶</a></h3>
 <p>Requests deletion of a given token, passed through HTTP Headers.
 The token is deleted and a confirmation is replied.</p>
 <ul class="simple">
 <li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/api/logout/</span></code></p></li>
-<li><p>HTTP Operation: delete</p></li>
+<li><p>HTTP Operation: DELETE</p></li>
 <li><p>Message HTTP Headers:</p></li>
 </ul>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -281,46 +413,46 @@ The token is deleted and a confirmation is replied.</p>
 </div>
 </div>
 <div class="section" id="websockets-connection">
-<h2>2.2. Websockets Connection<a class="headerlink" href="#websockets-connection" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">2.2. </span>Websockets Connection<a class="headerlink" href="#websockets-connection" title="Permalink to this headline">¶</a></h2>
 <p>Currently there are 2 ways to establish a websocket connection:</p>
 <div class="section" id="authenticate-with-user-token">
-<h3>2.2.1. Authenticate with user token<a class="headerlink" href="#authenticate-with-user-token" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">2.2.1. </span>Authenticate with user token<a class="headerlink" href="#authenticate-with-user-token" title="Permalink to this headline">¶</a></h3>
 <p>This is the mechanism intended for end users. It requires them to have an authentication token.
 In order to stablish the connection they must append the token to the websocket url as follows:</p>
 <p><code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/ws/subscription/?token=&lt;my-token&gt;</span></code></p>
 </div>
 <div class="section" id="authenticate-with-password">
-<h3>2.2.2. Authenticate with password<a class="headerlink" href="#authenticate-with-password" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">2.2.2. </span>Authenticate with password<a class="headerlink" href="#authenticate-with-password" title="Permalink to this headline">¶</a></h3>
 <p>This is the mechanism intended for other applications. It requires them to have the password token.
 In order to stablish the connection they must append the password to the websocket url as follows:</p>
 <p><code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/ws/subscription/?password=&lt;my-password&gt;</span></code></p>
 </div>
 </div>
-<div class="section" id="websockets-group-subscriptions">
-<h2>2.3. Websockets Group Subscriptions<a class="headerlink" href="#websockets-group-subscriptions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="websockets-messages">
+<h2><span class="section-number">2.3. </span>Websockets Messages<a class="headerlink" href="#websockets-messages" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="love-manager-subscriptions-scheme">
-<h3>2.3.1. LOVE-manager Subscriptions scheme<a class="headerlink" href="#love-manager-subscriptions-scheme" title="Permalink to this headline">¶</a></h3>
-<p>Group subscriptions are characterized by 4 variables:
-* <strong>category:</strong> describe the category or type of stream:</p>
+<h3><span class="section-number">2.3.1. </span>LOVE-manager Subscriptions scheme<a class="headerlink" href="#love-manager-subscriptions-scheme" title="Permalink to this headline">¶</a></h3>
+<p>Group subscriptions are characterized by 4 variables:</p>
+<ul>
+<li><p><strong>category:</strong> describe the category or type of stream.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>*telemetry:*</strong> streams that transfer data from telemetry systems</p></li>
 <li><p><strong>*event:*</strong> streams that transfer data from events triggered asynchronously in the system</p></li>
-<li><p><strong>*cmd:*</strong> streams that transfer acknowledgement messages from sent commands</p></li>
 </ul>
 </div></blockquote>
-<ul class="simple">
+</li>
 <li><p><strong>csc:</strong> describes the type of the source CSC, e.g. <code class="code docutils literal notranslate"><span class="pre">ScriptQueue</span></code></p></li>
 <li><p><strong>salindex:</strong> describes the instance number (salindex) of a given the CSC, e.g. <code class="code docutils literal notranslate"><span class="pre">1</span></code></p></li>
 <li><p><strong>stream:</strong> describes the particular stream of the subscription.</p></li>
 </ul>
 <p>The reasoning behind this scheme is that for a given CSC instance e.g. <code class="code docutils literal notranslate"><span class="pre">ScriptQueue</span> <span class="pre">1</span></code> (salindex 1), there could be a number of telemetries, events or commands, each identified by a different <code class="code docutils literal notranslate"><span class="pre">stream</span></code>.</p>
 </div>
-<div class="section" id="accepted-messages">
-<h3>2.3.2. Accepted messages<a class="headerlink" href="#accepted-messages" title="Permalink to this headline">¶</a></h3>
-<p>The consumers accept the following types of messages:</p>
+<div class="section" id="messages-types">
+<h3><span class="section-number">2.3.2. </span>Messages types<a class="headerlink" href="#messages-types" title="Permalink to this headline">¶</a></h3>
+<p>The consumers accept/send the following types of messages:</p>
 <div class="section" id="subscription-messages">
-<h4>2.3.2.1. Subscription messages<a class="headerlink" href="#subscription-messages" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">2.3.2.1. </span>Subscription messages<a class="headerlink" href="#subscription-messages" title="Permalink to this headline">¶</a></h4>
 <p>Specifying the variables necessary to subscribe a to a group in a JSON message, as follows:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;option&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;subscribe/unsubscribe&gt;&quot;</span><span class="p">,</span>
@@ -333,8 +465,10 @@ In order to stablish the connection they must append the password to the websock
 </div>
 </div>
 <div class="section" id="telemetry-or-event-messages">
-<h4>2.3.2.2. Telemetry or Event messages<a class="headerlink" href="#telemetry-or-event-messages" title="Permalink to this headline">¶</a></h4>
-<p>Specifying the variables necessary to subscribe a to a group in a JSON message, as follows:</p>
+<h4><span class="section-number">2.3.2.2. </span>Telemetry or Event messages<a class="headerlink" href="#telemetry-or-event-messages" title="Permalink to this headline">¶</a></h4>
+<p>Specifying the data and the group where the message should be sent in a JSON message.
+Consumer that receive these type of messages from their clients will forward them to the corresponding group. If consumers receive the message from the Channel Layer, then they will forward it to their clients.
+They are defined as follows:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
   <span class="nt">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;event/telemetry&quot;</span><span class="p">,</span>
   <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">[{</span>
@@ -354,33 +488,386 @@ In order to stablish the connection they must append the password to the websock
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Where <code class="code docutils literal notranslate"><span class="pre">{...&lt;data&gt;...}</span></code> represents the JSON message that is sent as data.</p>
 </div>
-<div class="section" id="command-messages">
-<h4>2.3.2.3. Command messages<a class="headerlink" href="#command-messages" title="Permalink to this headline">¶</a></h4>
-<p>Specifying the variables necessary to subscribe a to a group in a JSON message, as follows:</p>
+<div class="section" id="heartbeat-messages">
+<h4><span class="section-number">2.3.2.3. </span>Heartbeat messages<a class="headerlink" href="#heartbeat-messages" title="Permalink to this headline">¶</a></h4>
+<p>The <code class="code docutils literal notranslate"><span class="pre">LOVE-Manager</span></code> receives heartbeat messages from the different <code class="code docutils literal notranslate"><span class="pre">LOVE-Producer</span></code> and <code class="code docutils literal notranslate"><span class="pre">LOVE-Commander</span></code> instances.
+The heartbeats are stored internally and sent with a certain frequency to the clients subscribed to the <code class="code docutils literal notranslate"><span class="pre">heartbeat-manager-0-stream</span></code> group.</p>
+<p>The input messages to be received from <code class="code docutils literal notranslate"><span class="pre">LOVE-Producer</span></code> and <code class="code docutils literal notranslate"><span class="pre">LOVE-Commander</span></code> instances have the following structure:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;cmd&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">[{</span>
-    <span class="nt">&quot;csc&quot;</span><span class="p">:</span> <span class="s2">&quot;ScriptQueue&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;salindex&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;cmd&quot;</span><span class="p">:</span> <span class="s2">&quot;CommandPath&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;params&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;param1&quot;</span><span class="p">:</span> <span class="s2">&quot;value1&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;param2&quot;</span><span class="p">:</span> <span class="s2">&quot;value2&quot;</span><span class="p">,</span>
-      <span class="p">},</span>
-    <span class="p">}</span>
-  <span class="p">}]</span>
+  <span class="nt">&quot;heartbeat&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;component name, e.g. Telemetries&gt;&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;timestamp of the last heartbeat&gt;&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Where pairs <code class="code docutils literal notranslate"><span class="pre">param1</span></code> and <code class="code docutils literal notranslate"><span class="pre">value1</span></code> represent the parameters (name and value) to be passed to the command.</p>
+<p>The output messages that are sent to clients, have the following structure:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;heartbeat&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;csc&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;component name, e.g. Telemetries&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;salindex&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;timestamp of the last heartbeat&gt;&quot;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">],</span>
+  <span class="nt">&quot;subscription&quot;</span><span class="p">:</span> <span class="s2">&quot;heartbeat&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Where <code class="code docutils literal notranslate"><span class="pre">data</span></code> contains data for each instance of the <code class="code docutils literal notranslate"><span class="pre">LOVE-Producer</span></code> and <code class="code docutils literal notranslate"><span class="pre">LOVE-Commander</span></code>.</p>
+</div>
+<div class="section" id="action-messages">
+<h4><span class="section-number">2.3.2.4. </span>Action messages<a class="headerlink" href="#action-messages" title="Permalink to this headline">¶</a></h4>
+<p>Action messages allow clients to request certain actions from the consumers.
+At the moment there is only one action available “get time data”, which returns the current server time in various formats.</p>
+<p>The expected input message, to be sent by a client, is specified as follows:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;get_time_data&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;request_time&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;timestamp with the request time, e.g. 123243423.123&gt;&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>And the the expected output, or response, message is specified as follows:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;time_data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;utc&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;current time in UTC scale as a unix timestamp (seconds)&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;tai&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;current time in UTC scale as a unix timestamp (seconds)&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;mjd&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;current time as a modified julian date&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;sidereal_summit&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;current time as a sidereal_time w/respect to the summit location (hourangles)&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;sidereal_summit&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;current time as a sidereal_time w/respect to Greenwich location (hourangles)&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;tai_to_utc&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;The number of seconds of difference between TAI and UTC times (seconds)&gt;&quot;</span><span class="p">,</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;request_time&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;timestamp with the request time, e.g. 123243423.123&gt;&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="observing-log-messages">
+<h4><span class="section-number">2.3.2.5. </span>Observing Log messages<a class="headerlink" href="#observing-log-messages" title="Permalink to this headline">¶</a></h4>
+<p>Observing Log messages are treated by the <code class="code docutils literal notranslate"><span class="pre">LOVE-Manager</span></code> like a regular subscription message.
+The <code class="code docutils literal notranslate"><span class="pre">LOVE-CSC</span></code> subscribes to the group <code class="code docutils literal notranslate"><span class="pre">love_csc-love-0-observingLog</span></code>, and clients can send observing logs by sending messages to that group.</p>
+<p>The message structure clients must use to send observing logs is the following:</p>
+<p>The expected input message, to be sent by a client, is specified as follows:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;love_csc&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;csc&quot;</span><span class="p">:</span> <span class="s2">&quot;love&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;salindex&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;observingLog&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;user&quot;</span><span class="p">:</span> <span class="s2">&quot;admin&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;hola&quot;</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="commander-and-other-actions-api">
+<h2><span class="section-number">2.4. </span>Commander and Other actions API<a class="headerlink" href="#commander-and-other-actions-api" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="code docutils literal notranslate"><span class="pre">LOVE-Manager</span></code> provides HTTP endpoints for requests to the <code class="code docutils literal notranslate"><span class="pre">LOVE-Commander</span></code>, as well as other actions.</p>
+<div class="section" id="command">
+<h3><span class="section-number">2.4.1. </span>Command<a class="headerlink" href="#command" title="Permalink to this headline">¶</a></h3>
+<p>Requests a command to the <code class="code docutils literal notranslate"><span class="pre">LOVE-Commander</span></code></p>
+<ul class="simple">
+<li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/api/cmd/</span></code></p></li>
+<li><p>HTTP Operation: POST</p></li>
+<li><p>Message JSON data:</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;cmd&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Command name, e.g: cmd_acknowledge&gt;&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;csc&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Name of the CSC, e.g: Watcher&gt;&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;salindex&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;SAL Index in numeric format, e.g. 0&gt;&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;params&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;key1&quot;</span><span class="p">:</span> <span class="s2">&quot;value1&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;key2&quot;</span><span class="p">:</span> <span class="s2">&quot;value2&quot;</span><span class="p">,</span>
+  <span class="p">},</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Expected Response, if command successful:</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;ack&quot;</span><span class="p">:</span> <span class="s2">&quot;Done&quot;</span><span class="p">,</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Expected Response, if command timed-out:</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">504</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;ack&quot;</span><span class="p">:</span> <span class="s2">&quot;Command time out&quot;</span><span class="p">,</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Expected Response, command failure:</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;ack&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Text with command result/message&gt;&quot;</span><span class="p">,</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="validate-config-schema">
+<h3><span class="section-number">2.4.2. </span>Validate Config Schema<a class="headerlink" href="#validate-config-schema" title="Permalink to this headline">¶</a></h3>
+<p>Validates a given configuration in YAML format with a given schema</p>
+<ul class="simple">
+<li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/api/validate-config-schema/</span></code></p></li>
+<li><p>HTTP Operation: POST</p></li>
+<li><p>Message JSON data:</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;config&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Configuration to validate, in YAML format&gt;&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Schema to to validate the config against, in YAML format&gt;&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Expected Response for valid config:</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;None&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;output&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;output message fo the validator&gt;&quot;</span><span class="p">,</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Expected Response for invalid config:</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;INVALID CONFIG YAML&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;error&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Error message&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;path&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;&lt;config_paths&gt;&quot;</span><span class="p">],</span>
+      <span class="nt">&quot;schema_path&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;&lt;schema_paths&gt;&quot;</span><span class="p">],</span>
+    <span class="p">},</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="sal-info-metadata">
+<h3><span class="section-number">2.4.3. </span>SAL Info - Metadata<a class="headerlink" href="#sal-info-metadata" title="Permalink to this headline">¶</a></h3>
+<p>Requests SalInfo.metadata from the <code class="code docutils literal notranslate"><span class="pre">LOVE-Commander</span></code>.
+The response contains the SAL and XML version of the different CSCs.</p>
+<ul class="simple">
+<li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/api/salinfo/metadata/</span></code></p></li>
+<li><p>HTTP Operation: GET</p></li>
+<li><p>Expected Response:</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;&lt;CSC_1&gt;&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;sal_version&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;SAL version in format x.x.x&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;xml_version&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;XML version in format x.x.x&gt;&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;&lt;CSC_2&gt;&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;sal_version&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;SAL version in format x.x.x&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;xml_version&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;XML version in format x.x.x&gt;&quot;</span>
+    <span class="p">},</span>
+  <span class="p">},</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>For example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;Watcher&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;sal_version&quot;</span><span class="p">:</span> <span class="s2">&quot;4.1.3&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;xml_version&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0.0&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;MTM1M3&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;sal_version&quot;</span><span class="p">:</span> <span class="s2">&quot;4.1.3&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;xml_version&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0.0&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;ATPtg&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;sal_version&quot;</span><span class="p">:</span> <span class="s2">&quot;4.1.3&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;xml_version&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0.0&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;ATPneumatics&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;sal_version&quot;</span><span class="p">:</span> <span class="s2">&quot;4.1.3&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;xml_version&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0.0&quot;</span>
+    <span class="p">},</span>
+  <span class="p">},</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="sal-info-topic-names">
+<h3><span class="section-number">2.4.4. </span>SAL Info - Topic Names<a class="headerlink" href="#sal-info-topic-names" title="Permalink to this headline">¶</a></h3>
+<p>Requests SalInfo.topic_names from the <code class="code docutils literal notranslate"><span class="pre">LOVE-Commander</span></code>.
+The response contains the events, telemetries and command names of each CSC.
+The URL accepts <code class="code docutils literal notranslate"><span class="pre">&lt;categories&gt;</span></code> as query params, which can be any combination of the following strings separated by “-“:
+<code class="code docutils literal notranslate"><span class="pre">event</span></code>, <code class="code docutils literal notranslate"><span class="pre">telemetry</span></code> and <code class="code docutils literal notranslate"><span class="pre">command</span></code>. If there is no query param, then all topics are selected.</p>
+<ul class="simple">
+<li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/api/salinfo/topic-names?categories=&lt;categories&gt;</span></code></p></li>
+<li><p>HTTP Operation: GET</p></li>
+<li><p>Expected Response:</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;&lt;CSC_1&gt;&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;event_names&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;&lt;event_name_1&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;event_name_2&gt;&quot;</span><span class="p">],</span>
+      <span class="nt">&quot;telemetry_names&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;&lt;telemetry_name_1&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;telemetry_name_2&gt;&quot;</span><span class="p">],</span>
+      <span class="nt">&quot;command_names&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;&lt;command_name_1&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;command_name_2&gt;&quot;</span><span class="p">]</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;&lt;CSC_2&gt;&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;event_names&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;&lt;event_name_1&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;event_name_2&gt;&quot;</span><span class="p">],</span>
+      <span class="nt">&quot;telemetry_names&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;&lt;telemetry_name_1&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;telemetry_name_2&gt;&quot;</span><span class="p">],</span>
+      <span class="nt">&quot;command_names&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;&lt;command_name_1&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;command_name_2&gt;&quot;</span><span class="p">]</span>
+    <span class="p">},</span>
+  <span class="p">},</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>For example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;Watcher&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;event_names&quot;</span><span class="p">:</span> <span class="p">[</span>
+          <span class="s2">&quot;alarm&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;appliedSettingsMatchStart&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;authList&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;errorCode&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;heartbeat&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;logLevel&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;logMessage&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;settingVersions&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;settingsApplied&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;simulationMode&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;softwareVersions&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;summaryState&quot;</span>
+      <span class="p">],</span>
+      <span class="nt">&quot;telemetry_names&quot;</span><span class="p">:</span> <span class="p">[],</span>
+      <span class="nt">&quot;command_names&quot;</span><span class="p">:</span> <span class="p">[</span>
+          <span class="s2">&quot;abort&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;acknowledge&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;disable&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;enable&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;enterControl&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;exitControl&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;mute&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;setAuthList&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;setLogLevel&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;setValue&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;showAlarms&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;standby&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;start&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;unacknowledge&quot;</span><span class="p">,</span>
+          <span class="s2">&quot;unmute&quot;</span>
+      <span class="p">]</span>
+    <span class="p">},</span>
+  <span class="p">},</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="sal-info-topic-data">
+<h3><span class="section-number">2.4.5. </span>SAL Info - Topic Data<a class="headerlink" href="#sal-info-topic-data" title="Permalink to this headline">¶</a></h3>
+<p>Requests SalInfo.topic_data from the <code class="code docutils literal notranslate"><span class="pre">LOVE-Commander</span></code>.
+The response contains the events, teelemetries and command data of each CSC.
+The URL accepts <code class="code docutils literal notranslate"><span class="pre">&lt;categories&gt;</span></code> as query params, which can be any combination of the following strings separated by “-“:
+<code class="code docutils literal notranslate"><span class="pre">event</span></code>, <code class="code docutils literal notranslate"><span class="pre">telemetry</span></code> and <code class="code docutils literal notranslate"><span class="pre">command</span></code>. If there is no query param, then all topics are selected.</p>
+<ul class="simple">
+<li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/api/salinfo/topic-data?categories=&lt;categories&gt;</span></code></p></li>
+<li><p>HTTP Operation: GET</p></li>
+<li><p>Expected Response:</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;&lt;CSC_1&gt;&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;event_data&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;&lt;parameter_1&gt;&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;&lt;field_11&gt;&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;value_11&gt;&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;&lt;field_12&gt;&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;value_12&gt;&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="nt">&quot;&lt;parameter_2&gt;&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;&lt;field_21&gt;&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;value_21&gt;&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;&lt;field_22&gt;&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;value_22&gt;&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;telemetry_data&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;&lt;parameter_1&gt;&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;&lt;field_11&gt;&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;value_11&gt;&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;&lt;field_12&gt;&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;value_12&gt;&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="nt">&quot;&lt;parameter_2&gt;&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;&lt;field_21&gt;&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;value_21&gt;&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;&lt;field_22&gt;&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;value_22&gt;&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;command_data&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;&lt;parameter_1&gt;&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;&lt;field_11&gt;&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;value_11&gt;&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;&lt;field_12&gt;&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;value_12&gt;&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="nt">&quot;&lt;parameter_2&gt;&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;&lt;field_21&gt;&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;value_21&gt;&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;&lt;field_22&gt;&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;value_22&gt;&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+      <span class="p">},</span>
+    <span class="p">},</span>
+  <span class="p">},</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="love-config-file">
+<h3><span class="section-number">2.4.6. </span>LOVE Config File<a class="headerlink" href="#love-config-file" title="Permalink to this headline">¶</a></h3>
+<p>Requests the LOVE config file.
+The response contains the contentes fo the config file (<code class="code docutils literal notranslate"><span class="pre">json</span></code> format) as <code class="code docutils literal notranslate"><span class="pre">json</span></code>.</p>
+<ul class="simple">
+<li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/api/config</span></code></p></li>
+<li><p>HTTP Operation: GET</p></li>
+<li><p>Expected Response:</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;alarms&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;minSeveritySound&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;&#39;warning&#39;, &#39;serious&#39; or &#39;critical&#39;&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;minSeverityNotification&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;&#39;warning&#39;, &#39;serious&#39; or &#39;critical&#39;&gt;&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;camFeeds&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;generic&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;URL to the stream for the generic camera, can be a relative URL. E.g: /gencam&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;allSky&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;URL to the stream for the all sky camera, can be a relative URL. E.g: /skycam&gt;&quot;</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+<span class="p">}</span>
+</pre></div>
 </div>
 </div>
 </div>
 <div class="section" id="ui-framework">
-<h2>2.4. UI Framework<a class="headerlink" href="#ui-framework" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">2.5. </span>UI Framework<a class="headerlink" href="#ui-framework" title="Permalink to this headline">¶</a></h2>
 <p>The UI Framework backend is composed of 3 models:</p>
 <blockquote>
 <div><ul class="simple">
@@ -389,8 +876,8 @@ In order to stablish the connection they must append the password to the websock
 <li><p><strong>WorkspaceView:</strong> relates a Workspace and a View, it is the intermediary table of the many-to-many relationship between Workspace and View.</p></li>
 </ul>
 </div></blockquote>
-<p>Currently the API provides a standard REST api for these models.
-For more info you can either:</p>
+<p>Currently the API provides a standard REST api to perform CRUD (Create, Retrieve, Update, Delete) operations over these models, plus some other actions.</p>
+<p>To try out the API you can either:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>Use the browsable API available in: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/ui_framework/</span></code></p></li>
@@ -398,6 +885,497 @@ For more info you can either:</p>
 <li><p>See the apidoc in ReDoc format, available in: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/apidoc/redoc/</span></code></p></li>
 </ul>
 </div></blockquote>
+<div class="section" id="unauthenticated-responses">
+<h3><span class="section-number">2.5.1. </span>Unauthenticated responses<a class="headerlink" href="#unauthenticated-responses" title="Permalink to this headline">¶</a></h3>
+<p>All requests from unauthenticated users should receive the following response:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">401</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="unauthorized-responses">
+<h3><span class="section-number">2.5.2. </span>Unauthorized responses<a class="headerlink" href="#unauthorized-responses" title="Permalink to this headline">¶</a></h3>
+<p>All requests from users who are authenticated but do not have permissions to perform a particular request, should receive the following response:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">403</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="views-requests">
+<h3><span class="section-number">2.5.3. </span>Views Requests<a class="headerlink" href="#views-requests" title="Permalink to this headline">¶</a></h3>
+<p>Endpoints to perform CRUD over Views</p>
+<div class="section" id="create-view">
+<h4><span class="section-number">2.5.3.1. </span>Create View<a class="headerlink" href="#create-view" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/ui_framework/views/</span></code></p></li>
+<li><p>HTTP Operation: POST</p></li>
+<li><p>Request payload: JSON with the fields of the view</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;View 1 name&gt;&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;thumbnail&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;location location of the thumbnail, e.g. /media/thumbnails/view_1.png&gt;&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;dictionary containing the data of the view&gt;&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Expected Response: the full content of the view (including its <code class="code docutils literal notranslate"><span class="pre">&lt;id&gt;</span></code>)</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">201</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Numeric ID of the view, e.g. 1&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;View 1 name&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;thumbnail&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;location of the view thumbnail, e.g. /media/thumbnails/view_1.png&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;dictionary containing the data of the view&gt;&quot;</span><span class="p">,</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="retrieve-views">
+<h4><span class="section-number">2.5.3.2. </span>Retrieve Views<a class="headerlink" href="#retrieve-views" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/ui_framework/views/&lt;id&gt;/</span></code>, where the optional parameter <code class="code docutils literal notranslate"><span class="pre">&lt;id&gt;</span></code> can be used to retrieve detailed data of a particular view</p></li>
+<li><p>HTTP Operation: GET</p></li>
+<li><p>Expected Response: if no <code class="code docutils literal notranslate"><span class="pre">&lt;id&gt;</span></code> parameter is attached to the URL, then the response is a list of JSONs, 1 for each view. If there is an <code class="code docutils literal notranslate"><span class="pre">&lt;id&gt;</span></code> parameter, then response is only the JSON corresponding to that view</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Numeric ID of the view, e.g. 1&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;View 1 name&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;thumbnail&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;location of the view thumbnail, e.g. /media/thumbnails/view_1.png&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;dictionary containing the data of the view&gt;&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Numeric ID of the view, e.g. 2&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;View 2 name&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;thumbnail&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;location of the view thumbnail, e.g. /media/thumbnails/view_2.png&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;dictionary containing the data of the view&gt;&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="update-view">
+<h4><span class="section-number">2.5.3.3. </span>Update View<a class="headerlink" href="#update-view" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/ui_framework/views/&lt;id&gt;/</span></code>, where the parameter <code class="code docutils literal notranslate"><span class="pre">&lt;id&gt;</span></code> defines the view to edit</p></li>
+<li><p>HTTP Operation: PUT</p></li>
+<li><p>Request payload: JSON with the fields to change in the view</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;View 1 name&gt;&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;thumbnail&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;new location location of the thumbnail&gt;&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;dictionary containing the new data of the view&gt;&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Expected Response: the new content of the view</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Numeric ID of the view, e.g. 1&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;View 1 name&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;thumbnail&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;location of the view thumbnail, e.g. /media/thumbnails/view_1.png&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;dictionary containing the data of the view&gt;&quot;</span><span class="p">,</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="delete-view">
+<h4><span class="section-number">2.5.3.4. </span>Delete View<a class="headerlink" href="#delete-view" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/ui_framework/views/&lt;id&gt;/</span></code>, where the parameter <code class="code docutils literal notranslate"><span class="pre">&lt;id&gt;</span></code> defines the view to delete</p></li>
+<li><p>HTTP Operation: DELETE</p></li>
+<li><p>Expected Response: the new content of the view</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">204</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="get-views-summary">
+<h4><span class="section-number">2.5.3.5. </span>Get Views Summary<a class="headerlink" href="#get-views-summary" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/ui_framework/views/summary/</span></code></p></li>
+<li><p>HTTP Operation: GET</p></li>
+<li><p>Expected Response: a list of summarized information of the views, contianing only their <code class="code docutils literal notranslate"><span class="pre">&lt;name&gt;</span></code>, <code class="code docutils literal notranslate"><span class="pre">&lt;id&gt;</span></code> and <code class="code docutils literal notranslate"><span class="pre">&lt;thumbnail&gt;</span></code></p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Numeric ID of the view, e.g. 1&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;View 1 name&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;thumbnail&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;location of the view thumbnail, e.g. /media/thumbnails/view_1.png&gt;&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Numeric ID of the view, e.g. 2&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;View 2 name&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;thumbnail&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;location of the view thumbnail, e.g. /media/thumbnails/view_2.png&gt;&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Numeric ID of the view, e.g. 3&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;View 3 name&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;thumbnail&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;location of the view thumbnail, e.g. /media/thumbnails/view_3.png&gt;&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="search-view">
+<h4><span class="section-number">2.5.3.6. </span>Search View<a class="headerlink" href="#search-view" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/ui_framework/views/search/?query=&lt;search_text&gt;</span></code></p></li>
+<li><p>HTTP Operation: GET</p></li>
+<li><p>Expected Response: a list of views whise names contain the :code:<a href="#id1"><span class="problematic" id="id2">`</span></a>&lt;search_text&gt;`t passed in the URL.</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Numeric ID of the view, e.g. 1&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;View 1 name&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;thumbnail&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;location of the view thumbnail, e.g. /media/thumbnails/view_1.png&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;dictionary containing the data of the view&gt;&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Numeric ID of the view, e.g. 2&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;View 2 name&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;thumbnail&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;location of the view thumbnail, e.g. /media/thumbnails/view_2.png&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;dictionary containing the data of the view&gt;&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="workspaces-requests">
+<h3><span class="section-number">2.5.4. </span>Workspaces Requests<a class="headerlink" href="#workspaces-requests" title="Permalink to this headline">¶</a></h3>
+<p>Endpoints to perform CRUD over Workspaces</p>
+<div class="section" id="create-workspace">
+<h4><span class="section-number">2.5.4.1. </span>Create Workspace<a class="headerlink" href="#create-workspace" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/ui_framework/workspaces/</span></code></p></li>
+<li><p>HTTP Operation: POST</p></li>
+<li><p>Request payload: JSON with the fields of the workspace</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Workspace 1 name&gt;&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Expected Response: the full content of the workspace (including its <code class="code docutils literal notranslate"><span class="pre">&lt;id&gt;</span></code>)</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">201</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Numeric ID of the workspace, e.g. 1&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Workspace 1 name&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;views&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s2">&quot;&lt;view_id1 (this is a list of ids of views)&gt;&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;&lt;view_id2&gt;&quot;</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="nt">&quot;creation_timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Timestamp of the creation of the workspace, in ISO format (UTC)&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;update_timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Timestamp of the last update of the workspace, in ISO format (UTC)&gt;&quot;</span><span class="p">,</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="retrieve-workspaces">
+<h4><span class="section-number">2.5.4.2. </span>Retrieve Workspaces<a class="headerlink" href="#retrieve-workspaces" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/ui_framework/workspaces/&lt;id&gt;/</span></code>, where the optional parameter <code class="code docutils literal notranslate"><span class="pre">&lt;id&gt;</span></code> can be used to retrieve detailed data of a particular workspace</p></li>
+<li><p>HTTP Operation: GET</p></li>
+<li><p>Expected Response: if no <code class="code docutils literal notranslate"><span class="pre">&lt;id&gt;</span></code> parameter is attached to the URL, then the response is a list of JSONs, 1 for each workspace. If there is an <code class="code docutils literal notranslate"><span class="pre">&lt;id&gt;</span></code> parameter, then response is only the JSON corresponding to that workspace</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Numeric ID of the workspace, e.g. 1&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Workspace 1 name&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;views&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;&lt;view_id1&gt;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;&lt;view_id2&gt;&quot;</span><span class="p">,</span>
+      <span class="p">],</span>
+      <span class="nt">&quot;creation_timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Timestamp of the creation of the workspace, in ISO format (UTC)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;update_timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Timestamp of the last update of the workspace, in ISO format (UTC)&gt;&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Numeric ID of the workspace, e.g. 2&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Workspace 2 name&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;views&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;&lt;view_id3&gt;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;&lt;view_id2&gt;&quot;</span><span class="p">,</span>
+      <span class="p">],</span>
+      <span class="nt">&quot;creation_timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Timestamp of the creation of the workspace, in ISO format (UTC)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;update_timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Timestamp of the last update of the workspace, in ISO format (UTC)&gt;&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="update-workspace">
+<h4><span class="section-number">2.5.4.3. </span>Update Workspace<a class="headerlink" href="#update-workspace" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/ui_framework/workspaces/&lt;id&gt;/</span></code>, where the parameter <code class="code docutils literal notranslate"><span class="pre">&lt;id&gt;</span></code> defines the workspace to edit</p></li>
+<li><p>HTTP Operation: PUT</p></li>
+<li><p>Request payload: JSON with the fields to change in the workspace</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;New Workspace 1 name&gt;&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Expected Response: the new content of the workspace</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Numeric ID of the workspace, e.g. 1&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;New Workspace 1 name&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;views&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="s2">&quot;&lt;view_id1&gt;&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;&lt;view_id2&gt;&quot;</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="nt">&quot;creation_timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Timestamp of the creation of the workspace, in ISO format (UTC)&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;update_timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Timestamp of the last update of the workspace, in ISO format (UTC)&gt;&quot;</span><span class="p">,</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="delete-workspace">
+<h4><span class="section-number">2.5.4.4. </span>Delete Workspace<a class="headerlink" href="#delete-workspace" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/ui_framework/workspaces/&lt;id&gt;/</span></code>, where the parameter <code class="code docutils literal notranslate"><span class="pre">&lt;id&gt;</span></code> defines the workspace to delete</p></li>
+<li><p>HTTP Operation: DELETE</p></li>
+<li><p>Expected Response: the new content of the workspace</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">204</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="get-full-workspace">
+<h4><span class="section-number">2.5.4.5. </span>Get Full Workspace<a class="headerlink" href="#get-full-workspace" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/ui_framework/workspaces/&lt;id&gt;/full/</span></code>, where the parameter <code class="code docutils literal notranslate"><span class="pre">&lt;id&gt;</span></code> defines the workspace to retrieve</p></li>
+<li><p>HTTP Operation: GET</p></li>
+<li><p>Expected Response: the workspace with its views fully subserialized (list of JSON, instead of list of ids)</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Numeric ID of the workspace, e.g. 1&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;New Workspace 1 name&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;views&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+        <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;view_id1&gt;&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;View 1 name&gt;&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;thumbnail&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;location of the view thumbnail, e.g. /media/thumbnails/view_1.png&gt;&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;dictionary containing the data of the view&gt;&quot;</span><span class="p">,</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+        <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;view_id2&gt;&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;View 2 name&gt;&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;thumbnail&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;location of the view thumbnail, e.g. /media/thumbnails/view_2.png&gt;&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;dictionary containing the data of the view&gt;&quot;</span><span class="p">,</span>
+      <span class="p">},</span>
+    <span class="p">],</span>
+    <span class="nt">&quot;creation_timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Timestamp of the creation of the workspace, in ISO format (UTC)&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;update_timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Timestamp of the last update of the workspace, in ISO format (UTC)&gt;&quot;</span><span class="p">,</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="get-workspace-with-views-names">
+<h4><span class="section-number">2.5.4.6. </span>Get Workspace with Views names<a class="headerlink" href="#get-workspace-with-views-names" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/ui_framework/workspaces/with_view_name/</span></code>.</p></li>
+<li><p>HTTP Operation: GET</p></li>
+<li><p>Expected Response: the workspace with its views subserialized as summary, that is without their <code class="code docutils literal notranslate"><span class="pre">data</span></code> fields</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Numeric ID of the workspace, e.g. 1&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;New Workspace 1 name&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;views&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;view_id1&gt;&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;View 1 name&gt;&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;thumbnail&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;location of the view thumbnail, e.g. /media/thumbnails/view_1.png&gt;&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+          <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;view_id2&gt;&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;View 2 name&gt;&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;thumbnail&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;location of the view thumbnail, e.g. /media/thumbnails/view_2.png&gt;&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+      <span class="p">],</span>
+      <span class="nt">&quot;creation_timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Timestamp of the creation of the workspace, in ISO format (UTC)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;update_timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Timestamp of the last update of the workspace, in ISO format (UTC)&gt;&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Numeric ID of the workspace, e.g. 2&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;New Workspace 2 name&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;views&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;view_id1&gt;&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;View 1 name&gt;&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;thumbnail&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;location of the view thumbnail, e.g. /media/thumbnails/view_1.png&gt;&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+          <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;view_id2&gt;&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;View 2 name&gt;&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;thumbnail&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;location of the view thumbnail, e.g. /media/thumbnails/view_2.png&gt;&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+      <span class="p">],</span>
+      <span class="nt">&quot;creation_timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Timestamp of the creation of the workspace, in ISO format (UTC)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;update_timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Timestamp of the last update of the workspace, in ISO format (UTC)&gt;&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="workspaceviews-requests">
+<h3><span class="section-number">2.5.5. </span>WorkspaceViews Requests<a class="headerlink" href="#workspaceviews-requests" title="Permalink to this headline">¶</a></h3>
+<p>Endpoints to perform CRUD over WorkspaceViews</p>
+<div class="section" id="create-workspaceview">
+<h4><span class="section-number">2.5.5.1. </span>Create WorkspaceView<a class="headerlink" href="#create-workspaceview" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/ui_framework/workspaceviews/</span></code></p></li>
+<li><p>HTTP Operation: POST</p></li>
+<li><p>Request payload: JSON with the fields of the WorkspaceView</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;view_name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Optional name for the view within the conext of the workspace, empty string by default&gt;&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;sort_value&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Optional numeric sort vaue to define the order of the views within the workspace, 0 by default&gt;&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;workspace&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;workspace_id&gt;&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;view&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;view_id&gt;&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Expected Response: the full content of the workspace (including its <code class="code docutils literal notranslate"><span class="pre">&lt;id&gt;</span></code>)</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">201</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Id of the WorkspaceView&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;creation_timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Timestamp of the creation of the WorkspaceView, in ISO format (UTC)&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;update_timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Timestamp of the last update of the WorkspaceView, in ISO format (UTC)&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;view_name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Optional name for the view within the conext of the workspace, empty string by default&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;sort_value&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Optional numeric sort vaue to define the order of the views within the workspace, 0 by default&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;workspace&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;workspace_id&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;view&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;view_id&gt;&quot;</span><span class="p">,</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="retrieve-workspaceviews">
+<h4><span class="section-number">2.5.5.2. </span>Retrieve WorkspaceViews<a class="headerlink" href="#retrieve-workspaceviews" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/ui_framework/workspaceviews/&lt;id&gt;/</span></code>, where the optional parameter <code class="code docutils literal notranslate"><span class="pre">&lt;id&gt;</span></code> can be used to retrieve detailed data of a particular WorkspaceView</p></li>
+<li><p>HTTP Operation: GET</p></li>
+<li><p>Expected Response: if no <code class="code docutils literal notranslate"><span class="pre">&lt;id&gt;</span></code> parameter is attached to the URL, then the response is a list of JSONs, 1 for each WorkspaceView. If there is an <code class="code docutils literal notranslate"><span class="pre">&lt;id&gt;</span></code> parameter, then response is only the JSON corresponding to that workspace</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;WorkspaceView 1 ID&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;creation_timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Timestamp of the creation of the WorkspaceView, in ISO format (UTC)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;update_timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Timestamp of the last update of the WorkspaceView, in ISO format (UTC)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;view_name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;View name (optional)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;sort_value&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Optional sort value&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;workspace&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;workspace_id1&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;view&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;view_id1&gt;&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;WorkspaceView 2 ID&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;creation_timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Timestamp of the creation of the WorkspaceView, in ISO format (UTC)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;update_timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Timestamp of the last update of the WorkspaceView, in ISO format (UTC)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;view_name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;View name (optional)&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;sort_value&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Optional sort value&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;workspace&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;workspace_id1&gt;&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;view&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;view_id2&gt;&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="update-workspaceview">
+<h4><span class="section-number">2.5.5.3. </span>Update WorkspaceView<a class="headerlink" href="#update-workspaceview" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/ui_framework/workspaceviews/&lt;id&gt;/</span></code>, where the parameter <code class="code docutils literal notranslate"><span class="pre">&lt;id&gt;</span></code> defines the WorkspaceView to edit</p></li>
+<li><p>HTTP Operation: PUT</p></li>
+<li><p>Request payload: JSON with the fields to change in the WorkspaceView</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;view_name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Optional new name for the view within the conext of the workspace, empty string by default&gt;&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;sort_value&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Optional new numeric sort vaue to define the order of the views within the workspace, 0 by default&gt;&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;workspace&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;workspace_id&gt;&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;view&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;view_id&gt;&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Expected Response: the new content of the workspace</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Id of the WorkspaceView&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;creation_timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Timestamp of the creation of the WorkspaceView, in ISO format (UTC)&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;update_timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Timestamp of the last update of the WorkspaceView, in ISO format (UTC)&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;view_name&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Optional name for the view within the conext of the workspace, empty string by default&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;sort_value&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;Optional numeric sort vaue to define the order of the views within the workspace, 0 by default&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;workspace&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;workspace_id&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;view&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;view_id&gt;&quot;</span><span class="p">,</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="delete-workspaceview">
+<h4><span class="section-number">2.5.5.4. </span>Delete WorkspaceView<a class="headerlink" href="#delete-workspaceview" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/ui_framework/workspaceviews/&lt;id&gt;/</span></code>, where the parameter <code class="code docutils literal notranslate"><span class="pre">&lt;id&gt;</span></code> defines the WorkspaceView to delete</p></li>
+<li><p>HTTP Operation: DELETE</p></li>
+<li><p>Expected Response: the new content of the workspace</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">204</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
 </div>
 </div>
 

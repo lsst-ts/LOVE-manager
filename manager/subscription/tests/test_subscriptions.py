@@ -1,6 +1,7 @@
 """Tests for the subscription of consumers to streams."""
 import asyncio
 import pytest
+import os
 from django.contrib.auth.models import User, Permission
 from channels.testing import WebsocketCommunicator
 from manager.routing import application
@@ -10,13 +11,13 @@ from api.models import Token
 class TestSubscriptionCombinations:
     """Test that clients can or cannot establish to subscriptions depending on different conditions."""
 
-    categories = ['event', 'telemetry', 'cmd']
+    categories = ["event", "telemetry", "cmd"]
 
-    cscs = ['ScriptQueue', 'ATDome']
+    cscs = ["ScriptQueue", "ATDome"]
 
     salindices = [1, 2]
 
-    streams = ['stream1', 'stream2']
+    streams = ["stream1", "stream2"]
 
     combinations = []
 
@@ -24,21 +25,25 @@ class TestSubscriptionCombinations:
 
     def setup_method(self):
         """Set up the TestCase, executed before each test of the TestCase."""
-        self.user = User.objects.create_user('username', password='123', email='user@user.cl')
+        self.user = User.objects.create_user(
+            "username", password="123", email="user@user.cl"
+        )
         self.token = Token.objects.create(user=self.user)
-        self.user.user_permissions.add(Permission.objects.get(name='Execute Commands'))
-        self.url = 'manager/ws/subscription/?token={}'.format(self.token)
+        self.user.user_permissions.add(Permission.objects.get(name="Execute Commands"))
+        self.url = "manager/ws/subscription/?token={}".format(self.token)
         if len(self.combinations) == 0:
             for category in self.categories:
                 for csc in self.cscs:
                     for salindex in self.salindices:
                         for stream in self.streams:
-                            self.combinations.append({
-                                "category": category,
-                                "csc": csc,
-                                "salindex": salindex,
-                                "stream": stream,
-                            })
+                            self.combinations.append(
+                                {
+                                    "category": category,
+                                    "csc": csc,
+                                    "salindex": salindex,
+                                    "stream": stream,
+                                }
+                            )
 
     def build_messages(self, category, csc, salindex, streams):
         """Build and return messages to send and expect, for testing purposes.
@@ -60,13 +65,18 @@ class TestSubscriptionCombinations:
             Dictionary containing the expected response to be received by the client in the test
         """
         response = {
-            'category': category,
-            'data': [{
-                'csc': csc,
-                'salindex': salindex,
-                'data': {stream: {'value': 1.02813957817852497, 'dataType': 'Float'} for stream in streams}
-            }],
-            'subscription': '{}-{}-{}-{}'.format(category, csc, salindex, streams[0])
+            "category": category,
+            "data": [
+                {
+                    "csc": csc,
+                    "salindex": salindex,
+                    "data": {
+                        stream: {"value": 1.02813957817852497, "dataType": "Float"}
+                        for stream in streams
+                    },
+                }
+            ],
+            "subscription": "{}-{}-{}-{}".format(category, csc, salindex, streams[0]),
         }
         return response, response
 
@@ -84,14 +94,17 @@ class TestSubscriptionCombinations:
                 "csc": combination["csc"],
                 "salindex": combination["salindex"],
                 "stream": combination["stream"],
-                "category": combination["category"]
+                "category": combination["category"],
             }
             await communicator.send_json_to(msg)
             response = await communicator.receive_json_from()
             # Assert
-            assert response['data'] == \
-                'Successfully subscribed to {}-{}-{}-{}'.format(
-                    combination["category"], combination["csc"], combination["salindex"], combination["stream"])
+            assert response["data"] == "Successfully subscribed to {}-{}-{}-{}".format(
+                combination["category"],
+                combination["csc"],
+                combination["salindex"],
+                combination["stream"],
+            )
         # Act 2 (Unsubscribe)
         for combination in self.combinations:
             msg = {
@@ -99,14 +112,19 @@ class TestSubscriptionCombinations:
                 "csc": combination["csc"],
                 "salindex": combination["salindex"],
                 "stream": combination["stream"],
-                "category": combination["category"]
+                "category": combination["category"],
             }
             await communicator.send_json_to(msg)
             response = await communicator.receive_json_from()
             # Assert
-            assert response['data'] == \
-                'Successfully unsubscribed to {}-{}-{}-{}'.format(
-                    combination["category"], combination["csc"], combination["salindex"], combination["stream"])
+            assert response[
+                "data"
+            ] == "Successfully unsubscribed to {}-{}-{}-{}".format(
+                combination["category"],
+                combination["csc"],
+                combination["salindex"],
+                combination["stream"],
+            )
         await communicator.disconnect()
 
     @pytest.mark.asyncio
@@ -121,27 +139,31 @@ class TestSubscriptionCombinations:
             msg = {
                 "option": "subscribe",
                 "category": category,
-                "csc": 'all',
-                "salindex": 'all',
-                "stream": 'all',
+                "csc": "all",
+                "salindex": "all",
+                "stream": "all",
             }
             await communicator.send_json_to(msg)
             # Assert 1
             response = await communicator.receive_json_from()
-            assert response['data'] == 'Successfully subscribed to {}-all-all-all'.format(category)
+            assert response[
+                "data"
+            ] == "Successfully subscribed to {}-all-all-all".format(category)
         # Act 2 (Unsubscribe)
         for category in self.categories:
             msg = {
                 "option": "unsubscribe",
                 "category": category,
-                "csc": 'all',
-                "salindex": 'all',
-                "stream": 'all',
+                "csc": "all",
+                "salindex": "all",
+                "stream": "all",
             }
             await communicator.send_json_to(msg)
             # Assert 2
             response = await communicator.receive_json_from()
-            assert response['data'] == 'Successfully unsubscribed to {}-all-all-all'.format(category)
+            assert response[
+                "data"
+            ] == "Successfully unsubscribed to {}-all-all-all".format(category)
         await communicator.disconnect()
 
     @pytest.mark.asyncio
@@ -157,15 +179,18 @@ class TestSubscriptionCombinations:
                 "csc": combination["csc"],
                 "salindex": combination["salindex"],
                 "stream": combination["stream"],
-                "category": combination["category"]
+                "category": combination["category"],
             }
             await communicator.send_json_to(msg)
             response = await communicator.receive_json_from()
         # Act
         for combination in self.combinations:
-            msg, expected = \
-                self.build_messages(combination['category'], combination['csc'], combination['salindex'], [
-                                    combination['stream']])
+            msg, expected = self.build_messages(
+                combination["category"],
+                combination["csc"],
+                combination["salindex"],
+                [combination["stream"]],
+            )
             await communicator.send_json_to(msg)
             response = await communicator.receive_json_from()
             # Assert
@@ -183,19 +208,22 @@ class TestSubscriptionCombinations:
             msg = {
                 "option": "subscribe",
                 "category": category,
-                "csc": 'all',
-                "salindex": 'all',
-                "stream": 'all',
+                "csc": "all",
+                "salindex": "all",
+                "stream": "all",
             }
             await communicator.send_json_to(msg)
             response = await communicator.receive_json_from()
         # Act
         for combination in self.combinations:
-            msg, expected = \
-                self.build_messages(combination['category'], combination['csc'], combination['salindex'], [
-                                    combination['stream']])
+            msg, expected = self.build_messages(
+                combination["category"],
+                combination["csc"],
+                combination["salindex"],
+                [combination["stream"]],
+            )
             await communicator.send_json_to(msg)
-            expected['subscription'] = '{}-all-all-all'.format(combination['category'])
+            expected["subscription"] = "{}-all-all-all".format(combination["category"])
             response = await communicator.receive_json_from()
             # Assert
             assert response == expected
@@ -209,32 +237,40 @@ class TestSubscriptionCombinations:
         communicator = WebsocketCommunicator(application, self.url)
         connected, subprotocol = await communicator.connect()
         subscription_msg = {
-            'option': 'subscribe',
-            'category': 'telemetry',
-            'csc': 'ScriptQueue',
-            'salindex': 1,
-            'stream': 'stream1',
+            "option": "subscribe",
+            "category": "telemetry",
+            "csc": "ScriptQueue",
+            "salindex": 1,
+            "stream": "stream1",
         }
         await communicator.send_json_to(subscription_msg)
         await communicator.receive_json_from()
         # Act
         for combination in self.combinations:
-            msg, expected = \
-                self.build_messages(combination['category'], combination['csc'], combination['salindex'], [
-                                    combination['stream']])
+            msg, expected = self.build_messages(
+                combination["category"],
+                combination["csc"],
+                combination["salindex"],
+                [combination["stream"]],
+            )
             await communicator.send_json_to(msg)
 
-            if combination['category'] == subscription_msg['category'] and \
-                    combination['csc'] == subscription_msg['csc'] and \
-                    combination['salindex'] == subscription_msg['salindex'] and \
-                    combination['stream'] == subscription_msg['stream']:
+            if (
+                combination["category"] == subscription_msg["category"]
+                and combination["csc"] == subscription_msg["csc"]
+                and combination["salindex"] == subscription_msg["salindex"]
+                and combination["stream"] == subscription_msg["stream"]
+            ):
                 response = await communicator.receive_json_from()
                 # Assert
                 assert response == expected
             else:
                 # Assert
                 with pytest.raises(asyncio.TimeoutError):
-                    await asyncio.wait_for(communicator.receive_json_from(), timeout=self.no_reception_timeout)
+                    await asyncio.wait_for(
+                        communicator.receive_json_from(),
+                        timeout=self.no_reception_timeout,
+                    )
         await communicator.disconnect()
 
     @pytest.mark.asyncio
@@ -250,31 +286,39 @@ class TestSubscriptionCombinations:
                 "csc": combination["csc"],
                 "stream": combination["stream"],
                 "category": combination["category"],
-                "salindex": combination["salindex"]
+                "salindex": combination["salindex"],
             }
-            subscription_msg['option'] = 'subscribe'
+            subscription_msg["option"] = "subscribe"
             await communicator.send_json_to(subscription_msg)
             await communicator.receive_json_from()
             # Act: Send and receive all
             for combination in self.combinations:
-                msg, expected = \
-                    self.build_messages(combination['category'], combination['csc'], combination['salindex'], [
-                                        combination['stream']])
+                msg, expected = self.build_messages(
+                    combination["category"],
+                    combination["csc"],
+                    combination["salindex"],
+                    [combination["stream"]],
+                )
                 await communicator.send_json_to(msg)
 
-                if combination['category'] == subscription_msg['category'] and \
-                        combination['csc'] == subscription_msg['csc'] and \
-                        combination['salindex'] == subscription_msg['salindex'] and \
-                        combination['stream'] == subscription_msg['stream']:
+                if (
+                    combination["category"] == subscription_msg["category"]
+                    and combination["csc"] == subscription_msg["csc"]
+                    and combination["salindex"] == subscription_msg["salindex"]
+                    and combination["stream"] == subscription_msg["stream"]
+                ):
                     response = await communicator.receive_json_from()
                     # Assert: receive the one subscribed to
                     assert response == expected
                 else:
                     # Assert: not receive all the others
                     with pytest.raises(asyncio.TimeoutError):
-                        await asyncio.wait_for(communicator.receive_json_from(), timeout=self.no_reception_timeout)
+                        await asyncio.wait_for(
+                            communicator.receive_json_from(),
+                            timeout=self.no_reception_timeout,
+                        )
             # Clean: Unsubscribe from 1
-            subscription_msg['option'] = 'unsubscribe'
+            subscription_msg["option"] = "unsubscribe"
             await communicator.send_json_to(subscription_msg)
             await communicator.receive_json_from()
         await communicator.disconnect()
@@ -292,33 +336,44 @@ class TestSubscriptionCombinations:
                 "csc": combination["csc"],
                 "stream": combination["stream"],
                 "category": combination["category"],
-                "salindex": combination["salindex"]
+                "salindex": combination["salindex"],
             }
-            subscription_msg['option'] = 'subscribe'
+            subscription_msg["option"] = "subscribe"
             await communicator.send_json_to(subscription_msg)
             await communicator.receive_json_from()
             # Act: Send the big message
-            msg, ignore = \
-                self.build_messages(
-                    combination['category'], combination['csc'], combination['salindex'], self.streams)
+            msg, ignore = self.build_messages(
+                combination["category"],
+                combination["csc"],
+                combination["salindex"],
+                self.streams,
+            )
             await communicator.send_json_to(msg)
 
-            if combination['category'] == subscription_msg['category'] and \
-                    combination['csc'] == subscription_msg['csc'] and \
-                    combination['salindex'] == subscription_msg['salindex'] and \
-                    combination['stream'] == subscription_msg['stream']:
+            if (
+                combination["category"] == subscription_msg["category"]
+                and combination["csc"] == subscription_msg["csc"]
+                and combination["salindex"] == subscription_msg["salindex"]
+                and combination["stream"] == subscription_msg["stream"]
+            ):
                 response = await communicator.receive_json_from()
                 # Assert: receive the one subscribed to
-                ignore, expected = \
-                    self.build_messages(combination['category'], combination['csc'], combination['salindex'], [
-                                        combination['stream']])
+                ignore, expected = self.build_messages(
+                    combination["category"],
+                    combination["csc"],
+                    combination["salindex"],
+                    [combination["stream"]],
+                )
                 assert response == expected
             else:
                 # Assert: not receive all the others
                 with pytest.raises(asyncio.TimeoutError):
-                    await asyncio.wait_for(communicator.receive_json_from(), timeout=self.no_reception_timeout)
+                    await asyncio.wait_for(
+                        communicator.receive_json_from(),
+                        timeout=self.no_reception_timeout,
+                    )
             # Clean: Unsubscribe from 1
-            subscription_msg['option'] = 'unsubscribe'
+            subscription_msg["option"] = "unsubscribe"
             await communicator.send_json_to(subscription_msg)
             await communicator.receive_json_from()
         await communicator.disconnect()
@@ -337,13 +392,15 @@ class TestSubscriptionCombinations:
         await producer_communicator.connect()
 
         # Act 1 (Subscribe producer)
-        await producer_communicator.send_json_to({
-            'option': 'subscribe',
-            'category': 'initial_state',
-            'csc': 'all',
-            'salindex': 'all',
-            'stream': 'all'
-        })
+        await producer_communicator.send_json_to(
+            {
+                "option": "subscribe",
+                "category": "initial_state",
+                "csc": "all",
+                "salindex": "all",
+                "stream": "all",
+            }
+        )
         await producer_communicator.receive_json_from()
 
         # Act 2  (Subscribe client)
@@ -357,7 +414,7 @@ class TestSubscriptionCombinations:
                 "csc": combination["csc"],
                 "salindex": combination["salindex"],
                 "stream": combination["stream"],
-                "category": combination["category"]
+                "category": combination["category"],
             }
 
             # Subscribe the first time
@@ -366,25 +423,16 @@ class TestSubscriptionCombinations:
 
             # Assert first subscription
             assert producer_consumer_response == {
-                'category': 'initial_state',
-                'data': [{
-                    'csc': combination["csc"],
-                    'salindex': combination["salindex"],
-                    'data': {
-                        'event_name': combination["stream"]
-                    },
-                }],
-                'subscription': 'initial_state-all-all-all'
-
+                "category": "initial_state",
+                "data": [
+                    {
+                        "csc": combination["csc"],
+                        "salindex": combination["salindex"],
+                        "data": {"event_name": combination["stream"]},
+                    }
+                ],
+                "subscription": "initial_state-all-all-all",
             }
-
-            # Assert second subscription doesn't produce a message
-            await client_communicator.send_json_to(msg)
-
-            with pytest.raises(asyncio.TimeoutError):
-                producer_consumer_response = await asyncio.wait_for(
-                    producer_communicator.receive_json_from(), timeout=self.no_reception_timeout
-                )
 
         await client_communicator.disconnect()
         await producer_communicator.disconnect()
