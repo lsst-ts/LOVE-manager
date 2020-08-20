@@ -25,7 +25,8 @@ class TestHeartbeat:
     @pytest.mark.django_db(transaction=True)
     async def test_join_and_leave_subscription(self):
         # Arrange
-        await HeartbeatManager.reset()
+        hb_manager = HeartbeatManager()
+        await hb_manager.reset()
         communicator = WebsocketCommunicator(application, self.url)
         connected, subprotocol = await communicator.connect()
 
@@ -94,13 +95,14 @@ class TestHeartbeat:
         # Assert 2
         assert response['data'] == f'Successfully unsubscribed to heartbeat-manager-0-stream'
         await communicator.disconnect()
-        await HeartbeatManager.stop()
+        await hb_manager.stop()
 
     @pytest.mark.asyncio
     @pytest.mark.django_db(transaction=True)
     async def test_heartbeat_manager_setter(self):
+        hb_manager = HeartbeatManager()
         # Arrange
-        await HeartbeatManager.reset()
+        await hb_manager.reset()
         communicator = WebsocketCommunicator(application, self.url)
         connected, subprotocol = await communicator.connect()
 
@@ -123,20 +125,21 @@ class TestHeartbeat:
 
         # Act 2 Set producer heartbeat
         timestamp = datetime.datetime.now().timestamp()
-        HeartbeatManager.set_heartbeat_timestamp('Producer', timestamp)
+        hb_manager.set_heartbeat_timestamp('Producer', timestamp)
         response = await communicator.receive_json_from(timeout=4)
         
         # Assert 2
         heartbeat_sources = [source['csc'] for source in response['data']]
         assert 'Producer' in heartbeat_sources
         await communicator.disconnect()
-        await HeartbeatManager.stop()
+        await hb_manager.stop()
         
     @pytest.mark.asyncio
     @pytest.mark.django_db(transaction=True)
     async def test_producer_heartbeat(self):
         # Arrange
-        await HeartbeatManager.reset()
+        hb_manager = HeartbeatManager()
+        await hb_manager.reset()
         communicator = WebsocketCommunicator(application, self.url)
         connected, subprotocol = await communicator.connect()
 
@@ -168,14 +171,15 @@ class TestHeartbeat:
         heartbeat_sources = [source['csc'] for source in response['data']]
         assert 'Producer' in heartbeat_sources
         await communicator.disconnect()
-        await HeartbeatManager.stop()
+        await hb_manager.stop()
 
     @pytest.mark.asyncio
     @pytest.mark.django_db(transaction=True)
     @patch('requests.get', return_value = type('obj', (object,), {'json' : lambda: {'timestamp': 123123123}}))
     async def test_unauthorized_commander(self, mock_requests):
         # Arrange
-        await HeartbeatManager.reset()
+        hb_manager = HeartbeatManager()
+        await hb_manager.reset()
         communicator = WebsocketCommunicator(application, self.url)
         connected, subprotocol = await communicator.connect()
 
@@ -205,4 +209,4 @@ class TestHeartbeat:
         commander_timestamp = commander_heartbeat['timestamp']
         assert commander_timestamp == 123123123
         await communicator.disconnect()
-        await HeartbeatManager.stop()
+        await hb_manager.stop()
