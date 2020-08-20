@@ -1,6 +1,7 @@
 """Tests for the subscription of consumers to streams."""
 import asyncio
 import pytest
+import os
 from django.contrib.auth.models import User, Permission
 from channels.testing import WebsocketCommunicator
 from manager.routing import application
