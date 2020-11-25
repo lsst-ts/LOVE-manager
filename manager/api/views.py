@@ -260,7 +260,7 @@ def commander(request):
 )
 @api_view(["POST"])
 @permission_classes((IsAuthenticated,))
-def lovecsc(request):
+def lovecsc_observinglog(request):
     """Sends an observing log message to the LOVE-commander according to the received parameters
 
     Params
@@ -277,7 +277,7 @@ def lovecsc(request):
         return Response(
             {"ack": "User does not have permissions to send observing logs."}, 401
         )
-    url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/lovecsc"
+    url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/lovecsc/observinglog"
     response = requests.post(url, json=request.data)
 
     return Response(response.json(), status=response.status_code)

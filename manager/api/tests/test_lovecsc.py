@@ -39,12 +39,12 @@ class LOVECscTestCase(TestCase):
     )
     @patch("requests.post")
     def test_authorized_lovecsc_data(self, mock_requests, mock_environ):
-        """Test authorized user commander data is sent to love-commander"""
+        """Test authorized user observing log is sent to love-commander"""
         # Arrange:
         self.user.user_permissions.add(Permission.objects.get(name="Execute Commands"))
 
         # Act:
-        url = reverse("love-csc")
+        url = reverse("lovecsc-observinglog")
         data = {
             "user": "an user",
             "message": "a message",
@@ -52,9 +52,14 @@ class LOVECscTestCase(TestCase):
 
         with self.assertRaises(ValueError):
             response = self.client.post(url, data, format="json")
-        fakehostname = "fakehost"
-        fakeport = "fakeport"
-        expected_url = f"http://fakehost:fakeport/lovecsc"
+            result = response.json()
+
+        # self.assertEqual(response.status_code, 200)
+        # self.assertEqual(
+        #     result, {"ack": "Added new observing log to SAL."}
+        # )
+
+        expected_url = f"http://fakehost:fakeport/lovecsc/observinglog"
         self.assertEqual(mock_requests.call_args, call(expected_url, json=data))
 
     @patch(
@@ -67,12 +72,12 @@ class LOVECscTestCase(TestCase):
     def test_unauthorized_lovecsc(self, mock_requests, mock_environ):
         """Test an unauthorized user can't send commands"""
         # Act:
-        url = reverse("love-csc")
+        url = reverse("lovecsc-observinglog")
         data = {
             "user": "an user",
             "message": "a message",
         }
-
+        
         response = self.client.post(url, data, format="json")
         result = response.json()
 
@@ -80,3 +85,6 @@ class LOVECscTestCase(TestCase):
         self.assertEqual(
             result, {"ack": "User does not have permissions to send observing logs."}
         )
+
+        # expected_url = f"http://fakehost:fakeport/lovecsc/observinglog"
+        # self.assertEqual(mock_requests.call_args, call(expected_url, json=data))
