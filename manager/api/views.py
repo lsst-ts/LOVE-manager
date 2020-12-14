@@ -250,6 +250,40 @@ def commander(request):
 
 
 @swagger_auto_schema(
+    method="post",
+    responses={
+        200: openapi.Response("Observing log sent"),
+        400: openapi.Response("Missing parameters"),
+        401: openapi.Response("Unauthenticated"),
+        403: openapi.Response("Unauthorized"),
+    },
+)
+@api_view(["POST"])
+@permission_classes((IsAuthenticated,))
+def lovecsc_observinglog(request):
+    """Sends an observing log message to the LOVE-commander according to the received parameters
+
+    Params
+    ------
+    request: Request
+        The Request object
+    
+    Returns
+    -------
+    Response
+        The response and status code of the request to the LOVE-Commander
+    """
+    if not request.user.has_perm("api.command.execute_command"):
+        return Response(
+            {"ack": "User does not have permissions to send observing logs."}, 401
+        )
+    url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/lovecsc/observinglog"
+    response = requests.post(url, json=request.data)
+
+    return Response(response.json(), status=response.status_code)
+
+
+@swagger_auto_schema(
     method="get",
     responses={
         200: openapi.Response(
