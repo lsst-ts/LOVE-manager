@@ -10,12 +10,17 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.decorators import api_view
-from rest_framework.decorators import permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import permission_classes, authentication_classes
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.response import Response
+from rest_framework import viewsets, status
 from api.models import Token
 from api.serializers import TokenSerializer, read_config_file, ConfigSerializer
+from api.serializers import ConfigFileSerializer, ConfigFileContentSerializer
 from .schema_validator import DefaultingValidator
+from api.models import ConfigFile
 
 valid_response = openapi.Response("Valid token", TokenSerializer)
 invalid_response = openapi.Response("Invalid token")
@@ -418,8 +423,74 @@ def salinfo_topic_data(request):
     },
 )
 @api_view(["GET"])
-@permission_classes((IsAuthenticated,))
+# @permission_classes((IsAuthenticated,))
 def get_config(request):
+    """Returns the config file
+
+    Params
+    ------
+    request: Request
+        The Request object
+    
+    Returns
+    -------
+    Response
+        Containing the contents of the config file
+    """
+    data = read_config_file()
+    if data is None:
+        return Response(None, status=status.HTTP_404_NOT_FOUND)
+    return Response(data, status=status.HTTP_200_OK)
+
+
+
+class ConfigFileViewSet(viewsets.ModelViewSet):
+    """GET, POST, PUT, PATCH or DELETE instances the ConfigFile model."""
+
+    queryset = ConfigFile.objects.order_by("-update_timestamp").all()
+    """Set of objects to be accessed by queries to this viewsets endpoints"""
+
+    serializer_class = ConfigFileSerializer
+    """Serializer used to serialize View objects"""
+
+    @action(detail=True)
+    def content(self, request, pk=None):
+        """Serialize a ConfigFile's content.
+
+        Params
+        ------
+        request: Request
+            The Requets object
+        pk: int
+            The corresponding ConfigFile pk
+
+        Returns
+        -------
+        Response
+            The response containing the serialized ConfigFile content
+        """
+        try:
+            cf = ConfigFile.objects.get(pk=pk)
+        except ConfigFile.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = ConfigFileContentSerializer(cf)
+        return Response(serializer.data)
+
+
+@swagger_auto_schema(
+    method="get",
+    responses={
+        200: openapi.Response("Config file", ConfigSerializer),
+        401: openapi.Response("Unauthenticated"),
+        404: not_found_response,
+    },
+)
+@permission_classes(())
+@authentication_classes([BasicAuthentication])
+@api_view(["GET"])
+@action(detail=True, methods=['get'])
+def get_config_detail(request, pk=None, **kwargs):
     """Returns the config file
 
     Params
