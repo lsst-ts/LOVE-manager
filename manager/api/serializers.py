@@ -5,6 +5,8 @@ from drf_yasg.utils import swagger_serializer_method
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from manager import utils
+from api.models import ConfigFile
+
 
 
 def read_config_file():
@@ -166,3 +168,44 @@ class TokenSerializer(serializers.Serializer):
             return None
         else:
             return read_config_file()
+
+
+class ConfigFileSerializer(serializers.ModelSerializer):
+    """Serializer to map the Model instance into JSON format."""
+    filename = serializers.SerializerMethodField()
+    username = serializers.SerializerMethodField()
+
+    def get_username(self, obj):
+        return str(obj.user)
+
+    def get_filename(self, obj):
+        return str(obj.file_name)
+
+    class Meta:
+        """Meta class to map serializer's fields with the model fields."""
+
+        model = ConfigFile
+        """The model class to serialize"""
+
+        fields = ("id", "username", "filename", "creation_timestamp", "update_timestamp")
+        """The fields of the model class to serialize"""
+
+class ConfigFileContentSerializer(serializers.ModelSerializer):
+    """Serializer to map the Model instance into JSON format."""
+    content = serializers.SerializerMethodField()
+    filename = serializers.SerializerMethodField()
+
+    def get_content(self, obj):
+        return obj.config_file.read().decode("ascii")
+
+    def get_filename(self, obj):
+        return str(obj.file_name)
+
+    class Meta:
+        """Meta class to map serializer's fields with the model fields."""
+
+        model = ConfigFile
+        """The model class to serialize"""
+
+        fields = ("id", "filename", "content")
+        """The fields of the model class to serialize"""
