@@ -43,11 +43,23 @@ class ConfigFileApiTestCase(TestCase):
         self.url = reverse("config")
         self.token = Token.objects.create(user=self.user)
 
+    def test_get_config_files_list(self):
+        """Test that an authenticated user can get a config file."""
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token.key)
+        response = self.client.get(reverse("configfile-list"), format="json")
+        self.assertEqual(response.status_code, 200)
+        expected_data = {
+            "id": self.configfile.id,
+            "username": self.user.username, 
+            "filename": self.filename, 
+        }
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]["filename"], expected_data["filename"])
+
     def test_get_config_file(self):
         """Test that an authenticated user can get a config file."""
         self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token.key)
         response = self.client.get(reverse("configfile-detail", args=[self.configfile.id]), format="json")
-        import pdb; pdb.set_trace()
         self.assertEqual(response.status_code, 200)
         expected_data = {
             "id": self.configfile.id,
@@ -62,7 +74,6 @@ class ConfigFileApiTestCase(TestCase):
         """Test that an authenticated user can get a config file content."""
         self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token.key)
         response = self.client.get(reverse("configfile-content", args=[self.configfile.id]), format="json")
-        import pdb; pdb.set_trace()
         self.assertEqual(response.status_code, 200)
         expected_data = {
             "id": self.configfile.id,
