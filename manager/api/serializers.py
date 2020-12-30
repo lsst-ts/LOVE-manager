@@ -8,18 +8,6 @@ from manager import utils
 from api.models import ConfigFile
 
 
-
-def read_config_file():
-    url = settings.CONFIG_URL
-    with open(url) as f:
-        content = f.read()
-    try:
-        data = json.loads(content)
-    except ValueError:
-        return None
-    return data
-
-
 class UserSerializer(serializers.ModelSerializer):
     """Serializer to map the Model instance into JSON format."""
 

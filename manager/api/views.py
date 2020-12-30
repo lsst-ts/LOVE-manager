@@ -17,7 +17,7 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework.response import Response
 from rest_framework import viewsets, status
 from api.models import Token
-from api.serializers import TokenSerializer, read_config_file, ConfigSerializer
+from api.serializers import TokenSerializer, ConfigSerializer
 from api.serializers import ConfigFileSerializer, ConfigFileContentSerializer
 from .schema_validator import DefaultingValidator
 from api.models import ConfigFile
@@ -423,7 +423,7 @@ def salinfo_topic_data(request):
     },
 )
 @api_view(["GET"])
-# @permission_classes((IsAuthenticated,))
+@permission_classes((IsAuthenticated,))
 def get_config(request):
     """Returns the config file
 
@@ -437,10 +437,6 @@ def get_config(request):
     Response
         Containing the contents of the config file
     """
-    # data = read_config_file()
-    # if data is None:
-    #     return Response(None, status=status.HTTP_404_NOT_FOUND)
-    # return Response(data, status=status.HTTP_200_OK)
     try:
         cf = ConfigFile.objects.first()
     except ConfigFile.DoesNotExist:
