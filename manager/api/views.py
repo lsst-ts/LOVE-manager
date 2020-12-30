@@ -437,10 +437,17 @@ def get_config(request):
     Response
         Containing the contents of the config file
     """
-    data = read_config_file()
-    if data is None:
-        return Response(None, status=status.HTTP_404_NOT_FOUND)
-    return Response(data, status=status.HTTP_200_OK)
+    # data = read_config_file()
+    # if data is None:
+    #     return Response(None, status=status.HTTP_404_NOT_FOUND)
+    # return Response(data, status=status.HTTP_200_OK)
+    try:
+        cf = ConfigFile.objects.first()
+    except ConfigFile.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer = ConfigFileContentSerializer(cf)
+    return Response(serializer.data)
 
 
 
@@ -476,34 +483,3 @@ class ConfigFileViewSet(viewsets.ModelViewSet):
 
         serializer = ConfigFileContentSerializer(cf)
         return Response(serializer.data)
-
-
-@swagger_auto_schema(
-    method="get",
-    responses={
-        200: openapi.Response("Config file", ConfigSerializer),
-        401: openapi.Response("Unauthenticated"),
-        404: not_found_response,
-    },
-)
-@permission_classes(())
-@authentication_classes([BasicAuthentication])
-@api_view(["GET"])
-@action(detail=True, methods=['get'])
-def get_config_detail(request, pk=None, **kwargs):
-    """Returns the config file
-
-    Params
-    ------
-    request: Request
-        The Request object
-    
-    Returns
-    -------
-    Response
-        Containing the contents of the config file
-    """
-    data = read_config_file()
-    if data is None:
-        return Response(None, status=status.HTTP_404_NOT_FOUND)
-    return Response(data, status=status.HTTP_200_OK)
