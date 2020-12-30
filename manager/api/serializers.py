@@ -163,11 +163,10 @@ class TokenSerializer(serializers.Serializer):
                 warning: 0
             }
         """
-        no_config = self.context.get("no_config")
-        if no_config:
-            return None
-        else:
-            return read_config_file()
+        cf = ConfigFile.objects.first()
+
+        serializer = ConfigFileContentSerializer(cf)
+        return serializer.data
 
 
 class ConfigFileSerializer(serializers.ModelSerializer):
@@ -196,7 +195,7 @@ class ConfigFileContentSerializer(serializers.ModelSerializer):
     filename = serializers.SerializerMethodField()
 
     def get_content(self, obj):
-        return obj.config_file.read().decode("ascii")
+        return json.loads(obj.config_file.read().decode("ascii"))
 
     def get_filename(self, obj):
         return str(obj.file_name)
