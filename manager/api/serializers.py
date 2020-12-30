@@ -151,10 +151,13 @@ class TokenSerializer(serializers.Serializer):
                 warning: 0
             }
         """
-        cf = ConfigFile.objects.first()
-
-        serializer = ConfigFileContentSerializer(cf)
-        return serializer.data
+        no_config = self.context.get("no_config")
+        if no_config:
+            return None
+        else:
+            cf = ConfigFile.objects.first()
+            serializer = ConfigFileContentSerializer(cf)
+            return serializer.data
 
 
 class ConfigFileSerializer(serializers.ModelSerializer):

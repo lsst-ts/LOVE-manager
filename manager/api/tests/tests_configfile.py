@@ -1,6 +1,7 @@
 """Test users' authentication through the API."""
 import datetime
 import io
+import json
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User, Permission
@@ -19,7 +20,7 @@ class ConfigFileApiTestCase(TestCase):
 
     @staticmethod
     def get_config_file_sample(name, content):
-        f = ContentFile(content.encode("ascii"), name=name)
+        f = ContentFile(json.dumps(content).encode("ascii"), name=name)
         return f
 
 
@@ -35,8 +36,8 @@ class ConfigFileApiTestCase(TestCase):
             first_name="First",
             last_name="Last",
         )
-        self.filename = 'test.json'
-        self.content = 'this is the content of the file'
+        self.filename = "test.json"
+        self.content = {"key1": "this is the content of the file"}
         self.configfile = ConfigFile.objects.create(user=self.user, 
             config_file=ConfigFileApiTestCase.get_config_file_sample("random_filename", self.content),
             file_name=self.filename)
@@ -91,4 +92,3 @@ class ConfigFileApiTestCase(TestCase):
 
         # Assert:
         self.assertEqual(response.status_code, 401)
-        self.assertNotEqual(response.data, self.expected_data)
