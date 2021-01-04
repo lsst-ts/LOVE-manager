@@ -83,6 +83,7 @@ class ConfigFile(BaseModel):
         settings.AUTH_USER_MODEL, related_name='config_files',
         on_delete=models.CASCADE, verbose_name= "User"
     )
+    """User who created the config file"""
 
     file_name = models.CharField(max_length=30, blank=True)
     """The custom name for the configuration"""
@@ -92,13 +93,4 @@ class ConfigFile(BaseModel):
         default="configs/default.json",
         validators=[validate_file_extension],
     )
-    """Order of the View within the Workspace."""
-
-    # def __str__(self):
-    #     """Redefine how objects of this class are transformed to string."""
-    #     if self.view_name and self.view_name != "":
-    #         return "{}: {} - {}".format(
-    #             self.view_name, self.workspace.name, self.view.name
-    #         )
-    #     else:
-    #         return "{} - {}".format(self.workspace.name, self.view.name)
+    """Reference to the config file"""
