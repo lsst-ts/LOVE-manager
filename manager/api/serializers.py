@@ -197,5 +197,5 @@ class ConfigFileContentSerializer(serializers.ModelSerializer):
         model = ConfigFile
         """The model class to serialize"""
 
-        fields = ("id", "filename", "content")
+        fields = ("id", "filename", "content", "update_timestamp")
         """The fields of the model class to serialize"""
