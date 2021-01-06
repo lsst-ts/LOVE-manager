@@ -16,7 +16,7 @@ class LOVECscTestCase(TestCase):
         # Arrange
         self.client = APIClient()
         self.user = User.objects.create_user(
-            username="an user",
+            username="user",
             password="password",
             email="test@user.cl",
             first_name="First",
@@ -46,7 +46,7 @@ class LOVECscTestCase(TestCase):
         # Act:
         url = reverse("lovecsc-observinglog")
         data = {
-            "user": "an user",
+            "user": "user",
             "message": "a message",
         }
 
@@ -74,7 +74,7 @@ class LOVECscTestCase(TestCase):
         # Act:
         url = reverse("lovecsc-observinglog")
         data = {
-            "user": "an user",
+            "user": "user",
             "message": "a message",
         }
         

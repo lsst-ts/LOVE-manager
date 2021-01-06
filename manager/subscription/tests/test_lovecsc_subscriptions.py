@@ -101,7 +101,7 @@ class TestLOVECscSubscriptions:
                     "csc": "love",
                     "salindex": 0,
                     "data": {
-                        "observingLog": {"user": "an user", "message": "a message"}
+                        "observingLog": {"user": "user", "message": "a message"}
                     },
                 }
             ],

@@ -18,6 +18,7 @@ Including another URLconf
 from django.conf.urls import include
 from django.urls import path
 from rest_framework.routers import DefaultRouter
+from api.views import ConfigFileViewSet
 
 # from api.views import validate_token, logout, CustomObtainAuthToken, validate_config_schema, commander, salinfo_metadata
 import api.views
@@ -48,4 +49,5 @@ urlpatterns = [
     path("salinfo/topic-data", api.views.salinfo_topic_data, name="salinfo-topic-data"),
     path("config", api.views.get_config, name="config"),
 ]
+router.register('configfile', ConfigFileViewSet)
 urlpatterns.append(path("", include(router.urls)))

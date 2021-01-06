@@ -8,6 +8,8 @@ https://docs.djangoproject.com/en/2.2/ref/contrib/admin/
 """
 from django.contrib import admin
 from api.models import Token
+from api.models import ConfigFile
 
 
 admin.site.register(Token)
+admin.site.register(ConfigFile)
