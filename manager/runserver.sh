@@ -15,6 +15,7 @@ python manage.py createusers --adminpass ${ADMIN_USER_PASS} --userpass ${USER_US
 echo -e "\nApplying fixtures"
 mkdir -p media/thumbnails
 cp -u ui_framework/fixtures/thumbnails/* media/thumbnails
+mkdir -p media/configs
 cp -u api/fixtures/configs/* media/configs
 
 python manage.py loaddata ui_framework/fixtures/initial_data.json
