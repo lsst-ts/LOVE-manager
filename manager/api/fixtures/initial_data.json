@@ -9,5 +9,29 @@
       "file_name": "default.json",
       "config_file": "configs/default.json"
     }
+  },
+  {
+    "model": "api.emergencycontact",
+    "pk": 1,
+    "fields": {
+      "creation_timestamp": "2021-01-05T17:03:55.382Z",
+      "update_timestamp": "2021-01-05T17:03:55.382Z",
+      "subsystem": "ATDome",
+      "name": "Name Lastname",
+      "contact_info": "+5689846515",
+      "email": "name@email.com"
+    }
+  },
+  {
+    "model": "api.emergencycontact",
+    "pk": 2,
+    "fields": {
+      "creation_timestamp": "2021-01-05T17:04:24.127Z",
+      "update_timestamp": "2021-01-05T17:04:24.127Z",
+      "subsystem": "ATMCS",
+      "name": "Name2 Lastname2",
+      "contact_info": "none",
+      "email": "name2@email.com"
+    }
   }
 ]

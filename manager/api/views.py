@@ -18,9 +18,9 @@ from rest_framework.response import Response
 from rest_framework import viewsets, status
 from api.models import Token
 from api.serializers import TokenSerializer, ConfigSerializer
-from api.serializers import ConfigFileSerializer, ConfigFileContentSerializer
+from api.serializers import ConfigFileSerializer, ConfigFileContentSerializer, EmergencyContactSerializer
 from .schema_validator import DefaultingValidator
-from api.models import ConfigFile
+from api.models import ConfigFile, EmergencyContact
 
 valid_response = openapi.Response("Valid token", TokenSerializer)
 invalid_response = openapi.Response("Invalid token")
@@ -479,3 +479,13 @@ class ConfigFileViewSet(viewsets.ModelViewSet):
 
         serializer = ConfigFileContentSerializer(cf)
         return Response(serializer.data)
+
+
+class EmergencyContactViewSet(viewsets.ModelViewSet):
+    """GET, POST, PUT, PATCH or DELETE instances the EmergencyContact model."""
+
+    queryset = EmergencyContact.objects.order_by("subsystem").all()
+    """Set of objects to be accessed by queries to this viewsets endpoints"""
+
+    serializer_class = EmergencyContactSerializer
+    """Serializer used to serialize View objects"""

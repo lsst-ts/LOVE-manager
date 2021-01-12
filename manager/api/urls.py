@@ -18,7 +18,8 @@ Including another URLconf
 from django.conf.urls import include
 from django.urls import path
 from rest_framework.routers import DefaultRouter
-from api.views import ConfigFileViewSet
+from api.views import ConfigFileViewSet, EmergencyContactViewSet
+
 import api.views
 
 router = DefaultRouter()
@@ -48,4 +49,5 @@ urlpatterns = [
     path("config", api.views.get_config, name="config"),
 ]
 router.register('configfile', ConfigFileViewSet)
+router.register('emergencycontact', EmergencyContactViewSet)
 urlpatterns.append(path("", include(router.urls)))
