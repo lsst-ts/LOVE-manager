@@ -44,6 +44,25 @@ class DefaultingValidator:
     * final_validator: a standard validator that does not alter
       the data being validated.
     """
+    @staticmethod
+    def set_default_properties(properties, skip_properties, instance):
+        for prop, subschema in properties.items():
+            if not isinstance(subschema, dict):
+                continue
+            if not isinstance(instance, dict):
+                continue
+            if prop in skip_properties:
+                continue
+            if "default" in subschema:
+                instance.setdefault(prop, subschema["default"])
+            elif subschema.get("type") == "object" and "properties" in subschema:
+                # Handle defaults for one level deep sub-object.
+                subdefaults = {}
+                for subpropname, subpropvalue in subschema["properties"].items():
+                    if "default" in subpropvalue:
+                        subdefaults[subpropname] = subpropvalue["default"]
+                if subdefaults:
+                    instance.setdefault(prop, subdefaults)
 
     def __init__(self, schema, ValidatorClass=jsonschema.Draft7Validator):
         ValidatorClass.check_schema(schema)
@@ -88,23 +107,7 @@ class DefaultingValidator:
                     "uniqueItems",
                 )
             )
-            for prop, subschema in properties.items():
-                if not isinstance(subschema, dict):
-                    continue
-                if not isinstance(instance, dict):
-                    continue
-                if prop in skip_properties:
-                    continue
-                if "default" in subschema:
-                    instance.setdefault(prop, subschema["default"])
-                elif subschema.get("type") == "object" and "properties" in subschema:
-                    # Handle defaults for one level deep sub-object.
-                    subdefaults = {}
-                    for subpropname, subpropvalue in subschema["properties"].items():
-                        if "default" in subpropvalue:
-                            subdefaults[subpropname] = subpropvalue["default"]
-                    if subdefaults:
-                        instance.setdefault(prop, subdefaults)
+            DefaultingValidator.set_default_properties(properties, skip_properties, instance)
 
             for error in validate_properties(validator, properties, instance, schema):
                 yield error
