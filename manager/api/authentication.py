@@ -55,7 +55,7 @@ class ExpiringTokenAuthentication(rest_framework.authentication.TokenAuthenticat
         return (token.user, token)
 
     @classmethod
-    def token_expire_handler(self, token):
+    def token_expire_handler(cls, token):
         """Check if a given token is expired or not, if it is the Token is deleted.
 
         Params
@@ -68,14 +68,13 @@ class ExpiringTokenAuthentication(rest_framework.authentication.TokenAuthenticat
         boolean, Token:
             True if it is expired, False if not; and the Token object
         """
-        is_expired = self.is_token_expired(token)
+        is_expired = cls.is_token_expired(token)
         if is_expired:
             token.delete()
-            # token = Token.objects.create(user=token.user) # This line allows creation of a new token after expiration
         return is_expired, token
 
     @classmethod
-    def is_token_expired(self, token):
+    def is_token_expired(cls, token):
         """Check if a given token is expired or not.
 
         Params
@@ -88,10 +87,10 @@ class ExpiringTokenAuthentication(rest_framework.authentication.TokenAuthenticat
         boolean
             True if it is expired, False if not
         """
-        return self.expires_in(token) < timedelta(seconds=0)
+        return cls.expires_in(token) < timedelta(seconds=0)
 
     @classmethod
-    def expires_in(self, token):
+    def expires_in(cls, token):
         """Return the remaining time of a given token.
 
         Params
