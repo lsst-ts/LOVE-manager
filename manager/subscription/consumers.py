@@ -226,7 +226,6 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         """
         data = message["data"]
         category = message["category"]
-        user = self.scope["user"]
         producer_snd = message["producer_snd"] if "producer_snd" in message else None
 
         # Store pairs of group, message to send:

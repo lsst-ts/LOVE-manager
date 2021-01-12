@@ -108,7 +108,7 @@ class TestClientConnection:
         # Client 1 should not be able to send and receive messages
         with pytest.raises(AssertionError):
             await client1.send_json_to(subscription_msg)
-            response = await client1.receive_json_from()
+            await client1.receive_json_from()
 
         # Client 2 should be able to send and receive messages
         await client2.send_json_to(subscription_msg)
@@ -157,7 +157,7 @@ class TestClientConnection:
         # Client 1 should not be able to send and receive messages
         with pytest.raises(AssertionError):
             await client1.send_json_to(subscription_msg)
-            response = await client1.receive_json_from()
+            await client1.receive_json_from()
 
         # Client 2 should be able to send and receive messages
         await client2.send_json_to(subscription_msg)

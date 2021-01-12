@@ -167,7 +167,7 @@ class AuthApiTestCase(TestCase):
         """Test that a user can validate a token."""
         # Arrange:
         data = {"username": self.username, "password": self.password}
-        response = self.client.post(self.login_url, data, format="json")
+        self.client.post(self.login_url, data, format="json")
         token = Token.objects.filter(user__username=self.username).first()
         self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
 
@@ -203,7 +203,7 @@ class AuthApiTestCase(TestCase):
         """Test that a user can validate a token and not receive the config passing the no_config query param."""
         # Arrange:
         data = {"username": self.username, "password": self.password}
-        response = self.client.post(self.login_url, data, format="json")
+        self.client.post(self.login_url, data, format="json")
         token = Token.objects.filter(user__username=self.username).first()
         self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
 
@@ -238,7 +238,7 @@ class AuthApiTestCase(TestCase):
         """Test that a user fails to validate an invalid token."""
         # Arrange:
         data = {"username": self.username, "password": self.password}
-        response = self.client.post(self.login_url, data, format="json")
+        self.client.post(self.login_url, data, format="json")
         token = Token.objects.filter(user__username=self.username).first()
         self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key + "fake")
 
@@ -252,7 +252,7 @@ class AuthApiTestCase(TestCase):
         """Test that a user fails to validate an deleted token."""
         # Arrange:
         data = {"username": self.username, "password": self.password}
-        response = self.client.post(self.login_url, data, format="json")
+        self.client.post(self.login_url, data, format="json")
         token = Token.objects.filter(user__username=self.username).first()
         self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
         token.delete()
@@ -269,7 +269,7 @@ class AuthApiTestCase(TestCase):
         initial_time = datetime.datetime.now()
         with freeze_time(initial_time) as frozen_datetime:
             data = {"username": self.username, "password": self.password}
-            response = self.client.post(self.login_url, data, format="json")
+            self.client.post(self.login_url, data, format="json")
             token = Token.objects.filter(user__username=self.username).first()
             token_num_0 = Token.objects.filter(user__username=self.username).count()
             self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
@@ -290,7 +290,7 @@ class AuthApiTestCase(TestCase):
         """Test that a user can logout and delete the token."""
         # Arrange:
         data = {"username": self.username, "password": self.password}
-        response = self.client.post(self.login_url, data, format="json")
+        self.client.post(self.login_url, data, format="json")
         token = Token.objects.filter(user__username=self.username).first()
         old_tokens_count = Token.objects.filter(user__username=self.username).count()
         self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
@@ -325,7 +325,7 @@ class AuthApiTestCase(TestCase):
         data = {"username": self.username2, "password": self.password}
         token = Token.objects.filter(user__username=self.username).first()
         self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
-        response = self.client.post(self.swap_url, data, format="json")
+        self.client.post(self.swap_url, data, format="json")
         user_1_tokens_num_1 = Token.objects.filter(user__username=self.username).count()
         user_2_tokens_num_1 = Token.objects.filter(
             user__username=self.username2
@@ -392,7 +392,7 @@ class AuthApiTestCase(TestCase):
     def test_user_swap_forbidden(self):
         """Test that a user that's not logged in cannot swap users"""
         # Arrange logout:
-        response = self.client.delete(self.logout_url, format="json")
+        self.client.delete(self.logout_url, format="json")
         self.client.logout()
         data = {"username": self.username, "password": self.password}
         # Act:

@@ -53,9 +53,7 @@ class CommanderTestCase(TestCase):
         }
 
         with self.assertRaises(ValueError):
-            response = self.client.post(url, data, format="json")
-        fakehostname = "fakehost"
-        fakeport = "fakeport"
+            self.client.post(url, data, format="json")
         expected_url = f"http://fakehost:fakeport/cmd"
         self.assertEqual(mock_requests.call_args, call(expected_url, json=data))
 
@@ -123,9 +121,7 @@ class SalinfoTestCase(TestCase):
         url = reverse("salinfo-metadata")
 
         with self.assertRaises(ValueError):
-            response = self.client.get(url)
-        fakehostname = "fakehost"
-        fakeport = "fakeport"
+            self.client.get(url)
         expected_url = f"http://fakehost:fakeport/salinfo/metadata"
         self.assertEqual(mock_requests.call_args, call(expected_url))
 
@@ -142,9 +138,7 @@ class SalinfoTestCase(TestCase):
         url = reverse("salinfo-topic-names")
 
         with self.assertRaises(ValueError):
-            response = self.client.get(url)
-        fakehostname = "fakehost"
-        fakeport = "fakeport"
+            self.client.get(url)
         expected_url = f"http://fakehost:fakeport/salinfo/topic-names"
         self.assertEqual(mock_requests.call_args, call(expected_url))
 
@@ -161,9 +155,7 @@ class SalinfoTestCase(TestCase):
         url = reverse("salinfo-topic-names") + "?categories=telemetry"
 
         with self.assertRaises(ValueError):
-            response = self.client.get(url)
-        fakehostname = "fakehost"
-        fakeport = "fakeport"
+            self.client.get(url)
         expected_url = (
             f"http://fakehost:fakeport/salinfo/topic-names?categories=telemetry"
         )
@@ -182,9 +174,7 @@ class SalinfoTestCase(TestCase):
         url = reverse("salinfo-topic-data")
 
         with self.assertRaises(ValueError):
-            response = self.client.get(url)
-        fakehostname = "fakehost"
-        fakeport = "fakeport"
+            self.client.get(url)
         expected_url = f"http://fakehost:fakeport/salinfo/topic-data"
         self.assertEqual(mock_requests.call_args, call(expected_url))
 
@@ -201,9 +191,7 @@ class SalinfoTestCase(TestCase):
         url = reverse("salinfo-topic-data") + "?categories=telemetry"
 
         with self.assertRaises(ValueError):
-            response = self.client.get(url)
-        fakehostname = "fakehost"
-        fakeport = "fakeport"
+            self.client.get(url)
         expected_url = (
             f"http://fakehost:fakeport/salinfo/topic-data?categories=telemetry"
         )
