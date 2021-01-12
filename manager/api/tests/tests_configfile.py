@@ -12,9 +12,14 @@ from api.models import ConfigFile, Token
 from django.conf import settings
 from manager import utils
 from django.core.files.base import ContentFile
+from django.conf import settings
+import tempfile
 
 #python manage.py test api.tests.tests_configfile.ConfigFileApiTestCase
 
+def setUp(self):
+    settings.MEDIA_ROOT = tempfile.mkdtemp()
+    
 class ConfigFileApiTestCase(TestCase):
     """Test suite for config files handling."""
 
