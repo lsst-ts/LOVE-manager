@@ -94,3 +94,18 @@ class ConfigFile(BaseModel):
         validators=[validate_file_extension],
     )
     """Reference to the config file"""
+
+class EmergencyContact(BaseModel):
+    """EmergencyContact Model"""
+    
+    subsystem = models.CharField(max_length=100, blank=True)
+    """EC's subsystem"""
+
+    name = models.CharField(max_length=100, blank=True)
+    """EC name"""
+
+    contact_info = models.CharField(max_length=100, blank=True)
+    """EC's preferred contact information (work number, cell, none)"""
+
+    email = models.EmailField(max_length=254)
+    """EC's email"""

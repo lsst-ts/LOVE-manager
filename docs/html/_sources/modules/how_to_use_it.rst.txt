@@ -65,7 +65,7 @@ Returns token, user data and permissions
 Validate token
 --------------
 Validates a given authorization token, passed through HTTP Headers.
-Returns a confirmation of validity, user data, permissions, server_time and (optionally) the LOVE configuraiton file.
+Returns a confirmation of validity, user data, permissions, server_time and (optionally) the LOVE configuration file.
 If the :code:`no_config` flag is added to the end of the URL, then the LOVE config files is not read and the corresponding value is returned as :code:`null`
 
 - Url: :code:`<IP>/manager/api/validate-token/` or :code:`<IP>/manager/api/validate-token/no_config/`
@@ -119,7 +119,7 @@ If the :code:`no_config` flag is added to the end of the URL, then the LOVE conf
 Swap token
 --------------
 Validates a given authorization token, passed through HTTP Headers.
-Returns a confirmation of validity, user data, permissions, server_time and (optionally) the LOVE configuraiton file.
+Returns a confirmation of validity, user data, permissions, server_time and (optionally) the LOVE configuration file.
 If the :code:`no_config` flag is added to the end of the URL, then the LOVE config files is not read and the corresponding value is returned as :code:`null`
 
 - Url: :code:`<IP>/manager/api/swap-token/` or :code:`<IP>/manager/api/swap-token/no_config/`
