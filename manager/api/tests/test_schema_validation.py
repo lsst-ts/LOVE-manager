@@ -77,7 +77,7 @@ class SchemaValidationTestCase(TestCase):
     def test_syntax_error(self):
         """Test validation output of an unparsable config file"""
         configs = [
-            "wait_time: -\na:""",  # ScannerError
+            "wait_time: -\na:",  # ScannerError
             "fail_cleanup: \nw:'",  # ScannerError
             ":"  # ParserError
         ]

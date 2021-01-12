@@ -6,6 +6,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from manager import utils
 from api.models import ConfigFile
+from typing import Union
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -131,7 +132,7 @@ class TokenSerializer(serializers.Serializer):
         return utils.get_times()
 
     @swagger_serializer_method(serializer_or_field=serializers.JSONField())
-    def get_config(self, token) -> dict:
+    def get_config(self, token) -> Union[dict, None]:
         """Return the config file.
         If the 'no_config' flag is present in the url of the original request, then the file is not read and the return value is None
 
