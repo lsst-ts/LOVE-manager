@@ -51,13 +51,7 @@ class LOVECscTestCase(TestCase):
         }
 
         with self.assertRaises(ValueError):
-            response = self.client.post(url, data, format="json")
-            result = response.json()
-
-        # self.assertEqual(response.status_code, 200)
-        # self.assertEqual(
-        #     result, {"ack": "Added new observing log to SAL."}
-        # )
+            self.client.post(url, data, format="json")
 
         expected_url = f"http://fakehost:fakeport/lovecsc/observinglog"
         self.assertEqual(mock_requests.call_args, call(expected_url, json=data))
@@ -85,6 +79,3 @@ class LOVECscTestCase(TestCase):
         self.assertEqual(
             result, {"ack": "User does not have permissions to send observing logs."}
         )
-
-        # expected_url = f"http://fakehost:fakeport/lovecsc/observinglog"
-        # self.assertEqual(mock_requests.call_args, call(expected_url, json=data))
