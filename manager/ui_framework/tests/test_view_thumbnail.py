@@ -100,7 +100,7 @@ class ViewThumbnailTestCase(TestCase):
             "thumbnail": image_data
         }
         request_url = reverse('view-list')
-        response = self.client.post(request_url, request_data, format='json')
+        self.client.post(request_url, request_data, format='json')
 
         # Act
         # delete the view

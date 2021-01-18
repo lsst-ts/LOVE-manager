@@ -182,7 +182,7 @@ class TestSubscriptionCombinations:
                 "category": combination["category"],
             }
             await communicator.send_json_to(msg)
-            response = await communicator.receive_json_from()
+            await communicator.receive_json_from()
         # Act
         for combination in self.combinations:
             msg, expected = self.build_messages(
@@ -213,7 +213,7 @@ class TestSubscriptionCombinations:
                 "stream": "all",
             }
             await communicator.send_json_to(msg)
-            response = await communicator.receive_json_from()
+            await communicator.receive_json_from()
         # Act
         for combination in self.combinations:
             msg, expected = self.build_messages(

@@ -25,20 +25,20 @@ class HeartbeatManager:
         """Dictionary comntaining the heartbeats data, indexed by source or component, e.g. "Commander"."""
 
         @classmethod
-        def initialize(self):
+        def initialize(cls):
             """Initialize the HeartbeatManager
 
             Run 2 async tasks in the event loop, one to dispatch the heartbeats periodically,
             and the other to request the heartbeats from the LOVE-Commander periodically.
             """
-            self.heartbeat_data = {}
-            if not self.heartbeat_task:
-                self.heartbeat_task = asyncio.create_task(self.dispatch_heartbeats())
-            if not self.commander_heartbeat_task:
-                self.commander_heartbeat_task = asyncio.create_task(self.query_commander())
+            cls.heartbeat_data = {}
+            if not cls.heartbeat_task:
+                cls.heartbeat_task = asyncio.create_task(cls.dispatch_heartbeats())
+            if not cls.commander_heartbeat_task:
+                cls.commander_heartbeat_task = asyncio.create_task(cls.query_commander())
 
         @classmethod
-        def set_heartbeat_timestamp(self, source, timestamp):
+        def set_heartbeat_timestamp(cls, source, timestamp):
             """Set a given timestamp as the heartbeat for a given source
 
             Parameters
@@ -48,10 +48,10 @@ class HeartbeatManager:
             timestamp: `float`
                 timestamp of the heartbeat
             """
-            self.heartbeat_data[source] = timestamp
+            cls.heartbeat_data[source] = timestamp
 
         @classmethod
-        async def query_commander(self):
+        async def query_commander(cls):
             """Query the heartbeat from the LOVE-Commander periodically.
 
             This is what the `commander_heartbeat_task` does
@@ -70,7 +70,7 @@ class HeartbeatManager:
                     await asyncio.sleep(3)
 
         @classmethod
-        async def dispatch_heartbeats(self):
+        async def dispatch_heartbeats(cls):
             """Dispatch all the heartbeats to the corresponding group in the Channels Layer.
 
             This is what the `heartbeat_task` does
@@ -79,15 +79,15 @@ class HeartbeatManager:
             while True:
                 try:
                     print('sending data')
-                    self.set_heartbeat_timestamp('Manager', datetime.datetime.now().timestamp())
+                    cls.set_heartbeat_timestamp('Manager', datetime.datetime.now().timestamp())
                     data = json.dumps({
                         'category': 'heartbeat',
                         'data': [
                             {
                                 'csc': heartbeat_source,
                                 'salindex': 0,
-                                'data': {'timestamp': self.heartbeat_data[heartbeat_source]}
-                            } for heartbeat_source in self.heartbeat_data
+                                'data': {'timestamp': cls.heartbeat_data[heartbeat_source]}
+                            } for heartbeat_source in cls.heartbeat_data
                         ],
                         'subscription': 'heartbeat'
                     })
@@ -101,22 +101,22 @@ class HeartbeatManager:
                     await asyncio.sleep(3)
 
         @classmethod
-        async def reset(self):
+        async def reset(cls):
             """Reset the `HeartbeatManager`, changing the tasks references and heartbeats dictionary back to their default values."""
-            if self.heartbeat_task:
-                self.heartbeat_task = None
-            if self.commander_heartbeat_task:
-                self.commander_heartbeat_task = None
-            self.heartbeat_data = {}
-            self.commander_heartbeat_task = {}
+            if cls.heartbeat_task:
+                cls.heartbeat_task = None
+            if cls.commander_heartbeat_task:
+                cls.commander_heartbeat_task = None
+            cls.heartbeat_data = {}
+            cls.commander_heartbeat_task = {}
 
         @classmethod
-        async def stop(self):
+        async def stop(cls):
             """Stop (cancel) the tasks."""
-            if self.heartbeat_task:
-                self.heartbeat_task.cancel()
-            if self.commander_heartbeat_task:
-                self.commander_heartbeat_task.cancel()
+            if cls.heartbeat_task:
+                cls.heartbeat_task.cancel()
+            if cls.commander_heartbeat_task:
+                cls.commander_heartbeat_task.cancel()
 
     instance = None
     def __init__(self):

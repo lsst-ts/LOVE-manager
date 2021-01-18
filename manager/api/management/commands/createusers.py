@@ -97,7 +97,6 @@ class Command(BaseCommand):
         admin_password = options['adminpass']
         user_password = options['userpass']
         cmd_password = options['cmduserpass']
-        cmd_password = options['cmduserpass']
 
         # Create users
         admin = self._create_user(admin_username, admin_password)
@@ -138,7 +137,6 @@ class Command(BaseCommand):
             if password.strip() == '':
                 self.stderr.write("Error: Blank passwords aren't allowed.")
                 password = None
-                continue
 
         user = User.objects.filter(username=username).first()
         if not user:
