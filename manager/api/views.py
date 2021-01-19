@@ -389,6 +389,7 @@ def salinfo_topic_names(request):
         403: openapi.Response("Unauthorized"),
     },
 )
+
 @api_view(["GET"])
 @permission_classes((IsAuthenticated,))
 def salinfo_topic_data(request):
@@ -489,3 +490,40 @@ class EmergencyContactViewSet(viewsets.ModelViewSet):
 
     serializer_class = EmergencyContactSerializer
     """Serializer used to serialize View objects"""
+
+
+@api_view(["GET"])
+@permission_classes((IsAuthenticated,))
+def query_efd(request, *args, **kwargs):
+    """Queries data from an EFD timeseries by redirecting the request to the Commander
+
+    Params
+    ------
+    request: Request
+        The Request object
+    args: list
+        List of addittional arguments. Currently unused
+    kwargs: dict
+        Dictionary with request arguments. Request should contain the following:
+            start_date (required): String specifying the start of the query range. Default current date minus 10 minutes
+            timewindow (required): Int specifying the number of minutes to query starting from start_date. Default 10
+            topics (required): Dictionary of the form
+                {
+                    CSC1: {
+                        index: [topic1, topic2...],
+                    },
+                    CSC2: {
+                        index: [topic1, topic2...],
+                    },
+                }
+            resample (optional): The offset string representing target resample conversion, e.g. '15min', '10S'
+
+    Returns
+    -------
+    Response
+        The response and status code of the request to the LOVE-Commander
+    """
+    url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/EFD/timeseries/"
+    response = requests.get(url, kwargs=kwargs)
+
+    return Response(response.json(), status=response.status_code)
