@@ -492,7 +492,7 @@ class EmergencyContactViewSet(viewsets.ModelViewSet):
     """Serializer used to serialize View objects"""
 
 
-@api_view(["GET"])
+@api_view(["POST"])
 @permission_classes((IsAuthenticated,))
 def query_efd(request, *args, **kwargs):
     """Queries data from an EFD timeseries by redirecting the request to the Commander
@@ -523,7 +523,8 @@ def query_efd(request, *args, **kwargs):
     Response
         The response and status code of the request to the LOVE-Commander
     """
-    url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/EFD/timeseries/"
-    response = requests.get(url, kwargs=kwargs)
-
-    return Response(response.json(), status=response.status_code)
+    url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/efd/timeseries"
+    response = requests.post(url, json=request.data)
+    if response.status_code == status.HTTP_200_OK:
+        return Response(response.json(), status=response.status_code)
+    return Response(response)
