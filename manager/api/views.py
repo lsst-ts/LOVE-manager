@@ -525,6 +525,4 @@ def query_efd(request, *args, **kwargs):
     """
     url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/efd/timeseries"
     response = requests.post(url, json=request.data)
-    if response.status_code == status.HTTP_200_OK:
-        return Response(response.json(), status=response.status_code)
-    return Response(response)
+    return Response(response.json(), status=response.status_code)

@@ -231,14 +231,31 @@ class EFDTestCase(TestCase):
         if arg == "COMMANDER_HOSTNAME"
         else "fakeport",
     )
-    @patch("requests.get")
+    @patch("requests.post")
     def test_timeseries_query(self, mock_requests, mock_environ):
         """Test authorized user can query and get a timeseries"""
         # Act:
-        kwargs = {}
+        cscs = {
+            "ATDome": {
+                "0": {
+                    "topic1": ["field1"]
+                },
+            },
+            "ATMCS": {
+                "1": {
+                    "topic2": ["field2", "field3"]
+                },
+            }
+        }
+        data = {
+            "start_date": "2020-03-16T12:00:00",
+            "time_window": 15,
+            "cscs": cscs,
+            "resample": "1min",
+        }
         url = reverse("EFD-timeseries")
 
         with self.assertRaises(ValueError):
-            self.client.get(url, **kwargs)
-        expected_url = f"http://fakehost:fakeport/EFD/timeseries/"
-        self.assertEqual(mock_requests.call_args, call(expected_url, kwargs=kwargs))
+            self.client.post(url, data, format="json")
+        expected_url = f"http://fakehost:fakeport/efd/timeseries"
+        self.assertEqual(mock_requests.call_args, call(expected_url, json=data))
