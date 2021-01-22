@@ -1202,3 +1202,71 @@ Delete WorkspaceView
   {
     "status": 204
   }
+
+
+EFD
+============
+
+Timeseries
+~~~~~~~~~~~~~~~~~~~~
+Endpoint to request EFD timeseries.
+
+- Url: :code:`<IP>/manager/efd/timeseries`
+- HTTP Operation: POST
+- Message Payload:
+
+.. code-block:: json
+
+  {
+    "start_date": "2020-03-16T12:00:00",
+    "time_window": 15,
+    "cscs": {
+      "ATDome": {
+        0: {
+          "topic1": ["field1"]
+        },
+      },
+      "ATMCS": {
+        1: {
+          "topic2": ["field2", "field3"]
+        },
+      }
+    },
+    "resample": "1min",
+  }
+  
+
+- Expected Response, if command successful:
+
+.. code-block:: json
+
+  {
+    "status": 200,
+    "data": {
+      "ATDome-0-topic1": {
+        "field1": [
+          { ts: "2020-03-06 21:49:41.471000", value: 0.21 },
+          { ts: "2020-03-06 21:50:41.471000", value: 0.21 },
+          { ts: "2020-03-06 21:51:41.471000", value: 0.21 },
+          { ts: "2020-03-06 21:52:41.471000", value: 0.21 },
+          { ts: "2020-03-06 21:53:41.471000", value: 0.21 }
+        ]
+      },
+      "ATMCS-1-topic2": {
+        "field2": [
+          { ts: "2020-03-06 21:49:41.471000", value: 0.21 },
+          { ts: "2020-03-06 21:50:41.471000", value: 0.21 },
+          { ts: "2020-03-06 21:51:41.471000", value: 0.21 },
+          { ts: "2020-03-06 21:52:41.471000", value: 0.21 },
+          { ts: "2020-03-06 21:53:41.471000", value: 0.21 }
+        ],
+        "field3": [
+          { ts: "2020-03-06 21:49:41.471000", value: 0.21 },
+          { ts: "2020-03-06 21:50:41.471000", value: 0.21 },
+          { ts: "2020-03-06 21:51:41.471000", value: 0.21 },
+          { ts: "2020-03-06 21:52:41.471000", value: 0.21 },
+          { ts: "2020-03-06 21:53:41.471000", value: 0.21 }
+        ]
+      }
+    }
+  }
