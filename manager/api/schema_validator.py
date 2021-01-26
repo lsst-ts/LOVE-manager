@@ -44,6 +44,7 @@ class DefaultingValidator:
     * final_validator: a standard validator that does not alter
       the data being validated.
     """
+
     @staticmethod
     def set_default_properties(properties, skip_properties, instance):
         for prop, subschema in properties.items():
@@ -107,7 +108,9 @@ class DefaultingValidator:
                     "uniqueItems",
                 )
             )
-            DefaultingValidator.set_default_properties(properties, skip_properties, instance)
+            DefaultingValidator.set_default_properties(
+                properties, skip_properties, instance
+            )
 
             for error in validate_properties(validator, properties, instance, schema):
                 yield error

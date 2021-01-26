@@ -8,53 +8,118 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='View',
+            name="View",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('creation_timestamp', models.DateTimeField(auto_now_add=True, verbose_name='Creation time')),
-                ('update_timestamp', models.DateTimeField(auto_now=True, verbose_name='Last Updated')),
-                ('name', models.CharField(max_length=20)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "creation_timestamp",
+                    models.DateTimeField(
+                        auto_now_add=True, verbose_name="Creation time"
+                    ),
+                ),
+                (
+                    "update_timestamp",
+                    models.DateTimeField(auto_now=True, verbose_name="Last Updated"),
+                ),
+                ("name", models.CharField(max_length=20)),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='Workspace',
+            name="Workspace",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('creation_timestamp', models.DateTimeField(auto_now_add=True, verbose_name='Creation time')),
-                ('update_timestamp', models.DateTimeField(auto_now=True, verbose_name='Last Updated')),
-                ('name', models.CharField(max_length=20)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "creation_timestamp",
+                    models.DateTimeField(
+                        auto_now_add=True, verbose_name="Creation time"
+                    ),
+                ),
+                (
+                    "update_timestamp",
+                    models.DateTimeField(auto_now=True, verbose_name="Last Updated"),
+                ),
+                ("name", models.CharField(max_length=20)),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='WorkspaceView',
+            name="WorkspaceView",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('creation_timestamp', models.DateTimeField(auto_now_add=True, verbose_name='Creation time')),
-                ('update_timestamp', models.DateTimeField(auto_now=True, verbose_name='Last Updated')),
-                ('view_name', models.CharField(blank=True, max_length=20)),
-                ('sort_value', models.PositiveIntegerField(default=0)),
-                ('view', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='workspace_views', to='ui_framework.View')),
-                ('workspace', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='workspace_views', to='ui_framework.Workspace')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "creation_timestamp",
+                    models.DateTimeField(
+                        auto_now_add=True, verbose_name="Creation time"
+                    ),
+                ),
+                (
+                    "update_timestamp",
+                    models.DateTimeField(auto_now=True, verbose_name="Last Updated"),
+                ),
+                ("view_name", models.CharField(blank=True, max_length=20)),
+                ("sort_value", models.PositiveIntegerField(default=0)),
+                (
+                    "view",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="workspace_views",
+                        to="ui_framework.View",
+                    ),
+                ),
+                (
+                    "workspace",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="workspace_views",
+                        to="ui_framework.Workspace",
+                    ),
+                ),
             ],
             options={
-                'ordering': ('sort_value',),
-                'unique_together': {('workspace', 'view')},
+                "ordering": ("sort_value",),
+                "unique_together": {("workspace", "view")},
             },
         ),
         migrations.AddField(
-            model_name='workspace',
-            name='views',
-            field=models.ManyToManyField(related_name='workspaces', through='ui_framework.WorkspaceView', to='ui_framework.View'),
+            model_name="workspace",
+            name="views",
+            field=models.ManyToManyField(
+                related_name="workspaces",
+                through="ui_framework.WorkspaceView",
+                to="ui_framework.View",
+            ),
         ),
     ]

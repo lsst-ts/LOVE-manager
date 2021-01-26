@@ -10,22 +10,53 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('api', '0005_auto_20190722_1622'),
+        ("api", "0005_auto_20190722_1622"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ConfigFile',
+            name="ConfigFile",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('creation_timestamp', models.DateTimeField(auto_now_add=True, verbose_name='Creation time')),
-                ('update_timestamp', models.DateTimeField(auto_now=True, verbose_name='Last Updated')),
-                ('file_name', models.CharField(blank=True, max_length=30)),
-                ('config_file', models.FileField(default='configs/default.json', upload_to='configs/', validators=[api.models.ConfigFile.validate_file_extension])),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='config_files', to=settings.AUTH_USER_MODEL, verbose_name='User')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "creation_timestamp",
+                    models.DateTimeField(
+                        auto_now_add=True, verbose_name="Creation time"
+                    ),
+                ),
+                (
+                    "update_timestamp",
+                    models.DateTimeField(auto_now=True, verbose_name="Last Updated"),
+                ),
+                ("file_name", models.CharField(blank=True, max_length=30)),
+                (
+                    "config_file",
+                    models.FileField(
+                        default="configs/default.json",
+                        upload_to="configs/",
+                        validators=[api.models.ConfigFile.validate_file_extension],
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="config_files",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="User",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

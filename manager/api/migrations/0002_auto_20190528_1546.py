@@ -6,20 +6,20 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0001_initial'),
+        ("api", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='token',
-            options={'verbose_name': 'Token', 'verbose_name_plural': 'Tokens'},
+            name="token",
+            options={"verbose_name": "Token", "verbose_name_plural": "Tokens"},
         ),
         migrations.AlterUniqueTogether(
-            name='token',
+            name="token",
             unique_together=set(),
         ),
         migrations.RemoveField(
-            model_name='token',
-            name='name',
+            model_name="token",
+            name="name",
         ),
     ]

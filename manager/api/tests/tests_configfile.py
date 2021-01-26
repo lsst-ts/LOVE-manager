@@ -15,11 +15,13 @@ from django.core.files.base import ContentFile
 from django.conf import settings
 import tempfile
 
-#python manage.py test api.tests.tests_configfile.ConfigFileApiTestCase
+# python manage.py test api.tests.tests_configfile.ConfigFileApiTestCase
+
 
 def setUp(self):
     settings.MEDIA_ROOT = tempfile.mkdtemp()
-    
+
+
 class ConfigFileApiTestCase(TestCase):
     """Test suite for config files handling."""
 
@@ -28,11 +30,10 @@ class ConfigFileApiTestCase(TestCase):
         f = ContentFile(json.dumps(content).encode("ascii"), name=name)
         return f
 
-
     def setUp(self):
         """Define the test suite setup."""
         # Arrange:
-        
+
         self.client = APIClient()
         self.user = User.objects.create_user(
             username="user",
@@ -43,9 +44,13 @@ class ConfigFileApiTestCase(TestCase):
         )
         self.filename = "test.json"
         self.content = {"key1": "this is the content of the file"}
-        self.configfile = ConfigFile.objects.create(user=self.user, 
-            config_file=ConfigFileApiTestCase.get_config_file_sample("random_filename", self.content),
-            file_name=self.filename)
+        self.configfile = ConfigFile.objects.create(
+            user=self.user,
+            config_file=ConfigFileApiTestCase.get_config_file_sample(
+                "random_filename", self.content
+            ),
+            file_name=self.filename,
+        )
         self.url = reverse("config")
         self.token = Token.objects.create(user=self.user)
 
@@ -56,8 +61,8 @@ class ConfigFileApiTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         expected_data = {
             "id": self.configfile.id,
-            "username": self.user.username, 
-            "filename": self.filename, 
+            "username": self.user.username,
+            "filename": self.filename,
         }
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]["filename"], expected_data["filename"])
@@ -65,12 +70,14 @@ class ConfigFileApiTestCase(TestCase):
     def test_get_config_file(self):
         """Test that an authenticated user can get a config file."""
         self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token.key)
-        response = self.client.get(reverse("configfile-detail", args=[self.configfile.id]), format="json")
+        response = self.client.get(
+            reverse("configfile-detail", args=[self.configfile.id]), format="json"
+        )
         self.assertEqual(response.status_code, 200)
         expected_data = {
             "id": self.configfile.id,
-            "username": self.user.username, 
-            "filename": self.filename, 
+            "username": self.user.username,
+            "filename": self.filename,
         }
         self.assertEqual(response.data["id"], expected_data["id"])
         self.assertEqual(response.data["username"], expected_data["username"])
@@ -79,12 +86,14 @@ class ConfigFileApiTestCase(TestCase):
     def test_get_config_file_content(self):
         """Test that an authenticated user can get a config file content."""
         self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token.key)
-        response = self.client.get(reverse("configfile-content", args=[self.configfile.id]), format="json")
+        response = self.client.get(
+            reverse("configfile-content", args=[self.configfile.id]), format="json"
+        )
         self.assertEqual(response.status_code, 200)
         expected_data = {
             "id": self.configfile.id,
-            "content": self.content, 
-            "filename": self.filename, 
+            "content": self.content,
+            "filename": self.filename,
         }
         self.assertEqual(response.data["id"], expected_data["id"])
         self.assertEqual(response.data["content"], expected_data["content"])

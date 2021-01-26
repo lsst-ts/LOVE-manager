@@ -6,12 +6,18 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0004_globalpermissions'),
+        ("api", "0004_globalpermissions"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='globalpermissions',
-            options={'managed': False, 'permissions': (('command.execute_command', 'Execute Commands'), ('command.run_script', 'Run and Requeue scripts in ScriptQueues'))},
+            name="globalpermissions",
+            options={
+                "managed": False,
+                "permissions": (
+                    ("command.execute_command", "Execute Commands"),
+                    ("command.run_script", "Run and Requeue scripts in ScriptQueues"),
+                ),
+            },
         ),
     ]

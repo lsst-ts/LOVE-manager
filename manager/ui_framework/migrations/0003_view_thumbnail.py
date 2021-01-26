@@ -7,13 +7,17 @@ import ui_framework.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ui_framework', '0002_view_data'),
+        ("ui_framework", "0002_view_data"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='view',
-            name='thumbnail',
-            field=models.ImageField(default='thumbnails/default.png', storage=ui_framework.models.OverwriteStorage(), upload_to='thumbnails/'),
+            model_name="view",
+            name="thumbnail",
+            field=models.ImageField(
+                default="thumbnails/default.png",
+                storage=ui_framework.models.OverwriteStorage(),
+                upload_to="thumbnails/",
+            ),
         ),
     ]

@@ -71,7 +71,7 @@ class LOVECscTestCase(TestCase):
             "user": "user",
             "message": "a message",
         }
-        
+
         response = self.client.post(url, data, format="json")
         result = response.json()
 
