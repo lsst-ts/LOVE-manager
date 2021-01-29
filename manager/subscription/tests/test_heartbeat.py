@@ -200,8 +200,8 @@ class TestHeartbeat:
         assert response['data'][0]['data']['timestamp'] is not None
 
         # Act 2 (Wait for query to commander)
-        # await asyncio.sleep(3)
         response = await communicator.receive_json_from(timeout=5)
+        
         # Assert 2 (Get producer heartbeat data)
         heartbeat_sources = [source['csc'] for source in response['data']]
         assert 'Commander' in heartbeat_sources
