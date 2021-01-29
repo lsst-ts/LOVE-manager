@@ -15,17 +15,41 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Token',
+            name="Token",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now_add=True, verbose_name='Created')),
-                ('key', models.CharField(db_index=True, max_length=40, unique=True, verbose_name='Key')),
-                ('name', models.CharField(max_length=64, verbose_name='Name')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='auth_tokens', to=settings.AUTH_USER_MODEL, verbose_name='User')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "created",
+                    models.DateTimeField(auto_now_add=True, verbose_name="Created"),
+                ),
+                (
+                    "key",
+                    models.CharField(
+                        db_index=True, max_length=40, unique=True, verbose_name="Key"
+                    ),
+                ),
+                ("name", models.CharField(max_length=64, verbose_name="Name")),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="auth_tokens",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="User",
+                    ),
+                ),
             ],
         ),
         migrations.AlterUniqueTogether(
-            name='token',
-            unique_together={('user', 'name')},
+            name="token",
+            unique_together={("user", "name")},
         ),
     ]

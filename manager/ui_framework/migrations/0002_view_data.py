@@ -7,13 +7,13 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ui_framework', '0001_initial'),
+        ("ui_framework", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='view',
-            name='data',
+            model_name="view",
+            name="data",
             field=django.contrib.postgres.fields.jsonb.JSONField(blank=True, null=True),
         ),
     ]

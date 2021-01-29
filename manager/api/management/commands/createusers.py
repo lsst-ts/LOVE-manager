@@ -4,11 +4,11 @@ from argparse import RawTextHelpFormatter
 from django.contrib.auth.models import Permission, Group, User
 from django.core.management.base import BaseCommand
 
-user_username = 'user'
-cmd_user_username = 'cmd_user'
-admin_username = 'admin'
-cmd_groupname = 'cmd'
-test_username = 'test'
+user_username = "user"
+cmd_user_username = "cmd_user"
+admin_username = "admin"
+cmd_groupname = "cmd"
+test_username = "test"
 
 
 class Command(BaseCommand):
@@ -41,7 +41,7 @@ class Command(BaseCommand):
     "cmd_user" and "test" users belong to "cmd_group"."""
 
     requires_migrations_checks = True
-    stealth_options = ('stdin',)
+    stealth_options = ("stdin",)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -72,16 +72,14 @@ class Command(BaseCommand):
             parser for the arguments
         """
         parser.add_argument(
-            '--adminpass',
-            help='Specifies the password for the "admin" user.'
+            "--adminpass", help='Specifies the password for the "admin" user.'
         )
         parser.add_argument(
-            '--userpass',
-            help='Specifies the password for the regular users ("user").'
+            "--userpass", help='Specifies the password for the regular users ("user").'
         )
         parser.add_argument(
-            '--cmduserpass',
-            help='Specifies password for the users with cmd permissions ("cmd_user" and "test").'
+            "--cmduserpass",
+            help='Specifies password for the users with cmd permissions ("cmd_user" and "test").',
         )
 
     def handle(self, *args, **options):
@@ -94,9 +92,9 @@ class Command(BaseCommand):
         kwargs: dict
             Dictionary with addittional keyword arguments (indexed by keys in the dict)
         """
-        admin_password = options['adminpass']
-        user_password = options['userpass']
-        cmd_password = options['cmduserpass']
+        admin_password = options["adminpass"]
+        user_password = options["userpass"]
+        cmd_password = options["cmduserpass"]
 
         # Create users
         admin = self._create_user(admin_username, admin_password)
@@ -131,10 +129,10 @@ class Command(BaseCommand):
         user: User
             The User object
         """
-        while password is None or password.strip() == '':
-            print('Creating {}...'.format(username))
+        while password is None or password.strip() == "":
+            print("Creating {}...".format(username))
             password = getpass.getpass()
-            if password.strip() == '':
+            if password.strip() == "":
                 self.stderr.write("Error: Blank passwords aren't allowed.")
                 password = None
 
@@ -142,11 +140,13 @@ class Command(BaseCommand):
         if not user:
             user = User.objects.create_user(
                 username=username,
-                email='{}@fake.com'.format(username),
-                password=password
+                email="{}@fake.com".format(username),
+                password=password,
             )
         else:
-            self.stderr.write("Warning: The {} user is already created".format(username))
+            self.stderr.write(
+                "Warning: The {} user is already created".format(username)
+            )
         return user
 
     def _create_cmd_group(self):
@@ -158,7 +158,7 @@ class Command(BaseCommand):
             The Group object
         """
         group, created = Group.objects.get_or_create(name=cmd_groupname)
-        permissions = Permission.objects.filter(codename='command.execute_command')
+        permissions = Permission.objects.filter(codename="command.execute_command")
         for permission in permissions:
             group.permissions.add(permission)
         return group

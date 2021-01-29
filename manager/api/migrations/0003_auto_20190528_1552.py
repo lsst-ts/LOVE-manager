@@ -6,13 +6,19 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0002_auto_20190528_1546'),
+        ("api", "0002_auto_20190528_1546"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='token',
-            name='key',
-            field=models.CharField(blank=True, db_index=True, max_length=40, unique=True, verbose_name='Key'),
+            model_name="token",
+            name="key",
+            field=models.CharField(
+                blank=True,
+                db_index=True,
+                max_length=40,
+                unique=True,
+                verbose_name="Key",
+            ),
         ),
     ]

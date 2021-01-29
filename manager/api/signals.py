@@ -18,9 +18,9 @@ def handle_token_deletion(sender, **kwargs):
         arguments dictionary sent with the signal. It contains the key 'instance' with the Token instance
         that was deleted
     """
-    deleted_token = str(kwargs['instance'])
-    groupname = 'token-{}'.format(deleted_token)
-    payload = {'type': 'logout', 'message': ''}
+    deleted_token = str(kwargs["instance"])
+    groupname = "token-{}".format(deleted_token)
+    payload = {"type": "logout", "message": ""}
     loop = None
     try:
         loop = asyncio.get_event_loop()

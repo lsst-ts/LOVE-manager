@@ -40,7 +40,11 @@ urlpatterns = [
     ),
     path("auth/", include("rest_framework.urls", namespace="rest_framework")),
     path("cmd/", api.views.commander, name="commander"),
-    path("lovecsc/observinglog", api.views.lovecsc_observinglog, name="lovecsc-observinglog"),
+    path(
+        "lovecsc/observinglog",
+        api.views.lovecsc_observinglog,
+        name="lovecsc-observinglog",
+    ),
     path("salinfo/metadata", api.views.salinfo_metadata, name="salinfo-metadata"),
     path(
         "salinfo/topic-names", api.views.salinfo_topic_names, name="salinfo-topic-names"
@@ -48,6 +52,6 @@ urlpatterns = [
     path("salinfo/topic-data", api.views.salinfo_topic_data, name="salinfo-topic-data"),
     path("config", api.views.get_config, name="config"),
 ]
-router.register('configfile', ConfigFileViewSet)
-router.register('emergencycontact', EmergencyContactViewSet)
+router.register("configfile", ConfigFileViewSet)
+router.register("emergencycontact", EmergencyContactViewSet)
 urlpatterns.append(path("", include(router.urls)))

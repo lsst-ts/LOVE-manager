@@ -196,4 +196,3 @@ class SalinfoTestCase(TestCase):
             f"http://fakehost:fakeport/salinfo/topic-data?categories=telemetry"
         )
         self.assertEqual(mock_requests.call_args, call(expected_url))
-
