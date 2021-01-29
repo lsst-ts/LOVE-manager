@@ -13,7 +13,8 @@ from django.conf import settings
 from manager import utils
 from django.core.files.base import ContentFile
 
-#python manage.py test api.tests.tests_emergencycontact.EmergencyContactApiTestCase
+# python manage.py test api.tests.tests_emergencycontact.EmergencyContactApiTestCase
+
 
 class EmergencyContactApiTestCase(TestCase):
     """Test suite for config files handling."""
@@ -23,11 +24,10 @@ class EmergencyContactApiTestCase(TestCase):
         f = ContentFile(json.dumps(content).encode("ascii"), name=name)
         return f
 
-
     def setUp(self):
         """Define the test suite setup."""
         # Arrange:
-        
+
         self.client = APIClient()
         self.user = User.objects.create_user(
             username="user",

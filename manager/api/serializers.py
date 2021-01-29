@@ -163,6 +163,7 @@ class TokenSerializer(serializers.Serializer):
 
 class ConfigFileSerializer(serializers.ModelSerializer):
     """Serializer to map the Model instance into JSON format."""
+
     filename = serializers.SerializerMethodField()
     username = serializers.SerializerMethodField()
 
@@ -178,11 +179,19 @@ class ConfigFileSerializer(serializers.ModelSerializer):
         model = ConfigFile
         """The model class to serialize"""
 
-        fields = ("id", "username", "filename", "creation_timestamp", "update_timestamp")
+        fields = (
+            "id",
+            "username",
+            "filename",
+            "creation_timestamp",
+            "update_timestamp",
+        )
         """The fields of the model class to serialize"""
+
 
 class ConfigFileContentSerializer(serializers.ModelSerializer):
     """Serializer to map the Model instance into JSON format."""
+
     content = serializers.SerializerMethodField()
     filename = serializers.SerializerMethodField()
 
@@ -211,5 +220,5 @@ class EmergencyContactSerializer(serializers.ModelSerializer):
         model = EmergencyContact
         """The model class to serialize"""
 
-        fields = ("__all__")
+        fields = "__all__"
         """The fields of the model class to serialize"""

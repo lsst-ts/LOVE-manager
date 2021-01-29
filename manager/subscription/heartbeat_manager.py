@@ -14,10 +14,10 @@ class HeartbeatManager:
     """
 
     class __HeartbeatManager:
-    
+
         heartbeat_task = None
         """Reference to the task that dispatches the heartbeats."""
-        
+
         commander_heartbeat_task = None
         """Reference to the task that requests the LOVE_COmmander heartbeats."""
 
@@ -35,7 +35,9 @@ class HeartbeatManager:
             if not cls.heartbeat_task:
                 cls.heartbeat_task = asyncio.create_task(cls.dispatch_heartbeats())
             if not cls.commander_heartbeat_task:
-                cls.commander_heartbeat_task = asyncio.create_task(cls.query_commander())
+                cls.commander_heartbeat_task = asyncio.create_task(
+                    cls.query_commander()
+                )
 
         @classmethod
         def set_heartbeat_timestamp(cls, source, timestamp):
@@ -61,9 +63,9 @@ class HeartbeatManager:
                 try:
                     # query commander
                     resp = requests.get(heartbeat_url)
-                    timestamp = resp.json()['timestamp']
-                    #get timestamp
-                    self.set_heartbeat_timestamp('Commander', timestamp)
+                    timestamp = resp.json()["timestamp"]
+                    # get timestamp
+                    self.set_heartbeat_timestamp("Commander", timestamp)
                     await asyncio.sleep(3)
                 except Exception as e:
                     print(e)
@@ -78,22 +80,31 @@ class HeartbeatManager:
             channel_layer = get_channel_layer()
             while True:
                 try:
-                    print('sending data')
-                    cls.set_heartbeat_timestamp('Manager', datetime.datetime.now().timestamp())
-                    data = json.dumps({
-                        'category': 'heartbeat',
-                        'data': [
-                            {
-                                'csc': heartbeat_source,
-                                'salindex': 0,
-                                'data': {'timestamp': cls.heartbeat_data[heartbeat_source]}
-                            } for heartbeat_source in cls.heartbeat_data
-                        ],
-                        'subscription': 'heartbeat'
-                    })
+                    print("sending data")
+                    cls.set_heartbeat_timestamp(
+                        "Manager", datetime.datetime.now().timestamp()
+                    )
+                    data = json.dumps(
+                        {
+                            "category": "heartbeat",
+                            "data": [
+                                {
+                                    "csc": heartbeat_source,
+                                    "salindex": 0,
+                                    "data": {
+                                        "timestamp": cls.heartbeat_data[
+                                            heartbeat_source
+                                        ]
+                                    },
+                                }
+                                for heartbeat_source in cls.heartbeat_data
+                            ],
+                            "subscription": "heartbeat",
+                        }
+                    )
                     await channel_layer.group_send(
-                        'heartbeat-manager-0-stream',
-                        {'type': 'send_heartbeat', 'data': data}
+                        "heartbeat-manager-0-stream",
+                        {"type": "send_heartbeat", "data": data},
                     )
                     await asyncio.sleep(3)
                 except Exception as e:
@@ -119,6 +130,7 @@ class HeartbeatManager:
                 cls.commander_heartbeat_task.cancel()
 
     instance = None
+
     def __init__(self):
         if not HeartbeatManager.instance:
             HeartbeatManager.instance = HeartbeatManager.__HeartbeatManager()

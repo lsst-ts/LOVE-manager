@@ -18,7 +18,11 @@ from rest_framework.response import Response
 from rest_framework import viewsets, status
 from api.models import Token
 from api.serializers import TokenSerializer, ConfigSerializer
-from api.serializers import ConfigFileSerializer, ConfigFileContentSerializer, EmergencyContactSerializer
+from api.serializers import (
+    ConfigFileSerializer,
+    ConfigFileContentSerializer,
+    EmergencyContactSerializer,
+)
 from .schema_validator import DefaultingValidator
 from api.models import ConfigFile, EmergencyContact
 
@@ -238,7 +242,7 @@ def commander(request):
     ------
     request: Request
         The Request object
-    
+
     Returns
     -------
     Response
@@ -272,7 +276,7 @@ def lovecsc_observinglog(request):
     ------
     request: Request
         The Request object
-    
+
     Returns
     -------
     Response
@@ -307,12 +311,12 @@ def lovecsc_observinglog(request):
 def salinfo_metadata(request):
     """Requests SalInfo.metadata from the commander containing a dict
     of <csc name>: { "sal_version": ..., "xml_version": ....}
-    
+
     Params
     ------
     request: Request
         The Request object
-    
+
     Returns
     -------
     Response
@@ -349,12 +353,12 @@ def salinfo_metadata(request):
 def salinfo_topic_names(request):
     """Requests SalInfo.topic_names from the commander containing a dict
     of <csc name>: { "command_names": [], "event_names": [], "telemetry_names": []}
-    
+
     Params
     ------
     request: Request
         The Request object
-    
+
     Returns
     -------
     Response
@@ -394,12 +398,12 @@ def salinfo_topic_names(request):
 def salinfo_topic_data(request):
     """Requests SalInfo.topic_data from the commander containing a dict
      of <csc name>: { "command_data": [], "event_data": [], "telemetry_data": []}
-    
+
     Params
     ------
     request: Request
         The Request object
-    
+
     Returns
     -------
     Response
@@ -431,7 +435,7 @@ def get_config(request):
     ------
     request: Request
         The Request object
-    
+
     Returns
     -------
     Response
@@ -444,7 +448,6 @@ def get_config(request):
 
     serializer = ConfigFileContentSerializer(cf)
     return Response(serializer.data)
-
 
 
 class ConfigFileViewSet(viewsets.ModelViewSet):

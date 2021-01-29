@@ -60,9 +60,13 @@ class AuthApiTestCase(TestCase):
 
         self.filename = "test.json"
         self.content = {"key1": "this is the content of the file"}
-        self.configfile = ConfigFile.objects.create(user=self.user, 
-            config_file=AuthApiTestCase.get_config_file_sample("random_filename", self.content),
-            file_name=self.filename)
+        self.configfile = ConfigFile.objects.create(
+            user=self.user,
+            config_file=AuthApiTestCase.get_config_file_sample(
+                "random_filename", self.content
+            ),
+            file_name=self.filename,
+        )
 
     def test_user_login(self):
         """Test that a user can request a token using name and password."""
@@ -186,7 +190,10 @@ class AuthApiTestCase(TestCase):
         )
         self.assertEqual(
             response.data["user"],
-            {"username": self.user.username, "email": self.user.email,},
+            {
+                "username": self.user.username,
+                "email": self.user.email,
+            },
             "The user is not as expected",
         )
         self.assertTrue(
@@ -225,7 +232,10 @@ class AuthApiTestCase(TestCase):
         )
         self.assertEqual(
             response.data["user"],
-            {"username": self.user.username, "email": self.user.email,},
+            {
+                "username": self.user.username,
+                "email": self.user.email,
+            },
             "The user is not as expected",
         )
         self.assertTrue(
