@@ -63,9 +63,9 @@ class HeartbeatManager:
                 try:
                     # query commander
                     resp = requests.get(heartbeat_url)
-                    timestamp = resp.json()["timestamp"]
-                    # get timestamp
-                    self.set_heartbeat_timestamp("Commander", timestamp)
+                    timestamp = resp.json()['timestamp']
+                    #get timestamp
+                    cls.set_heartbeat_timestamp('Commander', timestamp)
                     await asyncio.sleep(3)
                 except Exception as e:
                     print(e)
