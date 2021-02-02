@@ -27,7 +27,7 @@ from django.conf import settings
 schema_view = get_schema_view(
     openapi.Info(
         title="LOVE-manager API",
-        default_version='v1',
+        default_version="v1",
         description="This is the API of LOVE-manager's authentication and UI Framework modules",
     ),
     public=True,
@@ -35,14 +35,27 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    path('manager/admin/', admin.site.urls),
-    path('manager/test/', TemplateView.as_view(template_name="test.html")),
-    path('manager/login/', TemplateView.as_view(template_name="registration/login.html")),
-    path('manager/api/', include('api.urls')),
-    path('manager/ui_framework/', include('ui_framework.urls')),
-    re_path(r'^manager/apidoc/swagger(?P<format>\.json|\.yaml)$',
-            schema_view.without_ui(cache_timeout=0), name='schema-json'),
-    path('manager/apidoc/swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    path('manager/apidoc/redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-    path('manager/schema_validation/', TemplateView.as_view(template_name="test.html")),
+    path("manager/admin/", admin.site.urls),
+    path("manager/test/", TemplateView.as_view(template_name="test.html")),
+    path(
+        "manager/login/", TemplateView.as_view(template_name="registration/login.html")
+    ),
+    path("manager/api/", include("api.urls")),
+    path("manager/ui_framework/", include("ui_framework.urls")),
+    re_path(
+        r"^manager/apidoc/swagger(?P<format>\.json|\.yaml)$",
+        schema_view.without_ui(cache_timeout=0),
+        name="schema-json",
+    ),
+    path(
+        "manager/apidoc/swagger/",
+        schema_view.with_ui("swagger", cache_timeout=0),
+        name="schema-swagger-ui",
+    ),
+    path(
+        "manager/apidoc/redoc/",
+        schema_view.with_ui("redoc", cache_timeout=0),
+        name="schema-redoc",
+    ),
+    path("manager/schema_validation/", TemplateView.as_view(template_name="test.html")),
 ]

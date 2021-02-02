@@ -106,7 +106,9 @@ ROOT_URLCONF = "manager.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, "templates"),],
+        "DIRS": [
+            os.path.join(BASE_DIR, "templates"),
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -133,9 +135,15 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",},
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+    },
 ]
 
 # Password for other processes
@@ -226,7 +234,9 @@ if REDIS_HOST and not TESTING:
 
 else:
     CHANNEL_LAYERS = {
-        "default": {"BACKEND": "channels.layers.InMemoryChannelLayer",},
+        "default": {
+            "BACKEND": "channels.layers.InMemoryChannelLayer",
+        },
     }
 
 # LDAP
@@ -245,7 +255,9 @@ if AUTH_LDAP_SERVER_URI and not TESTING:
     AUTH_LDAP_BIND_PASSWORD = ""
 
     AUTH_LDAP_USER_SEARCH = LDAPSearch(
-        "ou=people,dc=planetexpress,dc=com", ldap.SCOPE_SUBTREE, "(uid=%(user)s)",
+        "ou=people,dc=planetexpress,dc=com",
+        ldap.SCOPE_SUBTREE,
+        "(uid=%(user)s)",
     )
 
 TRACE_TIMESTAMPS = True
@@ -253,4 +265,3 @@ TRACE_TIMESTAMPS = True
 
 if os.environ.get("HIDE_TRACE_TIMESTAMPS", False):
     TRACE_TIMESTAMPS = False
-

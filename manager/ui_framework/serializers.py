@@ -23,9 +23,9 @@ class Base64ImageField(serializers.ImageField):
 
     @staticmethod
     def _get_view_id_from_data(data):
-        """ Return a view_id integer for building the thumbnail file_namet
+        """Return a view_id integer for building the thumbnail file_namet
         by checking whether the id comes in the request data or if a new one
-        has to be created """
+        has to be created"""
         # id field should come in req data if view exists
         if "id" in data:
             return data["id"]
@@ -88,7 +88,10 @@ class Base64ImageField(serializers.ImageField):
             # Get the file name extension:
             file_extension = self.get_file_extension(file_name, decoded_file)
 
-            complete_file_name = "%s.%s" % (file_name, file_extension,)
+            complete_file_name = "%s.%s" % (
+                file_name,
+                file_extension,
+            )
 
             data = ContentFile(decoded_file, name=complete_file_name)
 

@@ -17,7 +17,7 @@ def hanlde_view_deletion(sender, **kwargs):
         arguments dictionary sent with the signal. It contains the key 'instance' with the View instance
         that was deleted
     """
-    deleted_view = kwargs['instance']
+    deleted_view = kwargs["instance"]
     file_url = settings.MEDIA_BASE + deleted_view.thumbnail.url
     try:
         os.remove(file_url)

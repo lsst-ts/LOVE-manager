@@ -200,7 +200,6 @@ class SalinfoTestCase(TestCase):
         )
         self.assertEqual(mock_requests.call_args, call(expected_url))
 
-
 @override_settings(DEBUG=True)
 class EFDTestCase(TestCase):
     maxDiff = None
