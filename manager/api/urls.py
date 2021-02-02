@@ -51,6 +51,7 @@ urlpatterns = [
     ),
     path("salinfo/topic-data", api.views.salinfo_topic_data, name="salinfo-topic-data"),
     path("config", api.views.get_config, name="config"),
+    path("efd/timeseries", api.views.query_efd, name="EFD-timeseries"),
 ]
 router.register("configfile", ConfigFileViewSet)
 router.register("emergencycontact", EmergencyContactViewSet)
