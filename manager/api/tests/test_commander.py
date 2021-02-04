@@ -258,3 +258,53 @@ class EFDTestCase(TestCase):
             self.client.post(url, data, format="json")
         expected_url = f"http://fakehost:fakeport/efd/timeseries"
         self.assertEqual(mock_requests.call_args, call(expected_url, json=data))
+
+
+@override_settings(DEBUG=True)
+class TCSTestCase(TestCase):
+    maxDiff = None
+
+    def setUp(self):
+        """Define the test suite setup."""
+        # Arrange
+        self.client = APIClient()
+        self.user = User.objects.create_user(
+            username="user",
+            password="password",
+            email="test@user.cl",
+            first_name="First",
+            last_name="Last",
+        )
+        self.token = Token.objects.create(user=self.user)
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token.key)
+        self.user.user_permissions.add(
+            Permission.objects.get(codename="view_view"),
+            Permission.objects.get(codename="add_view"),
+            Permission.objects.get(codename="delete_view"),
+            Permission.objects.get(codename="change_view"),
+        )
+        
+    @patch(
+        "os.environ.get",
+        side_effect=lambda arg: "fakehost"
+        if arg == "COMMANDER_HOSTNAME"
+        else "fakeport",
+    )
+    @patch("requests.post")
+    def test_command_query(self, mock_requests, mock_environ):
+        """Test authorized user can send a TCS command"""
+        # Act:
+        data = {
+            "command_name": "atcs_command",
+            "params": {
+                "param1": "value1",
+                "param2": 2,
+                "param3": True,
+            }
+        }
+        url = reverse("TCS-aux")
+
+        with self.assertRaises(ValueError):
+            self.client.post(url, data, format="json")
+        expected_url = f"http://fakehost:fakeport/tcs/aux"
+        self.assertEqual(mock_requests.call_args, call(expected_url, json=data))
