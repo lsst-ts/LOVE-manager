@@ -147,6 +147,8 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#efd">2.6. EFD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tcs">2.7. TCS</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="how_it_works.html">3. How it works</a></li>
@@ -1375,6 +1377,98 @@ The response contains the contentes fo the config file (<code class="code docuti
 </pre></div>
 </div>
 </div>
+</div>
+</div>
+<div class="section" id="efd">
+<h2><span class="section-number">2.6. </span>EFD<a class="headerlink" href="#efd" title="Permalink to this headline">¶</a></h2>
+<p>Endpoint to request EFD timeseries.</p>
+<ul class="simple">
+<li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/efd/timeseries</span></code></p></li>
+<li><p>HTTP Operation: POST</p></li>
+<li><p>Message Payload:</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span>{
+  &quot;start_date&quot;: &quot;2020-03-16T12:00:00&quot;,
+  &quot;time_window&quot;: 15,
+  &quot;cscs&quot;: {
+    &quot;ATDome&quot;: {
+      0: {
+        &quot;topic1&quot;: [&quot;field1&quot;]
+      },
+    },
+    &quot;ATMCS&quot;: {
+      1: {
+        &quot;topic2&quot;: [&quot;field2&quot;, &quot;field3&quot;]
+      },
+    }
+  },
+  &quot;resample&quot;: &quot;1min&quot;,
+}
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Expected Response, if command successful:</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span>{
+  &quot;status&quot;: 200,
+  &quot;data&quot;: {
+    &quot;ATDome-0-topic1&quot;: {
+      &quot;field1&quot;: [
+        { ts: &quot;2020-03-06 21:49:41.471000&quot;, value: 0.21 },
+        { ts: &quot;2020-03-06 21:50:41.471000&quot;, value: 0.21 },
+        { ts: &quot;2020-03-06 21:51:41.471000&quot;, value: 0.21 },
+        { ts: &quot;2020-03-06 21:52:41.471000&quot;, value: 0.21 },
+        { ts: &quot;2020-03-06 21:53:41.471000&quot;, value: 0.21 }
+      ]
+    },
+    &quot;ATMCS-1-topic2&quot;: {
+      &quot;field2&quot;: [
+        { ts: &quot;2020-03-06 21:49:41.471000&quot;, value: 0.21 },
+        { ts: &quot;2020-03-06 21:50:41.471000&quot;, value: 0.21 },
+        { ts: &quot;2020-03-06 21:51:41.471000&quot;, value: 0.21 },
+        { ts: &quot;2020-03-06 21:52:41.471000&quot;, value: 0.21 },
+        { ts: &quot;2020-03-06 21:53:41.471000&quot;, value: 0.21 }
+      ],
+      &quot;field3&quot;: [
+        { ts: &quot;2020-03-06 21:49:41.471000&quot;, value: 0.21 },
+        { ts: &quot;2020-03-06 21:50:41.471000&quot;, value: 0.21 },
+        { ts: &quot;2020-03-06 21:51:41.471000&quot;, value: 0.21 },
+        { ts: &quot;2020-03-06 21:52:41.471000&quot;, value: 0.21 },
+        { ts: &quot;2020-03-06 21:53:41.471000&quot;, value: 0.21 }
+      ]
+    }
+  }
+}
+</pre></div>
+</div>
+</div>
+<div class="section" id="tcs">
+<h2><span class="section-number">2.7. </span>TCS<a class="headerlink" href="#tcs" title="Permalink to this headline">¶</a></h2>
+<p>Endpoint to send ATCS commands.</p>
+<ul class="simple">
+<li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/tcs/aux</span></code></p></li>
+<li><p>HTTP Operation: POST</p></li>
+<li><p>Message Payload:</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;command_name&quot;</span><span class="p">:</span> <span class="s2">&quot;point_azel&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;params&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;az&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
+    <span class="nt">&quot;el&quot;</span><span class="p">:</span> <span class="mi">50</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Expected Response, if command successful:</p></li>
+</ul>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;status&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+  <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;ack&quot;</span><span class="p">:</span> <span class="s2">&quot;Done&quot;</span><span class="p">,</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
 </div>
 </div>
 </div>
