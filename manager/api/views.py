@@ -554,7 +554,10 @@ def tcs_aux_command(request, *args, **kwargs):
     Response
         The response and status code of the request to the LOVE-Commander
     """
+    if not request.user.has_perm("api.command.execute_command"):
+        return Response(
+            {"ack": "User does not have permissions to execute commands."}, 401
+        )
     url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/tcs/aux"
     response = requests.post(url, json=request.data)
-    import pdb; pdb.set_trace()
     return Response(response.json(), status=response.status_code)
