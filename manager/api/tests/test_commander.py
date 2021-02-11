@@ -9,6 +9,7 @@ from unittest.mock import patch, call
 #python manage.py test api.tests.test_commander.CommanderTestCase
 #python manage.py test api.tests.test_commander.SalinfoTestCase
 #python manage.py test api.tests.test_commander.EFDTestCase
+#python manage.py test api.tests.test_commander.TCSTestCase
 
 @override_settings(DEBUG=True)
 class CommanderTestCase(TestCase):
@@ -293,6 +294,7 @@ class TCSTestCase(TestCase):
     @patch("requests.post")
     def test_command_query(self, mock_requests, mock_environ):
         """Test authorized user can send a TCS command"""
+        self.user.user_permissions.add(Permission.objects.get(name="Execute Commands"))
         # Act:
         data = {
             "command_name": "atcs_command",
@@ -308,3 +310,30 @@ class TCSTestCase(TestCase):
             self.client.post(url, data, format="json")
         expected_url = f"http://fakehost:fakeport/tcs/aux"
         self.assertEqual(mock_requests.call_args, call(expected_url, json=data))
+
+    @patch(
+        "os.environ.get",
+        side_effect=lambda arg: "fakehost"
+        if arg == "COMMANDER_HOSTNAME"
+        else "fakeport",
+    )
+    @patch("requests.post")
+    def test_command_query_unauthorized(self, mock_requests, mock_environ):
+        """Test unauthorized user cannot send a TCS command"""
+        self.user.user_permissions.remove(Permission.objects.get(name="Execute Commands"))
+        # Act:
+        data = {
+            "command_name": "atcs_command",
+            "params": {
+                "param1": "value1",
+                "param2": 2,
+                "param3": True,
+            }
+        }
+        url = reverse("TCS-aux")
+        response = self.client.post(url, data, format="json")
+        result = response.json()
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(
+            result, {"ack": "User does not have permissions to execute commands."}
+        )
