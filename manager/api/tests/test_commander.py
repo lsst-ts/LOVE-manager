@@ -337,3 +337,20 @@ class TCSTestCase(TestCase):
         self.assertEqual(
             result, {"ack": "User does not have permissions to execute commands."}
         )
+
+    @patch(
+        "os.environ.get",
+        side_effect=lambda arg: "fakehost"
+        if arg == "COMMANDER_HOSTNAME"
+        else "fakeport",
+    )
+    @patch("requests.post")
+    def test_command_query(self, mock_requests, mock_environ):
+        """Test authorized user can send a TCS command"""
+        # Act:
+        url = reverse("TCS-docstrings")
+
+        with self.assertRaises(ValueError):
+            self.client.get(url)
+        expected_url = f"http://fakehost:fakeport/tcs/docstrings"
+        self.assertEqual(mock_requests.call_args, call(expected_url, json={}))
