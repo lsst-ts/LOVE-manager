@@ -582,6 +582,6 @@ def tcs_docstrings(request, *args, **kwargs):
         The response and status code of the request to the LOVE-Commander
     """
     url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/tcs/docstrings"
-    response = requests.post(url, json=request.data)
+    response = requests.get(url)
     return Response(response.json(), status=response.status_code)
 
