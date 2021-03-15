@@ -58,11 +58,13 @@ class HeartbeatManager:
 
             This is what the `commander_heartbeat_task` does
             """
-            heartbeat_url = "http://"
-            +os.environ.get("COMMANDER_HOSTNAME")
-            +":"
-            +os.environ.get("COMMANDER_PORT")
-            +"/heartbeat"
+            heartbeat_url = (
+                "http://"
+                + os.environ.get("COMMANDER_HOSTNAME")
+                + ":"
+                + os.environ.get("COMMANDER_PORT")
+                + "/heartbeat"
+            )
             while True:
                 try:
                     # query commander
