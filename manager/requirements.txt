@@ -23,7 +23,7 @@ Django==3.0.7
 django-auth-ldap==2.1.0
 django-cors-headers==3.2.1
 django-webpack-loader==0.7.0
-djangorestframework==3.11.0
+djangorestframework==3.11.2
 docutils==0.16
 drf-yasg==1.17.1
 entrypoints==0.3
