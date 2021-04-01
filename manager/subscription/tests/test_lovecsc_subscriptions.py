@@ -7,7 +7,6 @@ from api.models import Token
 
 
 class TestLOVECscSubscriptions:
-
     def setup_method(self):
         """Set up the TestCase, executed before each test of the TestCase."""
         self.user = User.objects.create_user(
@@ -41,7 +40,8 @@ class TestLOVECscSubscriptions:
 
         # Assert 1
         assert (
-            response["data"] == f"Successfully subscribed to {category}-{csc}-{salindex}-{stream}"
+            response["data"]
+            == f"Successfully subscribed to {category}-{csc}-{salindex}-{stream}"
         )
 
         # Act 2 (Unsubscribe)
@@ -66,8 +66,8 @@ class TestLOVECscSubscriptions:
     @pytest.mark.asyncio
     @pytest.mark.django_db(transaction=True)
     async def test_observinglog_to_lovecsc(self):
-        """ Test that an observing log sent by a client is
-        correctly received by a subscribed LOVE-CSC (producer) client """
+        """Test that an observing log sent by a client is
+        correctly received by a subscribed LOVE-CSC (producer) client"""
 
         # Arrange
         client_communicator = WebsocketCommunicator(application, self.url)
@@ -100,9 +100,7 @@ class TestLOVECscSubscriptions:
                 {
                     "csc": "love",
                     "salindex": 0,
-                    "data": {
-                        "observingLog": {"user": "an user", "message": "a message"}
-                    },
+                    "data": {"observingLog": {"user": "user", "message": "a message"}},
                 }
             ],
         }

@@ -12,6 +12,14 @@ api.tests.test\_commander module
    :undoc-members:
    :show-inheritance:
 
+api.tests.test\_lovecsc module
+------------------------------
+
+.. automodule:: api.tests.test_lovecsc
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 api.tests.test\_schema\_validation module
 -----------------------------------------
 
@@ -28,10 +36,18 @@ api.tests.tests\_auth\_api module
    :undoc-members:
    :show-inheritance:
 
-api.tests.tests\_config module
-------------------------------
+api.tests.tests\_configfile module
+----------------------------------
 
-.. automodule:: api.tests.tests_config
+.. automodule:: api.tests.tests_configfile
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+api.tests.tests\_emergencycontact module
+----------------------------------------
+
+.. automodule:: api.tests.tests_emergencycontact
    :members:
    :undoc-members:
    :show-inheritance:

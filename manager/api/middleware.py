@@ -20,7 +20,9 @@ class GetTokenMiddleware(object):
         Response:
             The corresponding response object
         """
-        if request.META['PATH_INFO'] == '/manager/api/get-token/':
-            if 'HTTP_COOKIE' in request.META:
-                request.META['HTTP_COOKIE'] = ''
+        if (
+            request.META["PATH_INFO"] == "/manager/api/get-token/"
+            and "HTTP_COOKIE" in request.META
+        ):
+            request.META["HTTP_COOKIE"] = ""
         return self.get_response(request)

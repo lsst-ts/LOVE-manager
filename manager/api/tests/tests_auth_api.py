@@ -1,18 +1,26 @@
 """Test users' authentication through the API."""
 import datetime
+import io
+import json
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User, Permission
 from freezegun import freeze_time
 from rest_framework.test import APIClient
 from rest_framework import status
-from api.models import Token
+from api.models import ConfigFile, Token
 from django.conf import settings
+from django.core.files.base import ContentFile
 from manager import utils
 
 
 class AuthApiTestCase(TestCase):
     """Test suite for users' authentication."""
+
+    @staticmethod
+    def get_config_file_sample(name, content):
+        f = ContentFile(json.dumps(content).encode("ascii"), name=name)
+        return f
 
     def setUp(self):
         """Define the test suite setup."""
@@ -49,6 +57,16 @@ class AuthApiTestCase(TestCase):
             "execute_commands": True,
         }
         self.expected_config = {"setting1": {"setting11": 1, "setting12": 2}}
+
+        self.filename = "test.json"
+        self.content = {"key1": "this is the content of the file"}
+        self.configfile = ConfigFile.objects.create(
+            user=self.user,
+            config_file=AuthApiTestCase.get_config_file_sample(
+                "random_filename", self.content
+            ),
+            file_name=self.filename,
+        )
 
     def test_user_login(self):
         """Test that a user can request a token using name and password."""
@@ -87,8 +105,8 @@ class AuthApiTestCase(TestCase):
             "Time data is not as expected",
         )
         self.assertEqual(
-            response.data["config"],
-            self.expected_config,
+            response.data["config"]["filename"],
+            self.filename,
             "The config was not requested",
         )
 
@@ -153,7 +171,7 @@ class AuthApiTestCase(TestCase):
         """Test that a user can validate a token."""
         # Arrange:
         data = {"username": self.username, "password": self.password}
-        response = self.client.post(self.login_url, data, format="json")
+        self.client.post(self.login_url, data, format="json")
         token = Token.objects.filter(user__username=self.username).first()
         self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
 
@@ -172,7 +190,10 @@ class AuthApiTestCase(TestCase):
         )
         self.assertEqual(
             response.data["user"],
-            {"username": self.user.username, "email": self.user.email,},
+            {
+                "username": self.user.username,
+                "email": self.user.email,
+            },
             "The user is not as expected",
         )
         self.assertTrue(
@@ -180,8 +201,8 @@ class AuthApiTestCase(TestCase):
             "Time data is not as expected",
         )
         self.assertEqual(
-            response.data["config"],
-            self.expected_config,
+            response.data["config"]["filename"],
+            self.filename,
             "The config was not requested",
         )
 
@@ -189,7 +210,7 @@ class AuthApiTestCase(TestCase):
         """Test that a user can validate a token and not receive the config passing the no_config query param."""
         # Arrange:
         data = {"username": self.username, "password": self.password}
-        response = self.client.post(self.login_url, data, format="json")
+        self.client.post(self.login_url, data, format="json")
         token = Token.objects.filter(user__username=self.username).first()
         self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
 
@@ -211,7 +232,10 @@ class AuthApiTestCase(TestCase):
         )
         self.assertEqual(
             response.data["user"],
-            {"username": self.user.username, "email": self.user.email,},
+            {
+                "username": self.user.username,
+                "email": self.user.email,
+            },
             "The user is not as expected",
         )
         self.assertTrue(
@@ -224,7 +248,7 @@ class AuthApiTestCase(TestCase):
         """Test that a user fails to validate an invalid token."""
         # Arrange:
         data = {"username": self.username, "password": self.password}
-        response = self.client.post(self.login_url, data, format="json")
+        self.client.post(self.login_url, data, format="json")
         token = Token.objects.filter(user__username=self.username).first()
         self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key + "fake")
 
@@ -238,7 +262,7 @@ class AuthApiTestCase(TestCase):
         """Test that a user fails to validate an deleted token."""
         # Arrange:
         data = {"username": self.username, "password": self.password}
-        response = self.client.post(self.login_url, data, format="json")
+        self.client.post(self.login_url, data, format="json")
         token = Token.objects.filter(user__username=self.username).first()
         self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
         token.delete()
@@ -255,7 +279,7 @@ class AuthApiTestCase(TestCase):
         initial_time = datetime.datetime.now()
         with freeze_time(initial_time) as frozen_datetime:
             data = {"username": self.username, "password": self.password}
-            response = self.client.post(self.login_url, data, format="json")
+            self.client.post(self.login_url, data, format="json")
             token = Token.objects.filter(user__username=self.username).first()
             token_num_0 = Token.objects.filter(user__username=self.username).count()
             self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
@@ -276,7 +300,7 @@ class AuthApiTestCase(TestCase):
         """Test that a user can logout and delete the token."""
         # Arrange:
         data = {"username": self.username, "password": self.password}
-        response = self.client.post(self.login_url, data, format="json")
+        self.client.post(self.login_url, data, format="json")
         token = Token.objects.filter(user__username=self.username).first()
         old_tokens_count = Token.objects.filter(user__username=self.username).count()
         self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
@@ -311,7 +335,7 @@ class AuthApiTestCase(TestCase):
         data = {"username": self.username2, "password": self.password}
         token = Token.objects.filter(user__username=self.username).first()
         self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
-        response = self.client.post(self.swap_url, data, format="json")
+        self.client.post(self.swap_url, data, format="json")
         user_1_tokens_num_1 = Token.objects.filter(user__username=self.username).count()
         user_2_tokens_num_1 = Token.objects.filter(
             user__username=self.username2
@@ -332,7 +356,9 @@ class AuthApiTestCase(TestCase):
         # Assert 2:
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(
-            response.data["config"], self.expected_config,
+            response.data["config"]["filename"],
+            self.filename,
+            "The config was not requested",
         )
 
     def test_user_swap_no_config(self):
@@ -376,7 +402,7 @@ class AuthApiTestCase(TestCase):
     def test_user_swap_forbidden(self):
         """Test that a user that's not logged in cannot swap users"""
         # Arrange logout:
-        response = self.client.delete(self.logout_url, format="json")
+        self.client.delete(self.logout_url, format="json")
         self.client.logout()
         data = {"username": self.username, "password": self.password}
         # Act:

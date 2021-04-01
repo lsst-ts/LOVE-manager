@@ -10,12 +10,21 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.decorators import api_view
-from rest_framework.decorators import permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import permission_classes, authentication_classes
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.response import Response
+from rest_framework import viewsets, status
 from api.models import Token
-from api.serializers import TokenSerializer, read_config_file, ConfigSerializer
+from api.serializers import TokenSerializer, ConfigSerializer
+from api.serializers import (
+    ConfigFileSerializer,
+    ConfigFileContentSerializer,
+    EmergencyContactSerializer,
+)
 from .schema_validator import DefaultingValidator
+from api.models import ConfigFile, EmergencyContact
 
 valid_response = openapi.Response("Valid token", TokenSerializer)
 invalid_response = openapi.Response("Invalid token")
@@ -233,7 +242,7 @@ def commander(request):
     ------
     request: Request
         The Request object
-    
+
     Returns
     -------
     Response
@@ -244,6 +253,40 @@ def commander(request):
             {"ack": "User does not have permissions to execute commands."}, 401
         )
     url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/cmd"
+    response = requests.post(url, json=request.data)
+
+    return Response(response.json(), status=response.status_code)
+
+
+@swagger_auto_schema(
+    method="post",
+    responses={
+        200: openapi.Response("Observing log sent"),
+        400: openapi.Response("Missing parameters"),
+        401: openapi.Response("Unauthenticated"),
+        403: openapi.Response("Unauthorized"),
+    },
+)
+@api_view(["POST"])
+@permission_classes((IsAuthenticated,))
+def lovecsc_observinglog(request):
+    """Sends an observing log message to the LOVE-commander according to the received parameters
+
+    Params
+    ------
+    request: Request
+        The Request object
+
+    Returns
+    -------
+    Response
+        The response and status code of the request to the LOVE-Commander
+    """
+    if not request.user.has_perm("api.command.execute_command"):
+        return Response(
+            {"ack": "User does not have permissions to send observing logs."}, 401
+        )
+    url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/lovecsc/observinglog"
     response = requests.post(url, json=request.data)
 
     return Response(response.json(), status=response.status_code)
@@ -268,12 +311,12 @@ def commander(request):
 def salinfo_metadata(request):
     """Requests SalInfo.metadata from the commander containing a dict
     of <csc name>: { "sal_version": ..., "xml_version": ....}
-    
+
     Params
     ------
     request: Request
         The Request object
-    
+
     Returns
     -------
     Response
@@ -310,12 +353,12 @@ def salinfo_metadata(request):
 def salinfo_topic_names(request):
     """Requests SalInfo.topic_names from the commander containing a dict
     of <csc name>: { "command_names": [], "event_names": [], "telemetry_names": []}
-    
+
     Params
     ------
     request: Request
         The Request object
-    
+
     Returns
     -------
     Response
@@ -350,17 +393,18 @@ def salinfo_topic_names(request):
         403: openapi.Response("Unauthorized"),
     },
 )
+
 @api_view(["GET"])
 @permission_classes((IsAuthenticated,))
 def salinfo_topic_data(request):
     """Requests SalInfo.topic_data from the commander containing a dict
      of <csc name>: { "command_data": [], "event_data": [], "telemetry_data": []}
-    
+
     Params
     ------
     request: Request
         The Request object
-    
+
     Returns
     -------
     Response
@@ -392,13 +436,95 @@ def get_config(request):
     ------
     request: Request
         The Request object
-    
+
     Returns
     -------
     Response
         Containing the contents of the config file
     """
-    data = read_config_file()
-    if data is None:
-        return Response(None, status=status.HTTP_404_NOT_FOUND)
-    return Response(data, status=status.HTTP_200_OK)
+    try:
+        cf = ConfigFile.objects.first()
+    except ConfigFile.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer = ConfigFileContentSerializer(cf)
+    return Response(serializer.data)
+
+
+class ConfigFileViewSet(viewsets.ModelViewSet):
+    """GET, POST, PUT, PATCH or DELETE instances the ConfigFile model."""
+
+    queryset = ConfigFile.objects.order_by("-update_timestamp").all()
+    """Set of objects to be accessed by queries to this viewsets endpoints"""
+
+    serializer_class = ConfigFileSerializer
+    """Serializer used to serialize View objects"""
+
+    @action(detail=True)
+    def content(self, request, pk=None):
+        """Serialize a ConfigFile's content.
+
+        Params
+        ------
+        request: Request
+            The Requets object
+        pk: int
+            The corresponding ConfigFile pk
+
+        Returns
+        -------
+        Response
+            The response containing the serialized ConfigFile content
+        """
+        try:
+            cf = ConfigFile.objects.get(pk=pk)
+        except ConfigFile.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = ConfigFileContentSerializer(cf)
+        return Response(serializer.data)
+
+
+class EmergencyContactViewSet(viewsets.ModelViewSet):
+    """GET, POST, PUT, PATCH or DELETE instances the EmergencyContact model."""
+
+    queryset = EmergencyContact.objects.order_by("subsystem").all()
+    """Set of objects to be accessed by queries to this viewsets endpoints"""
+
+    serializer_class = EmergencyContactSerializer
+    """Serializer used to serialize View objects"""
+
+@api_view(["POST"])
+@permission_classes((IsAuthenticated,))
+def query_efd(request, *args, **kwargs):
+    """Queries data from an EFD timeseries by redirecting the request to the Commander
+
+    Params
+    ------
+    request: Request
+        The Request object
+    args: list
+        List of addittional arguments. Currently unused
+    kwargs: dict
+        Dictionary with request arguments. Request should contain the following:
+            start_date (required): String specifying the start of the query range. Default current date minus 10 minutes
+            timewindow (required): Int specifying the number of minutes to query starting from start_date. Default 10
+            topics (required): Dictionary of the form
+                {
+                    CSC1: {
+                        index: [topic1, topic2...],
+                    },
+                    CSC2: {
+                        index: [topic1, topic2...],
+                    },
+                }
+            resample (optional): The offset string representing target resample conversion, e.g. '15min', '10S'
+
+    Returns
+    -------
+    Response
+        The response and status code of the request to the LOVE-Commander
+    """
+    url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/efd/timeseries"
+    response = requests.post(url, json=request.data)
+    return Response(response.json(), status=response.status_code)

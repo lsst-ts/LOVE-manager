@@ -4,6 +4,9 @@ pipeline {
     registryCredential = "dockerhub-inriachile"
     dockerImageName = "lsstts/love-manager:"
     dockerImage = ""
+    user_ci = credentials('lsst-io')
+    LTD_USERNAME="${user_ci_USR}"
+    LTD_PASSWORD="${user_ci_PSW}"
   }
 
   stages {
@@ -68,6 +71,31 @@ pipeline {
           docker.withRegistry("", registryCredential) {
             dockerImage.push()
           }
+        }
+      }
+    }
+
+    stage("Deploy documentation") {
+      agent {
+        docker {
+          alwaysPull true
+          image 'lsstts/develop-env:develop'
+          args "-u root --entrypoint=''"
+        }
+      }
+      when {
+        anyOf {
+          changeset "docs/*"
+        }
+      }
+      steps {
+        script {
+          sh "pwd"
+          sh """
+            source /home/saluser/.setup_dev.sh
+            pip install ltd-conveyor
+            ltd upload --product love-manager --git-ref ${GIT_BRANCH} --dir ./docs
+          """
         }
       }
     }

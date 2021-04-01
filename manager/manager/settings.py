@@ -22,7 +22,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Define wether the system is being tested or not:
 TESTING = os.environ.get("TESTING", False)
-"""Define wether or not this instance is being created for testing or not, get from the `TESTING` environment variable (`string`)"""
+"""Define wether or not this instance is being created for testing or not,
+get from the `TESTING` environment variable (`string`)"""
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv(
@@ -106,7 +107,7 @@ ROOT_URLCONF = "manager.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, "templates"),],
+        "DIRS": [os.path.join(BASE_DIR, "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -133,14 +134,15 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
 # Password for other processes
 PROCESS_CONNECTION_PASS = os.environ.get("PROCESS_CONNECTION_PASS", "dev_pass")
-"""Password that Producers use to connect to eh Manager, read from the `PROCESS_CONNECTION_PASS` environment variable (`string`)"""
+"""Password that Producers use to connect to eh Manager,
+read from the `PROCESS_CONNECTION_PASS` environment variable (`string`)"""
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
@@ -162,8 +164,6 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.DjangoModelPermissions",
     ),
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        # 'rest_framework.authentication.TokenAuthentication',
-        # 'api.authentication.TokenAuthentication',
         "api.authentication.ExpiringTokenAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ),
@@ -197,11 +197,9 @@ MEDIA_URL = "/media/"
 if TESTING:
     MEDIA_BASE = os.path.join(BASE_DIR, "ui_framework", "tests")
     MEDIA_ROOT = os.path.join(BASE_DIR, "ui_framework", "tests", "media")
-    CONFIG_URL = os.path.join(BASE_DIR, "api", "tests", "config", "love.json")
 else:
     MEDIA_BASE = BASE_DIR
     MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-    CONFIG_URL = os.path.join(BASE_DIR, "config", "love.json")
 
 # Channels
 ASGI_APPLICATION = "manager.routing.application"
@@ -223,6 +221,8 @@ if REDIS_HOST and not TESTING:
                     + "/0"
                 ],
                 "symmetric_encryption_keys": [SECRET_KEY],
+                "capacity": 1500,
+                "expiry": 10,
             },
         },
     }
@@ -230,7 +230,7 @@ if REDIS_HOST and not TESTING:
 
 else:
     CHANNEL_LAYERS = {
-        "default": {"BACKEND": "channels.layers.InMemoryChannelLayer",},
+        "default": {"BACKEND": "channels.layers.InMemoryChannelLayer"},
     }
 
 # LDAP
@@ -253,8 +253,8 @@ if AUTH_LDAP_SERVER_URI and not TESTING:
     )
 
 TRACE_TIMESTAMPS = True
-"""Define wether or not to add tracing timestamps to websocket messages. Read from TRACE_TIMESTAMPS` environment variable (`bool`)"""
+"""Define wether or not to add tracing timestamps to websocket messages.
+Read from TRACE_TIMESTAMPS` environment variable (`bool`)"""
 
 if os.environ.get("HIDE_TRACE_TIMESTAMPS", False):
     TRACE_TIMESTAMPS = False
-

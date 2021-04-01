@@ -6,6 +6,9 @@ from django.contrib.auth.models import User, Permission
 import yaml
 from unittest.mock import patch, call
 
+#python manage.py test api.tests.test_commander.CommanderTestCase
+#python manage.py test api.tests.test_commander.SalinfoTestCase
+#python manage.py test api.tests.test_commander.EFDTestCase
 
 @override_settings(DEBUG=True)
 class CommanderTestCase(TestCase):
@@ -16,7 +19,7 @@ class CommanderTestCase(TestCase):
         # Arrange
         self.client = APIClient()
         self.user = User.objects.create_user(
-            username="an user",
+            username="user",
             password="password",
             email="test@user.cl",
             first_name="First",
@@ -53,9 +56,7 @@ class CommanderTestCase(TestCase):
         }
 
         with self.assertRaises(ValueError):
-            response = self.client.post(url, data, format="json")
-        fakehostname = "fakehost"
-        fakeport = "fakeport"
+            self.client.post(url, data, format="json")
         expected_url = f"http://fakehost:fakeport/cmd"
         self.assertEqual(mock_requests.call_args, call(expected_url, json=data))
 
@@ -95,7 +96,7 @@ class SalinfoTestCase(TestCase):
         # Arrange
         self.client = APIClient()
         self.user = User.objects.create_user(
-            username="an user",
+            username="user",
             password="password",
             email="test@user.cl",
             first_name="First",
@@ -123,9 +124,7 @@ class SalinfoTestCase(TestCase):
         url = reverse("salinfo-metadata")
 
         with self.assertRaises(ValueError):
-            response = self.client.get(url)
-        fakehostname = "fakehost"
-        fakeport = "fakeport"
+            self.client.get(url)
         expected_url = f"http://fakehost:fakeport/salinfo/metadata"
         self.assertEqual(mock_requests.call_args, call(expected_url))
 
@@ -142,9 +141,7 @@ class SalinfoTestCase(TestCase):
         url = reverse("salinfo-topic-names")
 
         with self.assertRaises(ValueError):
-            response = self.client.get(url)
-        fakehostname = "fakehost"
-        fakeport = "fakeport"
+            self.client.get(url)
         expected_url = f"http://fakehost:fakeport/salinfo/topic-names"
         self.assertEqual(mock_requests.call_args, call(expected_url))
 
@@ -161,9 +158,7 @@ class SalinfoTestCase(TestCase):
         url = reverse("salinfo-topic-names") + "?categories=telemetry"
 
         with self.assertRaises(ValueError):
-            response = self.client.get(url)
-        fakehostname = "fakehost"
-        fakeport = "fakeport"
+            self.client.get(url)
         expected_url = (
             f"http://fakehost:fakeport/salinfo/topic-names?categories=telemetry"
         )
@@ -182,9 +177,7 @@ class SalinfoTestCase(TestCase):
         url = reverse("salinfo-topic-data")
 
         with self.assertRaises(ValueError):
-            response = self.client.get(url)
-        fakehostname = "fakehost"
-        fakeport = "fakeport"
+            self.client.get(url)
         expected_url = f"http://fakehost:fakeport/salinfo/topic-data"
         self.assertEqual(mock_requests.call_args, call(expected_url))
 
@@ -201,11 +194,67 @@ class SalinfoTestCase(TestCase):
         url = reverse("salinfo-topic-data") + "?categories=telemetry"
 
         with self.assertRaises(ValueError):
-            response = self.client.get(url)
-        fakehostname = "fakehost"
-        fakeport = "fakeport"
+            self.client.get(url)
         expected_url = (
             f"http://fakehost:fakeport/salinfo/topic-data?categories=telemetry"
         )
         self.assertEqual(mock_requests.call_args, call(expected_url))
 
+@override_settings(DEBUG=True)
+class EFDTestCase(TestCase):
+    maxDiff = None
+
+    def setUp(self):
+        """Define the test suite setup."""
+        # Arrange
+        self.client = APIClient()
+        self.user = User.objects.create_user(
+            username="user",
+            password="password",
+            email="test@user.cl",
+            first_name="First",
+            last_name="Last",
+        )
+        self.token = Token.objects.create(user=self.user)
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token.key)
+        self.user.user_permissions.add(
+            Permission.objects.get(codename="view_view"),
+            Permission.objects.get(codename="add_view"),
+            Permission.objects.get(codename="delete_view"),
+            Permission.objects.get(codename="change_view"),
+        )
+        
+    @patch(
+        "os.environ.get",
+        side_effect=lambda arg: "fakehost"
+        if arg == "COMMANDER_HOSTNAME"
+        else "fakeport",
+    )
+    @patch("requests.post")
+    def test_timeseries_query(self, mock_requests, mock_environ):
+        """Test authorized user can query and get a timeseries"""
+        # Act:
+        cscs = {
+            "ATDome": {
+                "0": {
+                    "topic1": ["field1"]
+                },
+            },
+            "ATMCS": {
+                "1": {
+                    "topic2": ["field2", "field3"]
+                },
+            }
+        }
+        data = {
+            "start_date": "2020-03-16T12:00:00",
+            "time_window": 15,
+            "cscs": cscs,
+            "resample": "1min",
+        }
+        url = reverse("EFD-timeseries")
+
+        with self.assertRaises(ValueError):
+            self.client.post(url, data, format="json")
+        expected_url = f"http://fakehost:fakeport/efd/timeseries"
+        self.assertEqual(mock_requests.call_args, call(expected_url, json=data))

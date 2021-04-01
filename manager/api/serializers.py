@@ -5,17 +5,8 @@ from drf_yasg.utils import swagger_serializer_method
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from manager import utils
-
-
-def read_config_file():
-    url = settings.CONFIG_URL
-    with open(url) as f:
-        content = f.read()
-    try:
-        data = json.loads(content)
-    except ValueError:
-        return None
-    return data
+from api.models import ConfigFile, EmergencyContact
+from typing import Union
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -141,7 +132,7 @@ class TokenSerializer(serializers.Serializer):
         return utils.get_times()
 
     @swagger_serializer_method(serializer_or_field=serializers.JSONField())
-    def get_config(self, token) -> dict:
+    def get_config(self, token) -> Union[dict, None]:
         """Return the config file.
         If the 'no_config' flag is present in the url of the original request, then the file is not read and the return value is None
 
@@ -165,4 +156,69 @@ class TokenSerializer(serializers.Serializer):
         if no_config:
             return None
         else:
-            return read_config_file()
+            cf = ConfigFile.objects.first()
+            serializer = ConfigFileContentSerializer(cf)
+            return serializer.data
+
+
+class ConfigFileSerializer(serializers.ModelSerializer):
+    """Serializer to map the Model instance into JSON format."""
+
+    filename = serializers.SerializerMethodField()
+    username = serializers.SerializerMethodField()
+
+    def get_username(self, obj):
+        return str(obj.user)
+
+    def get_filename(self, obj):
+        return str(obj.file_name)
+
+    class Meta:
+        """Meta class to map serializer's fields with the model fields."""
+
+        model = ConfigFile
+        """The model class to serialize"""
+
+        fields = (
+            "id",
+            "username",
+            "filename",
+            "creation_timestamp",
+            "update_timestamp",
+        )
+        """The fields of the model class to serialize"""
+
+
+class ConfigFileContentSerializer(serializers.ModelSerializer):
+    """Serializer to map the Model instance into JSON format."""
+
+    content = serializers.SerializerMethodField()
+    filename = serializers.SerializerMethodField()
+
+    def get_content(self, obj):
+        return json.loads(obj.config_file.read().decode("ascii"))
+
+    def get_filename(self, obj):
+        return str(obj.file_name)
+
+    class Meta:
+        """Meta class to map serializer's fields with the model fields."""
+
+        model = ConfigFile
+        """The model class to serialize"""
+
+        fields = ("id", "filename", "content", "update_timestamp")
+        """The fields of the model class to serialize"""
+
+
+class EmergencyContactSerializer(serializers.ModelSerializer):
+    """Serializer to map the Model instance into JSON format."""
+
+    class Meta:
+        """Meta class to map serializer's fields with the model fields."""
+
+        model = EmergencyContact
+        """The model class to serialize"""
+
+        fields = "__all__"
+        """The fields of the model class to serialize"""

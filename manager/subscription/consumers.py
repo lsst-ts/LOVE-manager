@@ -124,7 +124,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
 
         Receives an action message and reacts according to each different action.
 
-        Currently supported actions: 
+        Currently supported actions:
         - get_time_data: sends a message with the time_data and passes though a request_time received with the message.
 
             - Expected input message:
@@ -166,7 +166,10 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             request_time = message["request_time"]
             time_data = utils.get_times()
             await self.send_json(
-                {"time_data": time_data, "request_time": request_time,}
+                {
+                    "time_data": time_data,
+                    "request_time": request_time,
+                }
             )
 
     async def handle_heartbeat_message(self, message):
@@ -226,7 +229,6 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         """
         data = message["data"]
         category = message["category"]
-        user = self.scope["user"]
         producer_snd = message["producer_snd"] if "producer_snd" in message else None
 
         # Store pairs of group, message to send:
