@@ -1,12 +1,14 @@
 """Contains the Django Channels Consumers that handle the reception/sending of channels messages."""
 import json
-import random
+
 import asyncio
 import datetime
 from astropy.time import Time
-from channels.db import database_sync_to_async
+
+# from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from django.conf import settings
+
 from manager import utils
 from subscription.heartbeat_manager import HeartbeatManager
 
@@ -143,8 +145,10 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                         "utc": "<current time in UTC scale as a unix timestamp (seconds)>",
                         "tai": "<current time in UTC scale as a unix timestamp (seconds)>",
                         "mjd": "<current time as a modified julian date>",
-                        "sidereal_summit": "<current time as a sidereal_time w/respect to the summit location (hourangles)>",
-                        "sidereal_summit": "<current time as a sidereal_time w/respect to Greenwich location (hourangles)>",
+                        "sidereal_summit": "<current time as a sidereal_time w/respect
+                                            to the summit location (hourangles)>",
+                        "sidereal_summit": "<current time as a sidereal_time w/respect
+                                            to Greenwich location (hourangles)>",
                         "tai_to_utc": "<The number of seconds of difference between TAI and UTC times (seconds)>",
                     },
                     "request_time": "<timestamp with the request time, e.g. 123243423.123>"
@@ -165,12 +169,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         if message["action"] == "get_time_data":
             request_time = message["request_time"]
             time_data = utils.get_times()
-            await self.send_json(
-                {
-                    "time_data": time_data,
-                    "request_time": request_time,
-                }
-            )
+            await self.send_json({"time_data": time_data, "request_time": request_time})
 
     async def handle_heartbeat_message(self, message):
         """Handle a heartbeat message.
@@ -316,7 +315,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         # If subscribing to an event, send the initial_state
         if category == "event":
             await self.channel_layer.group_send(
-                "initial_state-all-all-all",
+                f"initial_state-{csc}-all-all",
                 {
                     "type": "subscription_all_data",
                     "category": "initial_state",
