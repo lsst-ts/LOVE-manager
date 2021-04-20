@@ -14,11 +14,17 @@ WORKDIR /usr/src/love
 COPY manager/requirements.txt .
 RUN pip install -r requirements.txt
 
-# Copy source code and build project
+# Copy source code and collect statics
 COPY manager ./manager
 WORKDIR /usr/src/love/manager
 RUN find . | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf
 RUN python manage.py collectstatic --noinput
+
+# Copy media data
+RUN mkdir -p media/thumbnails
+RUN cp -u ui_framework/fixtures/thumbnails/* media/thumbnails
+RUN mkdir -p media/configs
+RUN cp -u api/fixtures/configs/* media/configs
 
 # Expose static files and port
 VOLUME /usr/src/love/manager/static
