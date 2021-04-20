@@ -68,8 +68,8 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         elif "action" in message:
             await self.handle_action_message(message)
         # DEPRECATED: now heartbeats are received from event callbacks
-        # elif "heartbeat" in message:
-        #     await self.handle_heartbeat_message(message)
+        elif "heartbeat" in message:
+            await self.handle_heartbeat_message(message)
         else:
             await self.handle_data_message(message, manager_rcv)
 
@@ -231,7 +231,15 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         """
         # setting heartbeat
         if message["data"][0]["csc"] == "Heartbeat":
-            self.handle_heartbeat_message(message["data"][0]["data"]["stream"])
+            heartbeat_message = message["data"][0]["data"]["stream"]
+            timestamp = (
+                heartbeat_message["last_heartbeat_timestamp"]
+                if "last_heartbeat_timestamp" in heartbeat_message
+                else datetime.datetime.now().timestamp()
+            )
+            self.heartbeat_manager.set_heartbeat_timestamp(
+                heartbeat_message["csc"], timestamp
+            )
 
         data = message["data"]
         category = message["category"]
@@ -322,7 +330,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         # If subscribing to an event, send the initial_state
         if category == "event":
             await self.channel_layer.group_send(
-                f"initial_state-all-all-all",
+                f"initial_state-{csc}-all-all",
                 {
                     "type": "subscription_all_data",
                     "category": "initial_state",
