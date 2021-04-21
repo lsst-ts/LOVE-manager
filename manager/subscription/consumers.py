@@ -328,8 +328,9 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
 
         # If subscribing to an event, send the initial_state
         if category == "event":
+            csc_group_key = csc if settings.LOVE_CSC_PRODUCER else "all"
             await self.channel_layer.group_send(
-                f"initial_state-{csc}-all-all",
+                f"initial_state-{csc_group_key}-all-all",
                 {
                     "type": "subscription_all_data",
                     "category": "initial_state",

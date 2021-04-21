@@ -258,3 +258,8 @@ Read from TRACE_TIMESTAMPS` environment variable (`bool`)"""
 
 if os.environ.get("HIDE_TRACE_TIMESTAMPS", False):
     TRACE_TIMESTAMPS = False
+
+
+# LOVE-CSC-PRODUCER
+"""Defines wether or not ussing the new LOVE-producer version, i.e. LOVE CSC Producer"""
+LOVE_CSC_PRODUCER = True
