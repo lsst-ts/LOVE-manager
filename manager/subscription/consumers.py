@@ -172,6 +172,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             time_data = utils.get_times()
             await self.send_json({"time_data": time_data, "request_time": request_time})
 
+    # DEPRECATED: now heartbeats are handled using SALobj events callbacks
     async def handle_heartbeat_message(self, message):
         """Handle a heartbeat message.
 
