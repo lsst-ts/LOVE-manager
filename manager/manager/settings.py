@@ -221,8 +221,6 @@ if REDIS_HOST and not TESTING:
                     + "/0"
                 ],
                 "symmetric_encryption_keys": [SECRET_KEY],
-                "capacity": 1500,
-                "expiry": 10,
             },
         },
     }
