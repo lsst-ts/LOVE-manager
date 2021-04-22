@@ -58,14 +58,20 @@ class HeartbeatManager:
 
             This is what the `commander_heartbeat_task` does
             """
-            heartbeat_url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/heartbeat"
+            heartbeat_url = (
+                "http://"
+                + os.environ.get("COMMANDER_HOSTNAME")
+                + ":"
+                + os.environ.get("COMMANDER_PORT")
+                + "/heartbeat"
+            )
             while True:
                 try:
                     # query commander
                     resp = requests.get(heartbeat_url)
-                    timestamp = resp.json()['timestamp']
-                    #get timestamp
-                    cls.set_heartbeat_timestamp('Commander', timestamp)
+                    timestamp = resp.json()["timestamp"]
+                    # get timestamp
+                    cls.set_heartbeat_timestamp("Commander", timestamp)
                     await asyncio.sleep(3)
                 except Exception as e:
                     print(e)
@@ -80,7 +86,7 @@ class HeartbeatManager:
             channel_layer = get_channel_layer()
             while True:
                 try:
-                    print("sending data")
+                    print("sending data", flush=True)
                     cls.set_heartbeat_timestamp(
                         "Manager", datetime.datetime.now().timestamp()
                     )
@@ -113,7 +119,8 @@ class HeartbeatManager:
 
         @classmethod
         async def reset(cls):
-            """Reset the `HeartbeatManager`, changing the tasks references and heartbeats dictionary back to their default values."""
+            """Reset the `HeartbeatManager`, changing the tasks references
+            and heartbeats dictionary back to their default values."""
             if cls.heartbeat_task:
                 cls.heartbeat_task = None
             if cls.commander_heartbeat_task:
