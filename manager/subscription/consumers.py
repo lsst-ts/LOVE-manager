@@ -173,7 +173,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             time_data = utils.get_times()
             await self.send_json({"time_data": time_data, "request_time": request_time})
 
-    # DEPRECATED: now heartbeats are received from event callbacks
+    # DEPRECATED: now heartbeats are handled using SALobj events callbacks
     async def handle_heartbeat_message(self, message):
         """Handle a heartbeat message.
 
@@ -192,11 +192,11 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                 }
         """
         timestamp = (
-            message["last_heartbeat_timestamp"]
-            if "last_heartbeat_timestamp" in message
+            message["timestamp"]
+            if "timestamp" in message
             else datetime.datetime.now().timestamp()
         )
-        self.heartbeat_manager.set_heartbeat_timestamp(message["csc"], timestamp)
+        self.heartbeat_manager.set_heartbeat_timestamp(message["heartbeat"], timestamp)
 
     async def handle_data_message(self, message, manager_rcv):
         """Handle a data message.
@@ -329,8 +329,9 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
 
         # If subscribing to an event, send the initial_state
         if category == "event":
+            csc_group_key = csc if settings.LOVE_CSC_PRODUCER else "all"
             await self.channel_layer.group_send(
-                f"initial_state-{csc}-all-all",
+                f"initial_state-{csc_group_key}-all-all",
                 {
                     "type": "subscription_all_data",
                     "category": "initial_state",
