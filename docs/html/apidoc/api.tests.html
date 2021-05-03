@@ -217,6 +217,29 @@
 </dd></dl>
 
 <dl class="class">
+<dt id="api.tests.test_commander.EFDTestCase">
+<em class="property">class </em><code class="sig-prename descclassname">api.tests.test_commander.</code><code class="sig-name descname">EFDTestCase</code><span class="sig-paren">(</span><em class="sig-param">methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_commander.EFDTestCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.test.testcases.TestCase</span></code></p>
+<dl class="attribute">
+<dt id="api.tests.test_commander.EFDTestCase.maxDiff">
+<code class="sig-name descname">maxDiff</code><em class="property"> = None</em><a class="headerlink" href="#api.tests.test_commander.EFDTestCase.maxDiff" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_commander.EFDTestCase.setUp">
+<code class="sig-name descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_commander.EFDTestCase.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define the test suite setup.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_commander.EFDTestCase.test_timeseries_query">
+<code class="sig-name descname">test_timeseries_query</code><span class="sig-paren">(</span><em class="sig-param">mock_requests</em>, <em class="sig-param">mock_environ</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_commander.EFDTestCase.test_timeseries_query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test authorized user can query and get a timeseries</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="api.tests.test_commander.SalinfoTestCase">
 <em class="property">class </em><code class="sig-prename descclassname">api.tests.test_commander.</code><code class="sig-name descname">SalinfoTestCase</code><span class="sig-paren">(</span><em class="sig-param">methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_commander.SalinfoTestCase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.test.testcases.TestCase</span></code></p>
@@ -259,6 +282,29 @@
 <dt id="api.tests.test_commander.SalinfoTestCase.test_salinfo_topic_names_with_param">
 <code class="sig-name descname">test_salinfo_topic_names_with_param</code><span class="sig-paren">(</span><em class="sig-param">mock_requests</em>, <em class="sig-param">mock_environ</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_commander.SalinfoTestCase.test_salinfo_topic_names_with_param" title="Permalink to this definition">¶</a></dt>
 <dd><p>Test authorized user can get salinfo topic_names with query param</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="api.tests.test_commander.TCSTestCase">
+<em class="property">class </em><code class="sig-prename descclassname">api.tests.test_commander.</code><code class="sig-name descname">TCSTestCase</code><span class="sig-paren">(</span><em class="sig-param">methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_commander.TCSTestCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.test.testcases.TestCase</span></code></p>
+<dl class="attribute">
+<dt id="api.tests.test_commander.TCSTestCase.maxDiff">
+<code class="sig-name descname">maxDiff</code><em class="property"> = None</em><a class="headerlink" href="#api.tests.test_commander.TCSTestCase.maxDiff" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_commander.TCSTestCase.setUp">
+<code class="sig-name descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_commander.TCSTestCase.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define the test suite setup.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_commander.TCSTestCase.test_command_query">
+<code class="sig-name descname">test_command_query</code><span class="sig-paren">(</span><em class="sig-param">mock_requests</em>, <em class="sig-param">mock_environ</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_commander.TCSTestCase.test_command_query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test authorized user can send a TCS command</p>
 </dd></dl>
 
 </dd></dl>
@@ -483,6 +529,11 @@
 </dd></dl>
 
 </dd></dl>
+
+<dl class="function">
+<dt id="api.tests.tests_configfile.setUp">
+<code class="sig-prename descclassname">api.tests.tests_configfile.</code><code class="sig-name descname">setUp</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_configfile.setUp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </div>
 <div class="section" id="module-api.tests.tests_emergencycontact">

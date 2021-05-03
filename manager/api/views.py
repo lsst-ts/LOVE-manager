@@ -528,3 +528,60 @@ def query_efd(request, *args, **kwargs):
     url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/efd/timeseries"
     response = requests.post(url, json=request.data)
     return Response(response.json(), status=response.status_code)
+
+@api_view(["POST"])
+@permission_classes((IsAuthenticated,))
+def tcs_aux_command(request, *args, **kwargs):
+    """Sends command to the ATCS
+
+    Params
+    ------
+    request: Request
+        The Request object
+    args: list
+        List of addittional arguments. Currently unused
+    kwargs: dict
+        Dictionary with request arguments. Request should contain the following:
+            command_name (required): The name of the command to be run. It should be a field of the lsst.ts.observatory.control.auxtel.ATCS class
+            params (required): Parameters to be passed to the command method, e.g.
+                {
+                    ra: 80,
+                    dec: 30,
+                }
+
+    Returns
+    -------
+    Response
+        The response and status code of the request to the LOVE-Commander
+    """
+    if not request.user.has_perm("api.command.execute_command"):
+        return Response(
+            {"ack": "User does not have permissions to execute commands."}, 401
+        )
+    url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/tcs/aux"
+    response = requests.post(url, json=request.data)
+    return Response(response.json(), status=response.status_code)
+
+@api_view(["GET"])
+@permission_classes((IsAuthenticated,))
+def tcs_docstrings(request, *args, **kwargs):
+    """Requests TCS commands docstrings
+
+    Params
+    ------
+    request: Request
+        The Request object
+    args: list
+        List of addittional arguments. Currently unused
+    kwargs: dict
+        Dictionary with request arguments. Currently unused
+
+    Returns
+    -------
+    Response
+        The response and status code of the request to the LOVE-Commander
+    """
+    url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/tcs/docstrings"
+    response = requests.get(url)
+    return Response(response.json(), status=response.status_code)
+
