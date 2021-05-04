@@ -221,8 +221,6 @@ if REDIS_HOST and not TESTING:
                     + "/0"
                 ],
                 "symmetric_encryption_keys": [SECRET_KEY],
-                "capacity": 1500,
-                "expiry": 10,
             },
         },
     }
@@ -258,3 +256,8 @@ Read from TRACE_TIMESTAMPS` environment variable (`bool`)"""
 
 if os.environ.get("HIDE_TRACE_TIMESTAMPS", False):
     TRACE_TIMESTAMPS = False
+
+
+# LOVE-CSC-PRODUCER
+"""Defines wether or not ussing the new LOVE-producer version, i.e. LOVE CSC Producer"""
+LOVE_CSC_PRODUCER = os.environ.get("LOVE_CSC_PRODUCER", False)

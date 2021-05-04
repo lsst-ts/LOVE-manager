@@ -70,5 +70,4 @@ class TokenAuthMiddlewareInstance:
             data["token"][0] if "token" in data else None
         )
         self.scope["password"] = data["password"][0] if "password" in data else None
-        inner = self.inner(self.scope)
-        return await inner(receive, send)
+        return await self.inner(self.scope, receive, send)

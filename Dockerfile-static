@@ -1,0 +1,34 @@
+FROM python:3.8.2-buster as builder
+
+# Install required packages
+RUN apt-get update && \
+    apt-get install -y \
+    libsasl2-dev \
+    python-dev \
+    libldap2-dev \
+    libssl-dev &&\
+    rm -rf /var/lib/apt/lists/*
+
+# Set workdir and install python requirements
+WORKDIR /usr/src/love
+COPY manager/requirements.txt .
+RUN pip install -r requirements.txt
+
+# Copy source code and collect statics
+COPY manager ./manager
+WORKDIR /usr/src/love/manager
+RUN find . | grep -E "(__pycache__|\.pyc|\.pyo$)" | xargs rm -rf
+RUN python manage.py collectstatic --noinput
+
+# Copy media data
+RUN mkdir -p media/thumbnails
+RUN cp -u ui_framework/fixtures/thumbnails/* media/thumbnails
+RUN mkdir -p media/configs
+RUN cp -u api/fixtures/configs/* media/configs
+
+# copy compiled files to smaller image
+FROM alpine:3.8
+COPY --from=builder /usr/src/love/manager/static /usr/src/love/manager/static
+COPY --from=builder /usr/src/love/manager/media /usr/src/love/manager/media
+VOLUME /usr/src/love/manager/static
+VOLUME /usr/src/love/manager/media

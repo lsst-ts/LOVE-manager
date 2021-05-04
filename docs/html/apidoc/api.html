@@ -663,6 +663,11 @@ data being validated</p></li>
 the data being validated.</p></li>
 </ul>
 <dl class="method">
+<dt id="api.schema_validator.DefaultingValidator.set_default_properties">
+<em class="property">static </em><code class="sig-name descname">set_default_properties</code><span class="sig-paren">(</span><em class="sig-param">properties</em>, <em class="sig-param">skip_properties</em>, <em class="sig-param">instance</em><span class="sig-paren">)</span><a class="headerlink" href="#api.schema_validator.DefaultingValidator.set_default_properties" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="api.schema_validator.DefaultingValidator.validate">
 <code class="sig-name descname">validate</code><span class="sig-paren">(</span><em class="sig-param">data_dict</em><span class="sig-paren">)</span><a class="headerlink" href="#api.schema_validator.DefaultingValidator.validate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate data.</p>
@@ -812,7 +817,7 @@ If None then an empty dict is used.</p>
 <p>Custom Serializer for responses to validate and get token requests.</p>
 <dl class="method">
 <dt id="api.serializers.TokenSerializer.get_config">
-<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><em class="sig-param">token</em><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#api.serializers.TokenSerializer.get_config" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_config</code><span class="sig-paren">(</span><em class="sig-param">token</em><span class="sig-paren">)</span> &#x2192; Optional[dict]<a class="headerlink" href="#api.serializers.TokenSerializer.get_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the config file.
 If the ‘no_config’ flag is present in the url of the original request, then the file is not read and the return value is None</p>
 <dl class="simple">
@@ -1262,6 +1267,50 @@ that was deleted</p></li>
 </dd></dl>
 
 <dl class="function">
+<dt id="api.views.query_efd">
+<code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">query_efd</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">request</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.query_efd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Queries data from an EFD timeseries by redirecting the request to the Commander</p>
+<dl>
+<dt>request: Request</dt><dd><p>The Request object</p>
+</dd>
+<dt>args: list</dt><dd><p>List of addittional arguments. Currently unused</p>
+</dd>
+<dt>kwargs: dict</dt><dd><dl>
+<dt>Dictionary with request arguments. Request should contain the following:</dt><dd><p>start_date (required): String specifying the start of the query range. Default current date minus 10 minutes
+timewindow (required): Int specifying the number of minutes to query starting from start_date. Default 10
+topics (required): Dictionary of the form</p>
+<blockquote>
+<div><dl>
+<dt>{</dt><dd><dl class="simple">
+<dt>CSC1: {</dt><dd><p>index: [topic1, topic2…],</p>
+</dd>
+</dl>
+<p>},
+CSC2: {</p>
+<blockquote>
+<div><p>index: [topic1, topic2…],</p>
+</div></blockquote>
+<p>},</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+<p>resample (optional): The offset string representing target resample conversion, e.g. ‘15min’, ‘10S’</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The response and status code of the request to the LOVE-Commander</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
 <dt id="api.views.salinfo_metadata">
 <code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">salinfo_metadata</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">request</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.salinfo_metadata" title="Permalink to this definition">¶</a></dt>
 <dd><p>Requests SalInfo.metadata from the commander containing a dict
@@ -1308,6 +1357,40 @@ of &lt;csc name&gt;: { “sal_version”: …, “xml_version”: ….}</p>
 of &lt;csc name&gt;: { “command_names”: [], “event_names”: [], “telemetry_names”: []}</p>
 <dl class="simple">
 <dt>request: Request</dt><dd><p>The Request object</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The response and status code of the request to the LOVE-Commander</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="api.views.tcs_aux_command">
+<code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">tcs_aux_command</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">request</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.tcs_aux_command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends command to the ATCS</p>
+<dl>
+<dt>request: Request</dt><dd><p>The Request object</p>
+</dd>
+<dt>args: list</dt><dd><p>List of addittional arguments. Currently unused</p>
+</dd>
+<dt>kwargs: dict</dt><dd><dl>
+<dt>Dictionary with request arguments. Request should contain the following:</dt><dd><p>command_name (required): The name of the command to be run. It should be a field of the lsst.ts.observatory.control.auxtel.ATCS class
+params (required): Parameters to be passed to the command method, e.g.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>{</dt><dd><p>ra: 80,
+dec: 30,</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+</dd>
+</dl>
 </dd>
 </dl>
 <dl class="field-list simple">
