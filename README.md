@@ -24,7 +24,7 @@ All these variables are initialized with default variables defined in :code:`.en
 - `DB_HOST`: defines the host of the Database. Only used if `DB_ENGINE=postgresql`.
 - `DB_PORT`: defines the port of the Database. Only used if `DB_ENGINE=postgresql`.
 - `NO_DEBUG`: defines wether or not the LOVE-.manager will be run using Django's debug mode. If the variable is defined, then Debug mode will be off.
-- `LOVE_CSC_PRODUCER`: defines wether or not ussing the new LOVE-producer version which uses the CSC Client.
+- `LOVE_PRODUCER_LEGACY`: defines wether or not ussing the legacy LOVE-producer version, i.e. not the LOVE CSC Producer. If the variable is defined, then the CSC Client won't be used.
 - `SECRET_KEY`: overrides Django's SECRET_KEY, if not defined the default value (public in this repo) will be used.
 - `AUTH_LDAP_SERVER_URI`: (deprecated) the location of the LDAP authentication server. No LDAP server is used if this variable is empty
 
