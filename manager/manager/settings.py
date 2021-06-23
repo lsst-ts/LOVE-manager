@@ -260,4 +260,4 @@ if os.environ.get("HIDE_TRACE_TIMESTAMPS", False):
 
 # LOVE-CSC-PRODUCER
 """Defines wether or not ussing the new LOVE-producer version, i.e. LOVE CSC Producer"""
-LOVE_CSC_PRODUCER = os.environ.get("LOVE_CSC_PRODUCER", False)
+LOVE_CSC_PRODUCER = os.environ.get("LOVE_CSC_PRODUCER", True)
