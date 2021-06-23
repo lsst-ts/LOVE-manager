@@ -258,6 +258,6 @@ if os.environ.get("HIDE_TRACE_TIMESTAMPS", False):
     TRACE_TIMESTAMPS = False
 
 
-# LOVE-CSC-PRODUCER
-"""Defines wether or not ussing the new LOVE-producer version, i.e. LOVE CSC Producer"""
-LOVE_CSC_PRODUCER = os.environ.get("LOVE_CSC_PRODUCER", False)
+# LOVE-PRODUCER-CONFIGURATION
+"""Defines wether or not ussing the legacy LOVE-producer version, i.e. not the LOVE CSC Producer"""
+LOVE_PRODUCER_LEGACY = os.environ.get("LOVE_PRODUCER_LEGACY", False)
