@@ -2,10 +2,8 @@
 import json
 
 import asyncio
-import datetime
 from astropy.time import Time
 
-# from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from django.conf import settings
 
@@ -66,9 +64,6 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             await self.handle_subscription_message(message)
         elif "action" in message:
             await self.handle_action_message(message)
-        # DEPRECATED: now heartbeats are received from event callbacks
-        elif "heartbeat" in message:
-            await self.handle_heartbeat_message(message)
         else:
             await self.handle_data_message(message, manager_rcv)
 
@@ -172,31 +167,6 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             time_data = utils.get_times()
             await self.send_json({"time_data": time_data, "request_time": request_time})
 
-    # DEPRECATED: now heartbeats are handled using SALobj events callbacks
-    async def handle_heartbeat_message(self, message):
-        """Handle a heartbeat message.
-
-        Receives a heartbeat message and sets it in the heartbeat manager.
-
-        Parameters
-        ----------
-        message: `dict`
-            dictionary containing the message parsed as json. The expected format of the message is as follows:
-
-            .. code-block:: json
-
-                {
-                    "heartbeat": "<component name>",
-                    "timestamp": "<timestamp of the last heartbeat> (optional)"
-                }
-        """
-        timestamp = (
-            message["timestamp"]
-            if "timestamp" in message
-            else datetime.datetime.now().timestamp()
-        )
-        self.heartbeat_manager.set_heartbeat_timestamp(message["heartbeat"], timestamp)
-
     async def handle_data_message(self, message, manager_rcv):
         """Handle a data message.
 
@@ -228,18 +198,6 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                     }]
                 }
         """
-        # setting heartbeat
-        if message["data"][0]["csc"] == "Heartbeat":
-            heartbeat_message = message["data"][0]["data"]["stream"]
-            timestamp = (
-                heartbeat_message["last_heartbeat_timestamp"]
-                if "last_heartbeat_timestamp" in heartbeat_message
-                else datetime.datetime.now().timestamp()
-            )
-            self.heartbeat_manager.set_heartbeat_timestamp(
-                heartbeat_message["csc"], timestamp
-            )
-
         data = message["data"]
         category = message["category"]
         producer_snd = message["producer_snd"] if "producer_snd" in message else None
