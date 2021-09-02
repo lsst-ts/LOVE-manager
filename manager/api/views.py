@@ -5,23 +5,31 @@ import requests
 import yaml
 import jsonschema
 import collections
+from django.core.exceptions import PermissionDenied
+from django.utils import timezone
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import status
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.decorators import api_view
-from rest_framework.decorators import permission_classes, authentication_classes
+from rest_framework.decorators import permission_classes
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import viewsets, status
-from api.models import Token
+from rest_framework import viewsets, status, mixins
+from api.models import (
+    Token,
+    CSCAuthorizedUser,
+    CSCNonAuthorizedCSC,
+    CSCAuthorizationRequest,
+)
 from api.serializers import TokenSerializer, ConfigSerializer
 from api.serializers import (
     ConfigFileSerializer,
     ConfigFileContentSerializer,
     EmergencyContactSerializer,
+    CSCAuthorizationRequestSerializer,
+    CSCAuthorizationRequestCreateSerializer,
+    CSCAuthorizationRequestUpdateSerializer,
 )
 from .schema_validator import DefaultingValidator
 from api.models import ConfigFile, EmergencyContact
@@ -393,7 +401,6 @@ def salinfo_topic_names(request):
         403: openapi.Response("Unauthorized"),
     },
 )
-
 @api_view(["GET"])
 @permission_classes((IsAuthenticated,))
 def salinfo_topic_data(request):
@@ -494,6 +501,7 @@ class EmergencyContactViewSet(viewsets.ModelViewSet):
     serializer_class = EmergencyContactSerializer
     """Serializer used to serialize View objects"""
 
+
 @api_view(["POST"])
 @permission_classes((IsAuthenticated,))
 def query_efd(request, *args, **kwargs):
@@ -529,6 +537,7 @@ def query_efd(request, *args, **kwargs):
     response = requests.post(url, json=request.data)
     return Response(response.json(), status=response.status_code)
 
+
 @api_view(["POST"])
 @permission_classes((IsAuthenticated,))
 def tcs_aux_command(request, *args, **kwargs):
@@ -542,8 +551,9 @@ def tcs_aux_command(request, *args, **kwargs):
         List of addittional arguments. Currently unused
     kwargs: dict
         Dictionary with request arguments. Request should contain the following:
-            command_name (required): The name of the command to be run. It should be a field of the lsst.ts.observatory.control.auxtel.ATCS class
-            params (required): Parameters to be passed to the command method, e.g.
+            command_name (required): The name of the command to be run. It should be a field of
+            the lsst.ts.observatory.control.auxtel.ATCS class params (required):
+            Parameters to be passed to the command method, e.g.
                 {
                     ra: 80,
                     dec: 30,
@@ -561,6 +571,7 @@ def tcs_aux_command(request, *args, **kwargs):
     url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/tcs/aux"
     response = requests.post(url, json=request.data)
     return Response(response.json(), status=response.status_code)
+
 
 @api_view(["GET"])
 @permission_classes((IsAuthenticated,))
@@ -585,3 +596,115 @@ def tcs_docstrings(request, *args, **kwargs):
     response = requests.get(url)
     return Response(response.json(), status=response.status_code)
 
+
+@api_view(["GET"])
+@permission_classes((IsAuthenticated,))
+def authlist(request):
+    """Returns the latest known authlist
+
+    Params
+    ------
+    request: Request
+        The Request object
+
+    Returns
+    -------
+    Response
+        The response containing the serialized AuthList content
+
+    """
+
+    user_list = CSCAuthorizedUser.objects.all()
+    csc_list = CSCNonAuthorizedCSC.objects.all()
+    csc_dict = {}
+    for entry in user_list:
+        if entry.target_csc not in csc_dict:
+            csc_dict[entry.target_csc] = {
+                "authorized_user": [],
+                "non_authorized_csc": [],
+            }
+        csc_dict[entry.target_csc]["authorized_user"].append(
+            f"{entry.username}@{entry.hostname}"
+        )
+    for entry in csc_list:
+        if entry.target_csc not in csc_dict:
+            csc_dict[entry.target_csc] = {
+                "authorized_user": [],
+                "non_authorized_csc": [],
+            }
+        csc_dict[entry.target_csc]["non_authorized_csc"].append(entry.blocked_csc)
+
+    return Response(csc_dict)
+
+
+class CSCAuthorizationRequestViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.UpdateModelMixin,
+    viewsets.GenericViewSet,
+):
+    """
+    A viewset that provides `retrieve`, `create`, and `list` actions.
+
+    To use it, override the class and set the `.queryset` and
+    `.serializer_class` attributes.
+
+    """
+
+    permission_classes = (IsAuthenticated,)
+
+    def get_serializer_class(self):
+        if self.request.method == "POST":
+            return CSCAuthorizationRequestCreateSerializer
+        if self.request.method == "PUT" or self.request.method == "PATCH":
+            return CSCAuthorizationRequestUpdateSerializer
+        return CSCAuthorizationRequestSerializer
+
+    def get_queryset(self):
+        if self.request.user.has_perm("api.authlist.administrator"):
+            # if user is admin return list with all authorization requests
+            return CSCAuthorizationRequest.objects.all()
+        else:
+            # else return only requests for this username
+            return CSCAuthorizationRequest.objects.filter(
+                username=self.request.user.username
+            )
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        # check for valid status update is performed in the serializer validation
+        if instance.status == CSCAuthorizationRequest.RequestStatus.PENDING:
+            # admin is resolving, check if user is authlist admin
+            if not request.user.has_perm("api.authlist.administrator"):
+                raise PermissionDenied()
+            response = super().update(request, *args, **kwargs)
+            updated_instance = self.get_object()
+            updated_instance.resolved_by = request.user
+            updated_instance.resolved_at = timezone.now()
+            updated_instance.save()
+            if (
+                updated_instance.status
+                == CSCAuthorizationRequest.RequestStatus.AUTHORIZED
+            ):
+                CSCAuthorizedUser.objects.create(
+                    target_csc=updated_instance.target_csc,
+                    username=updated_instance.username,
+                    hostname=updated_instance.hostname,
+                )
+            return response
+        if instance.status == CSCAuthorizationRequest.RequestStatus.AUTHORIZED:
+            # user or admin are reverting authorization
+            # queryset already filters if user can access this object so there is no need to check again
+            response = super().update(request, *args, **kwargs)
+            updated_instance = self.get_object()
+            updated_instance.reverted_by = request.user
+            updated_instance.reverted_at = timezone.now()
+            updated_instance.save()
+            CSCAuthorizedUser.objects.filter(
+                target_csc=instance.target_csc,
+                username=instance.username,
+                hostname=instance.hostname,
+            ).delete()
+            return response
+        # No other update can be made
+        return Response({"error": "Bad request"}, status=status.HTTP_400_BAD_REQUEST)

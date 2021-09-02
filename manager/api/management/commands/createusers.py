@@ -9,20 +9,27 @@ cmd_user_username = "cmd_user"
 admin_username = "admin"
 cmd_groupname = "cmd"
 test_username = "test"
+authlist_username = "authlist_user"
+authlist_groupname = "authlist"
 
 
 class Command(BaseCommand):
     """Django command to create the initial users with their permissions.
 
-    It creates 4 users with the following characteristics and permissions:
+    It creates 5 users with the following characteristics and permissions:
 
     - "admin": has all the permissions, it is a Django superuser
     - "user": basic user with no permissions)
     - "cmd_user": basic user with commands execution permissions
+    - "authlist_user": basic user with authlist administration permissions
     - "test": basic user with commands execution permissions
 
-    It also creates 1 Group: "cmd_group", which defines the commands execution permissions.
+    It also creates 2 Groups:
+    "cmd_group", which defines the commands execution permissions.
+    "authlist_group", which defines the permission to access and resolve AuthList requests
+
     "cmd_user" and "test" users belong to "cmd_group".
+    "authlist_user" belong to "authlist_group"
 
     The command receives arguments to set the passwords of the users,
     run `python manage.py createusers --help` for help.
@@ -30,15 +37,20 @@ class Command(BaseCommand):
 
     help = """Django command to create the initial users with their permissions.\n
 
-    It creates 4 users with the following characteristics and permissions:
+    It creates 5 users with the following characteristics and permissions:
 
     - "admin": has all the permissions, it is a Django superuser
     - "user": basic user with no permissions)
     - "cmd_user": basic user with commands execution permissions
+    - "authlist_user": basic user with authlist administration permissions
     - "test": basic user with commands execution permissions
 
-    It also creates 1 Group: "cmd_group", which defines the commands execution permissions.
-    "cmd_user" and "test" users belong to "cmd_group"."""
+    It also creates 2 Group:
+    "cmd_group", which defines the commands execution permissions.
+    "authlist_group", which defines the permission to access and resolve AuthList requests
+
+    "cmd_user" and "test" users belong to "cmd_group".
+    "authlist_user" belong to "authlist_group"."""
 
     requires_migrations_checks = True
     stealth_options = ("stdin",)
@@ -81,6 +93,10 @@ class Command(BaseCommand):
             "--cmduserpass",
             help='Specifies password for the users with cmd permissions ("cmd_user" and "test").',
         )
+        parser.add_argument(
+            "--authlistuserpass",
+            help='Specifies password for the users with authlist permissions ("authlist_user").',
+        )
 
     def handle(self, *args, **options):
         """Execute the command, which creates the users.
@@ -95,12 +111,14 @@ class Command(BaseCommand):
         admin_password = options["adminpass"]
         user_password = options["userpass"]
         cmd_password = options["cmduserpass"]
+        authlist_password = options["authlistuserpass"]
 
         # Create users
         admin = self._create_user(admin_username, admin_password)
         self._create_user(user_username, user_password)
         cmd_user = self._create_user(cmd_user_username, cmd_password)
         test_user = self._create_user(test_username, cmd_password)
+        authlist_user = self._create_user(authlist_username, authlist_password)
 
         # Make admin superuser and staff
         admin.is_superuser = True
@@ -113,6 +131,12 @@ class Command(BaseCommand):
         # Add cmd_user to cmd_group
         cmd_group.user_set.add(cmd_user)
         cmd_group.user_set.add(test_user)
+
+        # Create authlist_group
+        authlist_group = self._create_authlist_group()
+
+        # Add authlist_user to authlist_group
+        authlist_group.user_set.add(authlist_user)
 
     def _create_user(self, username, password):
         """Create a given user, if it does not exist. Return it anyway.
@@ -159,6 +183,20 @@ class Command(BaseCommand):
         """
         group, created = Group.objects.get_or_create(name=cmd_groupname)
         permissions = Permission.objects.filter(codename="command.execute_command")
+        for permission in permissions:
+            group.permissions.add(permission)
+        return group
+
+    def _create_authlist_group(self):
+        """Create and return the group of users with permissions to administrate authlist.
+
+        Returns
+        -------
+        group: Group
+            The Group object
+        """
+        group, created = Group.objects.get_or_create(name=authlist_groupname)
+        permissions = Permission.objects.filter(codename="authlist.administrator")
         for permission in permissions:
             group.permissions.add(permission)
         return group

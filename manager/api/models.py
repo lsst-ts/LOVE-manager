@@ -10,7 +10,6 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
 import rest_framework.authtoken.models
-from ui_framework.models import OverwriteStorage
 
 
 class BaseModel(models.Model):
@@ -72,6 +71,7 @@ class GlobalPermissions(models.Model):
         permissions = (
             ("command.execute_command", "Execute Commands"),
             ("command.run_script", "Run and Requeue scripts in ScriptQueues"),
+            ("authlist.administrator", "Access and resolve AuthList requests"),
         )
         """((string, string)): Tuple defining permissions in the format ((<name>, <description>))"""
 
@@ -118,3 +118,121 @@ class EmergencyContact(BaseModel):
 
     email = models.EmailField(max_length=254)
     """EC's email"""
+
+
+class CSCAuthorizedUser(BaseModel):
+    target_csc = models.CharField(max_length=100)
+    """Name of the CSC were the user will have authorization"""
+
+    username = models.CharField(max_length=100)
+    """Username of authorized user"""
+
+    hostname = models.CharField(max_length=100)
+    """Hostname of authorized user"""
+
+    class Meta:
+        unique_together = [["target_csc", "username", "hostname"]]
+        permissions = (("administrator", "Administrate the AuthList"),)
+
+    def __str__(self):
+        """Define the string representation for objects of this class.
+
+        Returns
+        -------
+        f"{self.target_csc}:{self.username}@{self.hostname}": string
+            The string representaiton
+        """
+        return f"{self.target_csc}:{self.username}@{self.hostname}"
+
+
+class CSCNonAuthorizedCSC(BaseModel):
+    target_csc = models.CharField(max_length=100)
+    """Name of the CSC were the blocked csc will not have authorization"""
+
+    blocked_csc = models.CharField(max_length=100)
+    """Name of the CSC to deny authorization to"""
+
+    class Meta:
+        unique_together = [["target_csc", "blocked_csc"]]
+        permissions = (("administrator", "Administrate the AuthList"),)
+
+    def __str__(self):
+        """Define the string representation for objects of this class.
+
+        Returns
+        -------
+        f"{self.target_csc}:{self.blocked_csc}": string
+            The string representaiton
+        """
+        return f"{self.target_csc}:{self.blocked_csc}"
+
+
+class CSCAuthorizationRequest(models.Model):
+    class RequestStatus(models.TextChoices):
+        PENDING = "Pending", "Pending"
+        AUTHORIZED = "Authorized", "Authorized"
+        DENIED = "Denied", "Denied"
+        REVERTED = "Reverted", "Reverted"
+
+    target_csc = models.CharField(max_length=100)
+    """Name of the CSC were the user will have authorization"""
+
+    username = models.CharField(max_length=100)
+    """Username of authorized user"""
+
+    hostname = models.CharField(max_length=100)
+    """Hostname of authorized user"""
+
+    requested_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="+",
+        on_delete=models.PROTECT,
+        verbose_name="Requested by",
+        null=True,
+        blank=True,
+    )
+    requested_at = models.DateTimeField(
+        auto_now_add=True, editable=False, verbose_name="Requested at"
+    )
+
+    blocked_cscs = models.CharField(max_length=200, blank=True)
+    restriction_duration = models.PositiveIntegerField(
+        blank=True, null=True, verbose_name="Restriction duration (seconds)"
+    )
+    status = models.CharField(
+        max_length=10, choices=RequestStatus.choices, default=RequestStatus.PENDING,
+    )
+
+    resolved_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="+",
+        on_delete=models.PROTECT,
+        verbose_name="Resolved by",
+        null=True,
+        blank=True,
+    )
+    resolved_at = models.DateTimeField(
+        null=True, blank=True, verbose_name="Resolved at"
+    )
+
+    reverted_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="+",
+        on_delete=models.PROTECT,
+        verbose_name="Reverted by",
+        null=True,
+        blank=True,
+    )
+    reverted_at = models.DateTimeField(
+        null=True, blank=True, verbose_name="Reverted at"
+    )
+
+    def __str__(self):
+        """Define the string representation for objects of this class.
+
+        Returns
+        -------
+        f"{}{self.target_csc}:{self.username}@{self.hostname}": string
+            The string representaiton
+        """
+        return f"[{self.status}] {self.username}@{self.hostname} -> {self.target_csc}"
