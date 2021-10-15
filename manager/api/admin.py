@@ -9,12 +9,10 @@ https://docs.djangoproject.com/en/2.2/ref/contrib/admin/
 from django.contrib import admin
 from api.models import Token
 from api.models import ConfigFile, EmergencyContact
-from api.models import CSCAuthorizedUser, CSCNonAuthorizedCSC, CSCAuthorizationRequest
+from api.models import CSCAuthorizationRequest
 
 
 admin.site.register(Token)
 admin.site.register(ConfigFile)
 admin.site.register(EmergencyContact)
-admin.site.register(CSCAuthorizedUser)
-admin.site.register(CSCNonAuthorizedCSC)
 admin.site.register(CSCAuthorizationRequest)

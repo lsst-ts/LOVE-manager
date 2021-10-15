@@ -18,8 +18,6 @@ from rest_framework.response import Response
 from rest_framework import viewsets, status, mixins
 from api.models import (
     Token,
-    CSCAuthorizedUser,
-    CSCNonAuthorizedCSC,
     CSCAuthorizationRequest,
 )
 from api.serializers import TokenSerializer, ConfigSerializer
@@ -597,46 +595,6 @@ def tcs_docstrings(request, *args, **kwargs):
     return Response(response.json(), status=response.status_code)
 
 
-@api_view(["GET"])
-@permission_classes((IsAuthenticated,))
-def authlist(request):
-    """Returns the latest known authlist
-
-    Params
-    ------
-    request: Request
-        The Request object
-
-    Returns
-    -------
-    Response
-        The response containing the serialized AuthList content
-
-    """
-
-    user_list = CSCAuthorizedUser.objects.all()
-    csc_list = CSCNonAuthorizedCSC.objects.all()
-    csc_dict = {}
-    for entry in user_list:
-        if entry.target_csc not in csc_dict:
-            csc_dict[entry.target_csc] = {
-                "authorized_user": [],
-                "non_authorized_csc": [],
-            }
-        csc_dict[entry.target_csc]["authorized_user"].append(
-            f"{entry.username}@{entry.hostname}"
-        )
-    for entry in csc_list:
-        if entry.target_csc not in csc_dict:
-            csc_dict[entry.target_csc] = {
-                "authorized_user": [],
-                "non_authorized_csc": [],
-            }
-        csc_dict[entry.target_csc]["non_authorized_csc"].append(entry.blocked_csc)
-
-    return Response(csc_dict)
-
-
 class CSCAuthorizationRequestViewSet(
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
@@ -670,6 +628,15 @@ class CSCAuthorizationRequestViewSet(
                 username=self.request.user.username
             )
 
+    def query_authorize_csc(self):
+        # url = f"http://{os.environ.get('AUHTORIZE_CSC_HOST', 'localhost')}
+        # :{os.environ.get('AUHTORIZE_CSC_PORT', 80)}/request-status/"
+        url = "http://google.cl/"
+        payload = {"id": 1, "status": "APPROVED"}
+        response = requests.post(url, json=json.dumps(payload))
+        return Response(json.dumps(payload), status=response.status_code)
+        # return Response(response, status=response.status_code)
+
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
         # check for valid status update is performed in the serializer validation
@@ -677,34 +644,12 @@ class CSCAuthorizationRequestViewSet(
             # admin is resolving, check if user is authlist admin
             if not request.user.has_perm("api.authlist.administrator"):
                 raise PermissionDenied()
-            response = super().update(request, *args, **kwargs)
+            # response = super().update(request, *args, **kwargs)
             updated_instance = self.get_object()
             updated_instance.resolved_by = request.user
             updated_instance.resolved_at = timezone.now()
             updated_instance.save()
-            if (
-                updated_instance.status
-                == CSCAuthorizationRequest.RequestStatus.AUTHORIZED
-            ):
-                CSCAuthorizedUser.objects.create(
-                    target_csc=updated_instance.target_csc,
-                    username=updated_instance.username,
-                    hostname=updated_instance.hostname,
-                )
-            return response
-        if instance.status == CSCAuthorizationRequest.RequestStatus.AUTHORIZED:
-            # user or admin are reverting authorization
-            # queryset already filters if user can access this object so there is no need to check again
-            response = super().update(request, *args, **kwargs)
-            updated_instance = self.get_object()
-            updated_instance.reverted_by = request.user
-            updated_instance.reverted_at = timezone.now()
-            updated_instance.save()
-            CSCAuthorizedUser.objects.filter(
-                target_csc=instance.target_csc,
-                username=instance.username,
-                hostname=instance.hostname,
-            ).delete()
-            return response
+            authorize_csc_response = self.query_authorize_csc()
+            return authorize_csc_response
         # No other update can be made
         return Response({"error": "Bad request"}, status=status.HTTP_400_BAD_REQUEST)

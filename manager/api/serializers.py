@@ -227,7 +227,7 @@ class CSCAuthorizationRequestSerializer(serializers.ModelSerializer):
     """Serializer to map the Model instance into JSON format."""
 
     resolved_by = serializers.SlugRelatedField(read_only=True, slug_field="username")
-    reverted_by = serializers.SlugRelatedField(read_only=True, slug_field="username")
+    # reverted_by = serializers.SlugRelatedField(read_only=True, slug_field="username")
 
     class Meta:
         """Meta class to map serializer's fields with the model fields."""
@@ -243,11 +243,8 @@ class CSCAuthorizationRequestUpdateSerializer(serializers.ModelSerializer):
     def validate_status(self, value):
         if not self.instance:
             raise serializers.ValidationError("No instance to update")
-        elif (
-            self.instance.status != CSCAuthorizationRequest.RequestStatus.PENDING
-            and self.instance.status != CSCAuthorizationRequest.RequestStatus.AUTHORIZED
-        ):
-            raise serializers.ValidationError("Bad status update")
+        elif self.instance.status != CSCAuthorizationRequest.RequestStatus.PENDING:
+            raise serializers.ValidationError("Request already resolved")
         elif (
             self.instance.status == CSCAuthorizationRequest.RequestStatus.PENDING
             and value != CSCAuthorizationRequest.RequestStatus.AUTHORIZED
@@ -255,13 +252,6 @@ class CSCAuthorizationRequestUpdateSerializer(serializers.ModelSerializer):
         ):
             raise serializers.ValidationError(
                 "Can only resolve status to Authorized or Denied"
-            )
-        elif (
-            self.instance.status == CSCAuthorizationRequest.RequestStatus.AUTHORIZED
-            and value != CSCAuthorizationRequest.RequestStatus.REVERTED
-        ):
-            raise serializers.ValidationError(
-                "An accepted request can only be reverted"
             )
         return value
 
@@ -271,7 +261,7 @@ class CSCAuthorizationRequestUpdateSerializer(serializers.ModelSerializer):
         model = CSCAuthorizationRequest
         """The model class to serialize"""
 
-        fields = ("status",)
+        fields = ("status", "message", "duration")
         """The fields of the model class to serialize"""
 
 
@@ -282,5 +272,10 @@ class CSCAuthorizationRequestCreateSerializer(serializers.ModelSerializer):
         model = CSCAuthorizationRequest
         """The model class to serialize"""
 
-        fields = ("target_csc", "username", "hostname", "restriction_duration")
+        fields = (
+            "cscs_to_change",
+            "authorized_users",
+            "unauthorized_cscs",
+            "requested_by",
+        )
         """The fields of the model class to serialize"""

@@ -54,7 +54,6 @@ urlpatterns = [
     path("efd/timeseries", api.views.query_efd, name="EFD-timeseries"),
     path("tcs/aux", api.views.tcs_aux_command, name="TCS-aux"),
     path("tcs/docstrings", api.views.tcs_docstrings, name="TCS-docstrings"),
-    path("authlist/", api.views.authlist, name="authlist"),
 ]
 router.register("configfile", ConfigFileViewSet)
 router.register("emergencycontact", EmergencyContactViewSet)

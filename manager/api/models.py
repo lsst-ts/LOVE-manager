@@ -120,88 +120,40 @@ class EmergencyContact(BaseModel):
     """EC's email"""
 
 
-class CSCAuthorizedUser(BaseModel):
-    target_csc = models.CharField(max_length=100)
-    """Name of the CSC were the user will have authorization"""
-
-    username = models.CharField(max_length=100)
-    """Username of authorized user"""
-
-    hostname = models.CharField(max_length=100)
-    """Hostname of authorized user"""
-
-    class Meta:
-        unique_together = [["target_csc", "username", "hostname"]]
-        permissions = (("administrator", "Administrate the AuthList"),)
-
-    def __str__(self):
-        """Define the string representation for objects of this class.
-
-        Returns
-        -------
-        f"{self.target_csc}:{self.username}@{self.hostname}": string
-            The string representaiton
-        """
-        return f"{self.target_csc}:{self.username}@{self.hostname}"
-
-
-class CSCNonAuthorizedCSC(BaseModel):
-    target_csc = models.CharField(max_length=100)
-    """Name of the CSC were the blocked csc will not have authorization"""
-
-    blocked_csc = models.CharField(max_length=100)
-    """Name of the CSC to deny authorization to"""
-
-    class Meta:
-        unique_together = [["target_csc", "blocked_csc"]]
-        permissions = (("administrator", "Administrate the AuthList"),)
-
-    def __str__(self):
-        """Define the string representation for objects of this class.
-
-        Returns
-        -------
-        f"{self.target_csc}:{self.blocked_csc}": string
-            The string representaiton
-        """
-        return f"{self.target_csc}:{self.blocked_csc}"
-
-
 class CSCAuthorizationRequest(models.Model):
     class RequestStatus(models.TextChoices):
         PENDING = "Pending", "Pending"
         AUTHORIZED = "Authorized", "Authorized"
         DENIED = "Denied", "Denied"
-        REVERTED = "Reverted", "Reverted"
 
-    target_csc = models.CharField(max_length=100)
-    """Name of the CSC were the user will have authorization"""
+    cscs_to_change = models.TextField()
+    """Comma separated list of the CSCs to change their authlists"""
 
-    username = models.CharField(max_length=100)
-    """Username of authorized user"""
+    authorized_users = models.TextField(blank=True)
+    """Comma separated list of users to add or remove from the authorized lists"""
 
-    hostname = models.CharField(max_length=100)
-    """Hostname of authorized user"""
+    unauthorized_cscs = models.TextField(blank=True)
+    """Comma separated list of CSCs to add or remove from the unauthorized lists"""
 
-    requested_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        related_name="+",
-        on_delete=models.PROTECT,
-        verbose_name="Requested by",
-        null=True,
-        blank=True,
-    )
+    requested_by = models.CharField(max_length=50)
+    """Private identity that requested the authorization"""
+
     requested_at = models.DateTimeField(
         auto_now_add=True, editable=False, verbose_name="Requested at"
     )
 
-    blocked_cscs = models.CharField(max_length=200, blank=True)
-    restriction_duration = models.PositiveIntegerField(
+    duration = models.PositiveIntegerField(
         blank=True, null=True, verbose_name="Restriction duration (seconds)"
     )
+    """Duration of the authorization once it is resolved"""
+
+    message = models.TextField(blank=True, null=True)
+    """Comment added to the authorization request"""
+
     status = models.CharField(
         max_length=10, choices=RequestStatus.choices, default=RequestStatus.PENDING,
     )
+    """Current status of the request"""
 
     resolved_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -211,21 +163,12 @@ class CSCAuthorizationRequest(models.Model):
         null=True,
         blank=True,
     )
+    """The LOVE user that resolved the request"""
+
     resolved_at = models.DateTimeField(
         null=True, blank=True, verbose_name="Resolved at"
     )
-
-    reverted_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        related_name="+",
-        on_delete=models.PROTECT,
-        verbose_name="Reverted by",
-        null=True,
-        blank=True,
-    )
-    reverted_at = models.DateTimeField(
-        null=True, blank=True, verbose_name="Reverted at"
-    )
+    """Timestamp of when the request gets resolved"""
 
     def __str__(self):
         """Define the string representation for objects of this class.
@@ -235,4 +178,4 @@ class CSCAuthorizationRequest(models.Model):
         f"{}{self.target_csc}:{self.username}@{self.hostname}": string
             The string representaiton
         """
-        return f"[{self.status}] {self.username}@{self.hostname} -> {self.target_csc}"
+        return f"[{self.status}] {self.authorized_users} & {self.unauthorized_cscs} -> {self.cscs_to_change}"
