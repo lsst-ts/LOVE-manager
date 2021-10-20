@@ -206,6 +206,8 @@ ASGI_APPLICATION = "manager.routing.application"
 REDIS_HOST = os.environ.get("REDIS_HOST", False)
 REDIS_PORT = os.environ.get("REDIS_PORT", "6379")
 REDIS_PASS = os.environ.get("REDIS_PASS", False)
+REDIS_CONFIG_EXPIRY = os.environ.get("REDIS_CONFIG_EXPIRY", 60)
+REDIS_CONFIG_CAPACITY = os.environ.get("REDIS_CONFIG_CAPACITY", 100)
 if REDIS_HOST and not TESTING:
     CHANNEL_LAYERS = {
         "default": {
@@ -220,6 +222,8 @@ if REDIS_HOST and not TESTING:
                     + REDIS_PORT
                     + "/0"
                 ],
+                "expiry": REDIS_CONFIG_EXPIRY,
+                "capacity": REDIS_CONFIG_CAPACITY,
                 "symmetric_encryption_keys": [SECRET_KEY],
             },
         },
