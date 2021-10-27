@@ -76,10 +76,9 @@ class View(BaseModel):
     data = JSONField(null=True, blank=True)
     """The data that constitutes the View, stored as a JSON"""
 
+    """ default="thumbnails/default.png", """
     thumbnail = models.ImageField(
-        upload_to="thumbnails/",
-        storage=OverwriteStorage(),
-        default="thumbnails/default.png",
+        upload_to="thumbnails/", storage=OverwriteStorage(), null=True, blank=True
     )
     """A reference to the image thumbnail of the view"""
 
