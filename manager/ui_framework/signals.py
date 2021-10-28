@@ -18,8 +18,10 @@ def hanlde_view_deletion(sender, **kwargs):
         that was deleted
     """
     deleted_view = kwargs["instance"]
-    file_url = settings.MEDIA_BASE + deleted_view.thumbnail.url
-    try:
-        os.remove(file_url)
-    except FileNotFoundError:
-        pass
+    if deleted_view and deleted_view.thumbnail:
+        file_url = settings.MEDIA_BASE + deleted_view.thumbnail.url
+        try:
+            os.remove(file_url)
+        except FileNotFoundError:
+            pass
+    pass
