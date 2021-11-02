@@ -138,6 +138,16 @@ class CSCAuthorizationRequest(models.Model):
     requested_by = models.CharField(max_length=50)
     """Private identity that requested the authorization"""
 
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="+",
+        on_delete=models.PROTECT,
+        verbose_name="Created by",
+        null=True,
+        blank=True,
+    )
+    """The LOVE user that created the request"""
+
     requested_at = models.DateTimeField(
         auto_now_add=True, editable=False, verbose_name="Requested at"
     )
@@ -169,6 +179,10 @@ class CSCAuthorizationRequest(models.Model):
         null=True, blank=True, verbose_name="Resolved at"
     )
     """Timestamp of when the request gets resolved"""
+
+    class Meta:
+        ordering = ("-requested_at",)
+        """Set ordering according to 'requested_at' field."""
 
     def __str__(self):
         """Define the string representation for objects of this class.

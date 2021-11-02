@@ -25,6 +25,7 @@ class UserPermissionsSerializer(serializers.Serializer):
     """Custom Serializer for user permissions."""
 
     execute_commands = serializers.SerializerMethodField("can_execute_commands")
+    authlist_admin = serializers.SerializerMethodField("is_authlist_admin")
 
     def can_execute_commands(self, user) -> bool:
         """Define wether or not the given user has permissions to execute commands.
@@ -40,6 +41,21 @@ class UserPermissionsSerializer(serializers.Serializer):
             True if the user can execute commands, False if not.
         """
         return user.has_perm("api.command.execute_command")
+
+    def is_authlist_admin(self, user) -> bool:
+        """Define wether or not the given user has permissions of authlist administration.
+
+        Params
+        ------
+        user: User
+            The User object
+
+        Returns
+        -------
+        Bool
+            True if the user can execute commands, False if not.
+        """
+        return user.has_perm("api.authlist.administrator")
 
 
 class TimeDataSerializer(serializers.Serializer):
@@ -227,7 +243,7 @@ class CSCAuthorizationRequestSerializer(serializers.ModelSerializer):
     """Serializer to map the Model instance into JSON format."""
 
     resolved_by = serializers.SlugRelatedField(read_only=True, slug_field="username")
-    # reverted_by = serializers.SlugRelatedField(read_only=True, slug_field="username")
+    user = serializers.SlugRelatedField(read_only=True, slug_field="username")
 
     class Meta:
         """Meta class to map serializer's fields with the model fields."""
@@ -240,6 +256,8 @@ class CSCAuthorizationRequestSerializer(serializers.ModelSerializer):
 
 
 class CSCAuthorizationRequestUpdateSerializer(serializers.ModelSerializer):
+    """Serializer to update Authorization List Requests."""
+
     def validate_status(self, value):
         if not self.instance:
             raise serializers.ValidationError("No instance to update")
@@ -266,6 +284,10 @@ class CSCAuthorizationRequestUpdateSerializer(serializers.ModelSerializer):
 
 
 class CSCAuthorizationRequestCreateSerializer(serializers.ModelSerializer):
+    """Serializer to create Authorization List Requests."""
+
+    user = serializers.SlugRelatedField(read_only=True, slug_field="username")
+
     class Meta:
         """Meta class to map serializer's fields with the model fields."""
 
@@ -273,6 +295,7 @@ class CSCAuthorizationRequestCreateSerializer(serializers.ModelSerializer):
         """The model class to serialize"""
 
         fields = (
+            "user",
             "cscs_to_change",
             "authorized_users",
             "unauthorized_cscs",

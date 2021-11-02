@@ -5,11 +5,11 @@ from django.contrib.auth.models import Permission, Group, User
 from django.core.management.base import BaseCommand
 
 user_username = "user"
+test_username = "test"
 cmd_user_username = "cmd_user"
 admin_username = "admin"
-cmd_groupname = "cmd"
-test_username = "test"
 authlist_username = "authlist_user"
+cmd_groupname = "cmd"
 authlist_groupname = "authlist"
 
 

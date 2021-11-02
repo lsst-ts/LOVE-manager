@@ -6,6 +6,7 @@ import yaml
 import jsonschema
 import collections
 from django.core.exceptions import PermissionDenied
+from django.contrib.auth.models import User
 from django.utils import timezone
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -625,17 +626,37 @@ class CSCAuthorizationRequestViewSet(
         else:
             # else return only requests for this username
             return CSCAuthorizationRequest.objects.filter(
-                username=self.request.user.username
+                user__username=self.request.user.username
             )
 
     def query_authorize_csc(self):
+        # url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/cmd"
+        # response = requests.post(url, json=request.data)
+        # return Response(response.json(), status=response.status_code)
         # url = f"http://{os.environ.get('AUHTORIZE_CSC_HOST', 'localhost')}
         # :{os.environ.get('AUHTORIZE_CSC_PORT', 80)}/request-status/"
         url = "http://google.cl/"
         payload = {"id": 1, "status": "APPROVED"}
         response = requests.post(url, json=json.dumps(payload))
         return Response(json.dumps(payload), status=response.status_code)
-        # return Response(response, status=response.status_code)
+
+    def create(self, request, *args, **kwargs):
+        obj = CSCAuthorizationRequest.objects.create(*args, **kwargs)
+        obj.user = User.objects.get(username=request.data.get("user"))
+        obj.cscs_to_change = request.data.get("cscs_to_change")
+        obj.authorized_users = request.data.get("authorized_users")
+        obj.unauthorized_cscs = request.data.get("unauthorized_cscs")
+        obj.requested_by = request.data.get("requested_by")
+        request_duration = request.data.get("duration")
+        obj.duration = (
+            request_duration
+            if request_duration != "" and request_duration != 0
+            else None
+        )
+        request_message = request.data.get("message")
+        obj.message = request_message if request_message != "" else None
+        obj.save()
+        return Response({"ok": 200}, status=200)
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -646,10 +667,14 @@ class CSCAuthorizationRequestViewSet(
                 raise PermissionDenied()
             # response = super().update(request, *args, **kwargs)
             updated_instance = self.get_object()
+            updated_instance.status = request.data.get("status")
+            updated_instance.duration = request.data.get("duration")
+            updated_instance.message = request.data.get("message")
             updated_instance.resolved_by = request.user
             updated_instance.resolved_at = timezone.now()
             updated_instance.save()
-            authorize_csc_response = self.query_authorize_csc()
-            return authorize_csc_response
+            # authorize_csc_response = self.query_authorize_csc()
+            # return authorize_csc_response
+            return Response({"ok": 200}, status=200)
         # No other update can be made
         return Response({"error": "Bad request"}, status=status.HTTP_400_BAD_REQUEST)
