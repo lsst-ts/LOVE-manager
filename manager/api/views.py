@@ -6,7 +6,6 @@ import yaml
 import jsonschema
 import collections
 from django.core.exceptions import PermissionDenied
-from django.contrib.auth.models import User
 from django.utils import timezone
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -642,7 +641,7 @@ class CSCAuthorizationRequestViewSet(
 
     def create(self, request, *args, **kwargs):
         obj = CSCAuthorizationRequest.objects.create(*args, **kwargs)
-        obj.user = User.objects.get(username=request.data.get("user"))
+        obj.user = request.user
         obj.cscs_to_change = request.data.get("cscs_to_change")
         obj.authorized_users = request.data.get("authorized_users")
         obj.unauthorized_cscs = request.data.get("unauthorized_cscs")
