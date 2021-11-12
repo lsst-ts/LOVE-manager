@@ -383,7 +383,7 @@
           "allowOverflow": true
         }
       },
-      "thumbnail": "thumbnails/view_34.png"
+      "thumbnail": "thumbnails/view_28.png"
     }
   },
   {
@@ -505,7 +505,7 @@
           "allowOverflow": true
         }
       },
-      "thumbnail": "thumbnails/view_36.png"
+      "thumbnail": "thumbnails/view_25.png"
     }
   },
   {
@@ -1055,7 +1055,7 @@
           "allowOverflow": true
         }
       },
-      "thumbnail": "thumbnails/view_41.png"
+      "thumbnail": "thumbnails/view_43.png"
     }
   },
   {
@@ -1098,7 +1098,7 @@
           "allowOverflow": true
         }
       },
-      "thumbnail": ""
+      "thumbnail": "thumbnails/view_41.png"
     }
   },
   {
@@ -1581,27 +1581,4 @@
       "thumbnail": ""
     }
   },
-  {
-    "model": "ui_framework.view",
-    "pk": 49,
-    "fields": {
-      "creation_timestamp": "2021-09-09T21:14:30.501933Z",
-      "update_timestamp": "2021-09-09T21:14:30.50199Z",
-      "name": "ATCS",
-      "data": {
-        "content": {},
-        "properties": {
-          "h": 2,
-          "i": 0,
-          "w": 100,
-          "x": 0,
-          "y": 0,
-          "cols": 100,
-          "type": "container",
-          "allowOverflow": true
-        }
-      },
-      "thumbnail": ""
-    }
-  }
 ]
