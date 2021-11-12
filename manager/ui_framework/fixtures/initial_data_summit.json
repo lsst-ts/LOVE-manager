@@ -3,8 +3,8 @@
     "model": "ui_framework.view",
     "pk": 30,
     "fields": {
-      "creation_timestamp": "2020-08-19T00:38:07.360Z",
-      "update_timestamp": "2020-08-19T00:38:07.360Z",
+      "creation_timestamp": "2020-08-19T00:38:07.36Z",
+      "update_timestamp": "2020-08-19T00:38:07.36Z",
       "name": "Dome-Mount test",
       "data": {
         "content": {
@@ -49,10 +49,22 @@
           "newPanel-3": {
             "config": {
               "cscs": [
-                { "name": "ATMCS", "salindex": 0 },
-                { "name": "ATDome", "salindex": 0 },
-                { "name": "Watcher", "salindex": 0 },
-                { "name": "ScriptQueue", "salindex": 1 }
+                {
+                  "name": "ATMCS",
+                  "salindex": 0
+                },
+                {
+                  "name": "ATDome",
+                  "salindex": 0
+                },
+                {
+                  "name": "Watcher",
+                  "salindex": 0
+                },
+                {
+                  "name": "ScriptQueue",
+                  "salindex": 1
+                }
               ],
               "link": "",
               "name": "CSC Summary",
@@ -60,7 +72,9 @@
               "margin": true,
               "titleBar": false,
               "hasRawMode": false,
-              "_functionProps": ["subscribeToStreamCallback"],
+              "_functionProps": [
+                "subscribeToStreamCallback"
+              ],
               "subscribeToStreamCallback": "() => {}"
             },
             "content": "CSCGroup",
@@ -498,8 +512,8 @@
     "model": "ui_framework.view",
     "pk": 37,
     "fields": {
-      "creation_timestamp": "2020-08-19T00:41:33.170Z",
-      "update_timestamp": "2020-08-19T00:41:33.170Z",
+      "creation_timestamp": "2020-08-19T00:41:33.17Z",
+      "update_timestamp": "2020-08-19T00:41:33.17Z",
       "name": "HealthStatusSummary",
       "data": {
         "content": {
@@ -512,25 +526,25 @@
               "hasRawMode": true,
               "topicConfiguration": {
                 "telemetry-ATDome-0-position": {
-                  "azimuthPosition": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
-                  "azimuthEncoderPosition": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
-                  "mainDoorOpeningPercentage": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
-                  "dropoutDoorOpeningPercentage": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;"
+                  "azimuthPosition": "return Math.floor(new Date().getSeconds() / 4) % 5 ;",
+                  "azimuthEncoderPosition": "return Math.floor(new Date().getSeconds() / 4) % 5 ;",
+                  "mainDoorOpeningPercentage": "return Math.floor(new Date().getSeconds() / 4) % 5 ;",
+                  "dropoutDoorOpeningPercentage": "return Math.floor(new Date().getSeconds() / 4) % 5 ;"
                 },
                 "telemetry-ATMCS-0-mount_AzEl_Encoders": {
-                  "cRIO_timestamp": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
-                  "elevationCalculatedAngle": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;"
+                  "cRIO_timestamp": "return Math.floor(new Date().getSeconds() / 4) % 5 ;",
+                  "elevationCalculatedAngle": "return Math.floor(new Date().getSeconds() / 4) % 5 ;"
                 },
                 "telemetry-ATMCS-0-mount_Nasmyth_Encoders": {
-                  "trackId": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
-                  "nasmyth1Encoder1Raw": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
-                  "nasmyth1Encoder2Raw": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
-                  "nasmyth1Encoder3Raw": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
-                  "nasmyth2Encoder1Raw": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
-                  "nasmyth2Encoder2Raw": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
-                  "nasmyth2Encoder3Raw": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
-                  "nasmyth1CalculatedAngle": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;",
-                  "nasmyth2CalculatedAngle": "return Math.floor(new Date().getSeconds()  / 4) % 5 ;"
+                  "trackId": "return Math.floor(new Date().getSeconds() / 4) % 5 ;",
+                  "nasmyth1Encoder1Raw": "return Math.floor(new Date().getSeconds() / 4) % 5 ;",
+                  "nasmyth1Encoder2Raw": "return Math.floor(new Date().getSeconds() / 4) % 5 ;",
+                  "nasmyth1Encoder3Raw": "return Math.floor(new Date().getSeconds() / 4) % 5 ;",
+                  "nasmyth2Encoder1Raw": "return Math.floor(new Date().getSeconds() / 4) % 5 ;",
+                  "nasmyth2Encoder2Raw": "return Math.floor(new Date().getSeconds() / 4) % 5 ;",
+                  "nasmyth2Encoder3Raw": "return Math.floor(new Date().getSeconds() / 4) % 5 ;",
+                  "nasmyth1CalculatedAngle": "return Math.floor(new Date().getSeconds() / 4) % 5 ;",
+                  "nasmyth2CalculatedAngle": "return Math.floor(new Date().getSeconds() / 4) % 5 ;"
                 }
               }
             },
@@ -675,46 +689,124 @@
               "hierarchy": {
                 "Observatory": {
                   "Queue": [
-                    { "name": "ScriptQueue", "salindex": 1 },
-                    { "name": "ScriptQueue", "salindex": 2 }
+                    {
+                      "name": "ScriptQueue",
+                      "salindex": 1
+                    },
+                    {
+                      "name": "ScriptQueue",
+                      "salindex": 2
+                    }
                   ],
                   "Environment": [
-                    { "name": "DIMM", "salindex": 1 },
-                    { "name": "DIMM", "salindex": 2 },
-                    { "name": "Environment", "salindex": 1 }
+                    {
+                      "name": "DIMM",
+                      "salindex": 1
+                    },
+                    {
+                      "name": "DIMM",
+                      "salindex": 2
+                    },
+                    {
+                      "name": "Environment",
+                      "salindex": 1
+                    }
                   ]
                 },
                 "Aux Telescope": {
                   "ATTCS": [
-                    { "name": "ATMCS", "salindex": 0 },
-                    { "name": "ATPtg", "salindex": 0 },
-                    { "name": "ATDome", "salindex": 0 },
-                    { "name": "ATDomeTrajectory", "salindex": 0 },
-                    { "name": "ATAOS", "salindex": 0 },
-                    { "name": "ATPneumatics", "salindex": 0 },
-                    { "name": "ATHexapod", "salindex": 0 },
-                    { "name": "GenericCamera", "salindex": 1 }
+                    {
+                      "name": "ATMCS",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATPtg",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATDome",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATDomeTrajectory",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATAOS",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATPneumatics",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATHexapod",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "GenericCamera",
+                      "salindex": 1
+                    }
                   ],
                   "LATISS": [
-                    { "name": "ATCamera", "salindex": 0 },
-                    { "name": "ATArchiver", "salindex": 0 },
-                    { "name": "ATHeaderService", "salindex": 0 },
-                    { "name": "ATSpectrograph", "salindex": 0 }
+                    {
+                      "name": "ATCamera",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATArchiver",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATHeaderService",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATSpectrograph",
+                      "salindex": 0
+                    }
                   ],
                   "ATCalSys": [
-                    { "name": "ATMonochromator", "salindex": 0 },
-                    { "name": "FiberSpectrograph", "salindex": 0 },
-                    { "name": "ATWhiteLight", "salindex": 0 },
-                    { "name": "Electrometer", "salindex": 1 },
-                    { "name": "Electrometer", "salindex": 2 },
-                    { "name": "LinearStage", "salindex": 1 },
-                    { "name": "LinearStage", "salindex": 2 }
+                    {
+                      "name": "ATMonochromator",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "FiberSpectrograph",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATWhiteLight",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "Electrometer",
+                      "salindex": 1
+                    },
+                    {
+                      "name": "Electrometer",
+                      "salindex": 2
+                    },
+                    {
+                      "name": "LinearStage",
+                      "salindex": 1
+                    },
+                    {
+                      "name": "LinearStage",
+                      "salindex": 2
+                    }
                   ]
                 },
                 "Main Telescope": {
                   "CSC Group 1": [
-                    { "name": "Test", "salindex": 1 },
-                    { "name": "Test", "salindex": 2 }
+                    {
+                      "name": "Test",
+                      "salindex": 1
+                    },
+                    {
+                      "name": "Test",
+                      "salindex": 2
+                    }
                   ],
                   "CSC Group 2": []
                 }
@@ -734,13 +826,34 @@
           "newPanel-2": {
             "config": {
               "cscs": [
-                { "name": "ATMCS", "salindex": 0 },
-                { "name": "ATPtg", "salindex": 0 },
-                { "name": "ATDome", "salindex": 0 },
-                { "name": "ATDomeTrajectory", "salindex": 0 },
-                { "name": "ATAOS", "salindex": 0 },
-                { "name": "ATPneumatics", "salindex": 0 },
-                { "name": "ATHexapod", "salindex": 0 }
+                {
+                  "name": "ATMCS",
+                  "salindex": 0
+                },
+                {
+                  "name": "ATPtg",
+                  "salindex": 0
+                },
+                {
+                  "name": "ATDome",
+                  "salindex": 0
+                },
+                {
+                  "name": "ATDomeTrajectory",
+                  "salindex": 0
+                },
+                {
+                  "name": "ATAOS",
+                  "salindex": 0
+                },
+                {
+                  "name": "ATPneumatics",
+                  "salindex": 0
+                },
+                {
+                  "name": "ATHexapod",
+                  "salindex": 0
+                }
               ],
               "link": "",
               "name": "CSC ATTCS",
@@ -748,7 +861,9 @@
               "margin": true,
               "titleBar": true,
               "hasRawMode": false,
-              "_functionProps": ["subscribeToStreamCallback"],
+              "_functionProps": [
+                "subscribeToStreamCallback"
+              ],
               "subscribeToStreamCallback": "() => {}"
             },
             "content": "CSCGroup",
@@ -767,7 +882,12 @@
               "group": "CSC group",
               "title": "CSC group log",
               "margin": true,
-              "cscList": [{ "name": "ATMCS", "salindex": 0 }],
+              "cscList": [
+                {
+                  "name": "ATMCS",
+                  "salindex": 0
+                }
+              ],
               "titleBar": false,
               "hasRawMode": false
             },
@@ -821,8 +941,8 @@
     "model": "ui_framework.view",
     "pk": 40,
     "fields": {
-      "creation_timestamp": "2020-08-19T00:44:16.660Z",
-      "update_timestamp": "2020-08-19T00:44:16.660Z",
+      "creation_timestamp": "2020-08-19T00:44:16.66Z",
+      "update_timestamp": "2020-08-19T00:44:16.66Z",
       "name": "Random view",
       "data": {
         "content": {
@@ -893,6 +1013,1119 @@
         }
       },
       "thumbnail": "thumbnails/view_40.png"
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 41,
+    "fields": {
+      "creation_timestamp": "2020-12-18T19:59:46.783718Z",
+      "update_timestamp": "2021-09-09T03:32:04.806355Z",
+      "name": "ATQueue",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "title": "AT Queue",
+              "margin": true,
+              "salindex": 2,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "ScriptQueue",
+            "properties": {
+              "h": 52,
+              "i": 1,
+              "w": 97,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": ""
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 42,
+    "fields": {
+      "creation_timestamp": "2020-12-18T21:28:04.894247Z",
+      "update_timestamp": "2021-03-26T18:26:31.168072Z",
+      "name": "Watcher",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "title": "Watcher",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "Watcher",
+            "properties": {
+              "h": 30,
+              "i": 1,
+              "w": 98,
+              "x": 0,
+              "y": 11,
+              "type": "component"
+            }
+          },
+          "newPanel-2": {
+            "config": {
+              "cscs": [
+                {
+                  "name": "ScriptQueue",
+                  "salindex": 1
+                },
+                {
+                  "name": "ScriptQueue",
+                  "salindex": 2
+                },
+                {
+                  "name": "Watcher",
+                  "salindex": 0
+                }
+              ],
+              "link": "",
+              "name": "OCS Summary State",
+              "title": "OCS Summary State",
+              "margin": true,
+              "titleBar": false,
+              "hasRawMode": false,
+              "_functionProps": [
+                "subscribeToStreamCallback"
+              ],
+              "subscribeToStreamCallback": "() => {}"
+            },
+            "content": "CSCGroup",
+            "properties": {
+              "h": 11,
+              "i": 2,
+              "w": 23,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          },
+          "newPanel-3": {
+            "config": {
+              "title": "TimeDisplay",
+              "locale": "en-GB",
+              "margin": true,
+              "titleBar": true,
+              "clocks_layout": [
+                [
+                  {
+                    "name": "Now",
+                    "hideDate": false,
+                    "timezone": "local",
+                    "hideAnalog": true,
+                    "hideOffset": false
+                  },
+                  {
+                    "name": "UT",
+                    "hideDate": false,
+                    "timezone": "UTC",
+                    "hideAnalog": true,
+                    "hideOffset": false
+                  },
+                  {
+                    "name": "MJD",
+                    "hideDate": false,
+                    "timezone": "MJD",
+                    "hideAnalog": true,
+                    "hideOffset": false
+                  },
+                  {
+                    "name": "LMST",
+                    "hideDate": true,
+                    "timezone": "sidereal-summit",
+                    "hideAnalog": true,
+                    "hideOffset": false
+                  },
+                  {
+                    "name": "La Serena",
+                    "hideDate": false,
+                    "timezone": "America/Santiago",
+                    "hideAnalog": true,
+                    "hideOffset": false
+                  }
+                ]
+              ]
+            },
+            "content": "TimeDisplay",
+            "properties": {
+              "h": 11,
+              "i": 3,
+              "w": 74,
+              "x": 23,
+              "y": 0,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": ""
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 43,
+    "fields": {
+      "creation_timestamp": "2020-12-18T21:30:54.759474Z",
+      "update_timestamp": "2021-10-28T20:18:03.256514Z",
+      "name": "MTQueue",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "title": "MTQueue",
+              "margin": true,
+              "salindex": 1,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "ScriptQueue",
+            "properties": {
+              "h": 64,
+              "i": 1,
+              "w": 97,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": ""
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 44,
+    "fields": {
+      "creation_timestamp": "2020-12-18T21:32:54.378652Z",
+      "update_timestamp": "2020-12-18T21:32:54.378683Z",
+      "name": "Queue",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "title": "ATQueue",
+              "margin": true,
+              "salindex": 2,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "ScriptQueue",
+            "properties": {
+              "h": 39,
+              "i": 1,
+              "w": 100,
+              "x": 0,
+              "y": 38,
+              "type": "component"
+            }
+          },
+          "newPanel-2": {
+            "config": {
+              "link": "",
+              "title": "MTQueue",
+              "margin": true,
+              "salindex": 1,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "ScriptQueue",
+            "properties": {
+              "h": 38,
+              "i": 2,
+              "w": 100,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": "thumbnails/view_44.png"
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 45,
+    "fields": {
+      "creation_timestamp": "2021-03-02T10:09:37.3202Z",
+      "update_timestamp": "2021-03-02T15:04:43.05362Z",
+      "name": "AT Tracking Errors",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "url": "https://lsst.ncsa.illinois.edu/~cslage/latest_mount.png",
+              "link": "",
+              "title": "Latest mount tracking",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": false
+            },
+            "content": "EmbeddedView",
+            "properties": {
+              "h": 35,
+              "i": 1,
+              "w": 57,
+              "x": 0,
+              "y": null,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": ""
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 46,
+    "fields": {
+      "creation_timestamp": "2021-05-14T18:39:43.647075Z",
+      "update_timestamp": "2021-06-04T22:02:29.754795Z",
+      "name": "timeplot (stalder)",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "title": "Time series",
+              "margin": true,
+              "titleBar": false,
+              "hasRawMode": false
+            },
+            "content": "InteractiveTimeSeries",
+            "properties": {
+              "h": 23,
+              "i": 1,
+              "w": 67,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": ""
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 47,
+    "fields": {
+      "creation_timestamp": "2021-05-25T16:53:25.728376Z",
+      "update_timestamp": "2021-05-25T16:53:25.728438Z",
+      "name": "AT-Estop",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "title": "Command Panel",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": false
+            },
+            "content": "CommandPanel",
+            "properties": {
+              "h": 35,
+              "i": 1,
+              "w": 57,
+              "x": 0,
+              "y": null,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": ""
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 48,
+    "fields": {
+      "creation_timestamp": "2021-07-13T22:20:32.908425Z",
+      "update_timestamp": "2021-07-13T22:20:32.908487Z",
+      "name": "Untitled view",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "title": "Time series plot",
+              "inputs": {
+                "Elevation": {
+                  "csc": "ATMCS",
+                  "dash": [
+                    4,
+                    0
+                  ],
+                  "item": "elevationCalculatedAngle",
+                  "type": "line",
+                  "color": "#ff7bb5",
+                  "shape": "circle",
+                  "topic": "mount_AzEl_Encoders",
+                  "filled": false,
+                  "accessor": "(x) => x[0]",
+                  "category": "telemetry",
+                  "salindex": "0"
+                },
+                "ATDome azimuth": {
+                  "csc": "ATDome",
+                  "dash": [
+                    4,
+                    0
+                  ],
+                  "item": "azimuthPosition",
+                  "type": "line",
+                  "color": "#00b7ff",
+                  "shape": "square",
+                  "topic": "position",
+                  "filled": true,
+                  "accessor": "(x) => x",
+                  "category": "telemetry",
+                  "salindex": "0"
+                }
+              },
+              "controls": true,
+              "titleBar": false,
+              "hasRawMode": false,
+              "xAxisTitle": "Time",
+              "yAxisTitle": "",
+              "legendPosition": "right"
+            },
+            "content": "VegaTimeSeriesPlot",
+            "properties": {
+              "h": 28,
+              "i": 1,
+              "w": 71,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": ""
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 49,
+    "fields": {
+      "creation_timestamp": "2021-07-28T17:50:26.746474Z",
+      "update_timestamp": "2021-07-28T17:50:26.746534Z",
+      "name": "Event Log",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "name": "Test",
+              "title": "Event log",
+              "margin": true,
+              "salindex": 1,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "EventLog",
+            "properties": {
+              "h": 34,
+              "i": 1,
+              "w": 90,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": ""
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 50,
+    "fields": {
+      "creation_timestamp": "2021-07-28T20:26:36.653449Z",
+      "update_timestamp": "2021-07-28T20:31:45.782914Z",
+      "name": "CameraView",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "url": "http://ccs.lsst.org/RecentImages/auxtel.html",
+              "link": "",
+              "title": "Embedded view",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": false
+            },
+            "content": "EmbeddedView",
+            "properties": {
+              "h": 34,
+              "i": 1,
+              "w": 43,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          },
+          "newPanel-2": {
+            "config": {
+              "url": "http://ccs.lsst.org/FITSInfo/view.html?image=AT_O_20210728_000005&raft=R00&color=grey",
+              "link": "",
+              "title": "Embedded view",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": false
+            },
+            "content": "EmbeddedView",
+            "properties": {
+              "h": 34,
+              "i": 2,
+              "w": 43,
+              "x": 43,
+              "y": 0,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": ""
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 51,
+    "fields": {
+      "creation_timestamp": "2021-08-05T16:41:02.104589Z",
+      "update_timestamp": "2021-09-09T21:33:35.908603Z",
+      "name": "ASummary State View",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "title": "CSC summary",
+              "margin": true,
+              "titleBar": true,
+              "hierarchy": {
+                "Observatory": {
+                  "Environment": [
+                    {
+                      "name": "DIMM",
+                      "salindex": 1
+                    },
+                    {
+                      "name": "DIMM",
+                      "salindex": 2
+                    },
+                    {
+                      "name": "WeatherStation",
+                      "salindex": 1
+                    }
+                  ],
+                  "HigherLevel": [
+                    {
+                      "name": "ScriptQueue",
+                      "salindex": 1
+                    },
+                    {
+                      "name": "ScriptQueue",
+                      "salindex": 2
+                    },
+                    {
+                      "name": "Scheduler",
+                      "salindex": 1
+                    },
+                    {
+                      "name": "Scheduler",
+                      "salindex": 2
+                    },
+                    {
+                      "name": "Watcher",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "PMD",
+                      "salindex": 1
+                    }
+                  ]
+                },
+                "Main Telescope": {
+                  "MTCS": [
+                    {
+                      "name": "MTMount",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "MTPtg",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "MTAOS",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "MTM1M3",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "MTM2",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "MTHexapod",
+                      "salindex": 1
+                    },
+                    {
+                      "name": "MTHexapod",
+                      "salindex": 2
+                    },
+                    {
+                      "name": "MTRotator",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "MTDome",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "MTDomeTrajectory",
+                      "salindex": 0
+                    }
+                  ],
+                  "ComCam": [
+                    {
+                      "name": "CCCamera",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "CCArchiver",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "CCHeaderService",
+                      "salindex": 0
+                    }
+                  ]
+                },
+                "Auxiliary Telescope": {
+                  "ATTCS": [
+                    {
+                      "name": "ATMCS",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATPtg",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATDome",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATDomeTrajectory",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATAOS",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATPneumatics",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATHexapod",
+                      "salindex": 0
+                    }
+                  ],
+                  "LATISS": [
+                    {
+                      "name": "ATCamera",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATArchiver",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATHeaderService",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATSpectrograph",
+                      "salindex": 0
+                    }
+                  ],
+                  "ATCalSys": [
+                    {
+                      "name": "ATMonochromator",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "FiberSpectrograph",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATWhiteLight",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "Electrometer",
+                      "salindex": 1
+                    },
+                    {
+                      "name": "Electrometer",
+                      "salindex": 2
+                    },
+                    {
+                      "name": "LinearStage",
+                      "salindex": 1
+                    },
+                    {
+                      "name": "LinearStage",
+                      "salindex": 2
+                    }
+                  ]
+                }
+              },
+              "hasRawMode": true
+            },
+            "content": "CSCSummary",
+            "properties": {
+              "h": 54,
+              "i": 1,
+              "w": 96,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": ""
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 52,
+    "fields": {
+      "creation_timestamp": "2021-08-28T00:10:26.201634Z",
+      "update_timestamp": "2021-08-28T00:10:41.713834Z",
+      "name": "bokeh",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "url": "http://amor02.cp.lsst.org:5006/my_app",
+              "link": "",
+              "title": "Embedded view",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": false
+            },
+            "content": "EmbeddedView",
+            "properties": {
+              "h": 38,
+              "i": 1,
+              "w": 37,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": ""
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 53,
+    "fields": {
+      "creation_timestamp": "2021-09-08T05:20:37.372637Z",
+      "update_timestamp": "2021-09-10T07:35:03.150016Z",
+      "name": "ATDome & Mount",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "title": "AT summary",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "MountSummaryPanel",
+            "properties": {
+              "h": 32,
+              "i": 1,
+              "w": 32,
+              "x": 63,
+              "y": 0,
+              "type": "component"
+            }
+          },
+          "newPanel-2": {
+            "config": {
+              "link": "",
+              "title": "Dome",
+              "margin": true,
+              "controls": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "Dome",
+            "properties": {
+              "h": 50,
+              "i": 2,
+              "w": 63,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": ""
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 54,
+    "fields": {
+      "creation_timestamp": "2021-09-10T07:37:09.602662Z",
+      "update_timestamp": "2021-09-10T07:48:28.543342Z",
+      "name": "AT LightPath",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "title": "AT Lightpath",
+              "margin": true,
+              "titleBar": true,
+              "lightPath": true,
+              "hasRawMode": true
+            },
+            "content": "LightPath",
+            "properties": {
+              "h": 33,
+              "i": 1,
+              "w": 34,
+              "x": 0,
+              "y": 0,
+              "type": "component",
+              "allowOverflow": true
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": ""
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 55,
+    "fields": {
+      "creation_timestamp": "2021-10-07T01:12:06.61399Z",
+      "update_timestamp": "2021-10-07T01:12:24.9079Z",
+      "name": "LVV-T2086-2",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "title": "Script queue",
+              "margin": true,
+              "salindex": 2,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "ScriptQueue",
+            "properties": {
+              "h": 40,
+              "i": 1,
+              "w": 99,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": ""
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 56,
+    "fields": {
+      "creation_timestamp": "2021-10-07T03:08:26.4717Z",
+      "update_timestamp": "2021-10-07T03:08:26.471741Z",
+      "name": "LVV-T2066",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "title": "Weather station component",
+              "margin": true,
+              "controls": true,
+              "salindex": 1,
+              "titleBar": true,
+              "hasRawMode": false
+            },
+            "content": "WeatherStation",
+            "properties": {
+              "h": 84,
+              "i": 1,
+              "w": 100,
+              "x": 0,
+              "y": 5,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": ""
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 57,
+    "fields": {
+      "creation_timestamp": "2021-10-07T04:01:55.704276Z",
+      "update_timestamp": "2021-10-07T04:01:55.704338Z",
+      "name": "LVV-T2067",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "title": "Observing log input",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "ObservingLogInput",
+            "properties": {
+              "h": 26,
+              "i": 1,
+              "w": 47,
+              "x": 47,
+              "y": 0,
+              "type": "component"
+            }
+          },
+          "newPanel-2": {
+            "config": {
+              "link": "",
+              "title": "Observing log",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "ObservingLogMessages",
+            "properties": {
+              "h": 30,
+              "i": 2,
+              "w": 46,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": ""
     }
   }
 ]
