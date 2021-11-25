@@ -7,6 +7,7 @@ import jsonschema
 import collections
 from django.core.exceptions import PermissionDenied
 from django.utils import timezone
+from django.db.models.query_utils import Q
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -18,6 +19,8 @@ from rest_framework.response import Response
 from rest_framework import viewsets, status, mixins
 from api.models import (
     Token,
+    ConfigFile,
+    EmergencyContact,
     CSCAuthorizationRequest,
 )
 from api.serializers import TokenSerializer, ConfigSerializer
@@ -30,7 +33,6 @@ from api.serializers import (
     CSCAuthorizationRequestUpdateSerializer,
 )
 from .schema_validator import DefaultingValidator
-from api.models import ConfigFile, EmergencyContact
 
 valid_response = openapi.Response("Valid token", TokenSerializer)
 invalid_response = openapi.Response("Invalid token")
@@ -620,51 +622,93 @@ class CSCAuthorizationRequestViewSet(
 
     def get_queryset(self):
         if self.request.user.has_perm("api.authlist.administrator"):
-            # if user is admin return list with all authorization requests
             return CSCAuthorizationRequest.objects.all()
         else:
-            # else return only requests for this username
             return CSCAuthorizationRequest.objects.filter(
-                user__username=self.request.user.username
+                Q(user__username=self.request.user.username)
+                | Q(authorized_users__icontains=self.request.user.username)
             )
 
-    def query_authorize_csc(self):
-        # url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/cmd"
-        # response = requests.post(url, json=request.data)
-        # return Response(response.json(), status=response.status_code)
-        # url = f"http://{os.environ.get('AUHTORIZE_CSC_HOST', 'localhost')}
-        # :{os.environ.get('AUHTORIZE_CSC_PORT', 80)}/request-status/"
-        url = "http://google.cl/"
-        payload = {"id": 1, "status": "APPROVED"}
-        response = requests.post(url, json=json.dumps(payload))
-        return Response(json.dumps(payload), status=response.status_code)
+    def query_authorize_csc(self, request_data):
+        url = f"http://{os.environ.get('AUTHORIZE_HOSTNAME')}/manager-connection/"
+        response = requests.post(url, json=json.dumps(request_data))
+        return Response(response.json(), status=response.status_code)
 
     def create(self, request, *args, **kwargs):
-        obj = CSCAuthorizationRequest.objects.create(*args, **kwargs)
-        obj.user = request.user
-        obj.cscs_to_change = request.data.get("cscs_to_change")
-        obj.authorized_users = request.data.get("authorized_users")
-        obj.unauthorized_cscs = request.data.get("unauthorized_cscs")
-        obj.requested_by = request.data.get("requested_by")
+        authorization_obj = CSCAuthorizationRequest.objects.create(*args, **kwargs)
+        authorization_obj.user = request.user
+        authorization_obj.cscs_to_change = request.data.get("cscs_to_change")
+        authorization_obj.authorized_users = request.data.get("authorized_users")
+        authorization_obj.unauthorized_cscs = request.data.get("unauthorized_cscs")
+        authorization_obj.requested_by = request.data.get("requested_by")
         request_duration = request.data.get("duration")
-        obj.duration = (
+        authorization_obj.duration = (
             request_duration
             if request_duration != "" and request_duration != 0
             else None
         )
         request_message = request.data.get("message")
-        obj.message = request_message if request_message != "" else None
-        obj.save()
-        return Response({"ok": 200}, status=200)
+        authorization_obj.message = request_message if request_message != "" else None
+
+        authorization_self_remove_obj = None
+        if f"-{authorization_obj.requested_by}" in authorization_obj.authorized_users:
+            authorization_self_remove_obj = CSCAuthorizationRequest.objects.create(
+                *args, **kwargs
+            )
+            authorization_self_remove_obj.user = request.user
+            authorization_self_remove_obj.cscs_to_change = request.data.get(
+                "cscs_to_change"
+            )
+            authorization_self_remove_obj.authorized_users = (
+                f"-{authorization_obj.requested_by}"
+            )
+            authorization_self_remove_obj.unauthorized_cscs = ""
+            authorization_self_remove_obj.requested_by = request.data.get(
+                "requested_by"
+            )
+            authorization_self_remove_obj.status = "Authorized"
+            authorization_self_remove_obj.message = "User self removed authorization."
+            authorization_self_remove_obj.resolved_by = request.user
+            authorization_self_remove_obj.resolved_at = timezone.now()
+            authorization_self_remove_obj.save()
+            # authorize_csc_response = self.query_authorize_csc()
+            if (
+                f"-{authorization_obj.requested_by}"
+                == authorization_obj.authorized_users
+            ):
+                return Response(
+                    CSCAuthorizationRequestSerializer(
+                        authorization_self_remove_obj
+                    ).data,
+                    status=200,
+                )
+            new_authorized_users = request.data.get("authorized_users").split(",")
+            new_authorized_users.remove(f"-{authorization_obj.requested_by}")
+            authorization_obj.authorized_users = ",".join(new_authorized_users)
+
+        if request.user.has_perm("api.authlist.administrator"):
+            authorization_obj.status = "Authorized"
+            authorization_obj.resolved_by = request.user
+            authorization_obj.resolved_at = timezone.now()
+            # authorize_csc_response = self.query_authorize_csc()
+
+        authorization_obj.save()
+        if authorization_self_remove_obj is not None:
+            return Response(
+                CSCAuthorizationRequestSerializer(
+                    [authorization_obj, authorization_self_remove_obj], many=True
+                ).data,
+                status=200,
+            )
+        return Response(
+            CSCAuthorizationRequestSerializer(authorization_obj).data, status=200
+        )
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
-        # check for valid status update is performed in the serializer validation
         if instance.status == CSCAuthorizationRequest.RequestStatus.PENDING:
-            # admin is resolving, check if user is authlist admin
             if not request.user.has_perm("api.authlist.administrator"):
                 raise PermissionDenied()
-            # response = super().update(request, *args, **kwargs)
             updated_instance = self.get_object()
             updated_instance.status = request.data.get("status")
             updated_instance.duration = request.data.get("duration")
@@ -673,7 +717,7 @@ class CSCAuthorizationRequestViewSet(
             updated_instance.resolved_at = timezone.now()
             updated_instance.save()
             # authorize_csc_response = self.query_authorize_csc()
-            # return authorize_csc_response
-            return Response({"ok": 200}, status=200)
-        # No other update can be made
+            return Response(
+                CSCAuthorizationRequestSerializer(updated_instance).data, status=200
+            )
         return Response({"error": "Bad request"}, status=status.HTTP_400_BAD_REQUEST)

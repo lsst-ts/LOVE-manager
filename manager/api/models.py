@@ -7,6 +7,7 @@ https://docs.djangoproject.com/en/2.2/topics/db/models/
 import os
 from django.conf import settings
 from django.db import models
+from django.db.models import F
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
 import rest_framework.authtoken.models
@@ -181,8 +182,8 @@ class CSCAuthorizationRequest(models.Model):
     """Timestamp of when the request gets resolved"""
 
     class Meta:
-        ordering = ("-requested_at",)
-        """Set ordering according to 'requested_at' field."""
+        ordering = [F("resolved_at").desc(nulls_last=True), "-requested_at"]
+        """Set ordering according to 'resolved_at' and 'requested_at' field."""
 
     def __str__(self):
         """Define the string representation for objects of this class.
