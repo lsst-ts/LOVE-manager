@@ -57,4 +57,9 @@ urlpatterns = [
 ]
 router.register("configfile", ConfigFileViewSet)
 router.register("emergencycontact", EmergencyContactViewSet)
+router.register(
+    "authlistrequest",
+    api.views.CSCAuthorizationRequestViewSet,
+    basename="authlistrequest",
+)
 urlpatterns.append(path("", include(router.urls)))
