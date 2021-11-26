@@ -1,11 +1,10 @@
 """Defines the serializer used by the REST API exposed by this app ('api')."""
 import json
-from django.conf import settings
 from drf_yasg.utils import swagger_serializer_method
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from manager import utils
-from api.models import ConfigFile, EmergencyContact
+from api.models import ConfigFile, EmergencyContact, CSCAuthorizationRequest
 from typing import Union
 
 
@@ -26,6 +25,7 @@ class UserPermissionsSerializer(serializers.Serializer):
     """Custom Serializer for user permissions."""
 
     execute_commands = serializers.SerializerMethodField("can_execute_commands")
+    authlist_admin = serializers.SerializerMethodField("is_authlist_admin")
 
     def can_execute_commands(self, user) -> bool:
         """Define wether or not the given user has permissions to execute commands.
@@ -41,6 +41,21 @@ class UserPermissionsSerializer(serializers.Serializer):
             True if the user can execute commands, False if not.
         """
         return user.has_perm("api.command.execute_command")
+
+    def is_authlist_admin(self, user) -> bool:
+        """Define wether or not the given user has permissions of authlist administration.
+
+        Params
+        ------
+        user: User
+            The User object
+
+        Returns
+        -------
+        Bool
+            True if the user can execute commands, False if not.
+        """
+        return user.has_perm("api.authlist.administrator")
 
 
 class TimeDataSerializer(serializers.Serializer):
@@ -134,8 +149,8 @@ class TokenSerializer(serializers.Serializer):
     @swagger_serializer_method(serializer_or_field=serializers.JSONField())
     def get_config(self, token) -> Union[dict, None]:
         """Return the config file.
-        If the 'no_config' flag is present in the url of the original request, then the file is not read and the return value is None
-
+        If the 'no_config' flag is present in the url of the original request, then the file is not read
+        and the return value is None
         Params
         ------
         token: Token
@@ -221,4 +236,69 @@ class EmergencyContactSerializer(serializers.ModelSerializer):
         """The model class to serialize"""
 
         fields = "__all__"
+        """The fields of the model class to serialize"""
+
+
+class CSCAuthorizationRequestSerializer(serializers.ModelSerializer):
+    """Serializer to map the Model instance into JSON format."""
+
+    resolved_by = serializers.SlugRelatedField(read_only=True, slug_field="username")
+    user = serializers.SlugRelatedField(read_only=True, slug_field="username")
+
+    class Meta:
+        """Meta class to map serializer's fields with the model fields."""
+
+        model = CSCAuthorizationRequest
+        """The model class to serialize"""
+
+        fields = "__all__"
+        """The fields of the model class to serialize"""
+
+
+class CSCAuthorizationRequestUpdateSerializer(serializers.ModelSerializer):
+    """Serializer to update Authorization List Requests."""
+
+    def validate_status(self, value):
+        if not self.instance:
+            raise serializers.ValidationError("No instance to update")
+        elif self.instance.status != CSCAuthorizationRequest.RequestStatus.PENDING:
+            raise serializers.ValidationError("Request already resolved")
+        elif (
+            self.instance.status == CSCAuthorizationRequest.RequestStatus.PENDING
+            and value != CSCAuthorizationRequest.RequestStatus.AUTHORIZED
+            and value != CSCAuthorizationRequest.RequestStatus.DENIED
+        ):
+            raise serializers.ValidationError(
+                "Can only resolve status to Authorized or Denied"
+            )
+        return value
+
+    class Meta:
+        """Meta class to map serializer's fields with the model fields."""
+
+        model = CSCAuthorizationRequest
+        """The model class to serialize"""
+
+        fields = ("status", "message", "duration")
+        """The fields of the model class to serialize"""
+
+
+class CSCAuthorizationRequestCreateSerializer(serializers.ModelSerializer):
+    """Serializer to create Authorization List Requests."""
+
+    user = serializers.SlugRelatedField(read_only=True, slug_field="username")
+
+    class Meta:
+        """Meta class to map serializer's fields with the model fields."""
+
+        model = CSCAuthorizationRequest
+        """The model class to serialize"""
+
+        fields = (
+            "user",
+            "cscs_to_change",
+            "authorized_users",
+            "unauthorized_cscs",
+            "requested_by",
+        )
         """The fields of the model class to serialize"""

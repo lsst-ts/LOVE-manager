@@ -7,10 +7,10 @@ https://docs.djangoproject.com/en/2.2/topics/db/models/
 import os
 from django.conf import settings
 from django.db import models
+from django.db.models import F
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
 import rest_framework.authtoken.models
-from ui_framework.models import OverwriteStorage
 
 
 class BaseModel(models.Model):
@@ -72,6 +72,7 @@ class GlobalPermissions(models.Model):
         permissions = (
             ("command.execute_command", "Execute Commands"),
             ("command.run_script", "Run and Requeue scripts in ScriptQueues"),
+            ("authlist.administrator", "Access and resolve AuthList requests"),
         )
         """((string, string)): Tuple defining permissions in the format ((<name>, <description>))"""
 
@@ -118,3 +119,78 @@ class EmergencyContact(BaseModel):
 
     email = models.EmailField(max_length=254)
     """EC's email"""
+
+
+class CSCAuthorizationRequest(models.Model):
+    class RequestStatus(models.TextChoices):
+        PENDING = "Pending", "Pending"
+        AUTHORIZED = "Authorized", "Authorized"
+        DENIED = "Denied", "Denied"
+
+    cscs_to_change = models.TextField()
+    """Comma separated list of the CSCs to change their authlists"""
+
+    authorized_users = models.TextField(blank=True)
+    """Comma separated list of users to add or remove from the authorized lists"""
+
+    unauthorized_cscs = models.TextField(blank=True)
+    """Comma separated list of CSCs to add or remove from the unauthorized lists"""
+
+    requested_by = models.CharField(max_length=50)
+    """Private identity that requested the authorization"""
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="+",
+        on_delete=models.PROTECT,
+        verbose_name="Created by",
+        null=True,
+        blank=True,
+    )
+    """The LOVE user that created the request"""
+
+    requested_at = models.DateTimeField(
+        auto_now_add=True, editable=False, verbose_name="Requested at"
+    )
+
+    duration = models.PositiveIntegerField(
+        blank=True, null=True, verbose_name="Restriction duration (seconds)"
+    )
+    """Duration of the authorization once it is resolved"""
+
+    message = models.TextField(blank=True, null=True)
+    """Comment added to the authorization request"""
+
+    status = models.CharField(
+        max_length=10, choices=RequestStatus.choices, default=RequestStatus.PENDING,
+    )
+    """Current status of the request"""
+
+    resolved_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="+",
+        on_delete=models.PROTECT,
+        verbose_name="Resolved by",
+        null=True,
+        blank=True,
+    )
+    """The LOVE user that resolved the request"""
+
+    resolved_at = models.DateTimeField(
+        null=True, blank=True, verbose_name="Resolved at"
+    )
+    """Timestamp of when the request gets resolved"""
+
+    class Meta:
+        ordering = [F("resolved_at").desc(nulls_last=True), "-requested_at"]
+        """Set ordering according to 'resolved_at' and 'requested_at' field."""
+
+    def __str__(self):
+        """Define the string representation for objects of this class.
+
+        Returns
+        -------
+        f"{}{self.target_csc}:{self.username}@{self.hostname}": string
+            The string representaiton
+        """
+        return f"[{self.status}] {self.authorized_users} & {self.unauthorized_cscs} -> {self.cscs_to_change}"

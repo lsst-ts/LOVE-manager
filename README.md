@@ -14,6 +14,7 @@ All these variables are initialized with default variables defined in :code:`.en
 - `ADMIN_USER_PASS`: password for the default `admin` user, which has every permission.
 - `USER_USER_PASS`: password for the default `user` user, which has readonly permissions and cannot execute commands.
 - `CMD_USER_PASS`: password for the default `cmd` user, which has readonly permissions but can execute commands.
+- `AUTHLIST_USER_PASS`: password for the default `authlist` user, which has permissions to manage the authlist authorization requests.
 - `REDIS_HOST`: the location of the redis host that implements the `Channels Layer`.
 - `REDIS_PASS`: the password that the LOVE-manager needs to use to connect with `redis`.
 - `PROCESS_CONNECTION_PASS`: the password that the LOVE-producer will use to establish a websocket connection with the LOVE-manager.
