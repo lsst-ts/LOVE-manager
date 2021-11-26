@@ -634,6 +634,7 @@ class CSCAuthorizationRequestViewSet(
         response = requests.post(url, json=json.dumps(request_data))
         return Response(response.json(), status=response.status_code)
 
+    @swagger_auto_schema(responses={201: CSCAuthorizationRequestSerializer(many=True)})
     def create(self, request, *args, **kwargs):
         authorization_obj = CSCAuthorizationRequest.objects.create(*args, **kwargs)
         authorization_obj.user = request.user
@@ -680,7 +681,7 @@ class CSCAuthorizationRequestViewSet(
                     CSCAuthorizationRequestSerializer(
                         authorization_self_remove_obj
                     ).data,
-                    status=200,
+                    status=201,
                 )
             new_authorized_users = request.data.get("authorized_users").split(",")
             new_authorized_users.remove(f"-{authorization_obj.requested_by}")
@@ -698,12 +699,13 @@ class CSCAuthorizationRequestViewSet(
                 CSCAuthorizationRequestSerializer(
                     [authorization_obj, authorization_self_remove_obj], many=True
                 ).data,
-                status=200,
+                status=201,
             )
         return Response(
-            CSCAuthorizationRequestSerializer(authorization_obj).data, status=200
+            CSCAuthorizationRequestSerializer(authorization_obj).data, status=201
         )
 
+    @swagger_auto_schema(responses={200: CSCAuthorizationRequestSerializer()})
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
         if instance.status == CSCAuthorizationRequest.RequestStatus.PENDING:
