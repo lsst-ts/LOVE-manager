@@ -26,14 +26,15 @@ class CreateusersTestCase(TestCase):
             "adminpass": "admin_pass",
             "userpass": "user_pass",
             "cmduserpass": "cmd_pass",
+            "authlistuserpass": "authlist_pass",
         }
         command.handle(*[], **options)
         # Assert:
         self.assertEqual(
-            User.objects.count(), old_users_num + 4, "There are no new users"
+            User.objects.count(), old_users_num + 5, "There are no new users"
         )
         self.assertEqual(
-            Group.objects.count(), old_groups_num + 1, "There is no new group"
+            Group.objects.count(), old_groups_num + 2, "There is no new group"
         )
         admin = User.objects.filter(username=admin_username).first()
         user = User.objects.filter(username=user_username).first()
@@ -83,11 +84,12 @@ class CreateusersTestCase(TestCase):
             "adminpass": "admin_pass",
             "userpass": "user_pass",
             "cmduserpass": "cmd_pass",
+            "authlistuserpass": "authlist_pass",
         }
         command.handle(*[], **options)
         # Assert:
         self.assertEqual(
-            Group.objects.count(), old_groups_num + 1, "There is no new group"
+            Group.objects.count(), old_groups_num + 2, "There is no new group"
         )
         admin = User.objects.filter(username=admin_username).first()
         user = User.objects.filter(username=user_username).first()
