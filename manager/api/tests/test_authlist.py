@@ -130,7 +130,7 @@ class AuthlistTestCase(TestCase):
         response = self.client.post(url, payload, format="json")
 
         # Assert
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data["user"], self.user_authlist.username)
         self.assertEqual(response.data["cscs_to_change"], payload["cscs_to_change"])
         self.assertEqual(response.data["authorized_users"], payload["authorized_users"])
@@ -167,7 +167,7 @@ class AuthlistTestCase(TestCase):
         response = self.client.post(url, payload, format="json")
 
         # Assert
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data["user"], self.user_normal.username)
         self.assertEqual(response.data["cscs_to_change"], payload["cscs_to_change"])
         self.assertEqual(response.data["authorized_users"], payload["authorized_users"])
@@ -218,7 +218,7 @@ class AuthlistTestCase(TestCase):
         response = self.client.post(url, payload, format="json")
 
         # Assert
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 201)
         self.assertEqual(len(response.data), 2)
 
         self.assertEqual(response.data[0]["user"], self.user_normal.username)
