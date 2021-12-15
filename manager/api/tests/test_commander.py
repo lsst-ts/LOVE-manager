@@ -285,13 +285,13 @@ class TCSTestCase(TestCase):
         else "fakeport",
     )
     @patch("requests.post")
-    def test_command_query(self, mock_requests, mock_environ):
-        """Test authorized user can send a TCS command"""
+    def test_command_query_atcs(self, mock_requests, mock_environ):
+        """Test authorized user can send a ATCS command"""
         self.user.user_permissions.add(Permission.objects.get(name="Execute Commands"))
         # Act:
         data = {
             "command_name": "atcs_command",
-            "params": {"param1": "value1", "param2": 2, "param3": True,},
+            "params": {"param1": "value1", "param2": 2, "param3": True,},  # noqa: E231
         }
         url = reverse("TCS-aux")
 
@@ -307,15 +307,15 @@ class TCSTestCase(TestCase):
         else "fakeport",
     )
     @patch("requests.post")
-    def test_command_query_unauthorized(self, mock_requests, mock_environ):
-        """Test unauthorized user cannot send a TCS command"""
+    def test_command_query_atcs_unauthorized(self, mock_requests, mock_environ):
+        """Test unauthorized user cannot send a ATCS command"""
         self.user.user_permissions.remove(
             Permission.objects.get(name="Execute Commands")
         )
         # Act:
         data = {
             "command_name": "atcs_command",
-            "params": {"param1": "value1", "param2": 2, "param3": True,},
+            "params": {"param1": "value1", "param2": 2, "param3": True,},  # noqa: E231
         }
         url = reverse("TCS-aux")
         response = self.client.post(url, data, format="json")
@@ -331,13 +331,77 @@ class TCSTestCase(TestCase):
         if arg == "COMMANDER_HOSTNAME"
         else "fakeport",
     )
-    @patch("requests.get")
-    def test_docstring_query(self, mock_requests, mock_environ):
-        """Test TCS docstrings request"""
+    @patch("requests.post")
+    def test_docstrings_query_atcs(self, mock_requests, mock_environ):
+        """Test authorized user can send a ATCS command"""
         # Act:
-        url = reverse("TCS-docstrings")
+        url = reverse("TCS-aux-docstrings")
 
         with self.assertRaises(ValueError):
             self.client.get(url)
-        expected_url = f"http://fakehost:fakeport/tcs/docstrings"
-        self.assertEqual(mock_requests.call_args, call(expected_url))
+        expected_url = f"http://fakehost:fakeport/tcs/aux/docstrings"
+        self.assertEqual(mock_requests.call_args, call(expected_url, json={}))
+
+    @patch(
+        "os.environ.get",
+        side_effect=lambda arg: "fakehost"
+        if arg == "COMMANDER_HOSTNAME"
+        else "fakeport",
+    )
+    @patch("requests.post")
+    def test_command_query_mtcs(self, mock_requests, mock_environ):
+        """Test authorized user can send a MTCS command"""
+        self.user.user_permissions.add(Permission.objects.get(name="Execute Commands"))
+        # Act:
+        data = {
+            "command_name": "mtcs_command",
+            "params": {"param1": "value1", "param2": 2, "param3": True,},  # noqa: E231
+        }
+        url = reverse("TCS-main")
+
+        with self.assertRaises(ValueError):
+            self.client.post(url, data, format="json")
+        expected_url = f"http://fakehost:fakeport/tcs/main"
+        self.assertEqual(mock_requests.call_args, call(expected_url, json=data))
+
+    @patch(
+        "os.environ.get",
+        side_effect=lambda arg: "fakehost"
+        if arg == "COMMANDER_HOSTNAME"
+        else "fakeport",
+    )
+    @patch("requests.post")
+    def test_command_query_mtcs_unauthorized(self, mock_requests, mock_environ):
+        """Test unauthorized user cannot send a MTCS command"""
+        self.user.user_permissions.remove(
+            Permission.objects.get(name="Execute Commands")
+        )
+        # Act:
+        data = {
+            "command_name": "mtcs_command",
+            "params": {"param1": "value1", "param2": 2, "param3": True,},  # noqa: E231
+        }
+        url = reverse("TCS-main")
+        response = self.client.post(url, data, format="json")
+        result = response.json()
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(
+            result, {"ack": "User does not have permissions to execute commands."}
+        )
+
+    @patch(
+        "os.environ.get",
+        side_effect=lambda arg: "fakehost"
+        if arg == "COMMANDER_HOSTNAME"
+        else "fakeport",
+    )
+    @patch("requests.post")
+    def test_docstrings_query_mtcs(self, mock_requests, mock_environ):
+        """Test authorized user can send a MTCS command"""
+        # Act:
+        url = reverse("TCS-main-docstrings")
+
+        with self.assertRaises(ValueError):
+            self.client.get(url)
+        expected_url = f"http://fakehost:fakeport/tcs/main/docstrings"
+        self.assertEqual(mock_requests.call_args, call(expected_url, json={}))
