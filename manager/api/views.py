@@ -7,13 +7,11 @@ import jsonschema
 import collections
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import status
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.decorators import api_view
-from rest_framework.decorators import permission_classes, authentication_classes
+from rest_framework.decorators import permission_classes
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import viewsets, status
 from api.models import Token
@@ -393,7 +391,6 @@ def salinfo_topic_names(request):
         403: openapi.Response("Unauthorized"),
     },
 )
-
 @api_view(["GET"])
 @permission_classes((IsAuthenticated,))
 def salinfo_topic_data(request):
@@ -494,6 +491,7 @@ class EmergencyContactViewSet(viewsets.ModelViewSet):
     serializer_class = EmergencyContactSerializer
     """Serializer used to serialize View objects"""
 
+
 @api_view(["POST"])
 @permission_classes((IsAuthenticated,))
 def query_efd(request, *args, **kwargs):
@@ -529,6 +527,7 @@ def query_efd(request, *args, **kwargs):
     response = requests.post(url, json=request.data)
     return Response(response.json(), status=response.status_code)
 
+
 @api_view(["POST"])
 @permission_classes((IsAuthenticated,))
 def tcs_aux_command(request, *args, **kwargs):
@@ -542,8 +541,9 @@ def tcs_aux_command(request, *args, **kwargs):
         List of addittional arguments. Currently unused
     kwargs: dict
         Dictionary with request arguments. Request should contain the following:
-            command_name (required): The name of the command to be run. It should be a field of the lsst.ts.observatory.control.auxtel.ATCS class
-            params (required): Parameters to be passed to the command method, e.g.
+            command_name (required): The name of the command to be run.
+            It should be a field of the lsst.ts.observatory.control.auxtel.ATCS
+            class params (required): Parameters to be passed to the command method, e.g.
                 {
                     ra: 80,
                     dec: 30,
@@ -562,9 +562,10 @@ def tcs_aux_command(request, *args, **kwargs):
     response = requests.post(url, json=request.data)
     return Response(response.json(), status=response.status_code)
 
+
 @api_view(["GET"])
 @permission_classes((IsAuthenticated,))
-def tcs_docstrings(request, *args, **kwargs):
+def tcs_aux_docstrings(request, *args, **kwargs):
     """Requests TCS commands docstrings
 
     Params
@@ -581,7 +582,65 @@ def tcs_docstrings(request, *args, **kwargs):
     Response
         The response and status code of the request to the LOVE-Commander
     """
-    url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/tcs/docstrings"
+    url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/tcs/aux/docstrings"
     response = requests.get(url)
     return Response(response.json(), status=response.status_code)
 
+
+@api_view(["POST"])
+@permission_classes((IsAuthenticated,))
+def tcs_main_command(request, *args, **kwargs):
+    """Sends command to the MTCS
+
+    Params
+    ------
+    request: Request
+        The Request object
+    args: list
+        List of addittional arguments. Currently unused
+    kwargs: dict
+        Dictionary with request arguments. Request should contain the following:
+            command_name (required): The name of the command to be run. It should be a field of the
+            lsst.ts.observatory.control.maintel.MTCS class
+            params (required): Parameters to be passed to the command method, e.g.
+                {
+                    ra: 80,
+                    dec: 30,
+                }
+
+    Returns
+    -------
+    Response
+        The response and status code of the request to the LOVE-Commander
+    """
+    if not request.user.has_perm("api.command.execute_command"):
+        return Response(
+            {"ack": "User does not have permissions to execute commands."}, 401
+        )
+    url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/tcs/main"
+    response = requests.post(url, json=request.data)
+    return Response(response.json(), status=response.status_code)
+
+
+@api_view(["GET"])
+@permission_classes((IsAuthenticated,))
+def tcs_main_docstrings(request, *args, **kwargs):
+    """Requests TCS commands docstrings
+
+    Params
+    ------
+    request: Request
+        The Request object
+    args: list
+        List of addittional arguments. Currently unused
+    kwargs: dict
+        Dictionary with request arguments. Currently unused
+
+    Returns
+    -------
+    Response
+        The response and status code of the request to the LOVE-Commander
+    """
+    url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/tcs/main/docstrings"
+    response = requests.get(url)
+    return Response(response.json(), status=response.status_code)
