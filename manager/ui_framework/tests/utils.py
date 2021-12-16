@@ -77,7 +77,7 @@ class BaseTestCase(TestCase):
             self.views = []
             self.workspaces = []
             self.workspace_views_data = []
-            default_thumbnail = settings.MEDIA_URL
+            default_thumbnail = None
             if (
                 View._meta.get_field("thumbnail") is not None
                 and View._meta.get_field("thumbnail").get_default() is not None
