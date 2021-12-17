@@ -2,7 +2,6 @@
 import datetime
 import pytest
 from django.contrib.auth.models import User, Permission
-from unittest.mock import patch
 from channels.testing import WebsocketCommunicator
 from manager.routing import application
 from api.models import Token
@@ -198,11 +197,7 @@ class TestHeartbeat:
 
     @pytest.mark.asyncio
     @pytest.mark.django_db(transaction=True)
-    @patch(
-        "requests.get",
-        return_value=type("obj", (object,), {"json": lambda: {"timestamp": 123123123}}),
-    )
-    async def test_unauthorized_commander(self, mock_requests):
+    async def test_unauthorized_commander(self):
         # Arrange
         hb_manager = HeartbeatManager()
         await hb_manager.reset()
@@ -228,6 +223,7 @@ class TestHeartbeat:
         assert response["data"][0]["data"]["timestamp"] is not None
 
         # Act 2 (Wait for query to commander)
+        hb_manager.set_heartbeat_timestamp("Commander", 123123123)
         response = await communicator.receive_json_from(timeout=5)
 
         # Assert 2 (Get producer heartbeat data)

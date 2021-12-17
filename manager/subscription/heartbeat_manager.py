@@ -74,7 +74,7 @@ class HeartbeatManager:
                     cls.set_heartbeat_timestamp("Commander", timestamp)
                     await asyncio.sleep(3)
                 except Exception as e:
-                    print(e)
+                    print(e, flush=True)
                     await asyncio.sleep(3)
 
         @classmethod
@@ -114,7 +114,7 @@ class HeartbeatManager:
                     )
                     await asyncio.sleep(3)
                 except Exception as e:
-                    print(e)
+                    print(e, flush=True)
                     await asyncio.sleep(3)
 
         @classmethod
@@ -126,7 +126,6 @@ class HeartbeatManager:
             if cls.commander_heartbeat_task:
                 cls.commander_heartbeat_task = None
             cls.heartbeat_data = {}
-            cls.commander_heartbeat_task = {}
 
         @classmethod
         async def stop(cls):
