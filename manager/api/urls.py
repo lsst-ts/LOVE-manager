@@ -54,7 +54,7 @@ urlpatterns = [
     path("efd/timeseries", api.views.query_efd, name="EFD-timeseries"),
     path("tcs/aux", api.views.tcs_aux_command, name="TCS-aux"),
     path("tcs/aux/docstrings", api.views.tcs_aux_docstrings, name="TCS-aux-docstrings"),
-    path("tcs/main", api.views.tcs_aux_command, name="TCS-main"),
+    path("tcs/main", api.views.tcs_main_command, name="TCS-main"),
     path(
         "tcs/main/docstrings", api.views.tcs_main_docstrings, name="TCS-main-docstrings"
     ),

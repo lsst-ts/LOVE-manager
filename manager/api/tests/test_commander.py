@@ -331,7 +331,7 @@ class TCSTestCase(TestCase):
         if arg == "COMMANDER_HOSTNAME"
         else "fakeport",
     )
-    @patch("requests.post")
+    @patch("requests.get")
     def test_docstrings_query_atcs(self, mock_requests, mock_environ):
         """Test authorized user can send a ATCS command"""
         # Act:
@@ -340,7 +340,7 @@ class TCSTestCase(TestCase):
         with self.assertRaises(ValueError):
             self.client.get(url)
         expected_url = f"http://fakehost:fakeport/tcs/aux/docstrings"
-        self.assertEqual(mock_requests.call_args, call(expected_url, json={}))
+        self.assertEqual(mock_requests.call_args, call(expected_url))
 
     @patch(
         "os.environ.get",
@@ -395,7 +395,7 @@ class TCSTestCase(TestCase):
         if arg == "COMMANDER_HOSTNAME"
         else "fakeport",
     )
-    @patch("requests.post")
+    @patch("requests.get")
     def test_docstrings_query_mtcs(self, mock_requests, mock_environ):
         """Test authorized user can send a MTCS command"""
         # Act:
@@ -404,4 +404,4 @@ class TCSTestCase(TestCase):
         with self.assertRaises(ValueError):
             self.client.get(url)
         expected_url = f"http://fakehost:fakeport/tcs/main/docstrings"
-        self.assertEqual(mock_requests.call_args, call(expected_url, json={}))
+        self.assertEqual(mock_requests.call_args, call(expected_url))
