@@ -1,7 +1,7 @@
 """Tests for the subscription of consumers to streams."""
 import asyncio
 import pytest
-import os
+
 from django.contrib.auth.models import User, Permission
 from channels.testing import WebsocketCommunicator
 from manager.routing import application
@@ -391,24 +391,31 @@ class TestSubscriptionCombinations:
         await client_communicator.connect()
         await producer_communicator.connect()
 
-        # Act 1 (Subscribe producer)
-        await producer_communicator.send_json_to(
-            {
-                "option": "subscribe",
-                "category": "initial_state",
-                "csc": "all",
-                "salindex": "all",
-                "stream": "all",
-            }
+        # initial state is only useful for events
+        combinations = filter(
+            lambda item: (item["category"] == "event"), self.combinations
         )
-        await producer_communicator.receive_json_from()
 
-        # Act 2  (Subscribe client)
-        for combination in self.combinations:
-            # initial state is only useful for events
-            if combination["category"] != "event":
-                continue
+        for combination in combinations:
+            # Act 1 (Subscribe producer)
+            await producer_communicator.send_json_to(
+                {
+                    "option": "subscribe",
+                    "category": "initial_state",
+                    "csc": combination["csc"],
+                    "salindex": "all",
+                    "stream": "all",
+                }
+            )
+            producer_response = await producer_communicator.receive_json_from()
+            expected = {
+                "data": "Successfully subscribed to initial_state-"
+                + combination["csc"]
+                + "-all-all"
+            }
+            assert producer_response == expected
 
+            # Act 2  (Subscribe client)
             msg = {
                 "option": "subscribe",
                 "csc": combination["csc"],
@@ -416,13 +423,7 @@ class TestSubscriptionCombinations:
                 "stream": combination["stream"],
                 "category": combination["category"],
             }
-
-            # Subscribe the first time
-            await client_communicator.send_json_to(msg)
-            producer_consumer_response = await producer_communicator.receive_json_from()
-
-            # Assert first subscription
-            assert producer_consumer_response == {
+            expected = {
                 "category": "initial_state",
                 "data": [
                     {
@@ -433,6 +434,13 @@ class TestSubscriptionCombinations:
                 ],
                 "subscription": "initial_state-all-all-all",
             }
+
+            # Subscribe the first time
+            await client_communicator.send_json_to(msg)
+            producer_consumer_response = await producer_communicator.receive_json_from()
+
+            # Assert first subscription
+            assert producer_consumer_response == expected
 
         await client_communicator.disconnect()
         await producer_communicator.disconnect()
