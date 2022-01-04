@@ -1063,7 +1063,7 @@
     "pk": 42,
     "fields": {
       "creation_timestamp": "2020-12-18T21:28:04.894247Z",
-      "update_timestamp": "2021-03-26T18:26:31.168072Z",
+      "update_timestamp": "2021-12-20T17:05:07.558941Z",
       "name": "Watcher",
       "data": {
         "content": {
@@ -1077,9 +1077,9 @@
             },
             "content": "Watcher",
             "properties": {
-              "h": 30,
+              "h": 77,
               "i": 1,
-              "w": 98,
+              "w": 96,
               "x": 0,
               "y": 11,
               "type": "component"
@@ -1190,7 +1190,7 @@
           "allowOverflow": true
         }
       },
-      "thumbnail": "thumbnails/view_42.png"
+      "thumbnail": "thumbnails/view_33.png"
     }
   },
   {
@@ -1388,25 +1388,25 @@
     "pk": 47,
     "fields": {
       "creation_timestamp": "2021-05-25T16:53:25.728376Z",
-      "update_timestamp": "2021-05-25T16:53:25.728438Z",
-      "name": "AT-Estop",
+      "update_timestamp": "2021-11-10T17:30:10.976205Z",
+      "name": "AT-Stop",
       "data": {
         "content": {
           "newPanel-1": {
             "config": {
               "link": "",
-              "title": "Command Panel",
+              "title": "AT Stop",
               "margin": true,
               "titleBar": true,
               "hasRawMode": false
             },
             "content": "CommandPanel",
             "properties": {
-              "h": 35,
+              "h": 15,
               "i": 1,
-              "w": 57,
+              "w": 22,
               "x": 0,
-              "y": null,
+              "y": 0,
               "type": "component"
             }
           }
@@ -1508,8 +1508,8 @@
     "pk": 49,
     "fields": {
       "creation_timestamp": "2021-07-28T17:50:26.746474Z",
-      "update_timestamp": "2021-07-28T17:50:26.746534Z",
-      "name": "Event Log",
+      "update_timestamp": "2021-11-15T16:52:30.182431Z",
+      "name": "Event Log - P",
       "data": {
         "content": {
           "newPanel-1": {
@@ -1881,8 +1881,8 @@
     "pk": 53,
     "fields": {
       "creation_timestamp": "2021-09-08T05:20:37.372637Z",
-      "update_timestamp": "2021-09-10T07:35:03.150016Z",
-      "name": "ATDome & Mount",
+      "update_timestamp": "2021-11-15T16:51:28.731406Z",
+      "name": "ATDome & Mount - P",
       "data": {
         "content": {
           "newPanel-1": {
@@ -1942,8 +1942,8 @@
     "pk": 54,
     "fields": {
       "creation_timestamp": "2021-09-10T07:37:09.602662Z",
-      "update_timestamp": "2021-09-10T07:48:28.543342Z",
-      "name": "AT LightPath",
+      "update_timestamp": "2021-11-15T16:51:15.412253Z",
+      "name": "AT LightPath - P",
       "data": {
         "content": {
           "newPanel-1": {
@@ -2109,6 +2109,154 @@
               "i": 2,
               "w": 46,
               "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": ""
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 58,
+    "fields": {
+      "creation_timestamp": "2021-11-18T17:29:07.912202Z",
+      "update_timestamp": "2021-11-18T18:31:27.026113Z",
+      "name": "Test CSC Summary",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "name": "Test",
+              "title": "CSC details",
+              "margin": false,
+              "salindex": 1,
+              "titleBar": false,
+              "hasRawMode": false,
+              "hasHeartbeat": true,
+              "_functionProps": []
+            },
+            "content": "CSCDetail",
+            "properties": {
+              "h": 10,
+              "i": 1,
+              "w": 27,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": ""
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 59,
+    "fields": {
+      "creation_timestamp": "2021-12-10T18:00:52.888691Z",
+      "update_timestamp": "2021-12-10T18:00:52.888756Z",
+      "name": "CCW",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "title": "CableWraps",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "CableWraps",
+            "properties": {
+              "h": 32,
+              "i": 1,
+              "w": 61,
+              "x": 0,
+              "y": null,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": ""
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 60,
+    "fields": {
+      "creation_timestamp": "2021-12-14T19:49:49.907858Z",
+      "update_timestamp": "2021-12-14T19:49:49.907903Z",
+      "name": "LVV-T2067",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "title": "Observing log input",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "ObservingLogInput",
+            "properties": {
+              "h": 28,
+              "i": 1,
+              "w": 36,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          },
+          "newPanel-2": {
+            "config": {
+              "link": "",
+              "title": "Observing log",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "ObservingLogMessages",
+            "properties": {
+              "h": 28,
+              "i": 2,
+              "w": 36,
+              "x": 41,
               "y": 0,
               "type": "component"
             }
