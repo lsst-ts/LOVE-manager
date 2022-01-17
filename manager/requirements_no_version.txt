@@ -47,6 +47,7 @@ more-itertools
 msgpack
 numpy
 packaging
+Pillow
 pluggy
 psycopg2
 py
