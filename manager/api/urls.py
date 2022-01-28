@@ -52,6 +52,7 @@ urlpatterns = [
     path("salinfo/topic-data", api.views.salinfo_topic_data, name="salinfo-topic-data"),
     path("config", api.views.get_config, name="config"),
     path("efd/timeseries", api.views.query_efd, name="EFD-timeseries"),
+    path("efd/efd_clients", api.views.query_efd_clients, name="EFD-clients"),
     path("tcs/aux", api.views.tcs_aux_command, name="TCS-aux"),
     path("tcs/docstrings", api.views.tcs_docstrings, name="TCS-docstrings"),
 ]

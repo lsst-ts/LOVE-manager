@@ -1,0 +1,1677 @@
+[
+  {
+    "model": "ui_framework.view",
+    "pk": 30,
+    "fields": {
+      "creation_timestamp": "2020-08-19T00:38:07.36Z",
+      "update_timestamp": "2020-08-19T00:38:07.36Z",
+      "name": "Dome-Mount test",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "title": "ScriptQueue",
+              "margin": true,
+              "salindex": 1,
+              "titleBar": true
+            },
+            "content": "ScriptQueue",
+            "properties": {
+              "h": 54,
+              "i": 1,
+              "w": 56,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          },
+          "newPanel-2": {
+            "config": {
+              "link": "",
+              "name": "Script",
+              "title": "Script.0 Logs",
+              "margin": true,
+              "salindex": 0,
+              "titleBar": true,
+              "hasRawMode": false,
+              "_functionProps": []
+            },
+            "content": "CSCExpanded",
+            "properties": {
+              "h": 45,
+              "i": 2,
+              "w": 32,
+              "x": 56,
+              "y": 9,
+              "type": "component"
+            }
+          },
+          "newPanel-3": {
+            "config": {
+              "cscs": [
+                {
+                  "name": "ATMCS",
+                  "salindex": 0
+                },
+                {
+                  "name": "ATDome",
+                  "salindex": 0
+                },
+                {
+                  "name": "Watcher",
+                  "salindex": 0
+                },
+                {
+                  "name": "ScriptQueue",
+                  "salindex": 1
+                }
+              ],
+              "link": "",
+              "name": "CSC Summary",
+              "title": "CSC Summary",
+              "margin": true,
+              "titleBar": false,
+              "hasRawMode": false,
+              "_functionProps": [
+                "subscribeToStreamCallback"
+              ],
+              "subscribeToStreamCallback": "() => {}"
+            },
+            "content": "CSCGroup",
+            "properties": {
+              "h": 9,
+              "i": 3,
+              "w": 25,
+              "x": 56,
+              "y": 0,
+              "type": "component"
+            }
+          },
+          "newPanel-4": {
+            "config": {
+              "link": "",
+              "title": "Dome",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "Dome",
+            "properties": {
+              "h": 46,
+              "i": 4,
+              "w": 49,
+              "x": 0,
+              "y": 54,
+              "type": "component"
+            }
+          },
+          "newPanel-5": {
+            "config": {
+              "link": "",
+              "title": "AT Lightpath",
+              "margin": true,
+              "titleBar": true,
+              "lightPath": true,
+              "hasRawMode": true
+            },
+            "content": "LightPath",
+            "properties": {
+              "h": 33,
+              "i": 5,
+              "w": 20,
+              "x": 49,
+              "y": 54,
+              "type": "component",
+              "allowOverflow": true
+            }
+          },
+          "newPanel-6": {
+            "config": {
+              "link": "",
+              "title": "AT summary",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "MountSummaryPanel",
+            "properties": {
+              "h": 26,
+              "i": 6,
+              "w": 19,
+              "x": 69,
+              "y": 54,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": "thumbnails/view_1.png"
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 31,
+    "fields": {
+      "creation_timestamp": "2020-08-19T00:38:09.319Z",
+      "update_timestamp": "2020-08-19T00:38:09.319Z",
+      "name": "WeatherStation",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "title": "Weather station component",
+              "margin": true,
+              "salindex": 1,
+              "titleBar": true,
+              "hasRawMode": false
+            },
+            "content": "WeatherStation",
+            "properties": {
+              "h": 57,
+              "i": 1,
+              "w": 56,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": "thumbnails/view_31.png"
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 33,
+    "fields": {
+      "creation_timestamp": "2020-08-19T00:39:09.619Z",
+      "update_timestamp": "2020-08-19T00:39:09.619Z",
+      "name": "Watcher + ObsLogs",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "title": "Watcher",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "Watcher",
+            "properties": {
+              "h": 52,
+              "i": 1,
+              "w": 50,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          },
+          "newPanel-2": {
+            "config": {
+              "link": "",
+              "title": "Observing log",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "ObservingLogMessages",
+            "properties": {
+              "h": 52,
+              "i": 2,
+              "w": 20,
+              "x": 50,
+              "y": 0,
+              "type": "component"
+            }
+          },
+          "newPanel-3": {
+            "config": {
+              "link": "",
+              "title": "Observing log input",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "ObservingLogInput",
+            "properties": {
+              "h": 25,
+              "i": 3,
+              "w": 21,
+              "x": 70,
+              "y": 0,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": "thumbnails/view_33.png"
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 34,
+    "fields": {
+      "creation_timestamp": "2020-08-19T00:39:44.681Z",
+      "update_timestamp": "2020-08-19T00:39:44.681Z",
+      "name": "TimeDisplay",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "title": "TimeDisplay",
+              "locale": "en-GB",
+              "margin": true,
+              "titleBar": true,
+              "clocks_layout": [
+                [
+                  {
+                    "name": "Local Time",
+                    "hideDate": false,
+                    "timezone": "local",
+                    "hideAnalog": false,
+                    "hideOffset": false
+                  },
+                  {
+                    "name": "Sidereal Time",
+                    "hideDate": true,
+                    "timezone": "sidereal-summit",
+                    "hideAnalog": false,
+                    "hideOffset": false
+                  }
+                ],
+                [
+                  [
+                    {
+                      "name": "La Serena",
+                      "hideDate": false,
+                      "timezone": "America/Santiago",
+                      "hideAnalog": true,
+                      "hideOffset": false
+                    },
+                    {
+                      "name": "Arizona",
+                      "hideDate": false,
+                      "timezone": "America/Phoenix",
+                      "hideAnalog": true,
+                      "hideOffset": false
+                    },
+                    {
+                      "name": "Illinois",
+                      "hideDate": false,
+                      "timezone": "America/Chicago",
+                      "hideAnalog": true,
+                      "hideOffset": false
+                    }
+                  ],
+                  [
+                    {
+                      "name": "Universal Time",
+                      "hideDate": false,
+                      "timezone": "UTC",
+                      "hideAnalog": true,
+                      "hideOffset": false
+                    },
+                    {
+                      "name": "International Atomic Time",
+                      "hideDate": false,
+                      "timezone": "TAI",
+                      "hideAnalog": true,
+                      "hideOffset": false
+                    },
+                    {
+                      "name": "Modified Julian Date",
+                      "hideDate": false,
+                      "timezone": "MJD",
+                      "hideAnalog": true,
+                      "hideOffset": false
+                    }
+                  ]
+                ]
+              ]
+            },
+            "content": "TimeDisplay",
+            "properties": {
+              "h": 16,
+              "i": 1,
+              "w": 45,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": "thumbnails/view_28.png"
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 35,
+    "fields": {
+      "creation_timestamp": "2020-08-19T00:40:10.493Z",
+      "update_timestamp": "2020-08-19T00:40:28.975Z",
+      "name": "Network + Scheduler",
+      "data": {
+        "content": {
+          "newPanel-6": {
+            "config": {
+              "url": "https://dashboard.ampath.net/maddash-webui/index.cgi",
+              "link": "",
+              "title": "Network component",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": false
+            },
+            "content": "Network",
+            "properties": {
+              "h": 61,
+              "i": 6,
+              "w": 40,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          },
+          "newPanel-7": {
+            "config": {
+              "link": "",
+              "title": "Scheduler",
+              "margin": true,
+              "feedKey": "allSky",
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "Scheduler",
+            "properties": {
+              "h": 45,
+              "i": 7,
+              "w": 52,
+              "x": 40,
+              "y": 0,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": "thumbnails/view_35.png"
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 36,
+    "fields": {
+      "creation_timestamp": "2020-08-19T00:40:57.108Z",
+      "update_timestamp": "2020-08-19T00:40:57.108Z",
+      "name": "LATISS + Camera",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "title": "LATISS",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "LATISS",
+            "properties": {
+              "h": 33,
+              "i": 1,
+              "w": 49,
+              "x": 0,
+              "y": 12,
+              "type": "component"
+            }
+          },
+          "newPanel-2": {
+            "config": {
+              "link": "",
+              "title": "Camera",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "Camera",
+            "properties": {
+              "h": 12,
+              "i": 2,
+              "w": 49,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": "thumbnails/view_25.png"
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 37,
+    "fields": {
+      "creation_timestamp": "2020-08-19T00:41:33.17Z",
+      "update_timestamp": "2020-08-19T00:41:33.17Z",
+      "name": "HealthStatusSummary",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "title": "Health status summary",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true,
+              "topicConfiguration": {
+                "telemetry-ATDome-0-position": {
+                  "azimuthPosition": "return Math.floor(new Date().getSeconds() / 4) % 5 ;",
+                  "azimuthEncoderPosition": "return Math.floor(new Date().getSeconds() / 4) % 5 ;",
+                  "mainDoorOpeningPercentage": "return Math.floor(new Date().getSeconds() / 4) % 5 ;",
+                  "dropoutDoorOpeningPercentage": "return Math.floor(new Date().getSeconds() / 4) % 5 ;"
+                },
+                "telemetry-ATMCS-0-mount_AzEl_Encoders": {
+                  "cRIO_timestamp": "return Math.floor(new Date().getSeconds() / 4) % 5 ;",
+                  "elevationCalculatedAngle": "return Math.floor(new Date().getSeconds() / 4) % 5 ;"
+                },
+                "telemetry-ATMCS-0-mount_Nasmyth_Encoders": {
+                  "trackId": "return Math.floor(new Date().getSeconds() / 4) % 5 ;",
+                  "nasmyth1Encoder1Raw": "return Math.floor(new Date().getSeconds() / 4) % 5 ;",
+                  "nasmyth1Encoder2Raw": "return Math.floor(new Date().getSeconds() / 4) % 5 ;",
+                  "nasmyth1Encoder3Raw": "return Math.floor(new Date().getSeconds() / 4) % 5 ;",
+                  "nasmyth2Encoder1Raw": "return Math.floor(new Date().getSeconds() / 4) % 5 ;",
+                  "nasmyth2Encoder2Raw": "return Math.floor(new Date().getSeconds() / 4) % 5 ;",
+                  "nasmyth2Encoder3Raw": "return Math.floor(new Date().getSeconds() / 4) % 5 ;",
+                  "nasmyth1CalculatedAngle": "return Math.floor(new Date().getSeconds() / 4) % 5 ;",
+                  "nasmyth2CalculatedAngle": "return Math.floor(new Date().getSeconds() / 4) % 5 ;"
+                }
+              }
+            },
+            "content": "HealthStatusSummary",
+            "properties": {
+              "h": 35,
+              "i": 1,
+              "w": 24,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": "thumbnails/view_37.png"
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 38,
+    "fields": {
+      "creation_timestamp": "2020-08-19T00:42:03.101Z",
+      "update_timestamp": "2020-08-19T00:42:29.834Z",
+      "name": "Dome & Mount",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "title": "Dome",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "Dome",
+            "properties": {
+              "h": 48,
+              "i": 1,
+              "w": 44,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          },
+          "newPanel-2": {
+            "config": {
+              "link": "",
+              "title": "ATMount motors",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "MotorTable",
+            "properties": {
+              "h": 14,
+              "i": 2,
+              "w": 55,
+              "x": 44,
+              "y": 34,
+              "type": "component"
+            }
+          },
+          "newPanel-3": {
+            "config": {
+              "link": "",
+              "title": "AT Lightpath",
+              "margin": true,
+              "titleBar": true,
+              "lightPath": true,
+              "hasRawMode": true
+            },
+            "content": "LightPath",
+            "properties": {
+              "h": 34,
+              "i": 3,
+              "w": 20,
+              "x": 44,
+              "y": 0,
+              "type": "component",
+              "allowOverflow": true
+            }
+          },
+          "newPanel-4": {
+            "config": {
+              "link": "",
+              "title": "AT summary",
+              "margin": true,
+              "titleBar": false,
+              "hasRawMode": true
+            },
+            "content": "MountSummaryPanel",
+            "properties": {
+              "h": 34,
+              "i": 4,
+              "w": 15,
+              "x": 66,
+              "y": 0,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": "thumbnails/view_38.png"
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 39,
+    "fields": {
+      "creation_timestamp": "2020-08-19T00:42:57.339Z",
+      "update_timestamp": "2020-08-19T00:42:57.339Z",
+      "name": "CSCSummary + CSCG",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "title": "CSC summary",
+              "margin": true,
+              "titleBar": true,
+              "hierarchy": {
+                "Observatory": {
+                  "Queue": [
+                    {
+                      "name": "ScriptQueue",
+                      "salindex": 1
+                    },
+                    {
+                      "name": "ScriptQueue",
+                      "salindex": 2
+                    }
+                  ],
+                  "Environment": [
+                    {
+                      "name": "DIMM",
+                      "salindex": 1
+                    },
+                    {
+                      "name": "DIMM",
+                      "salindex": 2
+                    },
+                    {
+                      "name": "Environment",
+                      "salindex": 1
+                    }
+                  ]
+                },
+                "Aux Telescope": {
+                  "ATTCS": [
+                    {
+                      "name": "ATMCS",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATPtg",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATDome",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATDomeTrajectory",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATAOS",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATPneumatics",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATHexapod",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "GenericCamera",
+                      "salindex": 1
+                    }
+                  ],
+                  "LATISS": [
+                    {
+                      "name": "ATCamera",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATArchiver",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATHeaderService",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATSpectrograph",
+                      "salindex": 0
+                    }
+                  ],
+                  "ATCalSys": [
+                    {
+                      "name": "ATMonochromator",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "FiberSpectrograph",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATWhiteLight",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "Electrometer",
+                      "salindex": 1
+                    },
+                    {
+                      "name": "Electrometer",
+                      "salindex": 2
+                    },
+                    {
+                      "name": "LinearStage",
+                      "salindex": 1
+                    },
+                    {
+                      "name": "LinearStage",
+                      "salindex": 2
+                    }
+                  ]
+                },
+                "Main Telescope": {
+                  "CSC Group 1": [
+                    {
+                      "name": "Test",
+                      "salindex": 1
+                    },
+                    {
+                      "name": "Test",
+                      "salindex": 2
+                    }
+                  ],
+                  "CSC Group 2": []
+                }
+              },
+              "hasRawMode": true
+            },
+            "content": "CSCSummary",
+            "properties": {
+              "h": 39,
+              "i": 1,
+              "w": 55,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          },
+          "newPanel-2": {
+            "config": {
+              "cscs": [
+                {
+                  "name": "ATMCS",
+                  "salindex": 0
+                },
+                {
+                  "name": "ATPtg",
+                  "salindex": 0
+                },
+                {
+                  "name": "ATDome",
+                  "salindex": 0
+                },
+                {
+                  "name": "ATDomeTrajectory",
+                  "salindex": 0
+                },
+                {
+                  "name": "ATAOS",
+                  "salindex": 0
+                },
+                {
+                  "name": "ATPneumatics",
+                  "salindex": 0
+                },
+                {
+                  "name": "ATHexapod",
+                  "salindex": 0
+                }
+              ],
+              "link": "",
+              "name": "CSC ATTCS",
+              "title": "CSC Aux Telescope",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": false,
+              "_functionProps": [
+                "subscribeToStreamCallback"
+              ],
+              "subscribeToStreamCallback": "() => {}"
+            },
+            "content": "CSCGroup",
+            "properties": {
+              "h": 21,
+              "i": 2,
+              "w": 13,
+              "x": 56,
+              "y": 0,
+              "type": "component"
+            }
+          },
+          "newPanel-3": {
+            "config": {
+              "link": "",
+              "group": "CSC group",
+              "title": "CSC group log",
+              "margin": true,
+              "cscList": [
+                {
+                  "name": "ATMCS",
+                  "salindex": 0
+                }
+              ],
+              "titleBar": false,
+              "hasRawMode": false
+            },
+            "content": "CSCGroupLog",
+            "properties": {
+              "h": 17,
+              "i": 3,
+              "w": 24,
+              "x": 0,
+              "y": 39,
+              "type": "component"
+            }
+          },
+          "newPanel-4": {
+            "config": {
+              "link": "",
+              "name": "Test",
+              "title": "CSC expanded",
+              "margin": true,
+              "salindex": 1,
+              "titleBar": false,
+              "hasRawMode": false,
+              "_functionProps": []
+            },
+            "content": "CSCExpanded",
+            "properties": {
+              "h": 17,
+              "i": 4,
+              "w": 22,
+              "x": 24,
+              "y": 39,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": "thumbnails/view_39.png"
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 40,
+    "fields": {
+      "creation_timestamp": "2020-08-19T00:44:16.66Z",
+      "update_timestamp": "2020-08-19T00:44:16.66Z",
+      "name": "Random view",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "title": "Dome",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "Dome",
+            "properties": {
+              "h": 44,
+              "i": 1,
+              "w": 50,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          },
+          "newPanel-2": {
+            "config": {
+              "link": "",
+              "title": "LATISS",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "LATISS",
+            "properties": {
+              "h": 29,
+              "i": 2,
+              "w": 50,
+              "x": 50,
+              "y": 0,
+              "type": "component"
+            }
+          },
+          "newPanel-3": {
+            "config": {
+              "link": "",
+              "title": "ATMount motors",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "MotorTable",
+            "properties": {
+              "h": 15,
+              "i": 3,
+              "w": 49,
+              "x": 50,
+              "y": 29,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": "thumbnails/view_40.png"
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 41,
+    "fields": {
+      "creation_timestamp": "2021-02-11T01:12:04.163855Z",
+      "update_timestamp": "2021-02-11T07:21:55.504507Z",
+      "name": "MTQueue",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "title": "MT Queue",
+              "margin": true,
+              "salindex": 1,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "ScriptQueue",
+            "properties": {
+              "h": 38,
+              "i": 1,
+              "w": 100,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": "thumbnails/view_43.png"
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 42,
+    "fields": {
+      "creation_timestamp": "2021-02-11T06:31:47.681063Z",
+      "update_timestamp": "2021-10-06T07:45:02.373299Z",
+      "name": "ATQueue",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "title": "AT queue",
+              "margin": true,
+              "salindex": 2,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "ScriptQueue",
+            "properties": {
+              "h": 47,
+              "i": 1,
+              "w": 96,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": "thumbnails/view_41.png"
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 43,
+    "fields": {
+      "creation_timestamp": "2021-02-11T07:26:03.945541Z",
+      "update_timestamp": "2021-12-01T18:19:01.616135Z",
+      "name": "Summary State",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "title": "CSC summary",
+              "margin": true,
+              "titleBar": true,
+              "hierarchy": {
+                "OCS": {
+                  "EAS": [
+                    {
+                      "name": "WeatherStation",
+                      "salindex": 1
+                    },
+                    {
+                      "name": "DIMM",
+                      "salindex": 1
+                    },
+                    {
+                      "name": "DIMM",
+                      "salindex": 2
+                    },
+                    {
+                      "name": "DSM",
+                      "salindex": 1
+                    },
+                    {
+                      "name": "DSM",
+                      "salindex": 2
+                    }
+                  ],
+                  "Ops": [
+                    {
+                      "name": "ScriptQueue",
+                      "salindex": 1
+                    },
+                    {
+                      "name": "ScriptQueue",
+                      "salindex": 2
+                    },
+                    {
+                      "name": "Watcher",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "Scheduler",
+                      "salindex": 1
+                    },
+                    {
+                      "name": "Scheduler",
+                      "salindex": 2
+                    },
+                    {
+                      "name": "OCPS",
+                      "salindex": 1
+                    },
+                    {
+                      "name": "OCPS",
+                      "salindex": 2
+                    }
+                  ]
+                },
+                "Aux Tel": {
+                  "ATCS": [
+                    {
+                      "name": "ATMCS",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATPtg",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATDome",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATDomeTrajectory",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATAOS",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATPneumatics",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATHexapod",
+                      "salindex": 0
+                    }
+                  ],
+                  "LATISS": [
+                    {
+                      "name": "ATCamera",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATArchiver",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATHeaderService",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATSpectrograph",
+                      "salindex": 0
+                    }
+                  ]
+                },
+                "Main Tel": {
+                  "MTCS": [
+                    {
+                      "name": "MTMount",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "MTPtg",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "MTAOS",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "MTM1M3",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "MTM2",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "MTHexapod",
+                      "salindex": 1
+                    },
+                    {
+                      "name": "MTHexapod",
+                      "salindex": 2
+                    },
+                    {
+                      "name": "MTRotator",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "MTDome",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "MTDomeTrajectory",
+                      "salindex": 0
+                    }
+                  ],
+                  "ComCam": [
+                    {
+                      "name": "CCCamera",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "CCArchiver",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "CCHeaderService",
+                      "salindex": 0
+                    }
+                  ]
+                }
+              },
+              "hasRawMode": true
+            },
+            "content": "CSCSummary",
+            "properties": {
+              "h": 46,
+              "i": 1,
+              "w": 88,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": ""
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 44,
+    "fields": {
+      "creation_timestamp": "2021-03-25T23:08:31.222195Z",
+      "update_timestamp": "2021-03-25T23:09:14.249164Z",
+      "name": "M1M3",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "title": "M1M3",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "M1M3",
+            "properties": {
+              "h": 32,
+              "i": 1,
+              "w": 61,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          },
+          "newPanel-2": {
+            "config": {
+              "link": "",
+              "title": "CableWraps",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "CableWraps",
+            "properties": {
+              "h": 26,
+              "i": 2,
+              "w": 72,
+              "x": 0,
+              "y": 32,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": ""
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 45,
+    "fields": {
+      "creation_timestamp": "2021-05-11T16:29:21.459542Z",
+      "update_timestamp": "2021-05-11T16:29:21.45961Z",
+      "name": "LSSTCam Image Viewer",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "url": "http://ccs.lsst.org/FITSInfo/view.html?image=AT_O_20210414_000002&raft=R00&color=grey",
+              "link": "",
+              "title": "Embedded view",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": false
+            },
+            "content": "EmbeddedView",
+            "properties": {
+              "h": 34,
+              "i": 1,
+              "w": 76,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": ""
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 46,
+    "fields": {
+      "creation_timestamp": "2021-06-23T15:30:57.799908Z",
+      "update_timestamp": "2021-06-23T18:08:22.118247Z",
+      "name": "test",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "name": "ATAOS",
+              "title": "CSC details",
+              "margin": false,
+              "salindex": 0,
+              "titleBar": false,
+              "hasRawMode": false,
+              "hasHeartbeat": true,
+              "_functionProps": []
+            },
+            "content": "CSCDetail",
+            "properties": {
+              "h": 2,
+              "i": 1,
+              "w": 8,
+              "x": 0,
+              "y": null,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": ""
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 47,
+    "fields": {
+      "creation_timestamp": "2021-08-26T15:14:20.690173Z",
+      "update_timestamp": "2021-08-26T15:28:34.082695Z",
+      "name": "CCW",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "title": "CableWraps",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "CableWraps",
+            "properties": {
+              "h": 27,
+              "i": 1,
+              "w": 47,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          },
+          "newPanel-2": {
+            "config": {
+              "cscs": [
+                {
+                  "name": "MTMount",
+                  "salindex": 0
+                },
+                {
+                  "name": "MTRotator",
+                  "salindex": 0
+                }
+              ],
+              "link": "",
+              "name": "CSC group",
+              "title": "CSC group",
+              "margin": true,
+              "titleBar": false,
+              "hasRawMode": false,
+              "_functionProps": [
+                "subscribeToStreamCallback"
+              ],
+              "subscribeToStreamCallback": "() => {}"
+            },
+            "content": "CSCGroup",
+            "properties": {
+              "h": 8,
+              "i": 2,
+              "w": 47,
+              "x": 0,
+              "y": 27,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": ""
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 48,
+    "fields": {
+      "creation_timestamp": "2021-09-09T21:14:29.257159Z",
+      "update_timestamp": "2021-09-09T21:14:29.257298Z",
+      "name": "ATCS",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "title": "TCS Commands",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": false,
+              "scriptQueueIndex": 1
+            },
+            "content": "TCSCommands",
+            "properties": {
+              "h": 35,
+              "i": 1,
+              "w": 57,
+              "x": 0,
+              "y": null,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": ""
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 50,
+    "fields": {
+      "creation_timestamp": "2021-10-29T22:31:23.261491Z",
+      "update_timestamp": "2021-10-29T22:44:39.165455Z",
+      "name": "AT",
+      "data": {
+        "content": {
+          "newPanel-2": {
+            "config": {
+              "link": "",
+              "title": "Dome",
+              "margin": true,
+              "controls": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "Dome",
+            "properties": {
+              "h": 46,
+              "i": 2,
+              "w": 60,
+              "x": 0,
+              "y": 19,
+              "type": "component"
+            }
+          },
+          "newPanel-3": {
+            "config": {
+              "cscs": [
+                {
+                  "name": "ATMCS",
+                  "salindex": 0
+                },
+                {
+                  "name": "ATPtg",
+                  "salindex": 0
+                },
+                {
+                  "name": "ATDome",
+                  "salindex": 0
+                },
+                {
+                  "name": "ATDomeTrajectory",
+                  "salindex": 0
+                },
+                {
+                  "name": "ATAOS",
+                  "salindex": 0
+                },
+                {
+                  "name": "ATPneumatics",
+                  "salindex": 0
+                },
+                {
+                  "name": "ATHexapod",
+                  "salindex": 0
+                },
+                {
+                  "name": "Scheduler",
+                  "salindex": 2
+                }
+              ],
+              "link": "",
+              "name": "CSC group",
+              "title": "CSC group",
+              "margin": true,
+              "titleBar": false,
+              "hasRawMode": false,
+              "_functionProps": [
+                "subscribeToStreamCallback"
+              ],
+              "subscribeToStreamCallback": "() => {}"
+            },
+            "content": "CSCGroup",
+            "properties": {
+              "h": 19,
+              "i": 3,
+              "w": 60,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": ""
+    }
+  }
+]
