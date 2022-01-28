@@ -291,7 +291,7 @@ class TCSTestCase(TestCase):
         # Act:
         data = {
             "command_name": "atcs_command",
-            "params": {"param1": "value1", "param2": 2, "param3": True,},
+            "params": {"param1": "value1", "param2": 2, "param3": True,},  # noqa: E231
         }
         url = reverse("TCS-aux")
 

@@ -49,6 +49,10 @@ pipeline {
           branch "bugfix/*"
           branch "hotfix/*"
           branch "release/*"
+<<<<<<< HEAD
+=======
+          branch "tickets/*"
+>>>>>>> a4b1b63b7381478422e1416db8c00c38bb722b03
         }
       }
       steps {

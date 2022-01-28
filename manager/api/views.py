@@ -502,6 +502,27 @@ class EmergencyContactViewSet(viewsets.ModelViewSet):
     """Serializer used to serialize View objects"""
 
 
+@api_view(["GET"])
+@permission_classes((IsAuthenticated,))
+def query_efd_clients(request):
+    """Requests EFD instances
+
+    Params
+    ------
+    request: Request
+        The Request object
+
+    Returns
+    -------
+    Response
+        The response and status code of the request to the LOVE-Commander
+    """
+    url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/efd/efd_clients"
+    response = requests.get(url)
+
+    return Response(response.json(), status=response.status_code)
+
+
 @api_view(["POST"])
 @permission_classes((IsAuthenticated,))
 def query_efd(request, *args, **kwargs):
@@ -552,8 +573,8 @@ def tcs_aux_command(request, *args, **kwargs):
     kwargs: dict
         Dictionary with request arguments. Request should contain the following:
             command_name (required): The name of the command to be run.
-            It should be a field of the lsst.ts.observatory.control.auxtel.ATCS
-            class params (required): Parameters to be passed to the command method, e.g.
+            It should be a field of the lsst.ts.observatory.control.auxtel.ATCS class
+            params (required): Parameters to be passed to the command method, e.g.
                 {
                     ra: 80,
                     dec: 30,
@@ -576,7 +597,7 @@ def tcs_aux_command(request, *args, **kwargs):
 @api_view(["GET"])
 @permission_classes((IsAuthenticated,))
 def tcs_aux_docstrings(request, *args, **kwargs):
-    """Requests TCS commands docstrings
+    """Requests ATCS commands docstrings
 
     Params
     ------
