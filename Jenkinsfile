@@ -13,7 +13,7 @@ pipeline {
     stage("Build Docker image") {
       when {
         anyOf {
-          branch "master"
+          branch "main"
           branch "develop"
           branch "bugfix/*"
           branch "hotfix/*"
@@ -44,7 +44,7 @@ pipeline {
     // stage("Test Docker Image") {
     //   when {
     //     anyOf {
-    //       branch "master"
+    //       branch "main"
     //       branch "develop"
     //       branch "bugfix/*"
     //       branch "hotfix/*"
@@ -60,7 +60,7 @@ pipeline {
     stage("Push Docker image") {
       when {
         anyOf {
-          branch "master"
+          branch "main"
           branch "develop"
           branch "bugfix/*"
           branch "hotfix/*"
@@ -110,12 +110,12 @@ pipeline {
         build(job: '../LOVE-integration-tools/develop', wait: false)
       }
     }
-    stage("Trigger master deployment") {
+    stage("Trigger main deployment") {
       when {
-        branch "master"
+        branch "main"
       }
       steps {
-        build(job: '../LOVE-integration-tools/master', wait: false)
+        build(job: '../LOVE-integration-tools/main', wait: false)
       }
     }
   }
