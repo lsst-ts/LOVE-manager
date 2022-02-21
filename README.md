@@ -31,7 +31,7 @@ All these variables are initialized with default variables defined in :code:`.en
 
 # Local load for development
 
-We provide a docker image and a docker-compose file in order to load the LOVE-manager with a Postgres database locally, for development purposes, such as run tests and build documentation.
+We provide docker images and a docker-compose file in order to load the LOVE-manager with a Postgres database locally, for development purposes, such as run tests and build documentation.
 
 This docker-compose does not copy the code into the image, but instead it mounts the repository inside the image, this way you can edit the code from outside the docker container with no need to rebuild or restart.
 
@@ -40,7 +40,7 @@ This docker-compose does not copy the code into the image, but instead it mounts
 Follow these instructions to run the application in a docker container and get into it:
 
 ```
-docker-compose up -d
+docker-compose up -d --build
 docker-compose exec manager bash
 ```
 
