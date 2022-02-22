@@ -75,7 +75,8 @@ pipeline {
       }
       steps {
         script {
-          sh "docker run ${dockerImageName} pytest"
+          sh "docker build -f docker/Dockerfile-test -t love-manager-test  ."
+          sh "docker run love-manager-test"
         }
       }
     }

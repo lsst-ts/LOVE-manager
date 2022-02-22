@@ -33,6 +33,3 @@ services:
     restart: always
     volumes:
       - ../:/usr/src/love
-    command: "sleep infinity"
-    stdin_open: true
-    tty: true
