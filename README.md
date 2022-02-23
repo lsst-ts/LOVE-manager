@@ -43,6 +43,7 @@ Follow these instructions to run the application in a docker container and get i
 cd docker/
 docker-compose up -d --build
 docker-compose exec manager bash
+cd /usr/src/love/manager/
 ```
 
 ## Run tests

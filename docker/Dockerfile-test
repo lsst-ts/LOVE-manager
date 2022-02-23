@@ -16,6 +16,6 @@ RUN pip install -r requirements.txt
 
 # Copy source code and build project
 COPY manager ./manager
-WORKDIR /usr/src/love/manager
+COPY docker/run-tests.sh .
 
-CMD ["pytest"]
+CMD ["/usr/src/love/run-tests.sh"]
