@@ -198,6 +198,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                     }]
                 }
         """
+
         data = message["data"]
         category = message["category"]
         producer_snd = message["producer_snd"] if "producer_snd" in message else None

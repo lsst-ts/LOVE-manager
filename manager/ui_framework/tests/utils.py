@@ -55,19 +55,19 @@ class BaseTestCase(TestCase):
                 {
                     "name": "My View 0",
                     "data": json.dumps({"data_name": "My View 0"}),
-                },
+                },  # noqa: E231
                 {
                     "name": "My View 1",
                     "data": json.dumps({"data_name": "My View 1"}),
-                },
+                },  # noqa: E231
                 {
                     "name": "My View 2",
                     "data": json.dumps({"data_name": "My View 2"}),
-                },
+                },  # noqa: E231
                 {
                     "name": "My View 3",
                     "data": json.dumps({"data_name": "My View 3"}),
-                },
+                },  # noqa: E231
             ]
             self.workspaces_data = [
                 {"name": "My Workspace 0"},
@@ -77,9 +77,15 @@ class BaseTestCase(TestCase):
             self.views = []
             self.workspaces = []
             self.workspace_views_data = []
-            default_thumbnail = (
-                settings.MEDIA_URL + View._meta.get_field("thumbnail").get_default()
-            )
+            default_thumbnail = None
+            if (
+                View._meta.get_field("thumbnail") is not None
+                and View._meta.get_field("thumbnail").get_default() is not None
+            ):
+                default_thumbnail = settings.MEDIA_URL + str(
+                    View._meta.get_field("thumbnail").get_default()
+                )
+
             # Create views, store them in self.views and add auto-generated fields to self.views_data
             for i in range(0, len(self.views_data)):
                 view = View.objects.create(**self.views_data[i])
@@ -145,9 +151,7 @@ class BaseTestCase(TestCase):
                 "class": Workspace,
                 "key": "workspace",
                 "old_count": Workspace.objects.count(),
-                "new_data": {
-                    "name": "My new Workspace",
-                },
+                "new_data": {"name": "My new Workspace",},  # noqa: E231
                 "current_data": self.workspaces_data,
                 "list_data": self.workspaces_data,
                 "selected_id": self.workspaces_data[0]["id"],

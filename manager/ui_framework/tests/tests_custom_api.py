@@ -43,7 +43,9 @@ class AuthorizedCrudTestCase(BaseTestCase):
                     {
                         "id": v_pk,
                         "name": v.name,
-                        "thumbnail": settings.MEDIA_URL + v.thumbnail.name,
+                        "thumbnail": None
+                        if v.thumbnail.name == "" or v.thumbnail.name is None
+                        else settings.MEDIA_URL + str(v.thumbnail.name),
                     }
                     for v_pk in w["views"]
                     for v in [View.objects.get(pk=v_pk)]

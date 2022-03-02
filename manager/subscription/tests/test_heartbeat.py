@@ -1,9 +1,7 @@
 """Tests for the subscription of consumers to love_csc streams."""
-import asyncio
 import datetime
 import pytest
 from django.contrib.auth.models import User, Permission
-from unittest.mock import patch
 from channels.testing import WebsocketCommunicator
 from manager.routing import application
 from api.models import Token
@@ -160,8 +158,8 @@ class TestHeartbeat:
         # Act 1 (Subscribe)
         msg = {
             "option": "subscribe",
-            "category": "heartbeat",
-            "csc": "manager",
+            "category": "event",
+            "csc": "Heartbeat",
             "salindex": 0,
             "stream": "stream",
         }
@@ -170,32 +168,36 @@ class TestHeartbeat:
 
         # Assert 1
         assert (
-            response["data"] == f"Successfully subscribed to heartbeat-manager-0-stream"
+            response["data"] == f"Successfully subscribed to event-Heartbeat-0-stream"
         )
-        response = await communicator.receive_json_from(timeout=5)
-        assert response["data"][0]["data"]["timestamp"] is not None
 
         # Act 2 (Send producer heartbeat through websocket)
-        msg = {
-            "heartbeat": "Producer",
-            "timestamp": 1000,
+        heartbeat = {
+            "csc": "Test",
+            "salindex": 1,
+            "lost": 0,
+            "last_heartbeat_timestamp": 1000,
+            "max_lost_heartbeats": 5,
         }
+        msg = {
+            "category": "event",
+            "data": [
+                {"csc": "Heartbeat", "salindex": 0, "data": {"stream": heartbeat}},
+            ],
+        }
+
         await communicator.send_json_to(msg)
-        response = await communicator.receive_json_from(timeout=5)
+        response = await communicator.receive_json_from()
 
         # Assert 2 (Get producer heartbeat data)
         heartbeat_sources = [source["csc"] for source in response["data"]]
-        assert "Producer" in heartbeat_sources
+        assert "Heartbeat" in heartbeat_sources
         await communicator.disconnect()
         await hb_manager.stop()
 
     @pytest.mark.asyncio
     @pytest.mark.django_db(transaction=True)
-    @patch(
-        "requests.get",
-        return_value=type("obj", (object,), {"json": lambda: {"timestamp": 123123123}}),
-    )
-    async def test_unauthorized_commander(self, mock_requests):
+    async def test_unauthorized_commander(self):
         # Arrange
         hb_manager = HeartbeatManager()
         await hb_manager.reset()
@@ -221,8 +223,9 @@ class TestHeartbeat:
         assert response["data"][0]["data"]["timestamp"] is not None
 
         # Act 2 (Wait for query to commander)
+        hb_manager.set_heartbeat_timestamp("Commander", 123123123)
         response = await communicator.receive_json_from(timeout=5)
-        
+
         # Assert 2 (Get producer heartbeat data)
         heartbeat_sources = [source["csc"] for source in response["data"]]
         assert "Commander" in heartbeat_sources
