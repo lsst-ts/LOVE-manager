@@ -37,26 +37,11 @@ pipeline {
 
           dockerImageName = dockerImageName + image_tag
           echo "dockerImageName: ${dockerImageName}"
-          dockerImage = docker.build dockerImageName
+          dockerImage = docker.build(dockerImageName, "-f docker/Dockerfile .")
         }
       }
     }
-    // stage("Test Docker Image") {
-    //   when {
-    //     anyOf {
-    //       branch "main"
-    //       branch "develop"
-    //       branch "bugfix/*"
-    //       branch "hotfix/*"
-    //       branch "release/*"
-    //     }
-    //   }
-    //   steps {
-    //     script {
-    //       sh "docker run ${dockerImageName} pytest"
-    //     }
-    //   }
-    // }
+    
     stage("Push Docker image") {
       when {
         anyOf {
@@ -73,6 +58,25 @@ pipeline {
           docker.withRegistry("", registryCredential) {
             dockerImage.push()
           }
+        }
+      }
+    }
+
+    stage("Test Docker Image") {
+      when {
+        anyOf {
+          branch "main"
+          branch "develop"
+          branch "bugfix/*"
+          branch "hotfix/*"
+          branch "release/*"
+          branch "PR-*"
+        }
+      }
+      steps {
+        script {
+          sh "docker build -f docker/Dockerfile-test -t love-manager-test ."
+          sh "docker run love-manager-test"
         }
       }
     }

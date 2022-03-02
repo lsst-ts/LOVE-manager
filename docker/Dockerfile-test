@@ -1,0 +1,21 @@
+FROM python:3.8.2-buster
+
+# Install required packages
+RUN apt-get update && \
+    apt-get install -y \
+    libsasl2-dev \
+    python-dev \
+    libldap2-dev \
+    libssl-dev &&\
+    rm -rf /var/lib/apt/lists/*
+
+# Set workdir and install python requirements
+WORKDIR /usr/src/love
+COPY manager/requirements.txt .
+RUN pip install -r requirements.txt
+
+# Copy source code and build project
+COPY manager ./manager
+COPY docker/run-tests.sh .
+
+CMD ["/usr/src/love/run-tests.sh"]
