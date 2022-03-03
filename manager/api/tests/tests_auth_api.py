@@ -1,6 +1,5 @@
 """Test users' authentication through the API."""
 import datetime
-import io
 import json
 from django.test import TestCase
 from django.urls import reverse
@@ -55,6 +54,7 @@ class AuthApiTestCase(TestCase):
         self.swap_no_config_url = reverse("swap-user", kwargs={"flags": "no_config"})
         self.expected_permissions = {
             "execute_commands": True,
+            "authlist_admin": False,
         }
         self.expected_config = {"setting1": {"setting11": 1, "setting12": 2}}
 
@@ -190,10 +190,7 @@ class AuthApiTestCase(TestCase):
         )
         self.assertEqual(
             response.data["user"],
-            {
-                "username": self.user.username,
-                "email": self.user.email,
-            },
+            {"username": self.user.username, "email": self.user.email,},
             "The user is not as expected",
         )
         self.assertTrue(
@@ -232,10 +229,7 @@ class AuthApiTestCase(TestCase):
         )
         self.assertEqual(
             response.data["user"],
-            {
-                "username": self.user.username,
-                "email": self.user.email,
-            },
+            {"username": self.user.username, "email": self.user.email,},
             "The user is not as expected",
         )
         self.assertTrue(

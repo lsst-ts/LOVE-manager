@@ -13,7 +13,7 @@ pipeline {
     stage("Build Docker image") {
       when {
         anyOf {
-          branch "master"
+          branch "main"
           branch "develop"
           branch "bugfix/*"
           branch "hotfix/*"
@@ -37,30 +37,15 @@ pipeline {
 
           dockerImageName = dockerImageName + image_tag
           echo "dockerImageName: ${dockerImageName}"
-          dockerImage = docker.build dockerImageName
+          dockerImage = docker.build(dockerImageName, "-f docker/Dockerfile .")
         }
       }
     }
-    // stage("Test Docker Image") {
-    //   when {
-    //     anyOf {
-    //       branch "master"
-    //       branch "develop"
-    //       branch "bugfix/*"
-    //       branch "hotfix/*"
-    //       branch "release/*"
-    //     }
-    //   }
-    //   steps {
-    //     script {
-    //       sh "docker run ${dockerImageName} pytest"
-    //     }
-    //   }
-    // }
+    
     stage("Push Docker image") {
       when {
         anyOf {
-          branch "master"
+          branch "main"
           branch "develop"
           branch "bugfix/*"
           branch "hotfix/*"
@@ -73,6 +58,25 @@ pipeline {
           docker.withRegistry("", registryCredential) {
             dockerImage.push()
           }
+        }
+      }
+    }
+
+    stage("Test Docker Image") {
+      when {
+        anyOf {
+          branch "main"
+          branch "develop"
+          branch "bugfix/*"
+          branch "hotfix/*"
+          branch "release/*"
+          branch "PR-*"
+        }
+      }
+      steps {
+        script {
+          sh "docker build -f docker/Dockerfile-test -t love-manager-test ."
+          sh "docker run love-manager-test"
         }
       }
     }
@@ -110,12 +114,12 @@ pipeline {
         build(job: '../LOVE-integration-tools/develop', wait: false)
       }
     }
-    stage("Trigger master deployment") {
+    stage("Trigger main deployment") {
       when {
-        branch "master"
+        branch "main"
       }
       steps {
-        build(job: '../LOVE-integration-tools/master', wait: false)
+        build(job: '../LOVE-integration-tools/main', wait: false)
       }
     }
   }

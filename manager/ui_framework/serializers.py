@@ -51,9 +51,10 @@ class Base64ImageField(serializers.ImageField):
         string
             The string representation
         """
-        if value is None:
-            return None
-        return settings.MEDIA_URL + str(value)
+
+        if value is not None and value != "":
+            return settings.MEDIA_URL + str(value)
+        return None
 
     def to_internal_value(self, data):
         """Transform a serialized image to the internal Base64ImageField object
@@ -137,6 +138,14 @@ class ViewSerializer(serializers.ModelSerializer):
 
 class ViewSummarySerializer(serializers.ModelSerializer):
     """Serializer for the View model including only id and name."""
+
+    thumbnail = Base64ImageField(
+        required=False,
+        max_length=None,
+        use_url=False,
+        allow_empty_file=True,
+        allow_null=True,
+    )
 
     class Meta:
         """Meta class to map serializer's fields with the model fields."""
