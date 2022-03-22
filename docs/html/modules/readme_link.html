@@ -93,7 +93,10 @@
 <li class="toctree-l2"><a class="reference internal" href="#local-load-for-development">4.2. Local load for development</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#load-and-get-into-the-docker-image">4.2.1. Load and get into the docker image</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#run-tests">4.2.2. Run tests</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#build-documentation">4.2.3. Build documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#build-documentation">4.2.3. Build documentation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#linting-formatting">4.2.3.1. Linting &amp; Formatting</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -178,6 +181,7 @@ All these variables are initialized with default variables defined in <code clas
 <li><p><code class="docutils literal notranslate"><span class="pre">ADMIN_USER_PASS</span></code>: password for the default <code class="docutils literal notranslate"><span class="pre">admin</span></code> user, which has every permission.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">USER_USER_PASS</span></code>: password for the default <code class="docutils literal notranslate"><span class="pre">user</span></code> user, which has readonly permissions and cannot execute commands.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">CMD_USER_PASS</span></code>: password for the default <code class="docutils literal notranslate"><span class="pre">cmd</span></code> user, which has readonly permissions but can execute commands.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">AUTHLIST_USER_PASS</span></code>: password for the default <code class="docutils literal notranslate"><span class="pre">authlist</span></code> user, which has permissions to manage the authlist authorization requests.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">REDIS_HOST</span></code>: the location of the redis host that implements the <code class="docutils literal notranslate"><span class="pre">Channels</span> <span class="pre">Layer</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">REDIS_PASS</span></code>: the password that the LOVE-manager needs to use to connect with <code class="docutils literal notranslate"><span class="pre">redis</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">PROCESS_CONNECTION_PASS</span></code>: the password that the LOVE-producer will use to establish a websocket connection with the LOVE-manager.</p></li>
@@ -188,6 +192,7 @@ All these variables are initialized with default variables defined in <code clas
 <li><p><code class="docutils literal notranslate"><span class="pre">DB_HOST</span></code>: defines the host of the Database. Only used if <code class="docutils literal notranslate"><span class="pre">DB_ENGINE=postgresql</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">DB_PORT</span></code>: defines the port of the Database. Only used if <code class="docutils literal notranslate"><span class="pre">DB_ENGINE=postgresql</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">NO_DEBUG</span></code>: defines wether or not the LOVE-.manager will be run using Django’s debug mode. If the variable is defined, then Debug mode will be off.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LOVE_PRODUCER_LEGACY</span></code>: defines wether or not ussing the legacy LOVE-producer version. If the variable is defined, then the CSC Client won’t be used and the legacy version will.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">SECRET_KEY</span></code>: overrides Django’s SECRET_KEY, if not defined the default value (public in this repo) will be used.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">AUTH_LDAP_SERVER_URI</span></code>: (deprecated) the location of the LDAP authentication server. No LDAP server is used if this variable is empty</p></li>
 </ul>
@@ -195,13 +200,15 @@ All these variables are initialized with default variables defined in <code clas
 </div>
 <div class="section" id="local-load-for-development">
 <h2><span class="section-number">4.2. </span>Local load for development<a class="headerlink" href="#local-load-for-development" title="Permalink to this headline">¶</a></h2>
-<p>We provide a docker image and a docker-compose file in order to load the LOVE-manager with a Postgres database locally, for development purposes, such as run tests and build documentation.</p>
+<p>We provide docker images and a docker-compose file in order to load the LOVE-manager with a Postgres database locally, for development purposes, such as run tests and build documentation.</p>
 <p>This docker-compose does not copy the code into the image, but instead it mounts the repository inside the image, this way you can edit the code from outside the docker container with no need to rebuild or restart.</p>
 <div class="section" id="load-and-get-into-the-docker-image">
 <h3><span class="section-number">4.2.1. </span>Load and get into the docker image<a class="headerlink" href="#load-and-get-into-the-docker-image" title="Permalink to this headline">¶</a></h3>
 <p>Follow these instructions to run the application in a docker container and get into it:</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>docker-compose up -d
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>cd docker/
+docker-compose up -d --build
 docker-compose exec manager bash
+cd /usr/src/love/manager/
 </pre></div>
 </div>
 </div>
@@ -218,6 +225,23 @@ docker-compose exec manager bash
 <div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>cd ../docsrc
 ./create_docs.sh
 </pre></div>
+</div>
+<div class="section" id="linting-formatting">
+<h4><span class="section-number">4.2.3.1. </span>Linting &amp; Formatting<a class="headerlink" href="#linting-formatting" title="Permalink to this headline">¶</a></h4>
+<p>In order to maintaing code linting and formatting we use <code class="docutils literal notranslate"><span class="pre">pre-commit</span></code> that runs <strong>Flake8</strong> (<a class="reference external" href="https://flake8.pycqa.org/">https://flake8.pycqa.org/</a>) and <strong>Black</strong> (<a class="reference external" href="https://github.com/psf/black">https://github.com/psf/black</a>) using Git Hooks. To enable this you have to:</p>
+<ol class="arabic">
+<li><p>Install <code class="docutils literal notranslate"><span class="pre">pre-commit</span></code> in your local development environment:</p>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>pip install pre-commit
+</pre></div>
+</div>
+</li>
+<li><p>Set up the git hook scripts running:</p>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span>pre-commit install
+</pre></div>
+</div>
+</li>
+<li><p>Start developing! Linter and Formatter will be executed on every commit you make</p></li>
+</ol>
 </div>
 </div>
 </div>

@@ -1203,6 +1203,51 @@ Delete WorkspaceView
     "status": 204
   }
 
+LOVE Configuration File
+=======================
+
+The config files feature allows loading custom configurations to the LOVE system. These files are uploaded using the LOVE-manager admin platform:
+
+1. Enter http://love-host/manager/admin/
+2. Login with your admin credentials
+3. Then go to http://love-host/manager/admin/api/configfile/ 
+4. Select the ADD CONFIG FILE button
+5. Enter the required information:
+  a. A user must be set
+  b. The filename (must include the extension)
+  c. The file itself to be loaded
+6. Click the SAVE button
+
+The file extension must be json and the format has the form:
+
+.. code-block:: json
+
+  {
+    "alarms": {
+      "minSeveritySound": "mute",
+      "minSeverityNotification": "mute"
+    },
+    "camFeeds": {
+      "generic": "/gencam",
+      "allSky": "/gencam"
+    }
+  }
+
+This is a normal json file with ``{“key”: “value”}`` items. You can use different variable types such as: strings, numbers, arrays and objects.
+
+Available configurations to the moment:
+
+- **alarms**:
+  
+  - minSeveritySound: {“mute”, “muted”, “warning”, “serious”, “critical”} : minimum level to reproduce sound alarm notifications. If set to “mute” or “muted” no sound is going to be reproduced.
+  - minSeverityNotification: {“mute”, “muted”, “warning”, “serious”, “critical”} : minimum level to report alarm notifications. If set to “mute” or “muted” no alarm will be reported.
+- **camFeeds**:
+  
+  - generic: cam feed used on the GenericCamera component. This feed will be used if the “generic” value is set on the FEEDKEY configuration parameter of the Generic Camera component.
+  - allSky: cam feed used on the GenericCamera component. This feed will be used if the “allSky” value is set on the FEEDKEY configuration parameter of the Generic Camera component.
+- **efd**:
+  
+  - defaultEfdInstance : {“summit_efd”, "ncsa_teststand_efd", “"ldf_stable_efd"”, “ldf_int_efd”, “base_efd”, “tucson_teststand_efd”, “test_efd”} : default efd instance to be queried on the VegaTimeSeriesPlot component.
 
 EFD
 ============
