@@ -385,7 +385,7 @@ class WorkspaceViewModelTestCase(TestCase):
             "The number of objects in the DB have decreased by 1",
         )
         with self.assertRaises(Exception):
-            Workspace.objects.get(pk=self.workspace_view_pk)
+            WorkspaceView.objects.get(pk=self.workspace_view_pk)
 
 
 class WorkspaceAndViewsRelationsTestCase(TestCase):

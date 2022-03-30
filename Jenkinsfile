@@ -70,6 +70,7 @@ pipeline {
           branch "bugfix/*"
           branch "hotfix/*"
           branch "release/*"
+          branch "tickets/*"
           branch "PR-*"
         }
       }
