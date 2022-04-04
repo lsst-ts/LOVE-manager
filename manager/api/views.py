@@ -525,16 +525,13 @@ def query_efd_clients(request):
 
 @api_view(["POST"])
 @permission_classes((IsAuthenticated,))
-def query_efd(request, *args, **kwargs):
+def query_efd_timeseries(request, *args, **kwargs):
     """Queries data from an EFD timeseries by redirecting the request to the Commander
 
     Params
     ------
     request: Request
         The Request object
-    args: list
-        List of addittional arguments. Currently unused
-    kwargs: dict
         Dictionary with request arguments. Request should contain the following:
             start_date (required): String specifying the start of the query range. Default current date minus 10 minutes
             timewindow (required): Int specifying the number of minutes to query starting from start_date. Default 10
@@ -548,6 +545,11 @@ def query_efd(request, *args, **kwargs):
                     },
                 }
             resample (optional): The offset string representing target resample conversion, e.g. '15min', '10S'
+            efd_instance (required): The specific EFD instance to query
+    args: list
+        List of addittional arguments. Currently unused
+    kwargs: dict
+        Dict of additional arguments. Currently unused
 
     Returns
     -------
@@ -555,6 +557,43 @@ def query_efd(request, *args, **kwargs):
         The response and status code of the request to the LOVE-Commander
     """
     url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/efd/timeseries"
+    response = requests.post(url, json=request.data)
+    return Response(response.json(), status=response.status_code)
+
+
+@api_view(["POST"])
+@permission_classes((IsAuthenticated,))
+def query_efd_logs(request, *args, **kwargs):
+    """Queries data from an EFD timeseries by redirecting the request to the Commander
+
+    Params
+    ------
+    request: Request
+        The Request object
+        Dictionary with request arguments. Request should contain the following:
+            start_date (required): String specifying the start of the query range.
+            end_date (required): String specifying the end of the query range.
+            cscs (required): Dictionary of the form
+                {
+                    CSC1: {
+                        index: [topic1, topic2...],
+                    },
+                    CSC2: {
+                        index: [topic1, topic2...],
+                    },
+                }
+            efd_instance (required): The specific EFD instance to query
+    args: list
+        List of addittional arguments. Currently unused
+    kwargs: dict
+        Dict of additional arguments. Currently unused
+
+    Returns
+    -------
+    Response
+        The response and status code of the request to the LOVE-Commander
+    """
+    url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/efd/logmessages"
     response = requests.post(url, json=request.data)
     return Response(response.json(), status=response.status_code)
 
