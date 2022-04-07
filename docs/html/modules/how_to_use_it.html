@@ -1384,7 +1384,7 @@ The response contains the contentes fo the config file (<code class="code docuti
 <h2><span class="section-number">2.6. </span>LOVE Configuration File<a class="headerlink" href="#love-configuration-file" title="Permalink to this headline">¶</a></h2>
 <p>The config files feature allows loading custom configurations to the LOVE system. These files are uploaded using the LOVE-manager admin platform:</p>
 <ol class="arabic simple">
-<li><p>Enter <a class="reference external" href="http://love-host/manager/admin/">http://love-host/manager/admin/</a></p></li>
+<li><p>Enter <a class="reference external" href="http://love-host/manager/admin/">http://love-host/manager/admin/</a>. You have to replace <strong>love-host</strong> with the host you are using, e.g. <a class="reference external" href="http://love01.cp.lsst.org/manager/admin">http://love01.cp.lsst.org/manager/admin</a></p></li>
 <li><p>Login with your admin credentials</p></li>
 <li><p>Then go to <a class="reference external" href="http://love-host/manager/admin/api/configfile/">http://love-host/manager/admin/api/configfile/</a></p></li>
 <li><p>Select the ADD CONFIG FILE button</p></li>
@@ -1401,18 +1401,6 @@ The response contains the contentes fo the config file (<code class="code docuti
 <li><p>Click the SAVE button</p></li>
 </ol>
 <p>The file extension must be json and the format has the form:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;alarms&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;minSeveritySound&quot;</span><span class="p">:</span> <span class="s2">&quot;mute&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;minSeverityNotification&quot;</span><span class="p">:</span> <span class="s2">&quot;mute&quot;</span>
-  <span class="p">},</span>
-  <span class="nt">&quot;camFeeds&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;generic&quot;</span><span class="p">:</span> <span class="s2">&quot;/gencam&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;allSky&quot;</span><span class="p">:</span> <span class="s2">&quot;/gencam&quot;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
 <p>This is a normal json file with <code class="docutils literal notranslate"><span class="pre">{“key”:</span> <span class="pre">“value”}</span></code> items. You can use different variable types such as: strings, numbers, arrays and objects.</p>
 <p>Available configurations to the moment:</p>
 <ul class="simple">
