@@ -1,4 +1,5 @@
 from astropy.time import Time
+from astropy.units import hour
 
 
 def get_tai_to_utc() -> float:
@@ -31,12 +32,15 @@ def get_times():
     t = Time.now()
     t_utc = t.datetime.timestamp()
     t_tai = t.tai.datetime.timestamp()
+    shifted_iso = (t.tai - 12 * hour).iso
+    observing_day = shifted_iso[0:10].replace("-", "")
     sidereal_summit = t.sidereal_time("apparent", longitude=-70.749417, model=None)
     sidereal_greenwich = t.sidereal_time("apparent", longitude="greenwich", model=None)
     return {
         "utc": t_utc,
         "tai": t_tai,
         "mjd": t.mjd,
+        "observing_day": observing_day,
         "sidereal_summit": sidereal_summit.value,
         "sidereal_greenwich": sidereal_greenwich.value,
         "tai_to_utc": t_utc - t_tai,
@@ -54,8 +58,10 @@ def assert_time_data(time_data):
             "utc": "<current time in UTC scale as a unix timestamp (seconds), in float format>",
             "tai": "<current time in UTC scale as a unix timestamp (seconds), in float format>",
             "mjd": "<current time as a modified julian date, in float format>",
-            "sidereal_summit": "<current time as a sidereal_time w/respect to the summit location (hourangles), in float format>",
-            "sidereal_summit": "<current time as a sidereal_time w/respect to Greenwich location (hourangles), in float format>",
+            "sidereal_summit": "<current time as a sidereal_time w/respect
+                to the summit location (hourangles), in float format>",
+            "sidereal_summit": "<current time as a sidereal_time w/respect
+                to Greenwich location (hourangles), in float format>",
             "tai_to_utc": "<The number of seconds of difference between TAI and UTC times (seconds), in float format>",
         }
 
