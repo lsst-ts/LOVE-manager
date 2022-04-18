@@ -26,7 +26,7 @@ def get_times():
         - tai: current time in UTC scale as a unix timestamp (seconds)
         - mjd: current time as a modified julian date
         - sidereal_summit: current time as a sidereal_time w/respect to the summit location (hourangles)
-        - sidereal_summit: current time as a sidereal_time w/respect to Greenwich location (hourangles)
+        - sidereal_greenwich: current time as a sidereal_time w/respect to Greenwich location (hourangles)
         - tai_to_utc: The number of seconds of difference between TAI and UTC times (seconds)
     """
     t = Time.now()
@@ -60,7 +60,7 @@ def assert_time_data(time_data):
             "mjd": "<current time as a modified julian date, in float format>",
             "sidereal_summit": "<current time as a sidereal_time w/respect
                 to the summit location (hourangles), in float format>",
-            "sidereal_summit": "<current time as a sidereal_time w/respect
+            "sidereal_greenwich": "<current time as a sidereal_time w/respect
                 to Greenwich location (hourangles), in float format>",
             "tai_to_utc": "<The number of seconds of difference between TAI and UTC times (seconds), in float format>",
         }
