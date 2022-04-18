@@ -271,8 +271,10 @@
         <span class="nt">&quot;utc&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;current time in UTC scale as a unix timestamp (seconds)&gt;&quot;</span><span class="p">,</span>
         <span class="nt">&quot;tai&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;current time in UTC scale as a unix timestamp (seconds)&gt;&quot;</span><span class="p">,</span>
         <span class="nt">&quot;mjd&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;current time as a modified julian date&gt;&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;sidereal_summit&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;current time as a sidereal_time w/respect to the summit location (hourangles)&gt;&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;sidereal_summit&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;current time as a sidereal_time w/respect to Greenwich location (hourangles)&gt;&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;sidereal_summit&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;current time as a sidereal_time w/respect</span>
+<span class="s2">                            to the summit location (hourangles)&gt;&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;sidereal_summit&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;current time as a sidereal_time w/respect</span>
+<span class="s2">                            to Greenwich location (hourangles)&gt;&quot;</span><span class="p">,</span>
         <span class="nt">&quot;tai_to_utc&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;The number of seconds of difference between TAI and UTC times (seconds)&gt;&quot;</span><span class="p">,</span>
     <span class="p">},</span>
     <span class="nt">&quot;request_time&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;timestamp with the request time, e.g. 123243423.123&gt;&quot;</span>
@@ -318,25 +320,6 @@ The expected format of the message for a telemetry or an event is as follows:</p
             <span class="p">},</span>
         <span class="p">}</span>
     <span class="p">}]</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="subscription.consumers.SubscriptionConsumer.handle_heartbeat_message">
-<em class="property">async </em><code class="sig-name descname">handle_heartbeat_message</code><span class="sig-paren">(</span><em class="sig-param">message</em><span class="sig-paren">)</span><a class="headerlink" href="#subscription.consumers.SubscriptionConsumer.handle_heartbeat_message" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handle a heartbeat message.</p>
-<p>Receives a heartbeat message and sets it in the heartbeat manager.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>message</strong> (<cite>dict</cite>) – <p>dictionary containing the message parsed as json. The expected format of the message is as follows:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="nt">&quot;heartbeat&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;component name&gt;&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;timestamp of the last heartbeat&gt; (optional)&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -453,7 +436,7 @@ Runs 2 tasks in order to dispatch the heartbeats and request the LOVE-Commander�
 <p>Define the rules for routing of channels messages (websockets) in the subscirption application.</p>
 <dl class="data">
 <dt id="subscription.routing.websocket_urlpatterns">
-<code class="sig-prename descclassname">subscription.routing.</code><code class="sig-name descname">websocket_urlpatterns</code><em class="property"> = [&lt;URLPattern '^manager/ws/subscription/?$'&gt;]</em><a class="headerlink" href="#subscription.routing.websocket_urlpatterns" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">subscription.routing.</code><code class="sig-name descname">websocket_urlpatterns</code><em class="property"> = [&lt;URLPattern '^manager(.*?)/ws/subscription/?$'&gt;]</em><a class="headerlink" href="#subscription.routing.websocket_urlpatterns" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of url patterns that match a URL to a Consumer (in this case only 1).</p>
 </dd></dl>
 

@@ -4,6 +4,14 @@ api.tests package
 Submodules
 ----------
 
+api.tests.test\_authlist module
+-------------------------------
+
+.. automodule:: api.tests.test_authlist
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 api.tests.test\_commander module
 --------------------------------
 

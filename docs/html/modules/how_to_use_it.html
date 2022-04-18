@@ -147,8 +147,9 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#efd">2.6. EFD</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#tcs">2.7. TCS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#love-configuration-file">2.6. LOVE Configuration File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#efd">2.7. EFD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tcs">2.8. TCS</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="how_it_works.html">3. How it works</a></li>
@@ -1379,31 +1380,74 @@ The response contains the contentes fo the config file (<code class="code docuti
 </div>
 </div>
 </div>
+<div class="section" id="love-configuration-file">
+<h2><span class="section-number">2.6. </span>LOVE Configuration File<a class="headerlink" href="#love-configuration-file" title="Permalink to this headline">¶</a></h2>
+<p>The config files feature allows loading custom configurations to the LOVE system. These files are uploaded using the LOVE-manager admin platform:</p>
+<ol class="arabic simple">
+<li><p>Enter <a class="reference external" href="http://love-host/manager/admin/">http://love-host/manager/admin/</a>. You have to replace <strong>love-host</strong> with the host you are using, e.g. <a class="reference external" href="http://love01.cp.lsst.org/manager/admin">http://love01.cp.lsst.org/manager/admin</a></p></li>
+<li><p>Login with your admin credentials</p></li>
+<li><p>Then go to <a class="reference external" href="http://love-host/manager/admin/api/configfile/">http://love-host/manager/admin/api/configfile/</a></p></li>
+<li><p>Select the ADD CONFIG FILE button</p></li>
+<li><p>Enter the required information:</p></li>
+</ol>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li><p>A user must be set</p></li>
+<li><p>The filename (must include the extension)</p></li>
+<li><p>The file itself to be loaded</p></li>
+</ol>
+</div></blockquote>
+<ol class="arabic simple" start="6">
+<li><p>Click the SAVE button</p></li>
+</ol>
+<p>The file extension must be json and the format has the form:</p>
+<p>This is a normal json file with <code class="docutils literal notranslate"><span class="pre">{“key”:</span> <span class="pre">“value”}</span></code> items. You can use different variable types such as: strings, numbers, arrays and objects.</p>
+<p>Available configurations to the moment:</p>
+<ul class="simple">
+<li><p><strong>alarms</strong>:</p>
+<ul>
+<li><p>minSeveritySound: {“mute”, “muted”, “warning”, “serious”, “critical”} : minimum level to reproduce sound alarm notifications. If set to “mute” or “muted” no sound is going to be reproduced.</p></li>
+<li><p>minSeverityNotification: {“mute”, “muted”, “warning”, “serious”, “critical”} : minimum level to report alarm notifications. If set to “mute” or “muted” no alarm will be reported.</p></li>
+</ul>
+</li>
+<li><p><strong>camFeeds</strong>:</p>
+<ul>
+<li><p>generic: cam feed used on the GenericCamera component. This feed will be used if the “generic” value is set on the FEEDKEY configuration parameter of the Generic Camera component.</p></li>
+<li><p>allSky: cam feed used on the GenericCamera component. This feed will be used if the “allSky” value is set on the FEEDKEY configuration parameter of the Generic Camera component.</p></li>
+</ul>
+</li>
+<li><p><strong>efd</strong>:</p>
+<ul>
+<li><p>defaultEfdInstance : {“summit_efd”, “ncsa_teststand_efd”, “”ldf_stable_efd””, “ldf_int_efd”, “base_efd”, “tucson_teststand_efd”, “test_efd”} : default efd instance to be queried on the VegaTimeSeriesPlot component.</p></li>
+</ul>
+</li>
+</ul>
+</div>
 <div class="section" id="efd">
-<h2><span class="section-number">2.6. </span>EFD<a class="headerlink" href="#efd" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">2.7. </span>EFD<a class="headerlink" href="#efd" title="Permalink to this headline">¶</a></h2>
 <p>Endpoint to request EFD timeseries.</p>
 <ul class="simple">
 <li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/efd/timeseries</span></code></p></li>
 <li><p>HTTP Operation: POST</p></li>
 <li><p>Message Payload:</p></li>
 </ul>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span>{
-  &quot;start_date&quot;: &quot;2020-03-16T12:00:00&quot;,
-  &quot;time_window&quot;: 15,
-  &quot;cscs&quot;: {
-    &quot;ATDome&quot;: {
-      0: {
-        &quot;topic1&quot;: [&quot;field1&quot;]
-      },
-    },
-    &quot;ATMCS&quot;: {
-      1: {
-        &quot;topic2&quot;: [&quot;field2&quot;, &quot;field3&quot;]
-      },
-    }
-  },
-  &quot;resample&quot;: &quot;1min&quot;,
-}
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;start_date&quot;</span><span class="p">:</span> <span class="s2">&quot;2020-03-16T12:00:00&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;time_window&quot;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
+  <span class="nt">&quot;cscs&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;ATDome&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="mi">0</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;topic1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;field1&quot;</span><span class="p">]</span>
+      <span class="p">},</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;ATMCS&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="mi">1</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;topic2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;field2&quot;</span><span class="p">,</span> <span class="s2">&quot;field3&quot;</span><span class="p">]</span>
+      <span class="p">},</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;resample&quot;</span><span class="p">:</span> <span class="s2">&quot;1min&quot;</span><span class="p">,</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -1443,7 +1487,7 @@ The response contains the contentes fo the config file (<code class="code docuti
 </div>
 </div>
 <div class="section" id="tcs">
-<h2><span class="section-number">2.7. </span>TCS<a class="headerlink" href="#tcs" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">2.8. </span>TCS<a class="headerlink" href="#tcs" title="Permalink to this headline">¶</a></h2>
 <p>Endpoint to send ATCS commands.</p>
 <ul class="simple">
 <li><p>Url: <code class="code docutils literal notranslate"><span class="pre">&lt;IP&gt;/manager/tcs/aux</span></code></p></li>
