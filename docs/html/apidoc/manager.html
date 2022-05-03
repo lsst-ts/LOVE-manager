@@ -194,25 +194,25 @@
 <a class="reference external" href="https://docs.djangoproject.com/en/2.2/ref/settings/">https://docs.djangoproject.com/en/2.2/ref/settings/</a></p>
 <dl class="data">
 <dt id="manager.settings.ALLOWED_HOSTS">
-<code class="sig-prename descclassname">manager.settings.</code><code class="sig-name descname">ALLOWED_HOSTS</code><em class="property"> = ['localhost', '0.0.0.0', '127.0.0.1', 'love-nginx-mount', 'love-nginx', None]</em><a class="headerlink" href="#manager.settings.ALLOWED_HOSTS" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">manager.settings.</code><code class="sig-name descname">ALLOWED_HOSTS</code><em class="property"> = ['localhost', '0.0.0.0', '127.0.0.1', 'love-nginx-mount', 'love-nginx', '*']</em><a class="headerlink" href="#manager.settings.ALLOWED_HOSTS" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of Django allowed hosts (<cite>list</cite> of <cite>string</cite>)</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="manager.settings.AUTH_LDAP_SERVER_URI">
-<code class="sig-prename descclassname">manager.settings.</code><code class="sig-name descname">AUTH_LDAP_SERVER_URI</code><em class="property"> = False</em><a class="headerlink" href="#manager.settings.AUTH_LDAP_SERVER_URI" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">manager.settings.</code><code class="sig-name descname">AUTH_LDAP_SERVER_URI</code><em class="property"> = ''</em><a class="headerlink" href="#manager.settings.AUTH_LDAP_SERVER_URI" title="Permalink to this definition">¶</a></dt>
 <dd><p>URL for the LDAP server. Read from <cite>AUTH_LDAP_SERVER_URI</cite> environment variable (<cite>bool</cite>)</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="manager.settings.CHANNEL_LAYERS">
-<code class="sig-prename descclassname">manager.settings.</code><code class="sig-name descname">CHANNEL_LAYERS</code><em class="property"> = {'default': {'BACKEND': 'channels.layers.InMemoryChannelLayer'}}</em><a class="headerlink" href="#manager.settings.CHANNEL_LAYERS" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">manager.settings.</code><code class="sig-name descname">CHANNEL_LAYERS</code><em class="property"> = {'default': {'BACKEND': 'channels_redis.core.RedisChannelLayer', 'CONFIG': {'capacity': 100, 'expiry': 60, 'hosts': ['redis://:admin123&#64;redis:6379/0'], 'symmetric_encryption_keys': ['tbder3gzppu)kl%(u3awhhg^^zuj&amp;!ceh&#64;$n&amp;v0d38sjx43s8.']}}}</em><a class="headerlink" href="#manager.settings.CHANNEL_LAYERS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Django Channels Channel Layer configuration (<cite>dict</cite>)</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="manager.settings.DATABASES">
-<code class="sig-prename descclassname">manager.settings.</code><code class="sig-name descname">DATABASES</code><em class="property"> = {'default': {'ATOMIC_REQUESTS': False, 'AUTOCOMMIT': True, 'CONN_MAX_AGE': 0, 'ENGINE': 'django.db.backends.postgresql', 'HOST': 'database', 'NAME': 'postgres', 'OPTIONS': {}, 'PASSWORD': 'postgres', 'PORT': '5432', 'TEST': {'CHARSET': None, 'COLLATION': None, 'MIGRATE': True, 'MIRROR': None, 'NAME': None}, 'TIME_ZONE': None, 'USER': 'postgres'}}</em><a class="headerlink" href="#manager.settings.DATABASES" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">manager.settings.</code><code class="sig-name descname">DATABASES</code><em class="property"> = {'default': {'ATOMIC_REQUESTS': False, 'AUTOCOMMIT': True, 'CONN_MAX_AGE': 0, 'ENGINE': 'django.db.backends.postgresql', 'HOST': 'love-database', 'NAME': 'postgres', 'OPTIONS': {}, 'PASSWORD': 'postgres', 'PORT': '5432', 'TEST': {'CHARSET': None, 'COLLATION': None, 'MIGRATE': True, 'MIRROR': None, 'NAME': None}, 'TIME_ZONE': None, 'USER': 'postgres'}}</em><a class="headerlink" href="#manager.settings.DATABASES" title="Permalink to this definition">¶</a></dt>
 <dd><p>Databases configuration (<cite>dict</cite>)</p>
 </dd></dl>
 
@@ -230,14 +230,14 @@
 
 <dl class="data">
 <dt id="manager.settings.PROCESS_CONNECTION_PASS">
-<code class="sig-prename descclassname">manager.settings.</code><code class="sig-name descname">PROCESS_CONNECTION_PASS</code><em class="property"> = 'dev_pass'</em><a class="headerlink" href="#manager.settings.PROCESS_CONNECTION_PASS" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">manager.settings.</code><code class="sig-name descname">PROCESS_CONNECTION_PASS</code><em class="property"> = 'my_dev_password'</em><a class="headerlink" href="#manager.settings.PROCESS_CONNECTION_PASS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Password that Producers use to connect to eh Manager,
 read from the <cite>PROCESS_CONNECTION_PASS</cite> environment variable (<cite>string</cite>)</p>
 </dd></dl>
 
 <dl class="data">
 <dt id="manager.settings.SECRET_KEY">
-<code class="sig-prename descclassname">manager.settings.</code><code class="sig-name descname">SECRET_KEY</code><em class="property"> = 'tbder3gzppu)kl%(u3awhhg^^zu#j&amp;!ceh&#64;$n&amp;v0d38sjx43s8'</em><a class="headerlink" href="#manager.settings.SECRET_KEY" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">manager.settings.</code><code class="sig-name descname">SECRET_KEY</code><em class="property"> = 'tbder3gzppu)kl%(u3awhhg^^zuj&amp;!ceh&#64;$n&amp;v0d38sjx43s8.'</em><a class="headerlink" href="#manager.settings.SECRET_KEY" title="Permalink to this definition">¶</a></dt>
 <dd><p>Secret Key for Django, read from the <cite>SECRET_KEY</cite> environment variable (<cite>string</cite>)</p>
 </dd></dl>
 
@@ -317,8 +317,10 @@ Read from TRACE_TIMESTAMPS` environment variable (<cite>bool</cite>)</p>
     <span class="nt">&quot;utc&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;current time in UTC scale as a unix timestamp (seconds), in float format&gt;&quot;</span><span class="p">,</span>
     <span class="nt">&quot;tai&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;current time in UTC scale as a unix timestamp (seconds), in float format&gt;&quot;</span><span class="p">,</span>
     <span class="nt">&quot;mjd&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;current time as a modified julian date, in float format&gt;&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;sidereal_summit&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;current time as a sidereal_time w/respect to the summit location (hourangles), in float format&gt;&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;sidereal_summit&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;current time as a sidereal_time w/respect to Greenwich location (hourangles), in float format&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;sidereal_summit&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;current time as a sidereal_time w/respect</span>
+<span class="s2">        to the summit location (hourangles), in float format&gt;&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;sidereal_greenwich&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;current time as a sidereal_time w/respect</span>
+<span class="s2">        to Greenwich location (hourangles), in float format&gt;&quot;</span><span class="p">,</span>
     <span class="nt">&quot;tai_to_utc&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;The number of seconds of difference between TAI and UTC times (seconds), in float format&gt;&quot;</span><span class="p">,</span>
 <span class="p">}</span>
 </pre></div>
@@ -361,7 +363,7 @@ Read from TRACE_TIMESTAMPS` environment variable (<cite>bool</cite>)</p>
 - tai: current time in UTC scale as a unix timestamp (seconds)
 - mjd: current time as a modified julian date
 - sidereal_summit: current time as a sidereal_time w/respect to the summit location (hourangles)
-- sidereal_summit: current time as a sidereal_time w/respect to Greenwich location (hourangles)
+- sidereal_greenwich: current time as a sidereal_time w/respect to Greenwich location (hourangles)
 - tai_to_utc: The number of seconds of difference between TAI and UTC times (seconds)</p>
 </dd>
 <dt class="field-even">Return type</dt>

@@ -1402,7 +1402,7 @@ The response contains the contentes fo the config file (<code class="code docuti
 </ol>
 <p>The file extension must be json and the format has the form:</p>
 <p>This is a normal json file with <code class="docutils literal notranslate"><span class="pre">{“key”:</span> <span class="pre">“value”}</span></code> items. You can use different variable types such as: strings, numbers, arrays and objects.</p>
-<p>Available configurations to the moment:</p>
+<p>Available configurations:</p>
 <ul class="simple">
 <li><p><strong>alarms</strong>:</p>
 <ul>
@@ -1419,6 +1419,11 @@ The response contains the contentes fo the config file (<code class="code docuti
 <li><p><strong>efd</strong>:</p>
 <ul>
 <li><p>defaultEfdInstance : {“summit_efd”, “ncsa_teststand_efd”, “”ldf_stable_efd””, “ldf_int_efd”, “base_efd”, “tucson_teststand_efd”, “test_efd”} : default efd instance to be queried on the VegaTimeSeriesPlot component.</p></li>
+</ul>
+</li>
+<li><p><strong>survey</strong>:</p>
+<ul>
+<li><p>surveyTime : this is day/time from official start of the surve. Value must be a timestamp in miliseconds (13-digits number) UTC.</p></li>
 </ul>
 </li>
 </ul>
