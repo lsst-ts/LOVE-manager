@@ -1233,7 +1233,7 @@ The file extension must be json and the format has the form:
   }
 This is a normal json file with ``{“key”: “value”}`` items. You can use different variable types such as: strings, numbers, arrays and objects.
 
-Available configurations to the moment:
+Available configurations:
 
 - **alarms**:
 
@@ -1246,6 +1246,9 @@ Available configurations to the moment:
 - **efd**:
 
   - defaultEfdInstance : {“summit_efd”, "ncsa_teststand_efd", “"ldf_stable_efd"”, “ldf_int_efd”, “base_efd”, “tucson_teststand_efd”, “test_efd”} : default efd instance to be queried on the VegaTimeSeriesPlot component.
+- **survey**:
+
+  - surveyTime : this is day/time from official start of the surve. Value must be a timestamp in miliseconds (13-digits number) UTC.
 
 EFD
 ============

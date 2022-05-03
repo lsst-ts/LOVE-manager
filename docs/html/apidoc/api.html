@@ -1379,7 +1379,7 @@ serializations depending on the incoming request.</p>
 
 <dl class="attribute">
 <dt id="api.views.ConfigFileViewSet.queryset">
-<code class="sig-name descname">queryset</code><em class="property"> = &lt;QuerySet []&gt;</em><a class="headerlink" href="#api.views.ConfigFileViewSet.queryset" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">queryset</code><em class="property"> = &lt;QuerySet [&lt;ConfigFile: ConfigFile object (1)&gt;]&gt;</em><a class="headerlink" href="#api.views.ConfigFileViewSet.queryset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set of objects to be accessed by queries to this viewsets endpoints</p>
 </dd></dl>
 
@@ -1503,7 +1503,7 @@ serializations depending on the incoming request.</p>
 
 <dl class="attribute">
 <dt id="api.views.EmergencyContactViewSet.queryset">
-<code class="sig-name descname">queryset</code><em class="property"> = &lt;QuerySet []&gt;</em><a class="headerlink" href="#api.views.EmergencyContactViewSet.queryset" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">queryset</code><em class="property"> = &lt;QuerySet [&lt;EmergencyContact: EmergencyContact object (1)&gt;, &lt;EmergencyContact: EmergencyContact object (2)&gt;]&gt;</em><a class="headerlink" href="#api.views.EmergencyContactViewSet.queryset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set of objects to be accessed by queries to this viewsets endpoints</p>
 </dd></dl>
 
@@ -1594,16 +1594,77 @@ serializations depending on the incoming request.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="api.views.query_efd">
-<code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">query_efd</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">request</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.query_efd" title="Permalink to this definition">¶</a></dt>
+<dt id="api.views.query_efd_clients">
+<code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">query_efd_clients</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">request</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.query_efd_clients" title="Permalink to this definition">¶</a></dt>
+<dd><p>Requests EFD instances</p>
+<dl class="simple">
+<dt>request: Request</dt><dd><p>The Request object</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The response and status code of the request to the LOVE-Commander</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="api.views.query_efd_logs">
+<code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">query_efd_logs</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">request</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.query_efd_logs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Queries data from an EFD timeseries by redirecting the request to the Commander</p>
 <dl>
-<dt>request: Request</dt><dd><p>The Request object</p>
+<dt>request: Request</dt><dd><p>The Request object
+Dictionary with request arguments. Request should contain the following:</p>
+<blockquote>
+<div><p>start_date (required): String specifying the start of the query range.
+end_date (required): String specifying the end of the query range.
+cscs (required): Dictionary of the form</p>
+<blockquote>
+<div><dl>
+<dt>{</dt><dd><dl class="simple">
+<dt>CSC1: {</dt><dd><p>index: [topic1, topic2…],</p>
+</dd>
+</dl>
+<p>},
+CSC2: {</p>
+<blockquote>
+<div><p>index: [topic1, topic2…],</p>
+</div></blockquote>
+<p>},</p>
+</dd>
+</dl>
+<p>}</p>
+</div></blockquote>
+<p>efd_instance (required): The specific EFD instance to query</p>
+</div></blockquote>
 </dd>
 <dt>args: list</dt><dd><p>List of addittional arguments. Currently unused</p>
 </dd>
-<dt>kwargs: dict</dt><dd><dl>
-<dt>Dictionary with request arguments. Request should contain the following:</dt><dd><p>start_date (required): String specifying the start of the query range. Default current date minus 10 minutes
+<dt>kwargs: dict</dt><dd><p>Dict of additional arguments. Currently unused</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The response and status code of the request to the LOVE-Commander</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="api.views.query_efd_timeseries">
+<code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">query_efd_timeseries</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">request</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.query_efd_timeseries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Queries data from an EFD timeseries by redirecting the request to the Commander</p>
+<dl>
+<dt>request: Request</dt><dd><p>The Request object
+Dictionary with request arguments. Request should contain the following:</p>
+<blockquote>
+<div><p>start_date (required): String specifying the start of the query range. Default current date minus 10 minutes
 timewindow (required): Int specifying the number of minutes to query starting from start_date. Default 10
 topics (required): Dictionary of the form</p>
 <blockquote>
@@ -1622,27 +1683,13 @@ CSC2: {</p>
 </dl>
 <p>}</p>
 </div></blockquote>
-<p>resample (optional): The offset string representing target resample conversion, e.g. ‘15min’, ‘10S’</p>
+<p>resample (optional): The offset string representing target resample conversion, e.g. ‘15min’, ‘10S’
+efd_instance (required): The specific EFD instance to query</p>
+</div></blockquote>
 </dd>
-</dl>
+<dt>args: list</dt><dd><p>List of addittional arguments. Currently unused</p>
 </dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The response and status code of the request to the LOVE-Commander</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Response</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="api.views.query_efd_clients">
-<code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">query_efd_clients</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">request</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.query_efd_clients" title="Permalink to this definition">¶</a></dt>
-<dd><p>Requests EFD instances</p>
-<dl class="simple">
-<dt>request: Request</dt><dd><p>The Request object</p>
+<dt>kwargs: dict</dt><dd><p>Dict of additional arguments. Currently unused</p>
 </dd>
 </dl>
 <dl class="field-list simple">
