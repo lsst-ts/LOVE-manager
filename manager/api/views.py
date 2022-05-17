@@ -938,3 +938,203 @@ def authlist_revert_authorization_task(authorization_dict):
     authorization_dict["authorized_users"] = new_authorized_users
     authorization_dict["unauthorized_cscs"] = new_unauthorized_cscs
     query_authorize_csc(authorization_dict)
+
+
+@swagger_auto_schema(
+    method="post",
+    responses={
+        200: openapi.Response("JIRA ticket created"),
+        401: openapi.Response("Unauthenticated"),
+        403: openapi.Response("Unauthorized"),
+    },
+)
+@api_view(["POST"])
+@permission_classes((IsAuthenticated,))
+def jira(request):
+    """Connects to JIRA API to create a ticket on a specific project
+
+    Params
+    ------
+    request: Request
+        The Request object
+
+    Returns
+    -------
+    Response
+        The response and status code of the request to the JIRA API
+    """
+    if not request.user.has_perm("api.command.execute_command"):
+        return Response(
+            {"ack": "User does not have permissions to execute commands."}, 403
+        )
+
+    # TODO: get JIRA authorization (login)
+    url = f"http://{os.environ.get('JIRA_API_HOSTNAME')}/cmd"
+    response = requests.post(url, json=request.data)
+
+    return Response(response.json(), status=response.status_code)
+
+
+@swagger_auto_schema(
+    method="post",
+    responses={
+        200: openapi.Response("LFA file uploaded"),
+        401: openapi.Response("Unauthenticated"),
+        403: openapi.Response("Unauthorized"),
+    },
+)
+@api_view(["POST"])
+@permission_classes((IsAuthenticated,))
+def lfa(request):
+    """Connects to LFA API to upload a new file
+
+    Params
+    ------
+    request: Request
+        The Request object
+
+    Returns
+    -------
+    Response
+        The response and status code of the request to the LFA API
+    """
+    if not request.user.has_perm("api.command.execute_command"):
+        return Response(
+            {"ack": "User does not have permissions to execute commands."}, 403
+        )
+
+    # TODO: implement S3 bucket
+    url = f"http://{os.environ.get('JIRA_API_HOSTNAME')}/cmd"
+    response = requests.post(url, json=request.data)
+
+    return Response(response.json(), status=response.status_code)
+
+
+@swagger_auto_schema(
+    method="get",
+    responses={
+        200: openapi.Response("Exposures received"),
+        401: openapi.Response("Unauthenticated"),
+        403: openapi.Response("Unauthorized"),
+    },
+)
+@api_view(["GET"])
+@permission_classes((IsAuthenticated,))
+def ole_exposurelog_exposures(request):
+    """Connects to Open API exposurelog service and get the list of exposures
+
+    Params
+    ------
+    request: Request
+        The Request object
+
+    Returns
+    -------
+    Response
+        The response and status code of the request to the Open API exposurelog service
+    """
+    if not request.user.has_perm("api.command.execute_command"):
+        return Response(
+            {"ack": "User does not have permissions to execute commands."}, 403
+        )
+
+    url = f"http://{os.environ.get('EXPOSURELOG_API_HOSTNAME')}/exposures"
+    response = requests.get(url, json=request.data)
+
+    return Response(response.json(), status=response.status_code)
+
+
+@swagger_auto_schema(
+    method="get",
+    responses={
+        200: openapi.Response("Instruments received"),
+        401: openapi.Response("Unauthenticated"),
+        403: openapi.Response("Unauthorized"),
+    },
+)
+@api_view(["GET"])
+@permission_classes((IsAuthenticated,))
+def ole_exposurelog_instruments(request):
+    """Connects to Open API exposurelog service and get the list of instruments
+
+    Params
+    ------
+    request: Request
+        The Request object
+
+    Returns
+    -------
+    Response
+        The response and status code of the request to the Open API exposurelog service
+    """
+    if not request.user.has_perm("api.command.execute_command"):
+        return Response(
+            {"ack": "User does not have permissions to execute commands."}, 403
+        )
+
+    url = f"http://{os.environ.get('EXPOSURELOG_API_HOSTNAME')}/instruments"
+    response = requests.get(url, json=request.data)
+
+    return Response(response.json(), status=response.status_code)
+
+
+class ExposurelogViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.UpdateModelMixin,
+    viewsets.GenericViewSet,
+):
+    """
+    A viewset that provides `retrieve`, `create`, and `list` actions.
+
+    To use it, override the class and set the `.queryset` and
+    `.serializer_class` attributes.
+
+    """
+
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        # TODO: query messages to service
+        return []
+
+    @swagger_auto_schema(responses={201: "Message created"})
+    def create(self, request, *args, **kwargs):
+        # TODO: add new exposure message
+        return Response({"ok": "Message added"}, status=201)
+
+    @swagger_auto_schema(responses={200: "Message updated"})
+    def update(self, request, *args, **kwargs):
+        # TODO: edit exposure message
+        return Response({"ok": "Message updated"}, status=200)
+
+
+class NarrativelogViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.UpdateModelMixin,
+    viewsets.GenericViewSet,
+):
+    """
+    A viewset that provides `retrieve`, `create`, and `list` actions.
+
+    To use it, override the class and set the `.queryset` and
+    `.serializer_class` attributes.
+
+    """
+
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        # TODO: query messages to service
+        return []
+
+    @swagger_auto_schema(responses={201: "Message created"})
+    def create(self, request, *args, **kwargs):
+        # TODO: add new exposure message
+        return Response({"ok": "Message added"}, status=201)
+
+    @swagger_auto_schema(responses={200: "Message updated"})
+    def update(self, request, *args, **kwargs):
+        # TODO: edit exposure message
+        return Response({"ok": "Message updated"}, status=200)
