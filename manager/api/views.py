@@ -1189,6 +1189,41 @@ def jira(request):
     Response
         The response and status code of the request to the JIRA API
     """
+    if not request.user.has_perm("api.command.execute_command"):
+        return Response(
+            {"ack": "User does not have permissions to execute commands."}, 403
+        )
+
+    # TODO: get JIRA authorization (login)
+    url = f"http://{os.environ.get('JIRA_API_HOSTNAME')}/cmd"
+    response = requests.post(url, json=request.data)
+
+    return Response(response.json(), status=response.status_code)
+
+
+@swagger_auto_schema(
+    method="post",
+    responses={
+        200: openapi.Response("LFA file uploaded"),
+        401: openapi.Response("Unauthenticated"),
+        403: openapi.Response("Unauthorized"),
+    },
+)
+@api_view(["POST"])
+@permission_classes((IsAuthenticated,))
+def lfa(request):
+    """Connects to LFA API to upload a new file
+
+    Params
+    ------
+    request: Request
+        The Request object
+
+    Returns
+    -------
+    Response
+        The response and status code of the request to the JIRA API
+    """
 
     full_request = {
         "request_type": "narrative",  # exposure/narrative
@@ -1245,7 +1280,7 @@ def jira(request):
 )
 @api_view(["GET"])
 @permission_classes((IsAuthenticated,))
-def ole_exposurelog_exposures(request, *args, **kwargs):
+def ole_exposurelog_exposures(request):
     """Connects to Open API exposurelog service and get the list of exposures
 
     Params
