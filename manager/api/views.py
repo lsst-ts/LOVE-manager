@@ -1038,7 +1038,7 @@ def ole_exposurelog_exposures(request):
             {"ack": "User does not have permissions to execute commands."}, 403
         )
 
-    url = f"http://{os.environ.get('EXPOSURELOG_API_HOSTNAME')}/exposures"
+    url = f"http://{os.environ.get('EXPOSURELOG_API_HOSTNAME')}/exposurelog/exposures"
     response = requests.get(url, json=request.data)
 
     return Response(response.json(), status=response.status_code)
@@ -1072,69 +1072,109 @@ def ole_exposurelog_instruments(request):
             {"ack": "User does not have permissions to execute commands."}, 403
         )
 
-    url = f"http://{os.environ.get('EXPOSURELOG_API_HOSTNAME')}/instruments"
+    url = f"http://{os.environ.get('EXPOSURELOG_API_HOSTNAME')}/exposurelog/instruments"
     response = requests.get(url, json=request.data)
 
     return Response(response.json(), status=response.status_code)
 
 
-class ExposurelogViewSet(
-    mixins.CreateModelMixin,
-    mixins.ListModelMixin,
-    mixins.UpdateModelMixin,
-    viewsets.GenericViewSet,
-):
+class ExposurelogViewSet(viewsets.ViewSet):
     """
-    A viewset that provides `retrieve`, `create`, and `list` actions.
-
-    To use it, override the class and set the `.queryset` and
-    `.serializer_class` attributes.
+    A viewset that provides `list`, `create`, `retrieve`, `update`, and `destroy` actions
+    to be used to query the Open API Exposure Log Service
 
     """
 
+    # serializer_class = ExposureLogSerializer
     permission_classes = (IsAuthenticated,)
 
-    def get_queryset(self):
-        # TODO: query messages to service
-        return []
+    @swagger_auto_schema(responses={200: "Messages listed"})
+    def list(self, request, *args, **kwargs):
+        url = (
+            f"http://{os.environ.get('EXPOSURELOG_API_HOSTNAME')}/exposurelog/messages"
+        )
+        response = requests.get(url, json=request.data)
+        return Response(response.json(), status=200)
 
-    @swagger_auto_schema(responses={201: "Message created"})
+    @swagger_auto_schema(responses={201: "Message added"})
     def create(self, request, *args, **kwargs):
-        # TODO: add new exposure message
-        return Response({"ok": "Message added"}, status=201)
+        url = (
+            f"http://{os.environ.get('EXPOSURELOG_API_HOSTNAME')}/exposurelog/messages"
+        )
+        response = requests.post(url, json=request.data)
+        if response.status_code == 200:
+            return Response({"ok": "Message added"}, status=201)
+        return Response({"error": "Message was not added"}, status=400)
 
-    @swagger_auto_schema(responses={200: "Message updated"})
-    def update(self, request, *args, **kwargs):
-        # TODO: edit exposure message
-        return Response({"ok": "Message updated"}, status=200)
+    @swagger_auto_schema(responses={200: "Message retrieved"})
+    def retrieve(self, request, pk=None, *args, **kwargs):
+        url = f"http://{os.environ.get('EXPOSURELOG_API_HOSTNAME')}/exposurelog/messages/{pk}"
+        response = requests.get(url, json=request.data)
+        if response.status_code == 200:
+            return Response(response.json(), status=200)
+        return Response({"error": "Message not found"}, status=404)
+
+    @swagger_auto_schema(responses={200: "Message edited"})
+    def update(self, request, pk=None, *args, **kwargs):
+        url = f"http://{os.environ.get('EXPOSURELOG_API_HOSTNAME')}/exposurelog/messages/{pk}"
+        response = requests.patch(url, json=request.data)
+        if response.status_code == 200:
+            return Response({"ok": "Message updated"}, status=201)
+        return Response({"error": "Message was not added"}, status=400)
+
+    @swagger_auto_schema(responses={204: "Message deleted"})
+    def destroy(self, request, pk=None, *args, **kwargs):
+        url = f"http://{os.environ.get('EXPOSURELOG_API_HOSTNAME')}/exposurelog/messages/{pk}"
+        response = requests.delete(url, json=request.data)
+        if response.status_code == 204:
+            return Response({"ok": "Message deleted"}, status=204)
+        return Response({"error": "Message was not added"}, status=400)
 
 
-class NarrativelogViewSet(
-    mixins.CreateModelMixin,
-    mixins.ListModelMixin,
-    mixins.UpdateModelMixin,
-    viewsets.GenericViewSet,
-):
+class NarrativelogViewSet(viewsets.ViewSet):
     """
-    A viewset that provides `retrieve`, `create`, and `list` actions.
-
-    To use it, override the class and set the `.queryset` and
-    `.serializer_class` attributes.
+    A viewset that provides `list`, `create`, `retrieve`, `update`, and `destroy` actions
+    to be used to query the Open API Narrative Log Service
 
     """
 
+    # serializer_class = NarrativeLogSerializer
     permission_classes = (IsAuthenticated,)
 
-    def get_queryset(self):
-        # TODO: query messages to service
-        return []
+    @swagger_auto_schema(responses={200: "Messages listed"})
+    def list(self, request, *args, **kwargs):
+        url = f"http://{os.environ.get('NARRATIVELOG_API_HOSTNAME')}/narrativelog/messages"
+        response = requests.get(url, json=request.data)
+        return Response(response.json(), status=200)
 
-    @swagger_auto_schema(responses={201: "Message created"})
+    @swagger_auto_schema(responses={201: "Message added"})
     def create(self, request, *args, **kwargs):
-        # TODO: add new exposure message
-        return Response({"ok": "Message added"}, status=201)
+        url = f"http://{os.environ.get('NARRATIVELOG_API_HOSTNAME')}/narrativelog/messages"
+        response = requests.post(url, json=request.data)
+        if response.status_code == 200:
+            return Response({"ok": "Message added"}, status=201)
+        return Response({"error": "Message was not added"}, status=400)
 
-    @swagger_auto_schema(responses={200: "Message updated"})
-    def update(self, request, *args, **kwargs):
-        # TODO: edit exposure message
-        return Response({"ok": "Message updated"}, status=200)
+    @swagger_auto_schema(responses={200: "Message retrieved"})
+    def retrieve(self, request, pk=None, *args, **kwargs):
+        url = f"http://{os.environ.get('NARRATIVELOG_API_HOSTNAME')}/narrativelog/messages/{pk}"
+        response = requests.get(url, json=request.data)
+        if response.status_code == 200:
+            return Response(response.json(), status=200)
+        return Response({"error": "Message not found"}, status=404)
+
+    @swagger_auto_schema(responses={200: "Message edited"})
+    def update(self, request, pk=None, *args, **kwargs):
+        url = f"http://{os.environ.get('NARRATIVELOG_API_HOSTNAME')}/narrativelog/messages/{pk}"
+        response = requests.patch(url, json=request.data)
+        if response.status_code == 200:
+            return Response({"ok": "Message updated"}, status=201)
+        return Response({"error": "Message was not added"}, status=400)
+
+    @swagger_auto_schema(responses={204: "Message deleted"})
+    def destroy(self, request, pk=None, *args, **kwargs):
+        url = f"http://{os.environ.get('NARRATIVELOG_API_HOSTNAME')}/narrativelog/messages/{pk}"
+        response = requests.delete(url, json=request.data)
+        if response.status_code == 204:
+            return Response({"ok": "Message deleted"}, status=204)
+        return Response({"error": "Message was not added"}, status=400)

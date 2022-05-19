@@ -86,6 +86,8 @@ router.register(
     api.views.CSCAuthorizationRequestViewSet,
     basename="authlistrequest",
 )
-router.register("ole/exposurelog/messages", ExposurelogViewSet)
-router.register("ole/narrativelog/messages", NarrativelogViewSet)
+router.register("ole/exposurelog/messages", ExposurelogViewSet, basename="ExposureLogs")
+router.register(
+    "ole/narrativelog/messages", NarrativelogViewSet, basename="NarrativeLogs"
+)
 urlpatterns.append(path("", include(router.urls)))
