@@ -5,6 +5,7 @@ import requests
 import yaml
 import jsonschema
 import collections
+from background_task import background
 from django.core.exceptions import PermissionDenied
 from django.utils import timezone
 from django.db.models.query_utils import Q
@@ -855,6 +856,11 @@ class CSCAuthorizationRequestViewSet(
             authorization_obj.resolved_at = timezone.now()
             # authorize_csc_response = self.query_authorize_csc()
 
+            if int(authorization_obj.duration) >= 0:
+                self.authlist_revert_authorization_task(
+                    authorization_obj, schedule=int(authorization_obj.duration)
+                )
+
         authorization_obj.save()
         if authorization_self_remove_obj is not None:
             return Response(
@@ -881,7 +887,31 @@ class CSCAuthorizationRequestViewSet(
             updated_instance.resolved_at = timezone.now()
             updated_instance.save()
             # authorize_csc_response = self.query_authorize_csc()
+
+            if int(updated_instance.duration) >= 0:
+                self.authlist_revert_authorization_task(
+                    updated_instance, schedule=int(updated_instance.duration)
+                )
+
             return Response(
                 CSCAuthorizationRequestSerializer(updated_instance).data, status=200
             )
         return Response({"error": "Bad request"}, status=status.HTTP_400_BAD_REQUEST)
+
+    @background(schedule=60)
+    def authlist_revert_authorization_task(self, request):
+        new_authorized_users = (
+            request.authorized_users.replace("+", "[plus]")
+            .replace("-", "[minus]")
+            .replace("[plus]", "-")
+            .replace("[minus]", "+")
+        )
+        new_unauthorized_cscs = (
+            request.unauthorized_cscs.replace("+", "[plus]")
+            .replace("-", "[minus]")
+            .replace("[plus]", "-")
+            .replace("[minus]", "+")
+        )
+        request.authorized_users = new_authorized_users
+        request.unauthorized_cscs = new_unauthorized_cscs
+        self.query_authorize_csc(request)
