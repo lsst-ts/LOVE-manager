@@ -86,7 +86,6 @@ class HeartbeatManager:
             channel_layer = get_channel_layer()
             while True:
                 try:
-                    print("sending data", flush=True)
                     cls.set_heartbeat_timestamp(
                         "Manager", datetime.datetime.now().timestamp()
                     )
