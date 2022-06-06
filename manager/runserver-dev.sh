@@ -30,9 +30,5 @@ cp -u api/fixtures/configs/* media/configs
 python manage.py loaddata ui_framework/fixtures/initial_data_${love_site}.json
 python manage.py loaddata api/fixtures/initial_data.json
 
-
-echo -e "\nStarting process for background tasks"
-python manage.py process_tasks &
-
 echo -e "\nStarting server"
 python manage.py runserver 0.0.0.0:8000

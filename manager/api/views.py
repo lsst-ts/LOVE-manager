@@ -857,8 +857,9 @@ class CSCAuthorizationRequestViewSet(
             # authorize_csc_response = self.query_authorize_csc()
 
             if int(authorization_obj.duration) >= 0:
-                self.authlist_revert_authorization_task(
-                    authorization_obj, schedule=int(authorization_obj.duration)
+                authlist_revert_authorization_task(
+                    CSCAuthorizationRequestSerializer(authorization_obj).data,
+                    schedule=int(authorization_obj.duration) * 60,
                 )
 
         authorization_obj.save()
@@ -890,7 +891,7 @@ class CSCAuthorizationRequestViewSet(
 
             if int(updated_instance.duration) >= 0:
                 self.authlist_revert_authorization_task(
-                    updated_instance, schedule=int(updated_instance.duration)
+                    updated_instance, schedule=int(updated_instance.duration) * 60
                 )
 
             return Response(
@@ -898,20 +899,24 @@ class CSCAuthorizationRequestViewSet(
             )
         return Response({"error": "Bad request"}, status=status.HTTP_400_BAD_REQUEST)
 
-    @background(schedule=60)
-    def authlist_revert_authorization_task(self, request):
-        new_authorized_users = (
-            request.authorized_users.replace("+", "[plus]")
-            .replace("-", "[minus]")
-            .replace("[plus]", "-")
-            .replace("[minus]", "+")
-        )
-        new_unauthorized_cscs = (
-            request.unauthorized_cscs.replace("+", "[plus]")
-            .replace("-", "[minus]")
-            .replace("[plus]", "-")
-            .replace("[minus]", "+")
-        )
-        request.authorized_users = new_authorized_users
-        request.unauthorized_cscs = new_unauthorized_cscs
-        self.query_authorize_csc(request)
+
+@background(schedule=60)
+def authlist_revert_authorization_task(request):
+    print("Automatic removal...", flush=True)
+    new_authorized_users = (
+        request["authorized_users"]
+        .replace("+", "[plus]")
+        .replace("-", "[minus]")
+        .replace("[plus]", "-")
+        .replace("[minus]", "+")
+    )
+    new_unauthorized_cscs = (
+        request["unauthorized_cscs"]
+        .replace("+", "[plus]")
+        .replace("-", "[minus]")
+        .replace("[plus]", "-")
+        .replace("[minus]", "+")
+    )
+    request["authorized_users"] = new_authorized_users
+    request["unauthorized_cscs"] = new_unauthorized_cscs
+    # self.query_authorize_csc(request)
