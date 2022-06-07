@@ -968,9 +968,24 @@ def jira(request):
             {"ack": "User does not have permissions to execute commands."}, 403
         )
 
+    jira_payload = {
+        "fields": {"project": {"id": 13700}},
+        # "summary": getTitle(request.data),
+        # "description": makeJiraDescription(request.data),
+    }
+
+    headers = {
+        "Authorization": f"Basic {os.environ.get('JIRA_API_TOKEN')}",
+        "content-type": "application/json",
+    }
+
     # TODO: get JIRA authorization (login)
-    url = f"http://{os.environ.get('JIRA_API_HOSTNAME')}/cmd"
-    response = requests.post(url, json=request.data)
+    # url = f"http://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/issue/"
+    url = f"https://jsonplaceholder.typicode.com/posts/"
+    response = requests.post(url, json=jira_payload, headers=headers)
+    print("#############", flush=True)
+    print(response, flush=True)
+    print("#############", flush=True)
 
     return Response(response.json(), status=response.status_code)
 
