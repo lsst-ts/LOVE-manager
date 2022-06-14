@@ -1081,6 +1081,15 @@ class CSCAuthorizationRequestViewSet(
     },
 )
 @api_view(["POST"])
+# @swagger_auto_schema(
+#     method="post",
+#     responses={
+#         200: openapi.Response("JIRA ticket created"),
+#         401: openapi.Response("Unauthenticated"),
+#         403: openapi.Response("Unauthorized"),
+#     },
+# )
+@api_view(["GET"])
 @permission_classes((IsAuthenticated,))
 def jira(request):
     """Connects to JIRA API to create a ticket on a specific project
@@ -1100,10 +1109,19 @@ def jira(request):
             {"ack": "User does not have permissions to execute commands."}, 403
         )
 
+    # m_request = {
+    #     "request_type": "exposure",  # non-exposure,
+    #     "type_comment": "test",
+    #     "obs_time_loss": 10,
+    #     "subsystem": "MTHexapod",
+    #     "salindex": 1,
+    # }
+
     jira_payload = {
         "fields": {"project": {"id": 13700}},
-        # "summary": getTitle(request.data),
-        # "description": makeJiraDescription(request.data),
+        # "labels": ["LOVE", "LOVE-QA"],
+        # "summary": getTitle(m_request),
+        # "description": makeJiraDescription(m_request),
     }
 
     headers = {
@@ -1113,10 +1131,12 @@ def jira(request):
 
     # TODO: get JIRA authorization (login)
     # url = f"http://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/issue/"
+    # lfa_file_url = "asd"
     url = f"https://jsonplaceholder.typicode.com/posts/"
     response = requests.post(url, json=jira_payload, headers=headers)
+    # response = requests.get(url, json=jira_payload, headers=headers)
     print("#############", flush=True)
-    print(response, flush=True)
+    print(response.json(), flush=True)
     print("#############", flush=True)
 
     return Response(response.json(), status=response.status_code)
