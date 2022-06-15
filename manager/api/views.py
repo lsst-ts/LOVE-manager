@@ -1062,19 +1062,31 @@ def jira(request):
             {"ack": "User does not have permissions to execute commands."}, 403
         )
 
-    # m_request = {
-    #     "request_type": "exposure",  # non-exposure,
-    #     "type_comment": "test",
-    #     "obs_time_loss": 10,
-    #     "subsystem": "MTHexapod",
-    #     "salindex": 1,
-    # }
+    m_request = {
+        "request_type": "non-exposure",  # exposure
+        "type_comment": "test",
+        "obs_time_loss": 10,
+        "salindex": 1,
+        "subsystem": "MainTel",
+        "csc": "M1M3",
+        "csc_parameter": "actual",
+        "time_of_incedent": "00:35:00",
+        "exposure_flag": None,
+        "obs_id": None,
+        "lfa_file_url": "asdf.com",
+        "message": """Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            Donec sagittis aliquam lacus et euismod. Nullam tortor metus,
+            mollis faucibus mauris convallis, mattis commodo magna. Sed blandit
+            dapibus lectus et sollicitudin. Aliquam erat lorem, posuere
+            at fermentum quis, finibus sed nunc. Nulla facilisi.
+            Maecenas vitae dignissim quam.""",
+    }
 
     jira_payload = {
         "fields": {"project": {"id": 13700}},
-        # "labels": ["LOVE", "LOVE-QA"],
-        # "summary": getTitle(m_request),
-        # "description": makeJiraDescription(m_request),
+        "labels": ["LOVE", getType(m_request)],
+        "summary": getTitle(m_request),
+        "description": makeJiraDescription(m_request),
     }
 
     headers = {
