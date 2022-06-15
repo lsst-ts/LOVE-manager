@@ -1306,7 +1306,7 @@ def lfa(request):
 )
 @api_view(["GET"])
 @permission_classes((IsAuthenticated,))
-def ole_exposurelog_exposures(request):
+def ole_exposurelog_exposures(request, *args, **kwargs):
     """Connects to Open API exposurelog service and get the list of exposures
 
     Params
