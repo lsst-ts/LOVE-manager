@@ -1072,6 +1072,48 @@ class CSCAuthorizationRequestViewSet(
         return Response({"error": "Bad request"}, status=status.HTTP_400_BAD_REQUEST)
 
 
+def getTitle(m_request):
+    type_of_comment = m_request.type_comment
+    subsystem = m_request.subsystem
+    csc = m_request.csc
+    time_incident = m_request.time_of_incedent
+    obs_id = m_request.obs_id
+    request_type = m_request.request_type
+
+    if request_type == "non-exposure":
+        summary = type_of_comment + subsystem + csc + time_incident
+        return summary
+    if request_type == "exposure":
+        summary = type_of_comment + obs_id
+        return summary
+    return False
+
+
+def getType(m_request):
+    request_type = m_request.request_type
+    if request_type == "non-exposure":
+        label = "non-exposure"
+        return label
+    if request_type == "exposure":
+        label = "exposure"
+        return label
+
+
+def makeJiraDescription(m_request):
+    type_of_comment = m_request.type_comment
+    subsystem = m_request.subsystem
+    csc = m_request.csc
+    obs_id = m_request.obs_id
+    request_type = m_request.request_type
+    message_log = m_request.message
+
+    if request_type == "non-exposure":
+        description = type_of_comment + subsystem + csc + "\n" + message_log
+        return description
+    if request_type == "exposure":
+        description = type_of_comment + obs_id + "\n" + message_log
+
+
 @swagger_auto_schema(
     method="post",
     responses={
@@ -1081,15 +1123,6 @@ class CSCAuthorizationRequestViewSet(
     },
 )
 @api_view(["POST"])
-# @swagger_auto_schema(
-#     method="post",
-#     responses={
-#         200: openapi.Response("JIRA ticket created"),
-#         401: openapi.Response("Unauthenticated"),
-#         403: openapi.Response("Unauthorized"),
-#     },
-# )
-@api_view(["GET"])
 @permission_classes((IsAuthenticated,))
 def jira(request):
     """Connects to JIRA API to create a ticket on a specific project
@@ -1109,19 +1142,31 @@ def jira(request):
             {"ack": "User does not have permissions to execute commands."}, 403
         )
 
-    # m_request = {
-    #     "request_type": "exposure",  # non-exposure,
-    #     "type_comment": "test",
-    #     "obs_time_loss": 10,
-    #     "subsystem": "MTHexapod",
-    #     "salindex": 1,
-    # }
+    m_request = {
+        "request_type": "non-exposure",  # exposure
+        "type_comment": "test",
+        "obs_time_loss": 10,
+        "salindex": 1,
+        "subsystem": "MainTel",
+        "csc": "M1M3",
+        "csc_parameter": "actual",
+        "time_of_incedent": "00:35:00",
+        "exposure_flag": None,
+        "obs_id": None,
+        "lfa_file_url": "asdf.com",
+        "message": """Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            Donec sagittis aliquam lacus et euismod. Nullam tortor metus,
+            mollis faucibus mauris convallis, mattis commodo magna. Sed blandit
+            dapibus lectus et sollicitudin. Aliquam erat lorem, posuere
+            at fermentum quis, finibus sed nunc. Nulla facilisi.
+            Maecenas vitae dignissim quam.""",
+    }
 
     jira_payload = {
         "fields": {"project": {"id": 13700}},
-        # "labels": ["LOVE", "LOVE-QA"],
-        # "summary": getTitle(m_request),
-        # "description": makeJiraDescription(m_request),
+        "labels": ["LOVE", getType(m_request)],
+        "summary": getTitle(m_request),
+        "description": makeJiraDescription(m_request),
     }
 
     headers = {
