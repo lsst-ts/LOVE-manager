@@ -1116,12 +1116,12 @@ class CSCAuthorizationRequestViewSet(
 
 
 def getTitle(m_request):
-    type_of_comment = m_request.type_comment
-    subsystem = m_request.subsystem
-    csc = m_request.csc
-    time_incident = m_request.time_of_incedent
-    obs_id = m_request.obs_id
-    request_type = m_request.request_type
+    type_of_comment = m_request["type_comment"]
+    subsystem = m_request["subsystem"]
+    csc = m_request["csc"]
+    time_incident = m_request["time_of_incedent"]
+    obs_id = m_request["obs_id"]
+    request_type = m_request["request_type"]
 
     if request_type == "non-exposure":
         summary = type_of_comment + subsystem + csc + time_incident
@@ -1132,40 +1132,44 @@ def getTitle(m_request):
     return False
 
 
-def getType(m_request):
-    request_type = m_request.request_type
-    if request_type == "non-exposure":
-        label = "non-exposure"
-        return label
-    if request_type == "exposure":
-        label = "exposure"
-        return label
-
-
 def makeJiraDescription(m_request):
-    type_of_comment = m_request.type_comment
-    subsystem = m_request.subsystem
-    csc = m_request.csc
-    obs_id = m_request.obs_id
-    request_type = m_request.request_type
-    message_log = m_request.message
+    type_of_comment = m_request["type_comment"]
+    subsystem = m_request["subsystem"]
+    csc = m_request["csc"]
+    obs_id = m_request["obs_id"]
+    request_type = m_request["request_type"]
+    message_log = m_request["message"]
+    lfa_file_url = m_request["lfa_file_url"]
 
     if request_type == "non-exposure":
-        description = type_of_comment + subsystem + csc + "\n" + message_log
+        description = (
+            type_of_comment
+            + "\n"
+            + subsystem
+            + "\n"
+            + csc
+            + "\n"
+            + lfa_file_url
+            + "\n"
+            + message_log
+        )
         return description
     if request_type == "exposure":
-        description = type_of_comment + obs_id + "\n" + message_log
+        description = (
+            type_of_comment + "\n" + obs_id + "\n" + lfa_file_url + "\n" + message_log
+        )
+    return False
 
 
-@swagger_auto_schema(
-    method="post",
-    responses={
-        200: openapi.Response("JIRA ticket created"),
-        401: openapi.Response("Unauthenticated"),
-        403: openapi.Response("Unauthorized"),
-    },
-)
-@api_view(["POST"])
+# @swagger_auto_schema(
+#     method="post",
+#     responses={
+#         200: openapi.Response("JIRA ticket created"),
+#         401: openapi.Response("Unauthenticated"),
+#         403: openapi.Response("Unauthorized"),
+#     },
+# )
+@api_view(["GET"])
 @permission_classes((IsAuthenticated,))
 def jira(request):
     """Connects to JIRA API to create a ticket on a specific project
@@ -1207,11 +1211,13 @@ def jira(request):
 
     jira_payload = {
         "fields": {"project": {"id": 13700}},
-        "labels": ["LOVE", getType(m_request)],
+        "labels": ["LOVE", m_request["request_type"]],
         "summary": getTitle(m_request),
         "description": makeJiraDescription(m_request),
     }
-
+    print("+++++++++++", flush=True)
+    print(jira_payload, flush=True)
+    print("+++++++++++", flush=True)
     headers = {
         "Authorization": f"Basic {os.environ.get('JIRA_API_TOKEN')}",
         "content-type": "application/json",
@@ -1221,8 +1227,8 @@ def jira(request):
     # url = f"http://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/issue/"
     # lfa_file_url = "asd"
     url = f"https://jsonplaceholder.typicode.com/posts/"
-    response = requests.post(url, json=jira_payload, headers=headers)
-    # response = requests.get(url, json=jira_payload, headers=headers)
+    # response = requests.post(url, json=jira_payload, headers=headers)
+    response = requests.get(url, json=jira_payload, headers=headers)
     print("#############", flush=True)
     print(response.json(), flush=True)
     print("#############", flush=True)
