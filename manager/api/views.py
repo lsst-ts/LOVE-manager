@@ -1174,8 +1174,6 @@ def makeJiraDescription(request_data):
     return description if description is not None else ""
 
 
-# @api_view(["GET"])
-# @permission_classes((IsAuthenticated,))
 def jira(request):
     """Connects to JIRA API to create a ticket on a specific project
 
@@ -1216,11 +1214,13 @@ def jira(request):
 
     jira_payload = {
         "fields": {"project": {"id": 13700}},
-        "labels": ["LOVE", getType(m_request)],
+        "labels": ["LOVE", m_request["request_type"]],
         "summary": getTitle(m_request),
         "description": makeJiraDescription(m_request),
     }
-
+    print("+++++++++++", flush=True)
+    print(jira_payload, flush=True)
+    print("+++++++++++", flush=True)
     headers = {
         "Authorization": f"Basic {os.environ.get('JIRA_API_TOKEN')}",
         "content-type": "application/json",
@@ -1230,8 +1230,8 @@ def jira(request):
     # url = f"http://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/issue/"
     # lfa_file_url = "asd"
     url = f"https://jsonplaceholder.typicode.com/posts/"
-    response = requests.post(url, json=jira_payload, headers=headers)
-    # response = requests.get(url, json=jira_payload, headers=headers)
+    # response = requests.post(url, json=jira_payload, headers=headers)
+    response = requests.get(url, json=jira_payload, headers=headers)
     print("#############", flush=True)
     print(response.json(), flush=True)
     print("#############", flush=True)
