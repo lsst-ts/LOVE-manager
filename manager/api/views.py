@@ -1114,11 +1114,8 @@ def ole_exposurelog_exposures(request, *args, **kwargs):
     Response
         The response and status code of the request to the Open API exposurelog service
     """
-    query_params = dict()
-    query_params["instrument"] = request.query_params.get("instrument", None)
-    query_params["registry"] = request.query_params.get("registry", None)
-    query_params_string = urllib.parse.urlencode(query_params)
 
+    query_params_string = urllib.parse.urlencode(request.query_params)
     url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/exposurelog/exposures?{query_params_string}"
     response = requests.get(url, json=request.data)
 
@@ -1149,7 +1146,8 @@ def ole_exposurelog_instruments(request):
         The response and status code of the request to the Open API exposurelog service
     """
 
-    url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/exposurelog/instruments"
+    query_params_string = urllib.parse.urlencode(request.query_params)
+    url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/exposurelog/instruments?{query_params_string}"
     response = requests.get(url, json=request.data)
 
     return Response(response.json(), status=response.status_code)
@@ -1165,43 +1163,37 @@ class ExposurelogViewSet(viewsets.ViewSet):
     # serializer_class = ExposureLogSerializer
     permission_classes = (IsAuthenticated,)
 
-    @swagger_auto_schema(responses={200: "Messages listed"})
+    @swagger_auto_schema(responses={200: "Exposure logs listed"})
     def list(self, request, *args, **kwargs):
-        url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/exposurelog/messages"
+        query_params_string = urllib.parse.urlencode(request.query_params)
+        url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/exposurelog/messages?{query_params_string}"
         response = requests.get(url, json=request.data)
-        return Response(response.json(), status=200)
+        return Response(response.json(), status=response.status_code)
 
-    @swagger_auto_schema(responses={201: "Message added"})
+    @swagger_auto_schema(responses={201: "Exposure log added"})
     def create(self, request, *args, **kwargs):
-        url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/exposurelog/messages"
+        query_params_string = urllib.parse.urlencode(request.query_params)
+        url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/exposurelog/messages?{query_params_string}"
         response = requests.post(url, json=request.data)
-        if response.status_code == 200:
-            return Response({"ok": "Message added"}, status=201)
-        return Response({"error": "Message was not added"}, status=400)
+        return Response(response.json(), status=response.status_code)
 
-    @swagger_auto_schema(responses={200: "Message retrieved"})
+    @swagger_auto_schema(responses={200: "Exposure log retrieved"})
     def retrieve(self, request, pk=None, *args, **kwargs):
         url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/exposurelog/messages/{pk}"
         response = requests.get(url, json=request.data)
-        if response.status_code == 200:
-            return Response(response.json(), status=200)
-        return Response({"error": "Message not found"}, status=404)
+        return Response(response.json(), status=response.status_code)
 
-    @swagger_auto_schema(responses={200: "Message edited"})
+    @swagger_auto_schema(responses={200: "Exposure log edited"})
     def update(self, request, pk=None, *args, **kwargs):
         url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/exposurelog/messages/{pk}"
         response = requests.patch(url, json=request.data)
-        if response.status_code == 200:
-            return Response({"ok": "Message updated"}, status=201)
-        return Response({"error": "Message was not added"}, status=400)
+        return Response(response.json(), status=response.status_code)
 
-    @swagger_auto_schema(responses={204: "Message deleted"})
+    @swagger_auto_schema(responses={204: "Exposure log deleted"})
     def destroy(self, request, pk=None, *args, **kwargs):
         url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/exposurelog/messages/{pk}"
         response = requests.delete(url, json=request.data)
-        if response.status_code == 204:
-            return Response({"ok": "Message deleted"}, status=204)
-        return Response({"error": "Message was not added"}, status=400)
+        return Response(response.json(), status=response.status_code)
 
 
 class NarrativelogViewSet(viewsets.ViewSet):
@@ -1214,40 +1206,34 @@ class NarrativelogViewSet(viewsets.ViewSet):
     # serializer_class = NarrativeLogSerializer
     permission_classes = (IsAuthenticated,)
 
-    @swagger_auto_schema(responses={200: "Messages listed"})
+    @swagger_auto_schema(responses={200: "Narrative logs listed"})
     def list(self, request, *args, **kwargs):
-        url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/narrativelog/messages"
+        query_params_string = urllib.parse.urlencode(request.query_params)
+        url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/narrativelog/messages?{query_params_string}"
         response = requests.get(url, json=request.data)
         return Response(response.json(), status=200)
 
-    @swagger_auto_schema(responses={201: "Message added"})
+    @swagger_auto_schema(responses={201: "Narrative log added"})
     def create(self, request, *args, **kwargs):
-        url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/narrativelog/messages"
+        query_params_string = urllib.parse.urlencode(request.query_params)
+        url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/narrativelog/messages?{query_params_string}"
         response = requests.post(url, json=request.data)
-        if response.status_code == 200:
-            return Response({"ok": "Message added"}, status=201)
-        return Response({"error": "Message was not added"}, status=400)
+        return Response(response.json(), status=response.status_code)
 
-    @swagger_auto_schema(responses={200: "Message retrieved"})
+    @swagger_auto_schema(responses={200: "Narrative log retrieved"})
     def retrieve(self, request, pk=None, *args, **kwargs):
         url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/narrativelog/messages/{pk}"
         response = requests.get(url, json=request.data)
-        if response.status_code == 200:
-            return Response(response.json(), status=200)
-        return Response({"error": "Message not found"}, status=404)
+        return Response(response.json(), status=response.status_code)
 
-    @swagger_auto_schema(responses={200: "Message edited"})
+    @swagger_auto_schema(responses={200: "Narrative log edited"})
     def update(self, request, pk=None, *args, **kwargs):
         url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/narrativelog/messages/{pk}"
         response = requests.patch(url, json=request.data)
-        if response.status_code == 200:
-            return Response({"ok": "Message updated"}, status=201)
-        return Response({"error": "Message was not added"}, status=400)
+        return Response(response.json(), status=response.status_code)
 
-    @swagger_auto_schema(responses={204: "Message deleted"})
+    @swagger_auto_schema(responses={204: "Narrative log deleted"})
     def destroy(self, request, pk=None, *args, **kwargs):
         url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/narrativelog/messages/{pk}"
         response = requests.delete(url, json=request.data)
-        if response.status_code == 204:
-            return Response({"ok": "Message deleted"}, status=204)
-        return Response({"error": "Message was not added"}, status=400)
+        return Response(response.json(), status=response.status_code)
