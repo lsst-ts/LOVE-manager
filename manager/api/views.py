@@ -21,6 +21,7 @@ from rest_framework.decorators import api_view
 from rest_framework.decorators import permission_classes
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework import viewsets, status, mixins
 from rest_framework.views import APIView
@@ -862,6 +863,47 @@ def tcs_main_docstrings(request, *args, **kwargs):
     return Response(response.json(), status=response.status_code)
 
 
+# @api_view(["POST"])
+# @permission_classes((IsAuthenticated,))
+def lfa(request, *args, **kwargs):
+    """Connects to LFA API to upload a new file
+
+    Params
+    ------
+    request: Request
+        The Request object
+    args: list
+        List of addittional arguments. Currently unused
+    kwargs: dict
+        Dictionary with request arguments. Currently unused
+
+    Returns
+    -------
+    Response
+        The response and status code of the request to the LOVE-commander LFA API
+    """
+
+    option = kwargs.get("option", None)
+    url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/lfa/{option}"
+
+    file_list = request.data.getlist("files")
+    uploaded_files_urls = []
+    for file in file_list:
+        upload_file_response = requests.post(url, files={"uploaded_file": file})
+        if upload_file_response.status_code == 200:
+            uploaded_files_urls.append(upload_file_response.json().get("url"))
+        elif upload_file_response.status_code == 404:
+            return Response({"ack": "Option not available"}, status=400)
+        else:
+            return Response(
+                upload_file_response.json(), status=upload_file_response.status_code
+            )
+
+    return Response(
+        {"ack": "All files uploaded correctly", "urls": uploaded_files_urls}, status=200
+    )
+
+
 class CSCAuthorizationRequestViewSet(
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
@@ -1158,41 +1200,6 @@ def jira(request):
 
 
 @swagger_auto_schema(
-    method="post",
-    responses={
-        200: openapi.Response("LFA file uploaded"),
-        401: openapi.Response("Unauthenticated"),
-        403: openapi.Response("Unauthorized"),
-    },
-)
-@api_view(["POST"])
-@permission_classes((IsAuthenticated,))
-def lfa(request):
-    """Connects to LFA API to upload a new file
-
-    Params
-    ------
-    request: Request
-        The Request object
-
-    Returns
-    -------
-    Response
-        The response and status code of the request to the LFA API
-    """
-    if not request.user.has_perm("api.command.execute_command"):
-        return Response(
-            {"ack": "User does not have permissions to execute commands."}, 403
-        )
-
-    # TODO: implement S3 bucket
-    url = f"http://{os.environ.get('JIRA_API_HOSTNAME')}/cmd"
-    response = requests.post(url, json=request.data)
-
-    return Response(response.json(), status=response.status_code)
-
-
-@swagger_auto_schema(
     method="get",
     responses={
         200: openapi.Response("Exposures received"),
@@ -1263,6 +1270,7 @@ class ExposurelogViewSet(viewsets.ViewSet):
 
     # serializer_class = ExposureLogSerializer
     permission_classes = (IsAuthenticated,)
+    parser_classes = (MultiPartParser,)
 
     @swagger_auto_schema(responses={200: "Exposure logs listed"})
     def list(self, request, *args, **kwargs):
@@ -1275,7 +1283,30 @@ class ExposurelogViewSet(viewsets.ViewSet):
     def create(self, request, *args, **kwargs):
         query_params_string = urllib.parse.urlencode(request.query_params)
         url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/exposurelog/messages?{query_params_string}"
-        response = requests.post(url, json=request.data)
+
+        lfa_urls = None
+        if "files" in request.data:
+            lfa_response = lfa(request, option="upload-file")
+            if lfa_response.status_code == 400 or lfa_response.status_code == 404:
+                return Response(lfa_response.json(), lfa_response.status_code)
+            lfa_urls = lfa_response.data.get("urls")
+
+        jira_url = None
+        if "jira" in request.data:
+            jira_response = jira(request)
+            if jira_response.status_code == 400:
+                return Response(
+                    {"ack": "Jira ticket could not be created"},
+                    jira_response.status_code,
+                )
+            jira_url = jira_response.data.get("url")
+
+        json_data = request.data.copy()
+        del json_data["files"]
+        json_data["urls"] = json_data["urls"] if "urls" in json_data else []
+        json_data["urls"] = [*json_data["urls"], *lfa_urls, jira_url]
+        json_data["urls"] = list(filter(None, json_data["urls"]))
+        response = requests.post(url, json=json_data)
         return Response(response.json(), status=response.status_code)
 
     @swagger_auto_schema(responses={200: "Exposure log retrieved"})
@@ -1288,6 +1319,7 @@ class ExposurelogViewSet(viewsets.ViewSet):
     def update(self, request, pk=None, *args, **kwargs):
         url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/exposurelog/messages/{pk}"
         response = requests.patch(url, json=request.data)
+        # TODO: allow uploading a file on update
         return Response(response.json(), status=response.status_code)
 
     @swagger_auto_schema(responses={204: "Exposure log deleted"})
@@ -1318,7 +1350,30 @@ class NarrativelogViewSet(viewsets.ViewSet):
     def create(self, request, *args, **kwargs):
         query_params_string = urllib.parse.urlencode(request.query_params)
         url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/narrativelog/messages?{query_params_string}"
-        response = requests.post(url, json=request.data)
+
+        lfa_urls = None
+        if "files" in request.data:
+            lfa_response = lfa(request, option="upload-file")
+            if lfa_response.status_code == 400 or lfa_response.status_code == 404:
+                return Response(lfa_response.json(), lfa_response.status_code)
+            lfa_urls = lfa_response.data.get("urls")
+
+        jira_url = None
+        if "jira" in request.data:
+            jira_response = jira(request)
+            if jira_response.status_code == 400:
+                return Response(
+                    {"ack": "Jira ticket could not be created"},
+                    jira_response.status_code,
+                )
+            jira_url = jira_response.data.get("url")
+
+        json_data = request.data.copy()
+        del json_data["files"]
+        json_data["urls"] = json_data["urls"] if "urls" in json_data else []
+        json_data["urls"] = [*json_data["urls"], *lfa_urls, jira_url]
+        json_data["urls"] = list(filter(None, json_data["urls"]))
+        response = requests.post(url, json=json_data)
         return Response(response.json(), status=response.status_code)
 
     @swagger_auto_schema(responses={200: "Narrative log retrieved"})
@@ -1331,6 +1386,7 @@ class NarrativelogViewSet(viewsets.ViewSet):
     def update(self, request, pk=None, *args, **kwargs):
         url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/narrativelog/messages/{pk}"
         response = requests.patch(url, json=request.data)
+        # TODO: allow uploading a file on update
         return Response(response.json(), status=response.status_code)
 
     @swagger_auto_schema(responses={204: "Narrative log deleted"})
