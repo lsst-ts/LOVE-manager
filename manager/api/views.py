@@ -1123,13 +1123,13 @@ def getTitle(request_data):
     # Exposure log params
     if request_type == "exposure":
         obs_id = request_data["obs_id"]
-        return type_of_comment + obs_id
+        return request_type + " | " + type_of_comment + " | " + obs_id
     # Narrative log params
     if request_type == "narrative":
         subsystem = request_data["subsystem"]
         csc = request_data["csc"]
         time_of_incident = request_data["incident_time"]
-        return type_of_comment + subsystem + csc + time_of_incident
+        return type_of_comment + "|" + subsystem + "|" + csc + "|" + time_of_incident
     return ""
 
 
@@ -1146,7 +1146,13 @@ def makeJiraDescription(request_data):
         obs_id = request_data["obs_id"]
         # TODO: instrument & exposure flag
         description = (
-            type_of_comment + "\n" + obs_id + "\n" + lfa_files_urls + "\n" + message_log
+            type_of_comment
+            + "\n"
+            + obs_id
+            + "\n"
+            + str(lfa_files_urls)
+            + "\n"
+            + message_log
         )
     # Narrative log params
     if request_type == "narrative":
@@ -1160,7 +1166,7 @@ def makeJiraDescription(request_data):
             + "\n"
             + csc
             + "\n"
-            + lfa_files_urls
+            + str(lfa_files_urls)
             + "\n"
             + message_log
         )
@@ -1168,16 +1174,8 @@ def makeJiraDescription(request_data):
     return description if description is not None else ""
 
 
-# @swagger_auto_schema(
-#     method="post",
-#     responses={
-#         200: openapi.Response("JIRA ticket created"),
-#         401: openapi.Response("Unauthenticated"),
-#         403: openapi.Response("Unauthorized"),
-#     },
-# )
-@api_view(["GET"])
-@permission_classes((IsAuthenticated,))
+# @api_view(["GET"])
+# @permission_classes((IsAuthenticated,))
 def jira(request):
     """Connects to JIRA API to create a ticket on a specific project
 
@@ -1213,6 +1211,8 @@ def jira(request):
             Maecenas vitae dignissim quam.""",
     }
 
+    full_request = request.data
+
     jira_payload = {
         "fields": {"project": {"id": 13700}},
         "labels": ["LOVE", full_request["request_type"]],  # TODO: add more labels
@@ -1220,20 +1220,19 @@ def jira(request):
         "description": makeJiraDescription(full_request),
     }
     print("+++++++++++", flush=True)
-    print(jira_payload, flush=True)
+    print(f"{jira_payload}")
     print("+++++++++++", flush=True)
 
-    headers = {
-        "Authorization": f"Basic {os.environ.get('JIRA_API_TOKEN')}",
-        "content-type": "application/json",
-    }
-
+    # headers = {
+    #     "Authorization": f"Basic {os.environ.get('JIRA_API_TOKEN')}",
+    #     "content-type": "application/json",
+    # }
     # url = f"http://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/issue/"
     # response = requests.post(url, json=jira_payload, headers=headers)
     url = f"https://jsonplaceholder.typicode.com/posts/"
-    response = requests.get(url, json=jira_payload, headers=headers)
+    response = requests.get(url, json=jira_payload)
 
-    return Response(response.json(), status=response.status_code)
+    return Response({"ack": response.json(), "url": "http://jira.test"}, status=200,)
 
 
 @swagger_auto_schema(
@@ -1330,6 +1329,7 @@ class ExposurelogViewSet(viewsets.ViewSet):
 
         jira_url = None
         if "jira" in request.data:
+            request.data["lfa_files_urls"] = lfa_urls
             jira_response = jira(request)
             if jira_response.status_code == 400:
                 return Response(
@@ -1397,6 +1397,7 @@ class NarrativelogViewSet(viewsets.ViewSet):
 
         jira_url = None
         if "jira" in request.data:
+            request.data["lfa_files_urls"] = lfa_urls
             jira_response = jira(request)
             if jira_response.status_code == 400:
                 return Response(
