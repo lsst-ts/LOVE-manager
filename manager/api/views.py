@@ -983,33 +983,44 @@ def authlist_revert_authorization_task(authorization_dict):
     query_authorize_csc(authorization_dict)
 
 
-def getTitle(m_request):
-    type_of_comment = m_request["type_comment"]
-    subsystem = m_request["subsystem"]
-    csc = m_request["csc"]
-    time_incident = m_request["time_of_incedent"]
-    obs_id = m_request["obs_id"]
-    request_type = m_request["request_type"]
+def getTitle(request_data):
+    # Shared params
+    request_type = request_data["request_type"]
+    type_of_comment = request_data["comment_type"]
 
-    if request_type == "non-exposure":
-        summary = type_of_comment + subsystem + csc + time_incident
-        return summary
+    # Exposure log params
     if request_type == "exposure":
-        summary = type_of_comment + obs_id
-        return summary
-    return False
+        obs_id = request_data["obs_id"]
+        return type_of_comment + obs_id
+    # Narrative log params
+    if request_type == "narrative":
+        subsystem = request_data["subsystem"]
+        csc = request_data["csc"]
+        time_of_incident = request_data["incident_time"]
+        return type_of_comment + subsystem + csc + time_of_incident
+    return ""
 
 
-def makeJiraDescription(m_request):
-    type_of_comment = m_request["type_comment"]
-    subsystem = m_request["subsystem"]
-    csc = m_request["csc"]
-    obs_id = m_request["obs_id"]
-    request_type = m_request["request_type"]
-    message_log = m_request["message"]
-    lfa_file_url = m_request["lfa_file_url"]
+def makeJiraDescription(request_data):
+    # Shared params
+    request_type = request_data["request_type"]
+    type_of_comment = request_data["comment_type"]
+    lfa_files_urls = request_data["lfa_files_urls"]
+    message_log = request_data["message_text"]
+    # TODO: level & user id & user agent
 
-    if request_type == "non-exposure":
+    # Exposure log params
+    if request_type == "exposure":
+        obs_id = request_data["obs_id"]
+        # TODO: instrument & exposure flag
+        description = (
+            type_of_comment + "\n" + obs_id + "\n" + lfa_files_urls + "\n" + message_log
+        )
+    # Narrative log params
+    if request_type == "narrative":
+        subsystem = request_data["subsystem"]
+        csc = request_data["csc"]
+        # TODO: topic & parameter & time of incident (range) & obs time lost
         description = (
             type_of_comment
             + "\n"
@@ -1017,16 +1028,12 @@ def makeJiraDescription(m_request):
             + "\n"
             + csc
             + "\n"
-            + lfa_file_url
+            + lfa_files_urls
             + "\n"
             + message_log
         )
-        return description
-    if request_type == "exposure":
-        description = (
-            type_of_comment + "\n" + obs_id + "\n" + lfa_file_url + "\n" + message_log
-        )
-    return False
+
+    return description if description is not None else ""
 
 
 # @swagger_auto_schema(
@@ -1052,24 +1059,21 @@ def jira(request):
     Response
         The response and status code of the request to the JIRA API
     """
-    if not request.user.has_perm("api.command.execute_command"):
-        return Response(
-            {"ack": "User does not have permissions to execute commands."}, 403
-        )
 
-    m_request = {
-        "request_type": "non-exposure",  # exposure
-        "type_comment": "test",
-        "obs_time_loss": 10,
-        "salindex": 1,
+    full_request = {
+        "request_type": "narrative",  # exposure/narrative
+        "comment_type": "test",
+        "obs_id": None,
+        "instrument": None,
+        "exposure_flag": None,
         "subsystem": "MainTel",
         "csc": "M1M3",
+        "salindex": 1,
         "csc_parameter": "actual",
-        "time_of_incedent": "00:35:00",
-        "exposure_flag": None,
-        "obs_id": None,
-        "lfa_file_url": "asdf.com",
-        "message": """Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        "incident_time": "00:35:00",
+        "obs_time_loss": 10,
+        "lfa_files_urls": ["asdf.com"],
+        "message_text": """Lorem ipsum dolor sit amet, consectetur adipiscing elit.
             Donec sagittis aliquam lacus et euismod. Nullam tortor metus,
             mollis faucibus mauris convallis, mattis commodo magna. Sed blandit
             dapibus lectus et sollicitudin. Aliquam erat lorem, posuere
@@ -1079,27 +1083,23 @@ def jira(request):
 
     jira_payload = {
         "fields": {"project": {"id": 13700}},
-        "labels": ["LOVE", m_request["request_type"]],
-        "summary": getTitle(m_request),
-        "description": makeJiraDescription(m_request),
+        "labels": ["LOVE", full_request["request_type"]],  # TODO: add more labels
+        "summary": getTitle(full_request),
+        "description": makeJiraDescription(full_request),
     }
     print("+++++++++++", flush=True)
     print(jira_payload, flush=True)
     print("+++++++++++", flush=True)
+
     headers = {
         "Authorization": f"Basic {os.environ.get('JIRA_API_TOKEN')}",
         "content-type": "application/json",
     }
 
-    # TODO: get JIRA authorization (login)
     # url = f"http://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/issue/"
-    # lfa_file_url = "asd"
-    url = f"https://jsonplaceholder.typicode.com/posts/"
     # response = requests.post(url, json=jira_payload, headers=headers)
+    url = f"https://jsonplaceholder.typicode.com/posts/"
     response = requests.get(url, json=jira_payload, headers=headers)
-    print("#############", flush=True)
-    print(response.json(), flush=True)
-    print("#############", flush=True)
 
     return Response(response.json(), status=response.status_code)
 
