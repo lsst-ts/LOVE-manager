@@ -67,7 +67,8 @@ urlpatterns = [
         "tcs/main/docstrings", api.views.tcs_main_docstrings, name="TCS-main-docstrings"
     ),
     path("jira", api.views.jira, name="JIRA-API"),
-    path("lfa", api.views.lfa, name="LFA-API"),
+    path("lfa/", api.views.lfa, name="LFA-API"),
+    path("lfa/<option>/", api.views.lfa, name="LFA-API"),
     path(
         "ole/exposurelog/exposures",
         api.views.ole_exposurelog_exposures,
