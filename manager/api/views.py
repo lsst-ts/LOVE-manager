@@ -1188,7 +1188,7 @@ class ExposurelogViewSet(viewsets.ViewSet):
         query_params_string = urllib.parse.urlencode(request.query_params)
         url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/exposurelog/messages?{query_params_string}"
 
-        lfa_urls = None
+        lfa_urls = []
         if "files" in request.data:
             lfa_response = lfa(request, option="upload-file")
             if lfa_response.status_code == 400 or lfa_response.status_code == 404:
@@ -1197,7 +1197,9 @@ class ExposurelogViewSet(viewsets.ViewSet):
 
         jira_url = None
         if "jira" in request.data:
+            request.data._mutable = True
             request.data["lfa_files_urls"] = lfa_urls
+            request.data._mutable = False
             jira_response = jira(request)
             if jira_response.status_code == 400:
                 return Response(
@@ -1207,7 +1209,8 @@ class ExposurelogViewSet(viewsets.ViewSet):
             jira_url = jira_response.data.get("url")
 
         json_data = request.data.copy()
-        del json_data["files"]
+        if "files" in json_data:
+            del json_data["files"]
         json_data["urls"] = json_data["urls"] if "urls" in json_data else []
         json_data["urls"] = [*json_data["urls"], *lfa_urls, jira_url]
         json_data["urls"] = list(filter(None, json_data["urls"]))
@@ -1256,7 +1259,7 @@ class NarrativelogViewSet(viewsets.ViewSet):
         query_params_string = urllib.parse.urlencode(request.query_params)
         url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/narrativelog/messages?{query_params_string}"
 
-        lfa_urls = None
+        lfa_urls = []
         if "files" in request.data:
             lfa_response = lfa(request, option="upload-file")
             if lfa_response.status_code == 400 or lfa_response.status_code == 404:
@@ -1265,7 +1268,9 @@ class NarrativelogViewSet(viewsets.ViewSet):
 
         jira_url = None
         if "jira" in request.data:
+            request.data._mutable = True
             request.data["lfa_files_urls"] = lfa_urls
+            request.data._mutable = False
             jira_response = jira(request)
             if jira_response.status_code == 400:
                 return Response(
@@ -1275,7 +1280,8 @@ class NarrativelogViewSet(viewsets.ViewSet):
             jira_url = jira_response.data.get("url")
 
         json_data = request.data.copy()
-        del json_data["files"]
+        if "files" in json_data:
+            del json_data["files"]
         json_data["urls"] = json_data["urls"] if "urls" in json_data else []
         json_data["urls"] = [*json_data["urls"], *lfa_urls, jira_url]
         json_data["urls"] = list(filter(None, json_data["urls"]))
