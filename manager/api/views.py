@@ -1139,35 +1139,88 @@ def makeJiraDescription(request_data):
     type_of_comment = request_data["comment_type"]
     lfa_files_urls = request_data["lfa_files_urls"]
     message_log = request_data["message_text"]
-    # TODO: level & user id & user agent
+    level = request_data["level"]
+    user_id = request_data["user_id"]
+    user_agent = request_data["user_agent"]
 
     # Exposure log params
     if request_type == "exposure":
         obs_id = request_data["obs_id"]
-        # TODO: instrument & exposure flag
+        instrument = request_data["instrument"]
+        exposure_flag = request_data["exposure_flag"]
         description = (
-            type_of_comment
+            "Created by: "
+            + user_id
+            + ", "
+            + user_agent
             + "\n"
+            + "Level: "
+            + level
+            + "\n"
+            + "Type of comment: "
+            + type_of_comment
+            + "\n"
+            + "Observation id: "
             + obs_id
             + "\n"
-            + str(lfa_files_urls)
+            + "Instrument: "
+            + instrument
             + "\n"
+            + "Exposure flag: "
+            + exposure_flag
+            + "\n"
+            + "Files: "
+            + "\n"
+            + str(lfa_files_urls)
+            + "\n\n"
             + message_log
         )
     # Narrative log params
     if request_type == "narrative":
         subsystem = request_data["subsystem"]
         csc = request_data["csc"]
-        # TODO: topic & parameter & time of incident (range) & obs time lost
+        salindex = request_data["salindex"]
+        csc_topic = request_data["topic"]
+        csc_parameter = request_data["csc_parameter"]
+        time_of_incident = request_data["incident_time"]
+        time_lost = request_data["time_lost"]
         description = (
-            type_of_comment
+            "Created by: "
+            + user_id
+            + ", "
+            + user_agent
             + "\n"
+            + "Level: "
+            + level
+            + "\n"
+            + "Time of incident: "
+            + time_of_incident
+            + "\n"
+            + "Time lost: "
+            + time_lost
+            + "\n"
+            + "Type of comment: "
+            + type_of_comment
+            + "\n"
+            + "Subsystem: "
             + subsystem
             + "\n"
+            + "CSC: "
             + csc
             + "\n"
-            + str(lfa_files_urls)
+            + "Salindex: "
+            + salindex
             + "\n"
+            + "CSC topic: "
+            + csc_topic
+            + "\n"
+            + "CSC parameter: "
+            + csc_parameter
+            + "\n"
+            + "Files: "
+            + "\n"
+            + str(lfa_files_urls)
+            + "\n\n"
             + message_log
         )
 
@@ -1287,25 +1340,32 @@ def lfa(request):
     full_request = request.data
 
     jira_payload = {
-        "fields": {"project": {"id": 13700}},
-        "labels": ["LOVE", full_request["request_type"]],  # TODO: add more labels
-        "summary": getTitle(full_request),
-        "description": makeJiraDescription(full_request),
+        "fields": {
+            "project": {"id": 13700},
+            "labels": ["LOVE", full_request["request_type"]],  # TODO: add more labels
+            "summary": getTitle(full_request),
+            "description": makeJiraDescription(full_request),
+            "issuetype": {
+                "id": 3
+            },  # issuetypes: https://jira.lsstcorp.org/rest/api/latest/issuetype/?projectId=13700
+        },
+        "update": {"components": [{"set": [{"name": "Dev"}]}],},
     }
-    print("+++++++++++", flush=True)
-    print(f"{jira_payload}")
-    print("+++++++++++", flush=True)
 
-    # headers = {
-    #     "Authorization": f"Basic {os.environ.get('JIRA_API_TOKEN')}",
-    #     "content-type": "application/json",
-    # }
-    # url = f"http://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/issue/"
-    # response = requests.post(url, json=jira_payload, headers=headers)
-    url = f"https://jsonplaceholder.typicode.com/posts/"
-    response = requests.get(url, json=jira_payload)
-
-    return Response({"ack": response.json(), "url": "http://jira.test"}, status=200,)
+    headers = {
+        "Authorization": f"Basic {os.environ.get('JIRA_API_TOKEN')}",
+        "content-type": "application/json",
+    }
+    url = f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/issue/"
+    response = requests.post(url, json=jira_payload, headers=headers)
+    response_data = response.json()
+    return Response(
+        {
+            "ack": "Jira ticket created",
+            "url": f"https://jira.lsstcorp.org/browse/{response_data['key']}",
+        },
+        status=200,
+    )
 
 
 @swagger_auto_schema(
