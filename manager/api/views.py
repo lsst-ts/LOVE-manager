@@ -1312,8 +1312,7 @@ class ExposurelogViewSet(viewsets.ViewSet):
         json_data = request.data.copy()
         if "files" in json_data:
             del json_data["files"]
-        json_data["urls"] = json_data["urls"] if "urls" in json_data else []
-        json_data["urls"] = [*json_data["urls"], *lfa_urls, jira_url]
+        json_data["urls"] = [jira_url, *lfa_urls]
         json_data["urls"] = list(filter(None, json_data["urls"]))
         response = requests.post(url, json=json_data)
         return Response(response.json(), status=response.status_code)
@@ -1335,6 +1334,10 @@ class ExposurelogViewSet(viewsets.ViewSet):
     def destroy(self, request, pk=None, *args, **kwargs):
         url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/exposurelog/messages/{pk}"
         response = requests.delete(url, json=request.data)
+        if response.status_code == 204:
+            return Response(
+                {"ack": "Exposure log deleted succesfully"}, status=response.status_code
+            )
         return Response(response.json(), status=response.status_code)
 
 
@@ -1383,8 +1386,7 @@ class NarrativelogViewSet(viewsets.ViewSet):
         json_data = request.data.copy()
         if "files" in json_data:
             del json_data["files"]
-        json_data["urls"] = json_data["urls"] if "urls" in json_data else []
-        json_data["urls"] = [*json_data["urls"], *lfa_urls, jira_url]
+        json_data["urls"] = [jira_url, *lfa_urls]
         json_data["urls"] = list(filter(None, json_data["urls"]))
         response = requests.post(url, json=json_data)
         return Response(response.json(), status=response.status_code)
@@ -1406,4 +1408,9 @@ class NarrativelogViewSet(viewsets.ViewSet):
     def destroy(self, request, pk=None, *args, **kwargs):
         url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/narrativelog/messages/{pk}"
         response = requests.delete(url, json=request.data)
+        if response.status_code == 204:
+            return Response(
+                {"ack": "Narrative log deleted succesfully"},
+                status=response.status_code,
+            )
         return Response(response.json(), status=response.status_code)
