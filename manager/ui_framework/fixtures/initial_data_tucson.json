@@ -754,7 +754,7 @@
                       "salindex": 0
                     },
                     {
-                      "name": "ATArchiver",
+                      "name": "ATOODS",
                       "salindex": 0
                     },
                     {
@@ -1106,7 +1106,7 @@
     "pk": 43,
     "fields": {
       "creation_timestamp": "2021-02-11T07:26:03.945541Z",
-      "update_timestamp": "2021-12-01T18:19:01.616135Z",
+      "update_timestamp": "2022-04-13T21:22:24.863664Z",
       "name": "Summary State",
       "data": {
         "content": {
@@ -1117,8 +1117,8 @@
               "margin": true,
               "titleBar": true,
               "hierarchy": {
-                "OCS": {
-                  "EAS": [
+                "Observatory": {
+                  "Environment": [
                     {
                       "name": "WeatherStation",
                       "salindex": 1
@@ -1128,10 +1128,6 @@
                       "salindex": 1
                     },
                     {
-                      "name": "DIMM",
-                      "salindex": 2
-                    },
-                    {
                       "name": "DSM",
                       "salindex": 1
                     },
@@ -1140,88 +1136,38 @@
                       "salindex": 2
                     }
                   ],
-                  "Ops": [
+                  "HigherLevel": [
                     {
                       "name": "ScriptQueue",
                       "salindex": 1
                     },
                     {
                       "name": "ScriptQueue",
+                      "salindex": 2
+                    },
+                    {
+                      "name": "Scheduler",
+                      "salindex": 1
+                    },
+                    {
+                      "name": "Scheduler",
+                      "salindex": 2
+                    },
+                    {
+                      "name": "OCPS",
+                      "salindex": 1
+                    },
+                    {
+                      "name": "OCPS",
                       "salindex": 2
                     },
                     {
                       "name": "Watcher",
                       "salindex": 0
-                    },
-                    {
-                      "name": "Scheduler",
-                      "salindex": 1
-                    },
-                    {
-                      "name": "Scheduler",
-                      "salindex": 2
-                    },
-                    {
-                      "name": "OCPS",
-                      "salindex": 1
-                    },
-                    {
-                      "name": "OCPS",
-                      "salindex": 2
                     }
                   ]
                 },
-                "Aux Tel": {
-                  "ATCS": [
-                    {
-                      "name": "ATMCS",
-                      "salindex": 0
-                    },
-                    {
-                      "name": "ATPtg",
-                      "salindex": 0
-                    },
-                    {
-                      "name": "ATDome",
-                      "salindex": 0
-                    },
-                    {
-                      "name": "ATDomeTrajectory",
-                      "salindex": 0
-                    },
-                    {
-                      "name": "ATAOS",
-                      "salindex": 0
-                    },
-                    {
-                      "name": "ATPneumatics",
-                      "salindex": 0
-                    },
-                    {
-                      "name": "ATHexapod",
-                      "salindex": 0
-                    }
-                  ],
-                  "LATISS": [
-                    {
-                      "name": "ATCamera",
-                      "salindex": 0
-                    },
-                    {
-                      "name": "ATArchiver",
-                      "salindex": 0
-                    },
-                    {
-                      "name": "ATHeaderService",
-                      "salindex": 0
-                    },
-                    {
-                      "name": "ATSpectrograph",
-                      "salindex": 0
-                    }
-                  ]
-                },
-                "Main Tel": {
+                "Main Telescope": {
                   "MTCS": [
                     {
                       "name": "MTMount",
@@ -1262,6 +1208,14 @@
                     {
                       "name": "MTDomeTrajectory",
                       "salindex": 0
+                    },
+                    {
+                      "name": "MTAirCompressor",
+                      "salindex": 1
+                    },
+                    {
+                      "name": "MTAirCompressor",
+                      "salindex": 2
                     }
                   ],
                   "ComCam": [
@@ -1270,11 +1224,61 @@
                       "salindex": 0
                     },
                     {
-                      "name": "CCArchiver",
+                      "name": "CCOODS",
                       "salindex": 0
                     },
                     {
                       "name": "CCHeaderService",
+                      "salindex": 0
+                    }
+                  ]
+                },
+                "Auxiliary Telescope": {
+                  "ATCS": [
+                    {
+                      "name": "ATMCS",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATPtg",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATDome",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATDomeTrajectory",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATAOS",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATPneumatics",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATHexapod",
+                      "salindex": 0
+                    }
+                  ],
+                  "LATISS": [
+                    {
+                      "name": "ATCamera",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATOODS",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATHeaderService",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ATSpectrograph",
                       "salindex": 0
                     }
                   ]
@@ -1656,6 +1660,147 @@
               "w": 60,
               "x": 0,
               "y": 0,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": ""
+    }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 51,
+    "fields": {
+      "creation_timestamp": "2022-02-17T22:38:16.38984Z",
+      "update_timestamp": "2022-02-17T23:12:41.668513Z",
+      "name": "ATScheduler Log",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "name": "Scheduler",
+              "title": "CSC expanded",
+              "margin": true,
+              "salindex": 2,
+              "titleBar": false,
+              "hasRawMode": false,
+              "_functionProps": []
+            },
+            "content": "CSCExpanded",
+            "properties": {
+              "h": 50,
+              "i": 1,
+              "w": 46,
+              "x": 0,
+              "y": 11,
+              "type": "component"
+            }
+          },
+          "newPanel-2": {
+            "config": {
+              "cscs": [
+                {
+                  "name": "Scheduler",
+                  "salindex": 2
+                },
+                {
+                  "name": "ScriptQueue",
+                  "salindex": 2
+                },
+                {
+                  "name": "ATMCS",
+                  "salindex": 0
+                },
+                {
+                  "name": "ATPtg",
+                  "salindex": 0
+                },
+                {
+                  "name": "ATDome",
+                  "salindex": 0
+                },
+                {
+                  "name": "ATDomeTrajectory",
+                  "salindex": 0
+                },
+                {
+                  "name": "ATAOS",
+                  "salindex": 0
+                },
+                {
+                  "name": "ATPneumatics",
+                  "salindex": 0
+                },
+                {
+                  "name": "ATHexapod",
+                  "salindex": 0
+                },
+                {
+                  "name": "ATCamera",
+                  "salindex": 0
+                },
+                {
+                  "name": "ATOODS",
+                  "salindex": 0
+                },
+                {
+                  "name": "ATHeaderService",
+                  "salindex": 0
+                },
+                {
+                  "name": "ATSpectrograph",
+                  "salindex": 0
+                }
+              ],
+              "link": "",
+              "name": "CSC group",
+              "title": "CSC group",
+              "margin": true,
+              "titleBar": false,
+              "hasRawMode": false,
+              "_functionProps": [
+                "subscribeToStreamCallback"
+              ],
+              "subscribeToStreamCallback": "() => {}"
+            },
+            "content": "CSCGroup",
+            "properties": {
+              "h": 11,
+              "i": 2,
+              "w": 97,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          },
+          "newPanel-3": {
+            "config": {
+              "link": "",
+              "title": "Dome",
+              "margin": true,
+              "controls": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "Dome",
+            "properties": {
+              "h": 50,
+              "i": 3,
+              "w": 51,
+              "x": 46,
+              "y": 11,
               "type": "component"
             }
           }

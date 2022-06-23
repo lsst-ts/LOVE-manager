@@ -685,7 +685,8 @@ It uses base64 for encoding and decoding the contents of the file.</p>
 <dt id="ui_framework.serializers.Base64ImageField.to_representation">
 <code class="sig-name descname">to_representation</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#ui_framework.serializers.Base64ImageField.to_representation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a string representation of the image based on a given value.
-The returned value is the centralized MEDIA_URL concatenated with a string representation of the given value</p>
+The returned value is the centralized MEDIA_URL concatenated with a string representation of the given value.
+If value is None, then None is returned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>value</strong> (<em>object</em>) – The given value for the string representation</p>
@@ -932,7 +933,7 @@ that was deleted</p></li>
 
 <dl class="attribute">
 <dt id="ui_framework.views.ViewViewSet.queryset">
-<code class="sig-name descname">queryset</code><em class="property"> = &lt;QuerySet [&lt;View: fdsfdsddsda&gt;, &lt;View: TimeSeriesPlot&gt;, &lt;View: CSCSummary&gt;, &lt;View: sqqtest&gt;, &lt;View: Random view&gt;, &lt;View: CSCSummary + CSCG&gt;, &lt;View: Dome &amp; Mount&gt;, &lt;View: HealthStatusSummary&gt;, &lt;View: LATISS + Camera&gt;, &lt;View: Network + Scheduler&gt;, &lt;View: TimeDisplay&gt;, &lt;View: Watcher + ObsLogs&gt;, &lt;View: WeatherStation&gt;, &lt;View: Dome-Mount test&gt;, &lt;View: logslogs&gt;, &lt;View: LATISS&gt;, &lt;View: ATCamera&gt;, &lt;View: AT Lightpath&gt;, &lt;View: ATMount overview&gt;, &lt;View: HealthStatusSummary&gt;, '...(remaining elements truncated)...']&gt;</em><a class="headerlink" href="#ui_framework.views.ViewViewSet.queryset" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">queryset</code><em class="property"> = &lt;QuerySet [&lt;View: ASummary State View&gt;, &lt;View: EventLogs&gt;, &lt;View: Authlist&gt;, &lt;View: MTHexapod&gt;, &lt;View: VegaTimeSeries&gt;, &lt;View: M2&gt;, &lt;View: M1M3&gt;, &lt;View: Watcher&gt;, &lt;View: LVV-T2067&gt;, &lt;View: CCW&gt;, &lt;View: Test CSC Summary&gt;, &lt;View: Event Log - P&gt;, &lt;View: ATDome &amp; Mount - P&gt;, &lt;View: AT LightPath - P&gt;, &lt;View: AT-Stop&gt;, &lt;View: MTQueue&gt;, &lt;View: LVV-T2067&gt;, &lt;View: LVV-T2066&gt;, &lt;View: LVV-T2086-2&gt;, &lt;View: ATQueue&gt;, '...(remaining elements truncated)...']&gt;</em><a class="headerlink" href="#ui_framework.views.ViewViewSet.queryset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set of objects to be accessed by queries to this viewsets endpoints</p>
 </dd></dl>
 

@@ -754,7 +754,7 @@
                       "salindex": 0
                     },
                     {
-                      "name": "ATArchiver",
+                      "name": "ATOODS",
                       "salindex": 0
                     },
                     {
@@ -1614,7 +1614,7 @@
     "pk": 51,
     "fields": {
       "creation_timestamp": "2021-08-05T16:41:02.104589Z",
-      "update_timestamp": "2021-09-09T21:33:35.908603Z",
+      "update_timestamp": "2022-04-21T15:34:41.080571Z",
       "name": "ASummary State View",
       "data": {
         "content": {
@@ -1632,12 +1632,32 @@
                       "salindex": 1
                     },
                     {
-                      "name": "DIMM",
-                      "salindex": 2
-                    },
-                    {
                       "name": "WeatherStation",
                       "salindex": 1
+                    },
+                    {
+                      "name": "HVAC",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 1
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 101
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 102
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 103
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 201
                     }
                   ],
                   "HigherLevel": [
@@ -1664,6 +1684,14 @@
                     {
                       "name": "PMD",
                       "salindex": 1
+                    },
+                    {
+                      "name": "OCPS",
+                      "salindex": 1
+                    },
+                    {
+                      "name": "OCPS",
+                      "salindex": 2
                     }
                   ]
                 },
@@ -1708,6 +1736,14 @@
                     {
                       "name": "MTDomeTrajectory",
                       "salindex": 0
+                    },
+                    {
+                      "name": "MTAirCompressor",
+                      "salindex": 1
+                    },
+                    {
+                      "name": "MTAirCompressor",
+                      "salindex": 2
                     }
                   ],
                   "ComCam": [
@@ -1716,7 +1752,7 @@
                       "salindex": 0
                     },
                     {
-                      "name": "CCArchiver",
+                      "name": "CCOODS",
                       "salindex": 0
                     },
                     {
@@ -1762,7 +1798,7 @@
                       "salindex": 0
                     },
                     {
-                      "name": "ATArchiver",
+                      "name": "ATOODS",
                       "salindex": 0
                     },
                     {

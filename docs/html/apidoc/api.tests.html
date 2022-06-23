@@ -185,8 +185,68 @@
 <div class="section" id="submodules">
 <h2><span class="section-number">5.1.1.1.1. </span>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
+<div class="section" id="module-api.tests.test_authlist">
+<span id="api-tests-test-authlist-module"></span><h2><span class="section-number">5.1.1.1.2. </span>api.tests.test_authlist module<a class="headerlink" href="#module-api.tests.test_authlist" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="api.tests.test_authlist.AuthlistTestCase">
+<em class="property">class </em><code class="sig-prename descclassname">api.tests.test_authlist.</code><code class="sig-name descname">AuthlistTestCase</code><span class="sig-paren">(</span><em class="sig-param">methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_authlist.AuthlistTestCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.test.testcases.TestCase</span></code></p>
+<dl class="method">
+<dt id="api.tests.test_authlist.AuthlistTestCase.setUp">
+<code class="sig-name descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_authlist.AuthlistTestCase.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define the test suite setup.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_authlist.AuthlistTestCase.test_csc_authorization_create_request_authlist_user">
+<code class="sig-name descname">test_csc_authorization_create_request_authlist_user</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_authlist.AuthlistTestCase.test_csc_authorization_create_request_authlist_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test CSCAuthorizationRequest creation for authlist users
+This request will be created with status = Authorized as the user is in the authlist group</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_authlist.AuthlistTestCase.test_csc_authorization_create_request_normal_user">
+<code class="sig-name descname">test_csc_authorization_create_request_normal_user</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_authlist.AuthlistTestCase.test_csc_authorization_create_request_normal_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test CSCAuthorizationRequest creation for non authlist users
+This request will be created with status = Pending as the user is not in the authlist group</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_authlist.AuthlistTestCase.test_csc_authorization_request_list_authlist_user">
+<code class="sig-name descname">test_csc_authorization_request_list_authlist_user</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_authlist.AuthlistTestCase.test_csc_authorization_request_list_authlist_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test CSCAuthorizationRequest listing for authlist users
+This request should return all available CSCAuthorizationRequest objects</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_authlist.AuthlistTestCase.test_csc_authorization_request_list_normal_user">
+<code class="sig-name descname">test_csc_authorization_request_list_normal_user</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_authlist.AuthlistTestCase.test_csc_authorization_request_list_normal_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test CSCAuthorizationRequest listing for non authlist users
+This request should return available CSCAuthorizationRequest that were requested by the user
+and also the ones which authorized_users parameter include the <a class="reference external" href="mailto:user&#37;&#52;&#48;host">user<span>&#64;</span>host</a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_authlist.AuthlistTestCase.test_csc_authorization_self_remove_normal_user">
+<code class="sig-name descname">test_csc_authorization_self_remove_normal_user</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_authlist.AuthlistTestCase.test_csc_authorization_self_remove_normal_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test CSCAuthorizationRequest with a self removal for non authlist users
+This request will create two instances:
+1. With the information of the request without the self removed user
+2. With just the information of the self removed user. This one will be set with status = Authorized</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_authlist.AuthlistTestCase.test_csc_authorization_update_request">
+<code class="sig-name descname">test_csc_authorization_update_request</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_authlist.AuthlistTestCase.test_csc_authorization_update_request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test CSCAuthorizationRequest update (approve or deny) for authlist users
+This request will update the specified CSCAuthorizationRequest instance</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-api.tests.test_commander">
-<span id="api-tests-test-commander-module"></span><h2><span class="section-number">5.1.1.1.2. </span>api.tests.test_commander module<a class="headerlink" href="#module-api.tests.test_commander" title="Permalink to this headline">¶</a></h2>
+<span id="api-tests-test-commander-module"></span><h2><span class="section-number">5.1.1.1.3. </span>api.tests.test_commander module<a class="headerlink" href="#module-api.tests.test_commander" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="api.tests.test_commander.CommanderTestCase">
 <em class="property">class </em><code class="sig-prename descclassname">api.tests.test_commander.</code><code class="sig-name descname">CommanderTestCase</code><span class="sig-paren">(</span><em class="sig-param">methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_commander.CommanderTestCase" title="Permalink to this definition">¶</a></dt>
@@ -302,16 +362,46 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="api.tests.test_commander.TCSTestCase.test_command_query">
-<code class="sig-name descname">test_command_query</code><span class="sig-paren">(</span><em class="sig-param">mock_requests</em>, <em class="sig-param">mock_environ</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_commander.TCSTestCase.test_command_query" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test authorized user can send a TCS command</p>
+<dt id="api.tests.test_commander.TCSTestCase.test_command_query_atcs">
+<code class="sig-name descname">test_command_query_atcs</code><span class="sig-paren">(</span><em class="sig-param">mock_requests</em>, <em class="sig-param">mock_environ</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_commander.TCSTestCase.test_command_query_atcs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test authorized user can send a ATCS command</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_commander.TCSTestCase.test_command_query_atcs_unauthorized">
+<code class="sig-name descname">test_command_query_atcs_unauthorized</code><span class="sig-paren">(</span><em class="sig-param">mock_requests</em>, <em class="sig-param">mock_environ</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_commander.TCSTestCase.test_command_query_atcs_unauthorized" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test unauthorized user cannot send a ATCS command</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_commander.TCSTestCase.test_command_query_mtcs">
+<code class="sig-name descname">test_command_query_mtcs</code><span class="sig-paren">(</span><em class="sig-param">mock_requests</em>, <em class="sig-param">mock_environ</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_commander.TCSTestCase.test_command_query_mtcs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test authorized user can send a MTCS command</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_commander.TCSTestCase.test_command_query_mtcs_unauthorized">
+<code class="sig-name descname">test_command_query_mtcs_unauthorized</code><span class="sig-paren">(</span><em class="sig-param">mock_requests</em>, <em class="sig-param">mock_environ</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_commander.TCSTestCase.test_command_query_mtcs_unauthorized" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test unauthorized user cannot send a MTCS command</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_commander.TCSTestCase.test_docstrings_query_atcs">
+<code class="sig-name descname">test_docstrings_query_atcs</code><span class="sig-paren">(</span><em class="sig-param">mock_requests</em>, <em class="sig-param">mock_environ</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_commander.TCSTestCase.test_docstrings_query_atcs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test authorized user can send a ATCS command</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_commander.TCSTestCase.test_docstrings_query_mtcs">
+<code class="sig-name descname">test_docstrings_query_mtcs</code><span class="sig-paren">(</span><em class="sig-param">mock_requests</em>, <em class="sig-param">mock_environ</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_commander.TCSTestCase.test_docstrings_query_mtcs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test authorized user can send a MTCS command</p>
 </dd></dl>
 
 </dd></dl>
 
 </div>
 <div class="section" id="module-api.tests.test_lovecsc">
-<span id="api-tests-test-lovecsc-module"></span><h2><span class="section-number">5.1.1.1.3. </span>api.tests.test_lovecsc module<a class="headerlink" href="#module-api.tests.test_lovecsc" title="Permalink to this headline">¶</a></h2>
+<span id="api-tests-test-lovecsc-module"></span><h2><span class="section-number">5.1.1.1.4. </span>api.tests.test_lovecsc module<a class="headerlink" href="#module-api.tests.test_lovecsc" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="api.tests.test_lovecsc.LOVECscTestCase">
 <em class="property">class </em><code class="sig-prename descclassname">api.tests.test_lovecsc.</code><code class="sig-name descname">LOVECscTestCase</code><span class="sig-paren">(</span><em class="sig-param">methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_lovecsc.LOVECscTestCase" title="Permalink to this definition">¶</a></dt>
@@ -343,7 +433,7 @@
 
 </div>
 <div class="section" id="module-api.tests.test_schema_validation">
-<span id="api-tests-test-schema-validation-module"></span><h2><span class="section-number">5.1.1.1.4. </span>api.tests.test_schema_validation module<a class="headerlink" href="#module-api.tests.test_schema_validation" title="Permalink to this headline">¶</a></h2>
+<span id="api-tests-test-schema-validation-module"></span><h2><span class="section-number">5.1.1.1.5. </span>api.tests.test_schema_validation module<a class="headerlink" href="#module-api.tests.test_schema_validation" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="api.tests.test_schema_validation.SchemaValidationTestCase">
 <em class="property">class </em><code class="sig-prename descclassname">api.tests.test_schema_validation.</code><code class="sig-name descname">SchemaValidationTestCase</code><span class="sig-paren">(</span><em class="sig-param">methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_schema_validation.SchemaValidationTestCase" title="Permalink to this definition">¶</a></dt>
@@ -386,7 +476,7 @@
 
 </div>
 <div class="section" id="module-api.tests.tests_auth_api">
-<span id="api-tests-tests-auth-api-module"></span><h2><span class="section-number">5.1.1.1.5. </span>api.tests.tests_auth_api module<a class="headerlink" href="#module-api.tests.tests_auth_api" title="Permalink to this headline">¶</a></h2>
+<span id="api-tests-tests-auth-api-module"></span><h2><span class="section-number">5.1.1.1.6. </span>api.tests.tests_auth_api module<a class="headerlink" href="#module-api.tests.tests_auth_api" title="Permalink to this headline">¶</a></h2>
 <p>Test users’ authentication through the API.</p>
 <dl class="class">
 <dt id="api.tests.tests_auth_api.AuthApiTestCase">
@@ -486,7 +576,7 @@
 
 </div>
 <div class="section" id="module-api.tests.tests_configfile">
-<span id="api-tests-tests-configfile-module"></span><h2><span class="section-number">5.1.1.1.6. </span>api.tests.tests_configfile module<a class="headerlink" href="#module-api.tests.tests_configfile" title="Permalink to this headline">¶</a></h2>
+<span id="api-tests-tests-configfile-module"></span><h2><span class="section-number">5.1.1.1.7. </span>api.tests.tests_configfile module<a class="headerlink" href="#module-api.tests.tests_configfile" title="Permalink to this headline">¶</a></h2>
 <p>Test users’ authentication through the API.</p>
 <dl class="class">
 <dt id="api.tests.tests_configfile.ConfigFileApiTestCase">
@@ -537,7 +627,7 @@
 
 </div>
 <div class="section" id="module-api.tests.tests_emergencycontact">
-<span id="api-tests-tests-emergencycontact-module"></span><h2><span class="section-number">5.1.1.1.7. </span>api.tests.tests_emergencycontact module<a class="headerlink" href="#module-api.tests.tests_emergencycontact" title="Permalink to this headline">¶</a></h2>
+<span id="api-tests-tests-emergencycontact-module"></span><h2><span class="section-number">5.1.1.1.8. </span>api.tests.tests_emergencycontact module<a class="headerlink" href="#module-api.tests.tests_emergencycontact" title="Permalink to this headline">¶</a></h2>
 <p>Test users’ authentication through the API.</p>
 <dl class="class">
 <dt id="api.tests.tests_emergencycontact.EmergencyContactApiTestCase">
@@ -565,7 +655,7 @@
 
 </div>
 <div class="section" id="module-api.tests">
-<span id="module-contents"></span><h2><span class="section-number">5.1.1.1.8. </span>Module contents<a class="headerlink" href="#module-api.tests" title="Permalink to this headline">¶</a></h2>
+<span id="module-contents"></span><h2><span class="section-number">5.1.1.1.9. </span>Module contents<a class="headerlink" href="#module-api.tests" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
