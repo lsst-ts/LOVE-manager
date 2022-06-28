@@ -901,10 +901,11 @@ def lfa(request, *args, **kwargs):
     option = kwargs.get("option", None)
     url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/lfa/{option}"
 
-    file_list = request.data.getlist("files")
     uploaded_files_urls = []
-    for file in file_list:
-        upload_file_response = requests.post(url, files={"uploaded_file": file})
+    for file in request.FILES:
+        upload_file_response = requests.post(
+            url, files={"uploaded_file": request.FILES[file]}
+        )
         if upload_file_response.status_code == 200:
             uploaded_files_urls.append(upload_file_response.json().get("url"))
         elif upload_file_response.status_code == 404:
@@ -1442,7 +1443,7 @@ class ExposurelogViewSet(viewsets.ViewSet):
         url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/exposurelog/messages?{query_params_string}"
 
         lfa_urls = []
-        if "files" in request.data:
+        if "file" in request.data:
             lfa_response = lfa(request, option="upload-file")
             if lfa_response.status_code == 400 or lfa_response.status_code == 404:
                 return Response(lfa_response.json(), lfa_response.status_code)
@@ -1462,8 +1463,9 @@ class ExposurelogViewSet(viewsets.ViewSet):
             jira_url = jira_response.data.get("url")
 
         json_data = request.data.copy()
-        if "files" in json_data:
-            del json_data["files"]
+        if "file" in json_data:
+            del json_data["file"]
+
         json_data["urls"] = [jira_url, *lfa_urls]
         json_data["urls"] = list(filter(None, json_data["urls"]))
         response = requests.post(url, json=json_data)
@@ -1516,7 +1518,7 @@ class NarrativelogViewSet(viewsets.ViewSet):
         url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/narrativelog/messages?{query_params_string}"
 
         lfa_urls = []
-        if "files" in request.data:
+        if "file" in request.data:
             lfa_response = lfa(request, option="upload-file")
             if lfa_response.status_code == 400 or lfa_response.status_code == 404:
                 return Response(lfa_response.json(), lfa_response.status_code)
@@ -1536,8 +1538,9 @@ class NarrativelogViewSet(viewsets.ViewSet):
             jira_url = jira_response.data.get("url")
 
         json_data = request.data.copy()
-        if "files" in json_data:
-            del json_data["files"]
+        if "file" in json_data:
+            del json_data["file"]
+
         json_data["urls"] = [jira_url, *lfa_urls]
         json_data["urls"] = list(filter(None, json_data["urls"]))
         response = requests.post(url, json=json_data)
