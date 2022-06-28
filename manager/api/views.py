@@ -1450,7 +1450,7 @@ class ExposurelogViewSet(viewsets.ViewSet):
             lfa_urls = lfa_response.data.get("urls")
 
         jira_url = None
-        if "jira" in request.data:
+        if request.data.get("jira", False):
             request.data._mutable = True
             request.data["lfa_files_urls"] = lfa_urls
             request.data._mutable = False
@@ -1523,7 +1523,7 @@ class NarrativelogViewSet(viewsets.ViewSet):
             lfa_urls = lfa_response.data.get("urls")
 
         jira_url = None
-        if "jira" in request.data:
+        if request.data.get("jira", False):
             request.data._mutable = True
             request.data["lfa_files_urls"] = lfa_urls
             request.data._mutable = False
