@@ -1465,14 +1465,12 @@ class ExposurelogViewSet(viewsets.ViewSet):
         # TODO: allow uploading a file on update
         return Response(response.json(), status=response.status_code)
 
-    @swagger_auto_schema(responses={204: "Exposure log deleted"})
+    @swagger_auto_schema(responses={200: "Exposure log deleted"})
     def destroy(self, request, pk=None, *args, **kwargs):
         url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/exposurelog/messages/{pk}"
         response = requests.delete(url, json=request.data)
         if response.status_code == 204:
-            return Response(
-                {"ack": "Exposure log deleted succesfully"}, status=response.status_code
-            )
+            return Response({"ack": "Exposure log deleted succesfully"}, status=200)
         return Response(response.json(), status=response.status_code)
 
 
@@ -1540,13 +1538,10 @@ class NarrativelogViewSet(viewsets.ViewSet):
         # TODO: allow uploading a file on update
         return Response(response.json(), status=response.status_code)
 
-    @swagger_auto_schema(responses={204: "Narrative log deleted"})
+    @swagger_auto_schema(responses={200: "Narrative log deleted"})
     def destroy(self, request, pk=None, *args, **kwargs):
         url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/narrativelog/messages/{pk}"
         response = requests.delete(url, json=request.data)
         if response.status_code == 204:
-            return Response(
-                {"ack": "Narrative log deleted succesfully"},
-                status=response.status_code,
-            )
+            return Response({"ack": "Narrative log deleted succesfully"}, status=200,)
         return Response(response.json(), status=response.status_code)
