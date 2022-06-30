@@ -1559,9 +1559,6 @@ class NarrativelogViewSet(viewsets.ViewSet):
 
         json_data["urls"] = [jira_url, *lfa_urls]
         json_data["urls"] = list(filter(None, json_data["urls"]))
-        print("############", flush=True)
-        print(json_data)
-        print("############", flush=True)
         response = requests.post(url, json=json_data)
         return Response(response.json(), status=response.status_code)
 
