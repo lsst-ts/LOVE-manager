@@ -1483,7 +1483,15 @@ class ExposurelogViewSet(viewsets.ViewSet):
     @swagger_auto_schema(responses={200: "Exposure log edited"})
     def update(self, request, pk=None, *args, **kwargs):
         url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/exposurelog/messages/{pk}"
-        response = requests.patch(url, json=request.data)
+
+        json_data = request.data.copy()
+        if "tags" in json_data:
+            json_data["tags"] = json_data["tags"].split(",")
+
+        if "urls" in json_data:
+            json_data["urls"] = json_data["urls"].split(",")
+
+        response = requests.patch(url, json=json_data)
         # TODO: allow uploading a file on update
         return Response(response.json(), status=response.status_code)
 
@@ -1559,7 +1567,15 @@ class NarrativelogViewSet(viewsets.ViewSet):
     @swagger_auto_schema(responses={200: "Narrative log edited"})
     def update(self, request, pk=None, *args, **kwargs):
         url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/narrativelog/messages/{pk}"
-        response = requests.patch(url, json=request.data)
+
+        json_data = request.data.copy()
+        if "tags" in json_data:
+            json_data["tags"] = json_data["tags"].split(",")
+
+        if "urls" in json_data:
+            json_data["urls"] = json_data["urls"].split(",")
+
+        response = requests.patch(url, json=json_data)
         # TODO: allow uploading a file on update
         return Response(response.json(), status=response.status_code)
 
