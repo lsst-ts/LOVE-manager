@@ -987,28 +987,27 @@ def authlist_revert_authorization_task(authorization_dict):
 def getTitle(request_data):
     # Shared params
     request_type = request_data["request_type"]
-    type_of_comment = request_data["comment_type"]
+    level = request_data["level"]
 
     # Exposure log params
     if request_type == "exposure":
         obs_id = request_data["obs_id"]
-        return request_type + " | " + type_of_comment + " | " + obs_id
+        return request_type + " | " + level + " | " + obs_id
     # Narrative log params
     if request_type == "narrative":
         subsystem = request_data["subsystem"]
         csc = request_data["csc"]
         time_of_incident = request_data["incident_time"]
-        return type_of_comment + "|" + subsystem + "|" + csc + "|" + time_of_incident
+        return level + "|" + subsystem + "|" + csc + "|" + time_of_incident
     return ""
 
 
 def makeJiraDescription(request_data):
     # Shared params
     request_type = request_data["request_type"]
-    type_of_comment = request_data["comment_type"]
+    level = request_data["level"]
     lfa_files_urls = request_data["lfa_files_urls"]
     message_log = request_data["message_text"]
-    level = request_data["level"]
     user_id = request_data["user_id"]
     user_agent = request_data["user_agent"]
 
@@ -1023,11 +1022,8 @@ def makeJiraDescription(request_data):
             + ", "
             + user_agent
             + "\n"
-            + "Level: "
-            + level
-            + "\n"
             + "Type of comment: "
-            + type_of_comment
+            + level
             + "\n"
             + "Observation id: "
             + obs_id
@@ -1059,9 +1055,6 @@ def makeJiraDescription(request_data):
             + ", "
             + user_agent
             + "\n"
-            + "Level: "
-            + level
-            + "\n"
             + "Time of incident: "
             + time_of_incident
             + "\n"
@@ -1069,7 +1062,7 @@ def makeJiraDescription(request_data):
             + time_lost
             + "\n"
             + "Type of comment: "
-            + type_of_comment
+            + level
             + "\n"
             + "Subsystem: "
             + subsystem
@@ -1184,28 +1177,6 @@ def lfa(request):
     Response
         The response and status code of the request to the JIRA API
     """
-
-    full_request = {
-        "request_type": "narrative",  # exposure/narrative
-        "comment_type": "test",
-        "obs_id": None,
-        "instrument": None,
-        "exposure_flag": None,
-        "subsystem": "MainTel",
-        "csc": "M1M3",
-        "salindex": 1,
-        "csc_parameter": "actual",
-        "incident_time": "00:35:00",
-        "obs_time_loss": 10,
-        "lfa_files_urls": ["asdf.com"],
-        "message_text": """Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            Donec sagittis aliquam lacus et euismod. Nullam tortor metus,
-            mollis faucibus mauris convallis, mattis commodo magna. Sed blandit
-            dapibus lectus et sollicitudin. Aliquam erat lorem, posuere
-            at fermentum quis, finibus sed nunc. Nulla facilisi.
-            Maecenas vitae dignissim quam.""",
-    }
-
     full_request = request.data
 
     jira_payload = {
@@ -1351,6 +1322,9 @@ class ExposurelogViewSet(viewsets.ViewSet):
 
         json_data["urls"] = [jira_url, *lfa_urls]
         json_data["urls"] = list(filter(None, json_data["urls"]))
+
+        # for obs in request.data.get('obs_ids', []):
+        #     response = requests.post(url, json=json_data)
         response = requests.post(url, json=json_data)
         return Response(response.json(), status=response.status_code)
 
