@@ -1097,9 +1097,7 @@ def getTitle(request_data):
     # Narrative log params
     if request_type == "narrative":
         subsystem = request_data["subsystem"]
-        csc = request_data["csc"]
-        time_of_incident = request_data["incident_time"]
-        return level + "|" + subsystem + "|" + csc + "|" + time_of_incident
+        return request_type + " | " + level + " | " + subsystem
     return ""
 
 
@@ -1147,8 +1145,9 @@ def makeJiraDescription(request_data):
         csc = request_data["csc"]
         salindex = request_data["salindex"]
         csc_topic = request_data["topic"]
-        csc_parameter = request_data["csc_parameter"]
-        time_of_incident = request_data["incident_time"]
+        csc_parameter = request_data["parameter"]
+        begin_date = request_data["begin_date"]
+        end_date = request_data["end_date"]
         time_lost = request_data["time_lost"]
         description = (
             "Created by: "
@@ -1157,7 +1156,9 @@ def makeJiraDescription(request_data):
             + user_agent
             + "\n"
             + "Time of incident: "
-            + time_of_incident
+            + begin_date
+            + " - "
+            + end_date
             + "\n"
             + "Time lost: "
             + time_lost
@@ -1174,10 +1175,10 @@ def makeJiraDescription(request_data):
             + "Salindex: "
             + salindex
             + "\n"
-            + "CSC topic: "
+            + "Topic: "
             + csc_topic
             + "\n"
-            + "CSC parameter: "
+            + "Parameter: "
             + csc_parameter
             + "\n"
             + "Files: "
