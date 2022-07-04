@@ -1003,17 +1003,23 @@ def getTitle(request_data):
 def makeJiraDescription(request_data):
     # Shared params
     request_type = request_data["request_type"]
-    level = request_data["level"]
-    lfa_files_urls = request_data["lfa_files_urls"]
-    message_log = request_data["message_text"]
-    user_id = request_data["user_id"]
-    user_agent = request_data["user_agent"]
+    try:
+        level = request_data["level"]
+        lfa_files_urls = request_data["lfa_files_urls"]
+        message_log = request_data["message_text"]
+        user_id = request_data["user_id"]
+        user_agent = request_data["user_agent"]
+    except Exception:
+        return Response({"ack": "Error"})
 
     # Exposure log params
     if request_type == "exposure":
-        obs_id = request_data["obs_id"]
-        instrument = request_data["instrument"]
-        exposure_flag = request_data["exposure_flag"]
+        try:
+            obs_id = request_data["obs_id"]
+            instrument = request_data["instrument"]
+            exposure_flag = request_data["exposure_flag"]
+        except Exception:
+            return Response({"ack": "Error B"})
         description = (
             "Created by: "
             + user_id
@@ -1040,14 +1046,17 @@ def makeJiraDescription(request_data):
         )
     # Narrative log params
     if request_type == "narrative":
-        subsystem = request_data["subsystem"]
-        csc = request_data["csc"]
-        salindex = request_data["salindex"]
-        csc_topic = request_data["topic"]
-        csc_parameter = request_data["parameter"]
-        begin_date = request_data["begin_date"]
-        end_date = request_data["end_date"]
-        time_lost = request_data["time_lost"]
+        try:
+            subsystem = request_data["subsystem"]
+            csc = request_data["csc"]
+            salindex = request_data["salindex"]
+            csc_topic = request_data["topic"]
+            csc_parameter = request_data["parameter"]
+            begin_date = request_data["begin_date"]
+            end_date = request_data["end_date"]
+            time_lost = request_data["time_lost"]
+        except Exception:
+            return Response({"ack": "Error C"})
         description = (
             "Created by: "
             + user_id
@@ -1179,6 +1188,9 @@ def lfa(request):
         The response and status code of the request to the JIRA API
     """
     full_request = request.data
+
+    if "request_type" not in full_request:
+        return Response({"ack": "Error"})
 
     jira_payload = {
         "fields": {
