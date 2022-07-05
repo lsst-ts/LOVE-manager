@@ -51,6 +51,7 @@ urlpatterns = [
     ),
     path("salinfo/topic-data", api.views.salinfo_topic_data, name="salinfo-topic-data"),
     path("config", api.views.get_config, name="config"),
+    path("config-set", api.views.set_config_selected, name="config-set"),
     path("efd/timeseries", api.views.query_efd_timeseries, name="EFD-timeseries"),
     path("efd/logmessages", api.views.query_efd_logs, name="EFD-logmessages"),
     path("efd/efd_clients", api.views.query_efd_clients, name="EFD-clients"),
