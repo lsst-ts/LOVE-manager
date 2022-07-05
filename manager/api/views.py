@@ -1119,16 +1119,22 @@ class CSCAuthorizationRequestViewSet(
 def getTitle(request_data):
     # Shared params
     request_type = request_data["request_type"]
-    level = request_data["level"]
+    level = str(request_data["level"])
 
     # Exposure log params
     if request_type == "exposure":
-        obs_id = request_data["obs_id"]
-        return request_type + " | " + level + " | " + obs_id
+        try:
+            obs_id = request_data["obs_id"]
+            return request_type + " | " + level + " | " + obs_id
+        except Exception:
+            raise Exception("Error reading params")
     # Narrative log params
     if request_type == "narrative":
-        subsystem = request_data["subsystem"]
-        return request_type + " | " + level + " | " + subsystem
+        try:
+            subsystem = request_data["subsystem"]
+            return request_type + " | " + level + " | " + subsystem
+        except Exception:
+            raise Exception("Error reading params")
     return ""
 
 
@@ -1136,13 +1142,13 @@ def makeJiraDescription(request_data):
     # Shared params
     request_type = request_data["request_type"]
     try:
-        level = request_data["level"]
+        level = str(request_data["level"])
         lfa_files_urls = request_data["lfa_files_urls"]
         message_log = request_data["message_text"]
         user_id = request_data["user_id"]
         user_agent = request_data["user_agent"]
     except Exception:
-        return Response({"ack": "Error"})
+        raise Exception("Error reading params")
 
     # Exposure log params
     if request_type == "exposure":
@@ -1151,7 +1157,7 @@ def makeJiraDescription(request_data):
             instrument = request_data["instrument"]
             exposure_flag = request_data["exposure_flag"]
         except Exception:
-            return Response({"ack": "Error B"})
+            raise Exception("Error reading params")
         description = (
             "Created by: "
             + user_id
@@ -1186,9 +1192,9 @@ def makeJiraDescription(request_data):
             csc_parameter = request_data["parameter"]
             begin_date = request_data["begin_date"]
             end_date = request_data["end_date"]
-            time_lost = request_data["time_lost"]
+            time_lost = str(request_data["time_lost"])
         except Exception:
-            return Response({"ack": "Error C"})
+            raise Exception("Error reading params")
         description = (
             "Created by: "
             + user_id
@@ -1322,20 +1328,26 @@ def lfa(request):
     full_request = request.data
 
     if "request_type" not in full_request:
-        return Response({"ack": "Error"})
+        return Response({"ack": "Error into request type data"})
 
-    jira_payload = {
-        "fields": {
-            "project": {"id": 13700},
-            "labels": ["LOVE", full_request["request_type"]],  # TODO: add more labels
-            "summary": getTitle(full_request),
-            "description": makeJiraDescription(full_request),
-            "issuetype": {
-                "id": 3
-            },  # issuetypes: https://jira.lsstcorp.org/rest/api/latest/issuetype/?projectId=13700
-        },
-        "update": {"components": [{"set": [{"name": "Dev"}]}],},
-    }
+    try:
+        jira_payload = {
+            "fields": {
+                "project": {"id": 13700},
+                "labels": [
+                    "LOVE",
+                    full_request["request_type"],
+                ],  # TODO: add more labels
+                "summary": getTitle(full_request),
+                "description": makeJiraDescription(full_request),
+                "issuetype": {
+                    "id": 3
+                },  # issuetypes: https://jira.lsstcorp.org/rest/api/latest/issuetype/?projectId=13700
+            },
+            "update": {"components": [{"set": [{"name": "Dev"}]}],},
+        }
+    except Exception:
+        return Response({"ack": "Error creating jira payload"})
 
     headers = {
         "Authorization": f"Basic {os.environ.get('JIRA_API_TOKEN')}",
