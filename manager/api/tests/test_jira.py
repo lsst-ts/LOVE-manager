@@ -38,7 +38,7 @@ class JiraTestCase(TestCase):
         }
 
         request_exposure = {
-            "obs_id": 1000,
+            "obs_id": "AT_O_20220208_000140",
             "instrument": "LATISS",
             "exposure_flag": "none",
         }
@@ -109,39 +109,36 @@ class JiraTestCase(TestCase):
     def test_missing_parameters(self):
         """Test call to function with missing parameters"""
 
-        jira_response = jira(
-            self.jira_request_exposure_without_request_type
-        )  # retornar error -> assert
-        assert jira_response.data["ack"] == "Error"
+        # exposure
+        jira_response = jira(self.jira_request_exposure_without_request_type)
+        assert jira_response.data["ack"] == "Error into request type data"
 
-        jira_response = jira(
-            self.jira_request_exposure_without_shared_param
-        )  # retornar error -> assert
-        assert jira_response.data["ack"] == "Error"
+        jira_response = jira(self.jira_request_exposure_without_shared_param)
+        assert jira_response.data["ack"] == "Error creating jira payload"
 
-        jira_response = jira(
-            self.jira_request_exposure_without_param
-        )  # retornar error -> assert
-        assert jira_response.data["ack"] == "Error B"
+        jira_response = jira(self.jira_request_exposure_without_param)
+        assert jira_response.data["ack"] == "Error creating jira payload"
 
-        jira_response = jira(
-            self.jira_request_narrative_without_param
-        )  # retornar error -> assert
-        assert jira_response.data["ack"] == "Error C"
+        # narrative
+        jira_response = jira(self.jira_request_narrative_without_request_type)
+        assert jira_response.data["ack"] == "Error into request type data"
 
-        jira(self.jira_request)
-        assert "true" == "true"
+        jira_response = jira(self.jira_request_narrative_without_shared_param)
+        assert jira_response.data["ack"] == "Error creating jira payload"
+
+        jira_response = jira(self.jira_request_narrative_without_param)
+        assert jira_response.data["ack"] == "Error creating jira payload"
 
     def test_needed_parameters(self):
         """Test call to function with all needed parameters"""
         mock_jira_patcher = patch("requests.post")
         mock_jira_client = mock_jira_patcher.start()
-        mock_jira_client.return_value = requests.Response({"key": "LOVE-XX"})
-
-        print(self.jira_request.data)
+        response = requests.Response()
+        response.status_code = 200
+        response.json = lambda: {"key": "LOVE-XX"}
+        mock_jira_client.return_value = response
 
         jira_response = jira(self.jira_request_exposure_full)
-        print(jira_response)
         assert jira_response.status_code == 200
         assert jira_response.data["ack"] == "Jira ticket created"
         assert jira_response.data["url"] == "https://jira.lsstcorp.org/browse/LOVE-XX"
