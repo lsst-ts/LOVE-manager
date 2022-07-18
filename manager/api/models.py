@@ -132,6 +132,13 @@ class EmergencyContact(BaseModel):
     """EC's email"""
 
 
+class ImageTag(BaseModel):
+    """ImageTag Model"""
+
+    label = models.CharField(max_length=100, blank=True)
+    """Image label"""
+
+
 class CSCAuthorizationRequest(models.Model):
     class RequestStatus(models.TextChoices):
         PENDING = "Pending", "Pending"
