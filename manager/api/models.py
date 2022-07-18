@@ -136,6 +136,7 @@ class ImageTag(BaseModel):
     """ImageTag Model"""
 
     label = models.CharField(max_length=100, blank=True)
+    key = models.CharField(max_length=50, blank=True)
     """Image label"""
 
 
