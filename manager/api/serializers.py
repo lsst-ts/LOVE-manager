@@ -4,7 +4,7 @@ from drf_yasg.utils import swagger_serializer_method
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from manager import utils
-from api.models import ConfigFile, EmergencyContact, CSCAuthorizationRequest
+from api.models import ConfigFile, EmergencyContact, ImageTag, CSCAuthorizationRequest
 from typing import Union
 
 
@@ -240,6 +240,19 @@ class EmergencyContactSerializer(serializers.ModelSerializer):
         """Meta class to map serializer's fields with the model fields."""
 
         model = EmergencyContact
+        """The model class to serialize"""
+
+        fields = "__all__"
+        """The fields of the model class to serialize"""
+
+
+class ImageTagSerializer(serializers.ModelSerializer):
+    """Serializer to map the Model instance into JSON format."""
+
+    class Meta:
+        """Meta class to map serializer's fields with the model fields."""
+
+        model = ImageTag
         """The model class to serialize"""
 
         fields = "__all__"

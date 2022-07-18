@@ -21,6 +21,7 @@ from rest_framework.routers import DefaultRouter
 from api.views import (
     ConfigFileViewSet,
     EmergencyContactViewSet,
+    ImageTagViewSet,
     ExposurelogViewSet,
     NarrativelogViewSet,
 )
@@ -82,6 +83,7 @@ urlpatterns = [
 ]
 router.register("configfile", ConfigFileViewSet)
 router.register("emergencycontact", EmergencyContactViewSet)
+router.register("imagetag", ImageTagViewSet)
 router.register(
     "authlistrequest",
     api.views.CSCAuthorizationRequestViewSet,

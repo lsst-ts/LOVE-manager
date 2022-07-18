@@ -33,5 +33,131 @@
       "contact_info": "none",
       "email": "name2@email.com"
     }
+  },
+  {
+    "model": "api.imagetag",
+    "pk": 1,
+    "fields": {
+      "creation_timestamp": "2021-01-05T17:04:24.127Z",
+      "update_timestamp": "2021-01-05T17:04:24.127Z",
+      "label": "Satellite"
+    }
+  },
+  {
+    "model": "api.imagetag",
+    "pk": 2,
+    "fields": {
+      "creation_timestamp": "2021-01-05T17:04:24.127Z",
+      "update_timestamp": "2021-01-05T17:04:24.127Z",
+      "label": "Satellite"
+    }
+  },
+  {
+    "model": "api.imagetag",
+    "pk": 3,
+    "fields": {
+      "creation_timestamp": "2021-01-05T17:04:24.127Z",
+      "update_timestamp": "2021-01-05T17:04:24.127Z",
+      "label": "Bright Artifact"
+    }
+  },
+  {
+    "model": "api.imagetag",
+    "pk": 4,
+    "fields": {
+      "creation_timestamp": "2021-01-05T17:04:24.127Z",
+      "update_timestamp": "2021-01-05T17:04:24.127Z",
+      "label": "Wind"
+    }
+  },
+  {
+    "model": "api.imagetag",
+    "pk": 5,
+    "fields": {
+      "creation_timestamp": "2021-01-05T17:04:24.127Z",
+      "update_timestamp": "2021-01-05T17:04:24.127Z",
+      "label": "Clouds"
+    }
+  },
+  {
+    "model": "api.imagetag",
+    "pk": 6,
+    "fields": {
+      "creation_timestamp": "2021-01-05T17:04:24.127Z",
+      "update_timestamp": "2021-01-05T17:04:24.127Z",
+      "label": "Notable Image"
+    }
+  },
+  {
+    "model": "api.imagetag",
+    "pk": 7,
+    "fields": {
+      "creation_timestamp": "2021-01-05T17:04:24.127Z",
+      "update_timestamp": "2021-01-05T17:04:24.127Z",
+      "label": "PR/EPO"
+    }
+  },
+  {
+    "model": "api.imagetag",
+    "pk": 8,
+    "fields": {
+      "creation_timestamp": "2021-01-05T17:04:24.127Z",
+      "update_timestamp": "2021-01-05T17:04:24.127Z",
+      "label": "Background Issue"
+    }
+  },
+  {
+    "model": "api.imagetag",
+    "pk": 9,
+    "fields": {
+      "creation_timestamp": "2021-01-05T17:04:24.127Z",
+      "update_timestamp": "2021-01-05T17:04:24.127Z",
+      "label": "Bad PSF/Movement"
+    }
+  },
+  {
+    "model": "api.imagetag",
+    "pk": 10,
+    "fields": {
+      "creation_timestamp": "2021-01-05T17:04:24.127Z",
+      "update_timestamp": "2021-01-05T17:04:24.127Z",
+      "label": "Focus Issue"
+    }
+  },
+  {
+    "model": "api.imagetag",
+    "pk": 11,
+    "fields": {
+      "creation_timestamp": "2021-01-05T17:04:24.127Z",
+      "update_timestamp": "2021-01-05T17:04:24.127Z",
+      "label": "Pointing Issue"
+    }
+  },
+  {
+    "model": "api.imagetag",
+    "pk": 12,
+    "fields": {
+      "creation_timestamp": "2021-01-05T17:04:24.127Z",
+      "update_timestamp": "2021-01-05T17:04:24.127Z",
+      "label": "Camera Issue"
+    }
+  },
+  {
+    "model": "api.imagetag",
+    "pk": 13,
+    "fields": {
+      "creation_timestamp": "2021-01-05T17:04:24.127Z",
+      "update_timestamp": "2021-01-05T17:04:24.127Z",
+      "label": "DM Issue"
+    }
+  },
+  {
+    "model": "api.imagetag",
+    "pk": 14,
+    "fields": {
+      "creation_timestamp": "2021-01-05T17:04:24.127Z",
+      "update_timestamp": "2021-01-05T17:04:24.127Z",
+      "label": "Ticketed Issue"
+    }
   }
 ]

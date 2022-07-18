@@ -29,6 +29,7 @@ from api.models import (
     Token,
     ConfigFile,
     EmergencyContact,
+    ImageTag,
     CSCAuthorizationRequest,
 )
 from api.serializers import TokenSerializer, ConfigSerializer
@@ -36,6 +37,7 @@ from api.serializers import (
     ConfigFileSerializer,
     ConfigFileContentSerializer,
     EmergencyContactSerializer,
+    ImageTagSerializer,
     CSCAuthorizationRequestSerializer,
     CSCAuthorizationRequestCreateSerializer,
     CSCAuthorizationRequestUpdateSerializer,
@@ -646,6 +648,16 @@ class EmergencyContactViewSet(viewsets.ModelViewSet):
     """Set of objects to be accessed by queries to this viewsets endpoints"""
 
     serializer_class = EmergencyContactSerializer
+    """Serializer used to serialize View objects"""
+
+
+class ImageTagViewSet(viewsets.ModelViewSet):
+    """GET, POST, PUT, PATCH or DELETE instances the EmergencyContact model."""
+
+    queryset = ImageTag.objects.order_by("label").all()
+    """Set of objects to be accessed by queries to this viewsets endpoints"""
+
+    serializer_class = ImageTagSerializer
     """Serializer used to serialize View objects"""
 
 
