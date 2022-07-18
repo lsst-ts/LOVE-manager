@@ -40,7 +40,8 @@
     "fields": {
       "creation_timestamp": "2021-01-05T17:04:24.127Z",
       "update_timestamp": "2021-01-05T17:04:24.127Z",
-      "label": "Satellite"
+      "label": "Satellite",
+      "key": "satellite"
     }
   },
   {
@@ -49,7 +50,8 @@
     "fields": {
       "creation_timestamp": "2021-01-05T17:04:24.127Z",
       "update_timestamp": "2021-01-05T17:04:24.127Z",
-      "label": "Satellite"
+      "label": "Bright Artifact",
+      "key": "bright_artifact"
     }
   },
   {
@@ -58,7 +60,8 @@
     "fields": {
       "creation_timestamp": "2021-01-05T17:04:24.127Z",
       "update_timestamp": "2021-01-05T17:04:24.127Z",
-      "label": "Bright Artifact"
+      "label": "Wind",
+      "key": "wind"
     }
   },
   {
@@ -67,7 +70,8 @@
     "fields": {
       "creation_timestamp": "2021-01-05T17:04:24.127Z",
       "update_timestamp": "2021-01-05T17:04:24.127Z",
-      "label": "Wind"
+      "label": "Clouds",
+      "key": "clouds"
     }
   },
   {
@@ -76,7 +80,8 @@
     "fields": {
       "creation_timestamp": "2021-01-05T17:04:24.127Z",
       "update_timestamp": "2021-01-05T17:04:24.127Z",
-      "label": "Clouds"
+      "label": "Notable Image",
+      "key": "notable_image"
     }
   },
   {
@@ -85,7 +90,8 @@
     "fields": {
       "creation_timestamp": "2021-01-05T17:04:24.127Z",
       "update_timestamp": "2021-01-05T17:04:24.127Z",
-      "label": "Notable Image"
+      "label": "PR/EPO",
+      "key": "pr_epo"
     }
   },
   {
@@ -94,7 +100,8 @@
     "fields": {
       "creation_timestamp": "2021-01-05T17:04:24.127Z",
       "update_timestamp": "2021-01-05T17:04:24.127Z",
-      "label": "PR/EPO"
+      "label": "Background Issue",
+      "key": "background_issue"
     }
   },
   {
@@ -103,7 +110,8 @@
     "fields": {
       "creation_timestamp": "2021-01-05T17:04:24.127Z",
       "update_timestamp": "2021-01-05T17:04:24.127Z",
-      "label": "Background Issue"
+      "label": "Bad PSF/Movement",
+      "key": "bad_psf_movement"
     }
   },
   {
@@ -112,7 +120,8 @@
     "fields": {
       "creation_timestamp": "2021-01-05T17:04:24.127Z",
       "update_timestamp": "2021-01-05T17:04:24.127Z",
-      "label": "Bad PSF/Movement"
+      "label": "Focus Issue",
+      "key": "focus_issue"
     }
   },
   {
@@ -121,7 +130,8 @@
     "fields": {
       "creation_timestamp": "2021-01-05T17:04:24.127Z",
       "update_timestamp": "2021-01-05T17:04:24.127Z",
-      "label": "Focus Issue"
+      "label": "Pointing Issue",
+      "key": "pointing_issue"
     }
   },
   {
@@ -130,7 +140,8 @@
     "fields": {
       "creation_timestamp": "2021-01-05T17:04:24.127Z",
       "update_timestamp": "2021-01-05T17:04:24.127Z",
-      "label": "Pointing Issue"
+      "label": "Camera Issue",
+      "key": "camera_issue"
     }
   },
   {
@@ -139,7 +150,8 @@
     "fields": {
       "creation_timestamp": "2021-01-05T17:04:24.127Z",
       "update_timestamp": "2021-01-05T17:04:24.127Z",
-      "label": "Camera Issue"
+      "label": "DM Issue",
+      "key": "dm_issue"
     }
   },
   {
@@ -148,16 +160,8 @@
     "fields": {
       "creation_timestamp": "2021-01-05T17:04:24.127Z",
       "update_timestamp": "2021-01-05T17:04:24.127Z",
-      "label": "DM Issue"
-    }
-  },
-  {
-    "model": "api.imagetag",
-    "pk": 14,
-    "fields": {
-      "creation_timestamp": "2021-01-05T17:04:24.127Z",
-      "update_timestamp": "2021-01-05T17:04:24.127Z",
-      "label": "Ticketed Issue"
+      "label": "Ticketed Issue",
+      "key": "ticketed_issue"
     }
   }
 ]
