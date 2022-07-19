@@ -1324,7 +1324,7 @@ def lfa(request):
     full_request = request.data
 
     if "request_type" not in full_request:
-        return Response({"ack": "Error request type needed"}, status=400)
+        return Response({"ack": "Error reading request type"}, status=400)
 
     try:
         jira_payload = {
