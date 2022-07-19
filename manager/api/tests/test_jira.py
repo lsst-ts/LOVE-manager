@@ -11,30 +11,30 @@ class JiraTestCase(TestCase):
         """Define the test suite setup."""
         # Arrange
         shared_params = [
-            "level",
+            "level_label",
             "lfa_files_urls",
             "message_text",
             "user_id",
             "user_agent",
+            "tags",
         ]
         exposure_params = ["obs_id", "instrument", "exposure_flag"]
         narrative_params = [
-            "subsystem",
-            "csc",
-            "salindex",
-            "topic",
-            "parameter",
+            "system",
+            "subsystems",
+            "cscs",
             "begin_date",
             "end_date",
             "time_lost",
         ]
 
         request_shared = {
-            "level": 10,
+            "level_label": "debug",
             "lfa_files_urls": ["test", "test"],
             "message_text": "Lorem ipsum",
             "user_id": "love@localhost",
             "user_agent": "LOVE",
+            "tags": "tag1, tag2",
         }
 
         request_exposure = {
@@ -44,11 +44,9 @@ class JiraTestCase(TestCase):
         }
 
         request_narrative = {
-            "subsystem": "MainTel",
-            "csc": "M1M3",
-            "salindex": "1",
-            "topic": "accelerometerData",
-            "parameter": "accelerometer",
+            "system": "MainTel",
+            "subsystems": "Camera",
+            "cscs": "M1M3",
             "begin_date": "202200703-19:58:13",
             "end_date": "20220704-19:25:13",
             "time_lost": 10,
@@ -111,7 +109,7 @@ class JiraTestCase(TestCase):
 
         # exposure
         jira_response = jira(self.jira_request_exposure_without_request_type)
-        assert jira_response.data["ack"] == "Error into request type data"
+        assert jira_response.data["ack"] == "Error reading request type"
 
         jira_response = jira(self.jira_request_exposure_without_shared_param)
         assert jira_response.data["ack"] == "Error creating jira payload"
@@ -121,7 +119,7 @@ class JiraTestCase(TestCase):
 
         # narrative
         jira_response = jira(self.jira_request_narrative_without_request_type)
-        assert jira_response.data["ack"] == "Error into request type data"
+        assert jira_response.data["ack"] == "Error reading request type"
 
         jira_response = jira(self.jira_request_narrative_without_shared_param)
         assert jira_response.data["ack"] == "Error creating jira payload"
