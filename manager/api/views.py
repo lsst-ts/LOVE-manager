@@ -1131,7 +1131,7 @@ class CSCAuthorizationRequestViewSet(
 def getTitle(request_data):
     # Shared params
     request_type = request_data["request_type"]
-    level = str(request_data["level"])
+    level = str(request_data["level_label"])
 
     # Exposure log params
     if request_type == "exposure":
@@ -1143,8 +1143,8 @@ def getTitle(request_data):
     # Narrative log params
     if request_type == "narrative":
         try:
-            subsystem = request_data["subsystem"]
-            return request_type + " | " + level + " | " + subsystem
+            system = request_data["system"]
+            return request_type + " | " + level + " | " + system
         except Exception:
             raise Exception("Error reading params")
     return ""
@@ -1154,7 +1154,7 @@ def makeJiraDescription(request_data):
     # Shared params
     request_type = request_data["request_type"]
     try:
-        level = str(request_data["level"])
+        level = str(request_data["level_label"])
         lfa_files_urls = request_data["lfa_files_urls"]
         message_log = request_data["message_text"]
         user_id = request_data["user_id"]
@@ -1171,24 +1171,24 @@ def makeJiraDescription(request_data):
         except Exception:
             raise Exception("Error reading params")
         description = (
-            "Created by: "
+            "*Created by* "
             + user_id
-            + ", "
+            + " *from* "
             + user_agent
             + "\n"
-            + "Type of comment: "
+            + "*Type of comment:* "
             + level
             + "\n"
-            + "Observation id: "
+            + "*Observation id:* "
             + obs_id
             + "\n"
-            + "Instrument: "
+            + "*Instrument:* "
             + instrument
             + "\n"
-            + "Exposure flag: "
+            + "*Exposure flag:* "
             + exposure_flag
             + "\n"
-            + "Files: "
+            + "*Files:* "
             + "\n"
             + str(lfa_files_urls)
             + "\n\n"
@@ -1197,49 +1197,43 @@ def makeJiraDescription(request_data):
     # Narrative log params
     if request_type == "narrative":
         try:
-            subsystem = request_data["subsystem"]
-            csc = request_data["csc"]
-            salindex = request_data["salindex"]
-            csc_topic = request_data["topic"]
-            csc_parameter = request_data["parameter"]
+            system = request_data["system"]
+            subsystems = request_data["subsystems"]
+            cscs = request_data["cscs"]
             begin_date = request_data["begin_date"]
             end_date = request_data["end_date"]
             time_lost = str(request_data["time_lost"])
         except Exception:
             raise Exception("Error reading params")
         description = (
-            "Created by: "
+            "*Created by* "
             + user_id
-            + ", "
+            + " *from* "
             + user_agent
             + "\n"
-            + "Time of incident: "
+            + "*Time of incident:* "
             + begin_date
-            + " - "
+            + " *-* "
             + end_date
             + "\n"
-            + "Time lost: "
+            + "*Time lost:* "
             + time_lost
             + "\n"
-            + "Type of comment: "
+            + "*Type of comment:* "
             + level
             + "\n"
-            + "Subsystem: "
-            + subsystem
+            + "*System:* "
+            + system
             + "\n"
-            + "CSC: "
-            + csc
+            + "*Subsystems:* "
             + "\n"
-            + "Salindex: "
-            + salindex
+            + str(subsystems)
             + "\n"
-            + "Topic: "
-            + csc_topic
+            + "*CSCs:* "
             + "\n"
-            + "Parameter: "
-            + csc_parameter
+            + str(cscs)
             + "\n"
-            + "Files: "
+            + "*Files:* "
             + "\n"
             + str(lfa_files_urls)
             + "\n\n"
@@ -1250,7 +1244,9 @@ def makeJiraDescription(request_data):
 
 
 def jira(request):
-    """Connects to JIRA API to create a ticket on a specific project
+    """Connects to JIRA API to create a ticket on a specific project.
+    For more information on issuetypes refer to:
+    ttps://jira.lsstcorp.org/rest/api/latest/issuetype/?projectId=JIRA_PROJECT_ID
 
     Params
     ------
@@ -1340,26 +1336,25 @@ def lfa(request):
     full_request = request.data
 
     if "request_type" not in full_request:
-        return Response({"ack": "Error into request type data"})
+        return Response({"ack": "Error request type needed"}, status=400)
 
     try:
         jira_payload = {
             "fields": {
-                "project": {"id": 13700},
+                "project": {"id": os.environ.get("JIRA_PROJECT_ID")},
                 "labels": [
                     "LOVE",
-                    full_request["request_type"],
-                ],  # TODO: add more labels
+                    # full_request["request_type"],
+                    *full_request["tags_labels"].split(","),
+                ],
                 "summary": getTitle(full_request),
                 "description": makeJiraDescription(full_request),
-                "issuetype": {
-                    "id": 3
-                },  # issuetypes: https://jira.lsstcorp.org/rest/api/latest/issuetype/?projectId=13700
+                "issuetype": {"id": 12601},
             },
             "update": {"components": [{"set": [{"name": "Dev"}]}],},
         }
     except Exception:
-        return Response({"ack": "Error creating jira payload"})
+        return Response({"ack": "Error creating jira payload"}, status=400)
 
     headers = {
         "Authorization": f"Basic {os.environ.get('JIRA_API_TOKEN')}",
@@ -1472,6 +1467,8 @@ class ExposurelogViewSet(viewsets.ViewSet):
         jira_url = None
         if request.data.get("jira") == "true":
             request.data._mutable = True
+            request.data["user_agent"] = "LOVE"
+            request.data["user_id"] = f"{request.user}@{request.get_host()}"
             request.data["lfa_files_urls"] = lfa_urls
             request.data._mutable = False
             jira_response = jira(request)
@@ -1563,6 +1560,8 @@ class NarrativelogViewSet(viewsets.ViewSet):
         if request.data.get("jira") == "true":
             request.data._mutable = True
             request.data["lfa_files_urls"] = lfa_urls
+            request.data["user_agent"] = "LOVE"
+            request.data["user_id"] = f"{request.user}@{request.get_host()}"
             request.data._mutable = False
             jira_response = jira(request)
             if jira_response.status_code == 400:
