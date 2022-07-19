@@ -1341,11 +1341,12 @@ def lfa(request):
     try:
         jira_payload = {
             "fields": {
-                "project": {"id": os.environ.get("JIRA_PROJECT_ID")},
+                # "project": {"id": os.environ.get("JIRA_PROJECT_ID")},
+                "project": {"id": 13700},
                 "labels": [
                     "LOVE",
                     # full_request["request_type"],
-                    *full_request["tags_labels"].split(","),
+                    *full_request["tags"].split(","),
                 ],
                 "summary": getTitle(full_request),
                 "description": makeJiraDescription(full_request),
