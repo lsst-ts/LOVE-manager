@@ -1125,14 +1125,14 @@ def getTitle(request_data):
     if request_type == "exposure":
         try:
             obs_id = request_data["obs_id"]
-            return request_type + " | " + level + " | " + obs_id
+            return "LOVE generated: " + request_type + " | " + level + " | " + obs_id
         except Exception:
             raise Exception("Error reading params")
     # Narrative log params
     if request_type == "narrative":
         try:
             system = request_data["system"]
-            return request_type + " | " + level + " | " + system
+            return "LOVE generated: " + request_type + " | " + level + " | " + system
         except Exception:
             raise Exception("Error reading params")
     return ""
@@ -1474,6 +1474,12 @@ class ExposurelogViewSet(viewsets.ViewSet):
 
         if "tags" in json_data:
             json_data["tags"] = json_data["tags"].split(",")
+        if "systems" in json_data:
+            json_data["systems"] = json_data["systems"].split(",")
+        if "subsystems" in json_data:
+            json_data["subsystems"] = json_data["subsystems"].split(",")
+        if "cscs" in json_data:
+            json_data["cscs"] = json_data["cscs"].split(",")
 
         json_data["urls"] = [jira_url, *lfa_urls]
         json_data["urls"] = list(filter(None, json_data["urls"]))
