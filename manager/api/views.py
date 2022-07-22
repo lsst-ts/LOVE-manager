@@ -1341,8 +1341,7 @@ def lfa(request):
     try:
         jira_payload = {
             "fields": {
-                # "project": {"id": os.environ.get("JIRA_PROJECT_ID")},
-                "project": {"id": 13700},
+                "project": {"id": os.environ.get("JIRA_PROJECT_ID")},
                 "labels": [
                     "LOVE",
                     # full_request["request_type"],
