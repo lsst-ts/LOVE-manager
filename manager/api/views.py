@@ -799,7 +799,7 @@ class CSCAuthorizationRequestViewSet(
 
     @swagger_auto_schema(responses={201: CSCAuthorizationRequestSerializer(many=True)})
     def create(self, request, *args, **kwargs):
-        authorization_obj = CSCAuthorizationRequest.objects.create(*args, **kwargs)
+        authorization_obj = CSCAuthorizationRequest(*args, **kwargs)
         authorization_obj.user = request.user
         authorization_obj.cscs_to_change = request.data.get("cscs_to_change")
         authorization_obj.authorized_users = request.data.get("authorized_users")
