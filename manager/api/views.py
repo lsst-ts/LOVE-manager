@@ -816,9 +816,7 @@ class CSCAuthorizationRequestViewSet(
 
         authorization_self_remove_obj = None
         if f"-{authorization_obj.requested_by}" in authorization_obj.authorized_users:
-            authorization_self_remove_obj = CSCAuthorizationRequest.objects.create(
-                *args, **kwargs
-            )
+            authorization_self_remove_obj = CSCAuthorizationRequest(*args, **kwargs)
             authorization_self_remove_obj.user = request.user
             authorization_self_remove_obj.cscs_to_change = request.data.get(
                 "cscs_to_change"
@@ -836,16 +834,7 @@ class CSCAuthorizationRequestViewSet(
             authorization_self_remove_obj.resolved_at = timezone.now()
             authorization_self_remove_obj.save()
             # authorize_csc_response = self.query_authorize_csc()
-            if (
-                f"-{authorization_obj.requested_by}"
-                == authorization_obj.authorized_users
-            ):
-                return Response(
-                    CSCAuthorizationRequestSerializer(
-                        authorization_self_remove_obj
-                    ).data,
-                    status=201,
-                )
+
             new_authorized_users = request.data.get("authorized_users").split(",")
             new_authorized_users.remove(f"-{authorization_obj.requested_by}")
             authorization_obj.authorized_users = ",".join(new_authorized_users)
@@ -856,23 +845,32 @@ class CSCAuthorizationRequestViewSet(
             authorization_obj.resolved_at = timezone.now()
             # authorize_csc_response = self.query_authorize_csc()
 
-            if int(authorization_obj.duration) >= 0:
+            if authorization_obj.duration and int(authorization_obj.duration) > 0:
                 authlist_revert_authorization_task(
                     CSCAuthorizationRequestSerializer(authorization_obj).data,
                     schedule=int(authorization_obj.duration) * 60,
                 )
 
-        authorization_obj.save()
-        if authorization_self_remove_obj is not None:
+        if (
+            authorization_obj.authorized_users != ""
+            or authorization_obj.unauthorized_cscs != ""
+        ):
+            authorization_obj.save()
+            if authorization_self_remove_obj is not None:
+                return Response(
+                    CSCAuthorizationRequestSerializer(
+                        [authorization_obj, authorization_self_remove_obj], many=True
+                    ).data,
+                    status=201,
+                )
             return Response(
-                CSCAuthorizationRequestSerializer(
-                    [authorization_obj, authorization_self_remove_obj], many=True
-                ).data,
+                CSCAuthorizationRequestSerializer(authorization_obj).data, status=201
+            )
+        else:
+            return Response(
+                CSCAuthorizationRequestSerializer(authorization_self_remove_obj).data,
                 status=201,
             )
-        return Response(
-            CSCAuthorizationRequestSerializer(authorization_obj).data, status=201
-        )
 
     @swagger_auto_schema(responses={200: CSCAuthorizationRequestSerializer()})
     def update(self, request, *args, **kwargs):
