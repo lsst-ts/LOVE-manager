@@ -171,8 +171,15 @@ class TokenSerializer(serializers.Serializer):
         if no_config:
             return None
         else:
-            cf = ConfigFile.objects.first()
-            serializer = ConfigFileContentSerializer(cf)
+            selected_configuration = ConfigFile.objects.filter(
+                selected_by_users=token.user
+            ).first()
+            if selected_configuration is not None:
+                serializer = ConfigFileContentSerializer(selected_configuration)
+            else:
+                first_configuration = ConfigFile.objects.first()
+                serializer = ConfigFileContentSerializer(first_configuration)
+
             return serializer.data
 
 

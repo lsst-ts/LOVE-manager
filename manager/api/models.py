@@ -104,6 +104,10 @@ class ConfigFile(BaseModel):
     )
     """Reference to the config file"""
 
+    selected_by_users = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, related_name="selected_config_file"
+    )
+
 
 class EmergencyContact(BaseModel):
     """EmergencyContact Model"""

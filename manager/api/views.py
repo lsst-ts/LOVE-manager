@@ -458,6 +458,49 @@ def get_config(request):
     return Response(serializer.data)
 
 
+@swagger_auto_schema(
+    method="post",
+    responses={
+        200: openapi.Response("Config file", ConfigSerializer),
+        401: openapi.Response("Unauthenticated"),
+        404: not_found_response,
+    },
+)
+@api_view(["POST"])
+@permission_classes((IsAuthenticated,))
+def set_config_selected(request):
+    """Adds the current User to the selected_by_users of the specified Config file
+
+    Params
+    ------
+    request: Request
+        The Request object
+
+    Returns
+    -------
+    Response
+        Containing the contents of the config file
+    """
+
+    try:
+        configuration_to_update = ConfigFile.objects.get(
+            pk=request.data.get("config_id")
+        )
+        current_user = request.user
+    except Exception:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    configuration_files_qs = ConfigFile.objects.filter(selected_by_users=current_user)
+    for config in configuration_files_qs:
+        config.selected_by_users.remove(current_user)
+        config.save()
+    configuration_to_update.selected_by_users.add(current_user)
+    configuration_to_update.save()
+
+    serializer = ConfigFileContentSerializer(configuration_to_update)
+    return Response(serializer.data)
+
+
 class ConfigFileViewSet(viewsets.ModelViewSet):
     """GET, POST, PUT, PATCH or DELETE instances the ConfigFile model."""
 
