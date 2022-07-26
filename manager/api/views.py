@@ -799,6 +799,7 @@ class CSCAuthorizationRequestViewSet(
 
     @swagger_auto_schema(responses={201: CSCAuthorizationRequestSerializer(many=True)})
     def create(self, request, *args, **kwargs):
+        created_authorizations = []
         authorization_obj = CSCAuthorizationRequest(*args, **kwargs)
         authorization_obj.user = request.user
         authorization_obj.cscs_to_change = request.data.get("cscs_to_change")
@@ -813,6 +814,11 @@ class CSCAuthorizationRequestViewSet(
         )
         request_message = request.data.get("message")
         authorization_obj.message = request_message if request_message != "" else None
+
+        if request.user.has_perm("api.authlist.administrator"):
+            authorization_obj.status = "Authorized"
+            authorization_obj.resolved_by = request.user
+            authorization_obj.resolved_at = timezone.now()
 
         authorization_self_remove_obj = None
         if f"-{authorization_obj.requested_by}" in authorization_obj.authorized_users:
@@ -834,42 +840,38 @@ class CSCAuthorizationRequestViewSet(
             authorization_self_remove_obj.resolved_at = timezone.now()
             authorization_self_remove_obj.save()
             # authorize_csc_response = self.query_authorize_csc()
+            created_authorizations.append(authorization_self_remove_obj)
 
             new_authorized_users = request.data.get("authorized_users").split(",")
             new_authorized_users.remove(f"-{authorization_obj.requested_by}")
             authorization_obj.authorized_users = ",".join(new_authorized_users)
-
-        if request.user.has_perm("api.authlist.administrator"):
-            authorization_obj.status = "Authorized"
-            authorization_obj.resolved_by = request.user
-            authorization_obj.resolved_at = timezone.now()
-            # authorize_csc_response = self.query_authorize_csc()
-
-            if authorization_obj.duration and int(authorization_obj.duration) > 0:
-                authlist_revert_authorization_task(
-                    CSCAuthorizationRequestSerializer(authorization_obj).data,
-                    schedule=int(authorization_obj.duration) * 60,
-                )
 
         if (
             authorization_obj.authorized_users != ""
             or authorization_obj.unauthorized_cscs != ""
         ):
             authorization_obj.save()
-            if authorization_self_remove_obj is not None:
-                return Response(
-                    CSCAuthorizationRequestSerializer(
-                        [authorization_obj, authorization_self_remove_obj], many=True
-                    ).data,
-                    status=201,
+            # if authorization_obj.status == "Authorized":
+            #     authorize_csc_response = self.query_authorize_csc()
+            created_authorizations.append(authorization_obj)
+
+            if authorization_obj.duration and int(authorization_obj.duration) > 0:
+                print("Automatic removal...", flush=True)
+                authlist_revert_authorization_task(
+                    CSCAuthorizationRequestSerializer(authorization_obj).data,
+                    schedule=int(authorization_obj.duration) * 60,
                 )
+
+        if len(created_authorizations) > 0:
             return Response(
-                CSCAuthorizationRequestSerializer(authorization_obj).data, status=201
+                CSCAuthorizationRequestSerializer(
+                    created_authorizations, many=True
+                ).data,
+                status=201,
             )
         else:
             return Response(
-                CSCAuthorizationRequestSerializer(authorization_self_remove_obj).data,
-                status=201,
+                {"error": "Bad request"}, status=status.HTTP_400_BAD_REQUEST
             )
 
     @swagger_auto_schema(responses={200: CSCAuthorizationRequestSerializer()})
@@ -887,9 +889,10 @@ class CSCAuthorizationRequestViewSet(
             updated_instance.save()
             # authorize_csc_response = self.query_authorize_csc()
 
-            if int(updated_instance.duration) >= 0:
+            if updated_instance.duration and int(updated_instance.duration) > 0:
                 self.authlist_revert_authorization_task(
-                    updated_instance, schedule=int(updated_instance.duration) * 60
+                    CSCAuthorizationRequestSerializer(updated_instance).data,
+                    schedule=int(updated_instance.duration) * 60,
                 )
 
             return Response(
@@ -900,7 +903,6 @@ class CSCAuthorizationRequestViewSet(
 
 @background(schedule=60)
 def authlist_revert_authorization_task(request):
-    print("Automatic removal...", flush=True)
     new_authorized_users = (
         request["authorized_users"]
         .replace("+", "[plus]")
