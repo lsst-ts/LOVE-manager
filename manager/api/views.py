@@ -856,7 +856,6 @@ class CSCAuthorizationRequestViewSet(
             created_authorizations.append(authorization_obj)
 
             if authorization_obj.duration and int(authorization_obj.duration) > 0:
-                print("Automatic removal...", flush=True)
                 authlist_revert_authorization_task(
                     CSCAuthorizationRequestSerializer(authorization_obj).data,
                     schedule=int(authorization_obj.duration) * 60,
@@ -890,7 +889,7 @@ class CSCAuthorizationRequestViewSet(
             # authorize_csc_response = self.query_authorize_csc()
 
             if updated_instance.duration and int(updated_instance.duration) > 0:
-                self.authlist_revert_authorization_task(
+                authlist_revert_authorization_task(
                     CSCAuthorizationRequestSerializer(updated_instance).data,
                     schedule=int(updated_instance.duration) * 60,
                 )
