@@ -999,20 +999,19 @@ def authlist_revert_authorization_task(authorization_dict):
 def getTitle(request_data):
     # Shared params
     request_type = request_data["request_type"]
-    level = str(request_data["level_label"])
 
     # Exposure log params
     if request_type == "exposure":
         try:
             obs_id = request_data["obs_id"]
-            return "LOVE generated: " + request_type + " | " + level + " | " + obs_id
+            return "LOVE generated: " + request_type + " | " + obs_id
         except Exception:
             raise Exception("Error reading params")
     # Narrative log params
     if request_type == "narrative":
         try:
             system = request_data["system"]
-            return "LOVE generated: " + request_type + " | " + level + " | " + system
+            return "LOVE generated: " + request_type + " | " + system
         except Exception:
             raise Exception("Error reading params")
     return ""
@@ -1022,7 +1021,6 @@ def makeJiraDescription(request_data):
     # Shared params
     request_type = request_data["request_type"]
     try:
-        level = str(request_data["level_label"])
         lfa_files_urls = request_data["lfa_files_urls"]
         message_log = request_data["message_text"]
         user_id = request_data["user_id"]
@@ -1043,9 +1041,6 @@ def makeJiraDescription(request_data):
             + user_id
             + " *from* "
             + user_agent
-            + "\n"
-            + "*Type of comment:* "
-            + level
             + "\n"
             + "*Observation id:* "
             + obs_id
@@ -1086,9 +1081,6 @@ def makeJiraDescription(request_data):
             + "\n"
             + "*Time lost:* "
             + time_lost
-            + "\n"
-            + "*Type of comment:* "
-            + level
             + "\n"
             + "*System:* "
             + system
@@ -1384,6 +1376,12 @@ class ExposurelogViewSet(viewsets.ViewSet):
         json_data = request.data.copy()
         if "tags" in json_data:
             json_data["tags"] = json_data["tags"].split(",")
+        if "systems" in json_data:
+            json_data["systems"] = json_data["systems"].split(",")
+        if "subsystems" in json_data:
+            json_data["subsystems"] = json_data["subsystems"].split(",")
+        if "cscs" in json_data:
+            json_data["cscs"] = json_data["cscs"].split(",")
 
         if "urls" in json_data:
             json_data["urls"] = json_data["urls"].split(",")
