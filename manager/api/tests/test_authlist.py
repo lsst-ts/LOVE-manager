@@ -131,21 +131,23 @@ class AuthlistTestCase(TestCase):
 
         # Assert
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.data["user"], self.user_authlist.username)
-        self.assertEqual(response.data["cscs_to_change"], payload["cscs_to_change"])
-        self.assertEqual(response.data["authorized_users"], payload["authorized_users"])
+        self.assertEqual(response.data[0]["user"], self.user_authlist.username)
+        self.assertEqual(response.data[0]["cscs_to_change"], payload["cscs_to_change"])
         self.assertEqual(
-            response.data["unauthorized_cscs"], payload["unauthorized_cscs"]
+            response.data[0]["authorized_users"], payload["authorized_users"]
         )
-        self.assertEqual(response.data["requested_by"], payload["requested_by"])
-        assert response.data["requested_at"] is not None
-        self.assertEqual(response.data["message"], payload["message"])
-        self.assertEqual(response.data["duration"], payload["duration"])
         self.assertEqual(
-            response.data["status"], CSCAuthorizationRequest.RequestStatus.AUTHORIZED
+            response.data[0]["unauthorized_cscs"], payload["unauthorized_cscs"]
         )
-        self.assertEqual(response.data["resolved_by"], self.user_authlist.username)
-        assert response.data["resolved_at"] is not None
+        self.assertEqual(response.data[0]["requested_by"], payload["requested_by"])
+        assert response.data[0]["requested_at"] is not None
+        self.assertEqual(response.data[0]["message"], payload["message"])
+        self.assertEqual(response.data[0]["duration"], payload["duration"])
+        self.assertEqual(
+            response.data[0]["status"], CSCAuthorizationRequest.RequestStatus.AUTHORIZED
+        )
+        self.assertEqual(response.data[0]["resolved_by"], self.user_authlist.username)
+        assert response.data[0]["resolved_at"] is not None
 
     def test_csc_authorization_create_request_normal_user(self):
         """Test CSCAuthorizationRequest creation for non authlist users
@@ -168,27 +170,29 @@ class AuthlistTestCase(TestCase):
 
         # Assert
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.data["user"], self.user_normal.username)
-        self.assertEqual(response.data["cscs_to_change"], payload["cscs_to_change"])
-        self.assertEqual(response.data["authorized_users"], payload["authorized_users"])
+        self.assertEqual(response.data[0]["user"], self.user_normal.username)
+        self.assertEqual(response.data[0]["cscs_to_change"], payload["cscs_to_change"])
         self.assertEqual(
-            response.data["unauthorized_cscs"], payload["unauthorized_cscs"]
+            response.data[0]["authorized_users"], payload["authorized_users"]
         )
-        self.assertEqual(response.data["requested_by"], payload["requested_by"])
-        assert response.data["requested_at"] is not None
         self.assertEqual(
-            response.data["status"], CSCAuthorizationRequest.RequestStatus.PENDING
+            response.data[0]["unauthorized_cscs"], payload["unauthorized_cscs"]
         )
-        self.assertEqual(response.data["message"], None)
-        self.assertEqual(response.data["duration"], None)
-        self.assertEqual(response.data["resolved_by"], None)
-        self.assertEqual(response.data["resolved_at"], None)
+        self.assertEqual(response.data[0]["requested_by"], payload["requested_by"])
+        assert response.data[0]["requested_at"] is not None
+        self.assertEqual(
+            response.data[0]["status"], CSCAuthorizationRequest.RequestStatus.PENDING
+        )
+        self.assertEqual(response.data[0]["message"], None)
+        self.assertEqual(response.data[0]["duration"], None)
+        self.assertEqual(response.data[0]["resolved_by"], None)
+        self.assertEqual(response.data[0]["resolved_at"], None)
 
     def test_csc_authorization_self_remove_normal_user(self):
         """Test CSCAuthorizationRequest with a self removal for non authlist users
         This request will create two instances:
-        1. With the information of the request without the self removed user
-        2. With just the information of the self removed user. This one will be set with status = Authorized
+        1. With just the information of the self removed user. This one will be set with status = Authorized
+        2. With the information of the request without the self removed user
         """
         # Arrange:
         self.client.credentials(
@@ -223,48 +227,48 @@ class AuthlistTestCase(TestCase):
 
         self.assertEqual(response.data[0]["user"], self.user_normal.username)
         self.assertEqual(
-            response.data[0]["cscs_to_change"], new_initial_payload["cscs_to_change"]
+            response.data[0]["cscs_to_change"], removed_payload["cscs_to_change"]
         )
         self.assertEqual(
-            response.data[0]["authorized_users"],
-            new_initial_payload["authorized_users"],
+            response.data[0]["authorized_users"], removed_payload["authorized_users"]
         )
         self.assertEqual(
-            response.data[0]["unauthorized_cscs"],
-            new_initial_payload["unauthorized_cscs"],
+            response.data[0]["unauthorized_cscs"], removed_payload["unauthorized_cscs"]
         )
         self.assertEqual(
-            response.data[0]["requested_by"], new_initial_payload["requested_by"]
+            response.data[0]["requested_by"], removed_payload["requested_by"]
         )
-        assert response.data[0]["requested_at"] is not None
         self.assertEqual(
-            response.data[0]["status"], CSCAuthorizationRequest.RequestStatus.PENDING
+            response.data[0]["status"], CSCAuthorizationRequest.RequestStatus.AUTHORIZED
         )
+        self.assertEqual(response.data[0]["resolved_by"], self.user_normal.username)
         self.assertEqual(response.data[0]["duration"], None)
-        self.assertEqual(response.data[0]["message"], None)
-        self.assertEqual(response.data[0]["resolved_by"], None)
-        self.assertEqual(response.data[0]["resolved_at"], None)
+        assert response.data[0]["message"] is not None
+        assert response.data[0]["resolved_at"] is not None
 
         self.assertEqual(response.data[1]["user"], self.user_normal.username)
         self.assertEqual(
-            response.data[1]["cscs_to_change"], removed_payload["cscs_to_change"]
+            response.data[1]["cscs_to_change"], new_initial_payload["cscs_to_change"]
         )
         self.assertEqual(
-            response.data[1]["authorized_users"], removed_payload["authorized_users"]
+            response.data[1]["authorized_users"],
+            new_initial_payload["authorized_users"],
         )
         self.assertEqual(
-            response.data[1]["unauthorized_cscs"], removed_payload["unauthorized_cscs"]
+            response.data[1]["unauthorized_cscs"],
+            new_initial_payload["unauthorized_cscs"],
         )
         self.assertEqual(
-            response.data[1]["requested_by"], removed_payload["requested_by"]
+            response.data[1]["requested_by"], new_initial_payload["requested_by"]
         )
+        assert response.data[1]["requested_at"] is not None
         self.assertEqual(
-            response.data[1]["status"], CSCAuthorizationRequest.RequestStatus.AUTHORIZED
+            response.data[1]["status"], CSCAuthorizationRequest.RequestStatus.PENDING
         )
-        self.assertEqual(response.data[1]["resolved_by"], self.user_normal.username)
         self.assertEqual(response.data[1]["duration"], None)
-        assert response.data[1]["message"] is not None
-        assert response.data[1]["resolved_at"] is not None
+        self.assertEqual(response.data[1]["message"], None)
+        self.assertEqual(response.data[1]["resolved_by"], None)
+        self.assertEqual(response.data[1]["resolved_at"], None)
 
     def test_csc_authorization_update_request(self):
         """Test CSCAuthorizationRequest update (approve or deny) for authlist users
