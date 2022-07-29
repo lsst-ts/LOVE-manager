@@ -1000,21 +1000,23 @@ def getTitle(request_data):
     # Shared params
     request_type = request_data["request_type"]
 
-    # Exposure log params
-    if request_type == "exposure":
-        try:
-            obs_id = request_data["obs_id"]
-            return "LOVE generated: " + request_type + " | " + obs_id
-        except Exception:
-            raise Exception("Error reading params")
-    # Narrative log params
-    if request_type == "narrative":
-        try:
-            system = request_data["system"]
-            return "LOVE generated: " + request_type + " | " + system
-        except Exception:
-            raise Exception("Error reading params")
-    return ""
+    # # Exposure log params
+    # if request_type == "exposure":
+    #     try:
+    #         obs_id = request_data["obs_id"]
+    #         return "LOVE generated: " + request_type
+    #     except Exception:
+    #         raise Exception("Error reading params")
+    # # Narrative log params
+    # if request_type == "narrative":
+    #     try:
+    #         system = request_data["system"]
+    #         return "LOVE generated: " + request_type
+    #     except Exception:
+    #         raise Exception("Error reading params")
+    # return ""
+
+    return "LOVE generated: " + request_type
 
 
 def makeJiraDescription(request_data):
@@ -1042,8 +1044,8 @@ def makeJiraDescription(request_data):
             + " *from* "
             + user_agent
             + "\n"
-            + "*Observation id:* "
-            + obs_id
+            + "*Observation ids:* "
+            + str(obs_id)
             + "\n"
             + "*Instrument:* "
             + instrument
@@ -1358,9 +1360,10 @@ class ExposurelogViewSet(viewsets.ViewSet):
         json_data["user_agent"] = "LOVE"
         json_data["user_id"] = f"{request.user}@{request.get_host()}"
 
-        # for obs in request.data.get('obs_ids', []):
-        #     response = requests.post(url, json=json_data)
-        response = requests.post(url, json=json_data)
+        for obs in request.data.get("obs_id").split(","):
+            json_data["obs_id"] = obs
+            response = requests.post(url, json=json_data)
+        # response = requests.post(url, json=json_data)
         return Response(response.json(), status=response.status_code)
 
     @swagger_auto_schema(responses={200: "Exposure log retrieved"})
