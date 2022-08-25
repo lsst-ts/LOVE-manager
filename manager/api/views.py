@@ -848,17 +848,18 @@ class CSCAuthorizationRequestViewSet(
             or authorization_obj.unauthorized_cscs != ""
         ):
             authorization_obj.save()
+            created_authorizations.append(authorization_obj)
+
             if authorization_obj.status == "Authorized":
                 query_authorize_csc(
                     CSCAuthorizationRequestSerializer(authorization_obj).data
                 )
-            created_authorizations.append(authorization_obj)
 
-            if authorization_obj.duration and int(authorization_obj.duration) > 0:
-                authlist_revert_authorization_task(
-                    CSCAuthorizationRequestSerializer(authorization_obj).data,
-                    schedule=int(authorization_obj.duration) * 60,
-                )
+                if authorization_obj.duration and int(authorization_obj.duration) > 0:
+                    authlist_revert_authorization_task(
+                        CSCAuthorizationRequestSerializer(authorization_obj).data,
+                        schedule=(int(authorization_obj.duration) * 60) - 5,
+                    )
 
         if len(created_authorizations) > 0:
             return Response(
@@ -892,7 +893,7 @@ class CSCAuthorizationRequestViewSet(
             if updated_instance.duration and int(updated_instance.duration) > 0:
                 authlist_revert_authorization_task(
                     CSCAuthorizationRequestSerializer(updated_instance).data,
-                    schedule=int(updated_instance.duration) * 60,
+                    schedule=(int(updated_instance.duration) * 60) - 5,
                 )
 
             return Response(
