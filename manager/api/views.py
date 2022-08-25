@@ -792,11 +792,6 @@ class CSCAuthorizationRequestViewSet(
                 | Q(authorized_users__icontains=self.request.user.username)
             )
 
-    def query_authorize_csc(self, request_data):
-        url = f"http://{os.environ.get('AUTHORIZE_HOSTNAME')}/manager-connection/"
-        response = requests.post(url, json=json.dumps(request_data))
-        return Response(response.json(), status=response.status_code)
-
     @swagger_auto_schema(responses={201: CSCAuthorizationRequestSerializer(many=True)})
     def create(self, request, *args, **kwargs):
         created_authorizations = []
@@ -839,7 +834,9 @@ class CSCAuthorizationRequestViewSet(
             authorization_self_remove_obj.resolved_by = request.user
             authorization_self_remove_obj.resolved_at = timezone.now()
             authorization_self_remove_obj.save()
-            # authorize_csc_response = self.query_authorize_csc()
+            query_authorize_csc(
+                CSCAuthorizationRequestSerializer(authorization_self_remove_obj).data
+            )
             created_authorizations.append(authorization_self_remove_obj)
 
             new_authorized_users = request.data.get("authorized_users").split(",")
@@ -851,8 +848,10 @@ class CSCAuthorizationRequestViewSet(
             or authorization_obj.unauthorized_cscs != ""
         ):
             authorization_obj.save()
-            # if authorization_obj.status == "Authorized":
-            #     authorize_csc_response = self.query_authorize_csc()
+            if authorization_obj.status == "Authorized":
+                query_authorize_csc(
+                    CSCAuthorizationRequestSerializer(authorization_obj).data
+                )
             created_authorizations.append(authorization_obj)
 
             if authorization_obj.duration and int(authorization_obj.duration) > 0:
@@ -886,7 +885,9 @@ class CSCAuthorizationRequestViewSet(
             updated_instance.resolved_by = request.user
             updated_instance.resolved_at = timezone.now()
             updated_instance.save()
-            # authorize_csc_response = self.query_authorize_csc()
+            query_authorize_csc(
+                CSCAuthorizationRequestSerializer(updated_instance).data
+            )
 
             if updated_instance.duration and int(updated_instance.duration) > 0:
                 authlist_revert_authorization_task(
@@ -900,22 +901,39 @@ class CSCAuthorizationRequestViewSet(
         return Response({"error": "Bad request"}, status=status.HTTP_400_BAD_REQUEST)
 
 
+def query_authorize_csc(authorization_dict):
+    cmd_payload = {
+        "csc": "Authorize",
+        "salindex": 0,
+        "cmd": "cmd_requestAuthorization",
+        "params": {
+            "cscsToChange": authorization_dict["cscs_to_change"],
+            "authorizedUsers": authorization_dict["authorized_users"],
+            "nonAuthorizedCSCs": authorization_dict["unauthorized_cscs"],
+        },
+    }
+
+    url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/cmd"
+    response = requests.post(url, json=cmd_payload)
+    return Response(response.json(), status=response.status_code)
+
+
 @background(schedule=60)
-def authlist_revert_authorization_task(request):
+def authlist_revert_authorization_task(authorization_dict):
     new_authorized_users = (
-        request["authorized_users"]
+        authorization_dict["authorized_users"]
         .replace("+", "[plus]")
         .replace("-", "[minus]")
         .replace("[plus]", "-")
         .replace("[minus]", "+")
     )
     new_unauthorized_cscs = (
-        request["unauthorized_cscs"]
+        authorization_dict["unauthorized_cscs"]
         .replace("+", "[plus]")
         .replace("-", "[minus]")
         .replace("[plus]", "-")
         .replace("[minus]", "+")
     )
-    request["authorized_users"] = new_authorized_users
-    request["unauthorized_cscs"] = new_unauthorized_cscs
-    # self.query_authorize_csc(request)
+    authorization_dict["authorized_users"] = new_authorized_users
+    authorization_dict["unauthorized_cscs"] = new_unauthorized_cscs
+    query_authorize_csc(authorization_dict)
