@@ -6,7 +6,6 @@ import yaml
 import jsonschema
 import collections
 import ldap
-from background_task import background
 from django.core.exceptions import PermissionDenied
 from django.utils import timezone
 from django.db.models.query_utils import Q
@@ -893,20 +892,21 @@ class CSCAuthorizationRequestViewSet(
     permission_classes = (IsAuthenticated,)
 
     def get_serializer_class(self):
+        serializer = CSCAuthorizationRequestSerializer
         if self.request.method == "POST":
-            return CSCAuthorizationRequestCreateSerializer
+            serializer = CSCAuthorizationRequestCreateSerializer
         if self.request.method == "PUT" or self.request.method == "PATCH":
-            return CSCAuthorizationRequestUpdateSerializer
-        return CSCAuthorizationRequestSerializer
+            serializer = CSCAuthorizationRequestUpdateSerializer
+        return serializer
 
     def get_queryset(self):
-        if self.request.user.has_perm("api.authlist.administrator"):
-            return CSCAuthorizationRequest.objects.all()
-        else:
-            return CSCAuthorizationRequest.objects.filter(
+        queryset = CSCAuthorizationRequest.objects.all()
+        if not self.request.user.has_perm("api.authlist.administrator"):
+            queryset = CSCAuthorizationRequest.objects.filter(
                 Q(user__username=self.request.user.username)
                 | Q(authorized_users__icontains=self.request.user.username)
             )
+        return queryset
 
     @swagger_auto_schema(responses={201: CSCAuthorizationRequestSerializer(many=True)})
     def create(self, request, *args, **kwargs):
@@ -950,9 +950,6 @@ class CSCAuthorizationRequestViewSet(
             authorization_self_remove_obj.resolved_by = request.user
             authorization_self_remove_obj.resolved_at = timezone.now()
             authorization_self_remove_obj.save()
-            query_authorize_csc(
-                CSCAuthorizationRequestSerializer(authorization_self_remove_obj).data
-            )
             created_authorizations.append(authorization_self_remove_obj)
 
             new_authorized_users = request.data.get("authorized_users").split(",")
@@ -966,17 +963,6 @@ class CSCAuthorizationRequestViewSet(
             authorization_obj.save()
             created_authorizations.append(authorization_obj)
 
-            if authorization_obj.status == "Authorized":
-                query_authorize_csc(
-                    CSCAuthorizationRequestSerializer(authorization_obj).data
-                )
-
-                if authorization_obj.duration and int(authorization_obj.duration) > 0:
-                    authlist_revert_authorization_task(
-                        CSCAuthorizationRequestSerializer(authorization_obj).data,
-                        schedule=(int(authorization_obj.duration) * 60) - 5,
-                    )
-
         if len(created_authorizations) > 0:
             return Response(
                 CSCAuthorizationRequestSerializer(
@@ -984,10 +970,8 @@ class CSCAuthorizationRequestViewSet(
                 ).data,
                 status=201,
             )
-        else:
-            return Response(
-                {"error": "Bad request"}, status=status.HTTP_400_BAD_REQUEST
-            )
+
+        return Response({"error": "Bad request"}, status=status.HTTP_400_BAD_REQUEST)
 
     @swagger_auto_schema(responses={200: CSCAuthorizationRequestSerializer()})
     def update(self, request, *args, **kwargs):
@@ -1002,55 +986,8 @@ class CSCAuthorizationRequestViewSet(
             updated_instance.resolved_by = request.user
             updated_instance.resolved_at = timezone.now()
             updated_instance.save()
-            query_authorize_csc(
-                CSCAuthorizationRequestSerializer(updated_instance).data
-            )
-
-            if updated_instance.duration and int(updated_instance.duration) > 0:
-                authlist_revert_authorization_task(
-                    CSCAuthorizationRequestSerializer(updated_instance).data,
-                    schedule=(int(updated_instance.duration) * 60) - 5,
-                )
 
             return Response(
                 CSCAuthorizationRequestSerializer(updated_instance).data, status=200
             )
         return Response({"error": "Bad request"}, status=status.HTTP_400_BAD_REQUEST)
-
-
-def query_authorize_csc(authorization_dict):
-    cmd_payload = {
-        "csc": "Authorize",
-        "salindex": 0,
-        "cmd": "cmd_requestAuthorization",
-        "params": {
-            "cscsToChange": authorization_dict["cscs_to_change"],
-            "authorizedUsers": authorization_dict["authorized_users"],
-            "nonAuthorizedCSCs": authorization_dict["unauthorized_cscs"],
-        },
-    }
-
-    url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/cmd"
-    response = requests.post(url, json=cmd_payload)
-    return Response(response.json(), status=response.status_code)
-
-
-@background(schedule=60)
-def authlist_revert_authorization_task(authorization_dict):
-    new_authorized_users = (
-        authorization_dict["authorized_users"]
-        .replace("+", "[plus]")
-        .replace("-", "[minus]")
-        .replace("[plus]", "-")
-        .replace("[minus]", "+")
-    )
-    new_unauthorized_cscs = (
-        authorization_dict["unauthorized_cscs"]
-        .replace("+", "[plus]")
-        .replace("-", "[minus]")
-        .replace("[plus]", "-")
-        .replace("[minus]", "+")
-    )
-    authorization_dict["authorized_users"] = new_authorized_users
-    authorization_dict["unauthorized_cscs"] = new_unauthorized_cscs
-    query_authorize_csc(authorization_dict)
