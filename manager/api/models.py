@@ -188,6 +188,10 @@ class CSCAuthorizationRequest(models.Model):
     """Current status of the execution of the Authorize CSC setAuthlist command for
     all the parameters in the current request"""
 
+    execution_message = models.TextField(blank=True, null=True)
+    """Comment added about the execution of the Authorize CSC setAuthlist command for
+    all the parameters in the current request"""
+
     resolved_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name="+",
