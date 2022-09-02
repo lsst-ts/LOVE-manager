@@ -981,19 +981,34 @@ class CSCAuthorizationRequestViewSet(
 
     @swagger_auto_schema(responses={200: CSCAuthorizationRequestSerializer()})
     def update(self, request, *args, **kwargs):
+        if not request.user.has_perm("api.authlist.administrator"):
+            raise PermissionDenied()
+
         instance = self.get_object()
         if instance.status == CSCAuthorizationRequest.RequestStatus.PENDING:
             if not request.user.has_perm("api.authlist.administrator"):
                 raise PermissionDenied()
-            updated_instance = self.get_object()
-            updated_instance.status = request.data.get("status")
-            updated_instance.duration = request.data.get("duration")
-            updated_instance.message = request.data.get("message")
-            updated_instance.resolved_by = request.user
-            updated_instance.resolved_at = timezone.now()
-            updated_instance.save()
+            instance.status = request.data.get("status")
+            instance.duration = request.data.get("duration")
+            instance.message = request.data.get("message")
+            instance.resolved_by = request.user
+            instance.resolved_at = timezone.now()
+            instance.save()
 
             return Response(
-                CSCAuthorizationRequestSerializer(updated_instance).data, status=200
+                CSCAuthorizationRequestSerializer(instance).data, status=200
             )
+
+        if (
+            instance.status == CSCAuthorizationRequest.RequestStatus.AUTHORIZED
+            and instance.execution_status
+            == CSCAuthorizationRequest.ExecutionStatus.PENDING
+        ):
+            instance.execution_status = request.data.get("execution_status")
+            instance.save()
+
+            return Response(
+                CSCAuthorizationRequestSerializer(instance).data, status=200
+            )
+
         return Response({"error": "Bad request"}, status=status.HTTP_400_BAD_REQUEST)
