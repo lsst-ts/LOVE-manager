@@ -138,6 +138,11 @@ class CSCAuthorizationRequest(models.Model):
         AUTHORIZED = "Authorized", "Authorized"
         DENIED = "Denied", "Denied"
 
+    class ExecutionStatus(models.TextChoices):
+        SUCCESSFUL = "Successful", "Successful"
+        FAIL = "Fail", "Fail"
+        PENDING = "Pending", "Pending"
+
     cscs_to_change = models.TextField()
     """Comma separated list of the CSCs to change their authlists"""
 
@@ -176,6 +181,12 @@ class CSCAuthorizationRequest(models.Model):
         max_length=10, choices=RequestStatus.choices, default=RequestStatus.PENDING,
     )
     """Current status of the request"""
+
+    execution_status = models.CharField(
+        max_length=10, choices=ExecutionStatus.choices, default=ExecutionStatus.PENDING,
+    )
+    """Current status of the execution of the Authorize CSC setAuthlist command for
+    all the parameters in the current request"""
 
     resolved_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,

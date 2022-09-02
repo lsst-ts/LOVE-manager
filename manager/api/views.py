@@ -902,10 +902,16 @@ class CSCAuthorizationRequestViewSet(
     def get_queryset(self):
         queryset = CSCAuthorizationRequest.objects.all()
         if not self.request.user.has_perm("api.authlist.administrator"):
-            queryset = CSCAuthorizationRequest.objects.filter(
+            queryset = queryset.filter(
                 Q(user__username=self.request.user.username)
                 | Q(authorized_users__icontains=self.request.user.username)
             )
+        status = self.request.query_params.get("status")
+        execution_status = self.request.query_params.get("execution_status")
+        if status is not None:
+            queryset = queryset.filter(status=status)
+        if execution_status is not None:
+            queryset = queryset.filter(execution_status=execution_status)
         return queryset
 
     @swagger_auto_schema(responses={201: CSCAuthorizationRequestSerializer(many=True)})
