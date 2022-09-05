@@ -1,6 +1,5 @@
 """Contains the Django Channels Consumers that handle the reception/sending of channels messages."""
 import json
-
 import asyncio
 from astropy.time import Time
 
@@ -13,6 +12,14 @@ from subscription.heartbeat_manager import HeartbeatManager
 
 class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
     """Consumer that handles incoming websocket messages."""
+
+    consumers_shared = {
+        "ATDome": {"azimuth": 0.0,},
+        "ATMCS": {
+            "azimuth": [0.0 for x in range(100)],
+            "elevation": [80.0 for x in range(100)],
+        },
+    }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -167,6 +174,18 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             time_data = utils.get_times()
             await self.send_json({"time_data": time_data, "request_time": request_time})
 
+        if message["action"] == "change_demo_data":
+            SubscriptionConsumer.consumers_shared["ATDome"] = {
+                **SubscriptionConsumer.consumers_shared["ATDome"],
+                "azimuth": float(message["az"]),
+            }
+
+            SubscriptionConsumer.consumers_shared["ATMCS"] = {
+                **SubscriptionConsumer.consumers_shared["ATMCS"],
+                "azimuth": [float(message["az"]) for x in range(100)],
+                "elevation": [float(message["el"]) for x in range(100)],
+            }
+
     async def handle_data_message(self, message, manager_rcv):
         """Handle a data message.
 
@@ -229,6 +248,25 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                     "data": {stream: data_csc[stream]},
                     "subscription": group_name,
                 }
+
+                if csc == "ATDome":
+                    try:
+                        msg["data"]["position"]["azimuthPosition"][
+                            "value"
+                        ] = SubscriptionConsumer.consumers_shared["ATDome"]["azimuth"]
+                    except Exception:
+                        pass
+
+                if csc == "ATMCS":
+                    try:
+                        msg["data"]["mount_AzEl_Encoders"]["azimuthCalculatedAngle"][
+                            "value"
+                        ] = SubscriptionConsumer.consumers_shared["ATMCS"]["azimuth"]
+                        msg["data"]["mount_AzEl_Encoders"]["elevationCalculatedAngle"][
+                            "value"
+                        ] = SubscriptionConsumer.consumers_shared["ATMCS"]["elevation"]
+                    except Exception:
+                        pass
 
                 to_send.append({"group": group_name, "message": msg})
                 streams_data[stream] = data_csc[stream]
