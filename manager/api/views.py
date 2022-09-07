@@ -33,7 +33,8 @@ from api.serializers import (
     EmergencyContactSerializer,
     CSCAuthorizationRequestSerializer,
     CSCAuthorizationRequestCreateSerializer,
-    CSCAuthorizationRequestUpdateSerializer,
+    CSCAuthorizationRequestAuthorizeSerializer,
+    CSCAuthorizationRequestExecuteSerializer,
 )
 from .schema_validator import DefaultingValidator
 from manager.settings import (
@@ -889,14 +890,14 @@ class CSCAuthorizationRequestViewSet(
 
     permission_classes = (IsAuthenticated,)
 
-    status_param_config = openapi.Parameter(
+    get_status_param_config = openapi.Parameter(
         "status",
         in_=openapi.IN_QUERY,
         type=openapi.TYPE_STRING,
         description=f"Parameter used to get CSCAuthorizationRequests filtered by\
         its status <em>{[e.value for e in CSCAuthorizationRequest.RequestStatus]}</em>",
     )
-    execution_status_param_config = openapi.Parameter(
+    get_execution_status_param_config = openapi.Parameter(
         "execution_status",
         in_=openapi.IN_QUERY,
         type=openapi.TYPE_STRING,
@@ -904,12 +905,22 @@ class CSCAuthorizationRequestViewSet(
         its execution_status <em>{[e.value for e in CSCAuthorizationRequest.ExecutionStatus]}</em>",
     )
 
+    put_authorize_params_body = openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={"status": openapi.Schema(type=openapi.TYPE_STRING)},
+    )
+
     def get_serializer_class(self):
         serializer = CSCAuthorizationRequestSerializer
         if self.request.method == "POST":
             serializer = CSCAuthorizationRequestCreateSerializer
         if self.request.method == "PUT" or self.request.method == "PATCH":
-            serializer = CSCAuthorizationRequestUpdateSerializer
+            status = self.request.data.get("status")
+            execution_status = self.request.data.get("execution_status")
+            if status is not None:
+                serializer = CSCAuthorizationRequestAuthorizeSerializer
+            elif execution_status is not None:
+                serializer = CSCAuthorizationRequestExecuteSerializer
         return serializer
 
     def get_queryset(self):
@@ -928,7 +939,7 @@ class CSCAuthorizationRequestViewSet(
         return queryset
 
     @swagger_auto_schema(
-        manual_parameters=[status_param_config, execution_status_param_config]
+        manual_parameters=[get_status_param_config, get_execution_status_param_config]
     )
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
@@ -998,7 +1009,10 @@ class CSCAuthorizationRequestViewSet(
 
         return Response({"error": "Bad request"}, status=status.HTTP_400_BAD_REQUEST)
 
-    @swagger_auto_schema(responses={200: CSCAuthorizationRequestSerializer()})
+    @swagger_auto_schema(
+        responses={200: CSCAuthorizationRequestSerializer()},
+        request_body=CSCAuthorizationRequestAuthorizeSerializer,
+    )
     def update(self, request, *args, **kwargs):
         if not request.user.has_perm("api.authlist.administrator"):
             raise PermissionDenied()
@@ -1018,6 +1032,18 @@ class CSCAuthorizationRequestViewSet(
                 CSCAuthorizationRequestSerializer(instance).data, status=200
             )
 
+        return Response({"error": "Bad request"}, status=status.HTTP_400_BAD_REQUEST)
+
+    @swagger_auto_schema(
+        responses={200: CSCAuthorizationRequestSerializer()},
+        request_body=CSCAuthorizationRequestExecuteSerializer,
+    )
+    @action(methods=["put"], detail=True)
+    def execute(self, request, *args, **kwargs):
+        if not request.user.has_perm("api.authlist.administrator"):
+            raise PermissionDenied()
+
+        instance = self.get_object()
         if (
             instance.status == CSCAuthorizationRequest.RequestStatus.AUTHORIZED
             and instance.execution_status
