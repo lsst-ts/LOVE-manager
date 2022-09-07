@@ -882,7 +882,7 @@ class CSCAuthorizationRequestViewSet(
     viewsets.GenericViewSet,
 ):
     """
-    A viewset that provides `retrieve`, `create`, `update` and `list` actions
+    A viewset that provides `retrieve`, `create`, `update` and `list` actions\
     to interact with Authorization List Requests.
 
     """
