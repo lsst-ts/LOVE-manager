@@ -19,6 +19,8 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             "azimuth": [0.0 for x in range(100)],
             "elevation": [80.0 for x in range(100)],
         },
+        "MTDome": {"azimuth": 32.0,},
+        "MTMount": {"azimuth": 11.0, "elevation": 12.0},
     }
 
     def __init__(self, *args, **kwargs):
@@ -186,6 +188,17 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                 "elevation": [float(message["el"]) for x in range(100)],
             }
 
+            SubscriptionConsumer.consumers_shared["MTDome"] = {
+                **SubscriptionConsumer.consumers_shared["MTDome"],
+                "azimuth": float(message["az"]),
+            }
+
+            SubscriptionConsumer.consumers_shared["MTMount"] = {
+                **SubscriptionConsumer.consumers_shared["MTMount"],
+                "azimuth": float(message["az"]),
+                "elevation": float(message["el"]),
+            }
+
     async def handle_data_message(self, message, manager_rcv):
         """Handle a data message.
 
@@ -267,6 +280,35 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                         ] = SubscriptionConsumer.consumers_shared["ATMCS"]["elevation"]
                     except Exception:
                         pass
+
+                if csc == "MTDome":
+                    try:
+                        msg["data"]["azimuth"]["positionActual"][
+                            "value"
+                        ] = SubscriptionConsumer.consumers_shared["MTDome"]["azimuth"]
+                    except Exception:
+                        pass
+
+                if csc == "MTMount":
+                    try:
+                        msg["data"]["azimuth"]["actualPosition"][
+                            "value"
+                        ] = SubscriptionConsumer.consumers_shared["MTMount"]["azimuth"]
+                    except Exception:
+                        pass
+                    try:
+                        msg["data"]["elevation"]["actualPosition"][
+                            "value"
+                        ] = SubscriptionConsumer.consumers_shared["MTMount"][
+                            "elevation"
+                        ]
+                    except Exception:
+                        pass
+
+                if csc == "Watcher":
+                    print("#####", flush=True)
+                    print(msg)
+                    print("#####", flush=True)
 
                 to_send.append({"group": group_name, "message": msg})
                 streams_data[stream] = data_csc[stream]
