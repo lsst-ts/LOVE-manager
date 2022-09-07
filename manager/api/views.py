@@ -9,6 +9,7 @@ from background_task import background
 from django.core.exceptions import PermissionDenied
 from django.utils import timezone
 from django.db.models.query_utils import Q
+from django.contrib.auth import authenticate, login, logout
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -78,32 +79,75 @@ def validate_token(request, *args, **kwargs):
     return Response(data)
 
 
-@swagger_auto_schema(
-    method="delete", responses={204: openapi.Response("Logout Successful")}
-)
-@api_view(["DELETE"])
-@permission_classes((IsAuthenticated,))
-def logout(request):
-    """Logout and delete the token. And returns 204 code if valid.
+# @swagger_auto_schema(
+#     method="delete", responses={204: openapi.Response("Logout Successful")}
+# )
+# @api_view(["DELETE"])
+# @permission_classes((IsAuthenticated,))
+# def logout(request):
+#     """Logout and delete the token. And returns 204 code if valid.
 
-    If the token is invalid this function is not executed (the request fails before)
+#     If the token is invalid this function is not executed (the request fails before)
 
-    Params
-    ------
-    request: Request
-        The Request object
+#     Params
+#     ------
+#     request: Request
+#         The Request object
 
-    Returns
-    -------
-    Response
-        The response stating that the token has been deleted, with a 204 status code.
+#     Returns
+#     -------
+#     Response
+#         The response stating that the token has been deleted, with a 204 status code.
+#     """
+#     token = request._auth
+#     token.delete()
+#     return Response(
+#         {"detail": "Logout successful, Token succesfully deleted"},
+#         status=status.HTTP_204_NO_CONTENT,
+#     )
+
+
+@api_view(["POST"])
+class LDAPLogin:
     """
-    token = request._auth
-    token.delete()
-    return Response(
-        {"detail": "Logout successful, Token succesfully deleted"},
-        status=status.HTTP_204_NO_CONTENT,
-    )
+    Class to authenticate a user via LDAP and
+    then creating a login session
+    """
+
+    authentication_classes = ()
+
+    def post(self, request):
+        """
+        Api to login a user
+        :param request:
+        :return:
+        """
+        user_obj = authenticate(
+            username=request.data["username"], password=request.data["password"]
+        )
+
+        login(request, user_obj)
+        data = {"detail": "User logged in successfully"}
+        return Response(data, status=200)
+
+
+@api_view(["POST"])
+class LDAPLogout:
+    """
+    Class for logging out a user by clearing his/her session
+    """
+
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        """
+        Api to logout a user
+        :param request:
+        :return:
+        """
+        logout(request)
+        data = {"detail": "User logged out successfully"}
+        return Response(data, status=200)
 
 
 class CustomObtainAuthToken(ObtainAuthToken):
