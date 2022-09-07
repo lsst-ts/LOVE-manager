@@ -882,14 +882,27 @@ class CSCAuthorizationRequestViewSet(
     viewsets.GenericViewSet,
 ):
     """
-    A viewset that provides `retrieve`, `create`, and `list` actions.
-
-    To use it, override the class and set the `.queryset` and
-    `.serializer_class` attributes.
+    A viewset that provides `retrieve`, `create`, `update` and `list` actions
+    to interact with Authorization List Requests.
 
     """
 
     permission_classes = (IsAuthenticated,)
+
+    status_param_config = openapi.Parameter(
+        "status",
+        in_=openapi.IN_QUERY,
+        type=openapi.TYPE_STRING,
+        description=f"Parameter used to get CSCAuthorizationRequests filtered by\
+        its status <em>{[e.value for e in CSCAuthorizationRequest.RequestStatus]}</em>",
+    )
+    execution_status_param_config = openapi.Parameter(
+        "execution_status",
+        in_=openapi.IN_QUERY,
+        type=openapi.TYPE_STRING,
+        description=f"Parameter used to get CSCAuthorizationRequests filtered by\
+        its execution_status <em>{[e.value for e in CSCAuthorizationRequest.ExecutionStatus]}</em>",
+    )
 
     def get_serializer_class(self):
         serializer = CSCAuthorizationRequestSerializer
@@ -913,6 +926,12 @@ class CSCAuthorizationRequestViewSet(
         if execution_status is not None:
             queryset = queryset.filter(execution_status=execution_status)
         return queryset
+
+    @swagger_auto_schema(
+        manual_parameters=[status_param_config, execution_status_param_config]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
     @swagger_auto_schema(responses={201: CSCAuthorizationRequestSerializer(many=True)})
     def create(self, request, *args, **kwargs):
@@ -1005,6 +1024,7 @@ class CSCAuthorizationRequestViewSet(
             == CSCAuthorizationRequest.ExecutionStatus.PENDING
         ):
             instance.execution_status = request.data.get("execution_status")
+            instance.execution_message = request.data.get("execution_message")
             instance.save()
 
             return Response(
