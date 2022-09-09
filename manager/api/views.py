@@ -9,16 +9,17 @@ from background_task import background
 from django.core.exceptions import PermissionDenied
 from django.utils import timezone
 from django.db.models.query_utils import Q
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, logout
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.decorators import api_view
 from rest_framework.decorators import permission_classes
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework import viewsets, status, mixins
+from rest_framework.views import APIView
 from api.models import (
     Token,
     ConfigFile,
@@ -107,14 +108,15 @@ def validate_token(request, *args, **kwargs):
 #     )
 
 
-@api_view(["POST"])
-class LDAPLogin:
+class LDAPLogin(APIView):
     """
     Class to authenticate a user via LDAP and
     then creating a login session
     """
 
     authentication_classes = ()
+
+    permission_classes = [AllowAny]
 
     def post(self, request):
         """
@@ -126,13 +128,27 @@ class LDAPLogin:
             username=request.data["username"], password=request.data["password"]
         )
 
-        login(request, user_obj)
-        data = {"detail": "User logged in successfully"}
-        return Response(data, status=200)
+        print("#####", flush=True)
+        print(user_obj)
+        print(dir(user_obj))
+        print("#####", flush=True)
+
+        # login(request, user_obj)
+        # data = {"detail": "User logged in successfully"}
+        # return Response(data, status=200)
+
+        # SI EXISTE
+        # user = User.objects.filter(username=username).first()
+
+        # SI NO EXISTE USUARIO
+        # user_props = parseLDAPUser(user_obj)
+        # user = User.objects.create(user_props)
+
+        # token = Token.objects.create(user=user)
+        # return Response(TokenSerializer(token).data)
 
 
-@api_view(["POST"])
-class LDAPLogout:
+class LDAPLogout(APIView):
     """
     Class for logging out a user by clearing his/her session
     """

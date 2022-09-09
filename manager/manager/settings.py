@@ -26,9 +26,7 @@ TESTING = os.environ.get("TESTING", False)
 get from the `TESTING` environment variable (`string`)"""
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv(
-    "SECRET_KEY", "tbder3gzppu)kl%(u3awhhg^^zu#j&!ceh@$n&v0d38sjx43s8"
-)
+SECRET_KEY = os.getenv(" ", "tbder3gzppu)kl%(u3awhhg^^zu#j&!ceh@$n&v0d38sjx43s8")
 """Secret Key for Django, read from the `SECRET_KEY` environment variable (`string`)"""
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -165,7 +163,7 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.DjangoModelPermissions",
     ),
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "api.authentication.ExpiringTokenAuthentication",
+        # "api.authentication.ExpiringTokenAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ),
 }
@@ -238,22 +236,32 @@ else:
 
 # LDAP
 # Baseline configuration:
-AUTH_LDAP_SERVER_URI = os.environ.get("AUTH_LDAP_SERVER_URI", False)
+AUTH_LDAP_SERVER_URI = os.environ.get("AUTH_LDAP_SERVER_URI")
 """URL for the LDAP server. Read from `AUTH_LDAP_SERVER_URI` environment variable (`bool`)"""
 
 # Only use LDAP activation backend if there is an AUTH_LDAP_SERVER_URI
 # configured in the OS ENV:
-if AUTH_LDAP_SERVER_URI and not TESTING:
+if AUTH_LDAP_SERVER_URI:
     AUTHENTICATION_BACKENDS = [
         "django_auth_ldap.backend.LDAPBackend",
+        "django.contrib.auth.backends.ModelBackend",
     ]
 
-    AUTH_LDAP_BIND_DN = "uid=svc_love,cn=users,cn=accounts,dc=lsst,dc=cloud"
-    AUTH_LDAP_BIND_PASSWORD = ""
+    # AUTH_LDAP_BIND_DN = "uid=svc_love,cn=users,cn=accounts,dc=lsst,dc=cloud"
+    AUTH_LDAP_BIND_DN = "cn=read-only-admin,dc=example,dc=com"
+    AUTH_LDAP_BIND_PASSWORD = os.environ.get("AUTH_LDAP_BIND_PASS")
 
+    # AUTH_LDAP_USER_SEARCH = LDAPSearch(
+    #     "ou=people,dc=planetexpress,dc=com", ldap.SCOPE_SUBTREE, "(uid=%(user)s)",
+    # )
+    # Is this correct?
+    # AUTH_LDAP_USER_SEARCH = LDAPSearch(
+    #     "ou=users,dc=lsst,dc=cloud", ldap.SCOPE_SUBTREE, "(uid=%(user)s)",
+    # )
     AUTH_LDAP_USER_SEARCH = LDAPSearch(
-        "ou=people,dc=planetexpress,dc=com", ldap.SCOPE_SUBTREE, "(uid=%(user)s)",
+        "DC=example,DC=com", ldap.SCOPE_SUBTREE, "(uid=%(user)s)",
     )
+
     # Is this correct?
     AUTH_LDAP_USER_ATTR_MAP = {
         "first_name": "givenName",
