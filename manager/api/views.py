@@ -10,6 +10,7 @@ from django.core.exceptions import PermissionDenied
 from django.utils import timezone
 from django.db.models.query_utils import Q
 from django.contrib.auth import authenticate, logout
+from django.contrib.auth.models import Permission, Group
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -124,28 +125,29 @@ class LDAPLogin(APIView):
         :param request:
         :return:
         """
-        user_obj = authenticate(
-            username=request.data["username"], password=request.data["password"]
-        )
+        username = request.data["username"]
+        password = request.data["password"]
+        user_obj = authenticate(username=username, password=password)
+        if user_obj is None:
+            data = {"detail": "Login failed."}
+            return Response(data, status=400)
 
-        print("#####", flush=True)
-        print(user_obj)
-        print(dir(user_obj))
-        print("#####", flush=True)
+        # print("#####", flush=True)
+        # print(dir(user_obj))
+        # print("#####", flush=True)
+        # PERMISOS
+        # DEFINE PERMISSIONS BASED ON LDAP PERMISSIONS
+        # IF USER IS FROM DJANGO THEN PASS
+        group = Group.objects.filter(name="cmd").first()
+        permissions = Permission.objects.filter(codename="command.execute_command")
+        for permission in permissions:
+            group.permissions.add(permission)
+        group.user_set.add(user_obj)
 
-        # login(request, user_obj)
-        # data = {"detail": "User logged in successfully"}
+        token = Token.objects.create(user=user_obj)
+        return Response(TokenSerializer(token).data)
+        # data = {"detail": "User logged out successfully"}
         # return Response(data, status=200)
-
-        # SI EXISTE
-        # user = User.objects.filter(username=username).first()
-
-        # SI NO EXISTE USUARIO
-        # user_props = parseLDAPUser(user_obj)
-        # user = User.objects.create(user_props)
-
-        # token = Token.objects.create(user=user)
-        # return Response(TokenSerializer(token).data)
 
 
 class LDAPLogout(APIView):
