@@ -297,11 +297,166 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                     except Exception:
                         pass
                     try:
-                        msg["data"]["elevation"]["actualPosition"][
-                            "value"
-                        ] = SubscriptionConsumer.consumers_shared["MTMount"][
-                            "elevation"
-                        ]
+                        if (
+                            SubscriptionConsumer.consumers_shared["MTMount"][
+                                "elevation"
+                            ]
+                            <= 90
+                        ):
+                            msg["data"]["elevation"]["actualPosition"][
+                                "value"
+                            ] = SubscriptionConsumer.consumers_shared["MTMount"][
+                                "elevation"
+                            ]
+
+                        if (
+                            SubscriptionConsumer.consumers_shared["MTMount"][
+                                "elevation"
+                            ]
+                            > 90
+                        ):
+                            msg["data"]["elevation"]["actualPosition"]["value"] = 90
+                            print("Sending fake Watcher alarm...", flush=True)
+                            m_group_name = "event-Watcher-0-alarm"
+                            m_msg = {
+                                "type": "subscription_data",
+                                "category": "event",
+                                "csc": "Watcher",
+                                "salindex": 0,
+                                "data": {
+                                    "alarm": [
+                                        {
+                                            "private_revCode": {
+                                                "value": "447fad72",
+                                                "dataType": "String",
+                                                "units": "unitless",
+                                            },
+                                            "private_sndStamp": {
+                                                "value": 1663881334.7367902,
+                                                "dataType": "Float",
+                                                "units": "seconds",
+                                            },
+                                            "private_rcvStamp": {
+                                                "value": 1665881034.7375267,
+                                                "dataType": "Float",
+                                                "units": "seconds",
+                                            },
+                                            "private_seqNum": {
+                                                "value": 100,
+                                                "dataType": "Int",
+                                                "units": "unitless",
+                                            },
+                                            "private_identity": {
+                                                "value": "Watcher",
+                                                "dataType": "String",
+                                                "units": "unitless",
+                                            },
+                                            "private_origin": {
+                                                "value": 613,
+                                                "dataType": "Int",
+                                                "units": "unitless",
+                                            },
+                                            "name": {
+                                                "value": "WARNING.MTMount:0",
+                                                "dataType": "String",
+                                                "units": "unitless",
+                                            },
+                                            "severity": {
+                                                "value": 3,
+                                                "dataType": "Int",
+                                                "units": "unitless",
+                                            },
+                                            "reason": {
+                                                "value": "Error in elevation value",
+                                                "dataType": "String",
+                                                "units": "unitless",
+                                            },
+                                            "maxSeverity": {
+                                                "value": 3,
+                                                "dataType": "Int",
+                                                "units": "unitless",
+                                            },
+                                            "acknowledged": {
+                                                "value": False,
+                                                "dataType": "Int",
+                                                "units": "unitless",
+                                            },
+                                            "acknowledgedBy": {
+                                                "value": "",
+                                                "dataType": "String",
+                                                "units": "unitless",
+                                            },
+                                            "escalated": {
+                                                "value": False,
+                                                "dataType": "Int",
+                                                "units": "unitless",
+                                            },
+                                            "escalateTo": {
+                                                "value": "",
+                                                "dataType": "String",
+                                                "units": "unitless",
+                                            },
+                                            "mutedSeverity": {
+                                                "value": 1,
+                                                "dataType": "Int",
+                                                "units": "unitless",
+                                            },
+                                            "mutedBy": {
+                                                "value": "",
+                                                "dataType": "String",
+                                                "units": "unitless",
+                                            },
+                                            "timestampSeverityOldest": {
+                                                "value": 1663881035.7366357,
+                                                "dataType": "Float",
+                                                "units": "second",
+                                            },
+                                            "timestampSeverityNewest": {
+                                                "value": 0.0,
+                                                "dataType": "Float",
+                                                "units": "second",
+                                            },
+                                            "timestampMaxSeverity": {
+                                                "value": 1653881034.7366357,
+                                                "dataType": "Float",
+                                                "units": "second",
+                                            },
+                                            "timestampAcknowledged": {
+                                                "value": 0.0,
+                                                "dataType": "Float",
+                                                "units": "second",
+                                            },
+                                            "timestampAutoAcknowledge": {
+                                                "value": 0.0,
+                                                "dataType": "Float",
+                                                "units": "second",
+                                            },
+                                            "timestampAutoUnacknowledge": {
+                                                "value": 0.0,
+                                                "dataType": "Float",
+                                                "units": "second",
+                                            },
+                                            "timestampEscalate": {
+                                                "value": 0.0,
+                                                "dataType": "Float",
+                                                "units": "second",
+                                            },
+                                            "timestampUnmute": {
+                                                "value": 0.0,
+                                                "dataType": "Float",
+                                                "units": "second",
+                                            },
+                                            "priority": {
+                                                "value": 0,
+                                                "dataType": "Int",
+                                                "units": "unitless",
+                                            },
+                                        }
+                                    ]
+                                },
+                                "subscription": "event-Watcher-0-alarm",
+                            }
+                            to_send.append({"group": m_group_name, "message": m_msg})
                     except Exception:
                         pass
 
