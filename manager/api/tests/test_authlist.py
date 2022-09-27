@@ -1,3 +1,5 @@
+import requests
+from unittest.mock import patch
 from django.test import TestCase, override_settings
 from django.urls import reverse
 from api.models import Token, CSCAuthorizationRequest
@@ -127,7 +129,16 @@ class AuthlistTestCase(TestCase):
             "message": "This will last for 30 minutes.",
             "duration": 30,
         }
+        mock_patcher = patch("requests.post")
+        mock_client = mock_patcher.start()
+        mock_response = requests.Response()
+        mock_response.status_code = 200
+        mock_response.json = lambda: {"ack": "Command sent."}
+        mock_client.return_value = mock_response
+
         response = self.client.post(url, payload, format="json")
+
+        mock_client.stop()
 
         # Assert
         self.assertEqual(response.status_code, 201)

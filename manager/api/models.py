@@ -5,6 +5,7 @@ For more information see:
 https://docs.djangoproject.com/en/2.2/topics/db/models/
 """
 import os
+import json
 from django.conf import settings
 from django.db import models
 from django.db.models import F
@@ -82,9 +83,15 @@ class ConfigFile(BaseModel):
 
     def validate_file_extension(value):
         ext = os.path.splitext(value.name)[1]  # [0] returns path+filename
-        valid_extensions = [".json", ".sh"]
+        valid_extensions = [".json"]
         if not ext.lower() in valid_extensions:
             raise ValidationError("Unsupported file extension.")
+
+    def validate_json_file(value):
+        try:
+            json.loads(value.read().decode("ascii"))
+        except Exception:
+            raise ValidationError("Malformatted JSON object.")
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -100,12 +107,12 @@ class ConfigFile(BaseModel):
     config_file = models.FileField(
         upload_to="configs/",
         default="configs/default.json",
-        validators=[validate_file_extension],
+        validators=[validate_file_extension, validate_json_file],
     )
     """Reference to the config file"""
 
     selected_by_users = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, related_name="selected_config_file"
+        settings.AUTH_USER_MODEL, related_name="selected_config_file", blank=True,
     )
 
 
