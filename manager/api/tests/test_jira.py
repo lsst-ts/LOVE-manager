@@ -2,7 +2,7 @@ import requests
 import random
 from unittest.mock import patch
 from django.test import TestCase, override_settings
-from api.views import jira
+from api.views import jira, jira_comment
 
 
 @override_settings(DEBUG=True)
@@ -57,10 +57,25 @@ class JiraTestCase(TestCase):
             **request_exposure,
             "request_type": "exposure",
         }
+
         request_full_narrative = {
             **request_shared,
             **request_narrative,
             "request_type": "narrative",
+        }
+
+        request_full_exposure_jira_comment = {
+            **request_shared,
+            **request_exposure,
+            "request_type": "exposure",
+            "issue_id": "TEST-XX",
+        }
+
+        request_full_narrative_jira_comment = {
+            **request_shared,
+            **request_narrative,
+            "request_type": "narrative",
+            "issue_id": "TEST-XX",
         }
 
         # exposure
@@ -104,6 +119,13 @@ class JiraTestCase(TestCase):
         self.jira_request_exposure_full = requests.Request(data=request_full_exposure)
         self.jira_request_narrative_full = requests.Request(data=request_full_narrative)
 
+        self.jira_request_exposure_full_jira_comment = requests.Request(
+            data=request_full_exposure_jira_comment
+        )
+        self.jira_request_narrative_full_jira_comment = requests.Request(
+            data=request_full_narrative_jira_comment
+        )
+
     def test_missing_parameters(self):
         """Test call to function with missing parameters"""
 
@@ -132,7 +154,7 @@ class JiraTestCase(TestCase):
         mock_jira_patcher = patch("requests.post")
         mock_jira_client = mock_jira_patcher.start()
         response = requests.Response()
-        response.status_code = 200
+        response.status_code = 201
         response.json = lambda: {"key": "LOVE-XX"}
         mock_jira_client.return_value = response
 
@@ -147,3 +169,19 @@ class JiraTestCase(TestCase):
         assert jira_response.data["url"] == "https://jira.lsstcorp.org/browse/LOVE-XX"
 
         mock_jira_patcher.stop()
+
+    def test_add_comment(self):
+        """Test call to function with all needed parameters"""
+        mock_jira_patcher = patch("requests.post")
+        mock_jira_client = mock_jira_patcher.start()
+        response = requests.Response()
+        response.status_code = 201
+        mock_jira_client.return_value = response
+
+        jira_response = jira_comment(self.jira_request_exposure_full_jira_comment)
+        assert jira_response.status_code == 200
+        assert jira_response.data["ack"] == "Jira comment created"
+
+        jira_response = jira_comment(self.jira_request_narrative_full_jira_comment)
+        assert jira_response.status_code == 200
+        assert jira_response.data["ack"] == "Jira comment created"
