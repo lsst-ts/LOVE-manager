@@ -1194,14 +1194,15 @@ def makeJiraDescription(request_data):
     # Narrative log params
     if request_type == "narrative":
         try:
-            system = request_data["system"]
-            subsystems = request_data["subsystems"]
-            cscs = request_data["cscs"]
-            begin_date = request_data["begin_date"]
-            end_date = request_data["end_date"]
+            systems = request_data.get("systems", [])
+            subsystems = request_data.get("subsystems", [])
+            cscs = request_data.get("cscs", [])
+            begin_date = request_data["date_begin"]
+            end_date = request_data["date_end"]
             time_lost = str(request_data["time_lost"])
         except Exception:
             raise Exception("Error reading params")
+        print("#### HOLA ####", flush=True)
         description = (
             "*Created by* "
             + user_id
@@ -1217,7 +1218,7 @@ def makeJiraDescription(request_data):
             + time_lost
             + "\n"
             + "*System:* "
-            + system
+            + str(systems)
             + "\n"
             + "*Subsystems:* "
             + "\n"
@@ -1233,6 +1234,7 @@ def makeJiraDescription(request_data):
             + "\n\n"
             + message_log
         )
+        print("#### chao ####", flush=True)
 
     return description if description is not None else ""
 
@@ -1336,11 +1338,7 @@ def lfa(request):
         jira_payload = {
             "fields": {
                 "project": {"id": os.environ.get("JIRA_PROJECT_ID")},
-                "labels": [
-                    "LOVE",
-                    # full_request["request_type"],
-                    *full_request["tags"].split(","),
-                ],
+                "labels": ["LOVE", *full_request["tags"].split(","),],
                 "summary": getTitle(full_request),
                 "description": makeJiraDescription(full_request),
                 "issuetype": {"id": 12601},
@@ -1357,13 +1355,59 @@ def lfa(request):
     url = f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/issue/"
     response = requests.post(url, json=jira_payload, headers=headers)
     response_data = response.json()
-    return Response(
-        {
-            "ack": "Jira ticket created",
-            "url": f"https://jira.lsstcorp.org/browse/{response_data['key']}",
-        },
-        status=200,
-    )
+    if response.status_code == 201:
+        return Response(
+            {
+                "ack": "Jira ticket created",
+                "url": f"https://jira.lsstcorp.org/browse/{response_data['key']}",
+            },
+            status=200,
+        )
+    return Response({"ack": "Jira ticket could not be created",}, status=400,)
+
+
+def jira_comment(request):
+    """Connects to JIRA API to add a comment to a previously created ticket on a specific project.
+    For more information on issuetypes refer to:
+    ttps://jira.lsstcorp.org/rest/api/latest/issuetype/?projectId=JIRA_PROJECT_ID
+
+    Params
+    ------
+    request: Request
+        The Request object
+
+    Returns
+    -------
+    Response
+        The response and status code of the request to the JIRA API
+    """
+    full_request = request.data
+
+    if "issue_id" not in full_request:
+        return Response({"ack": "Error reading the JIRA issue ID"}, status=400)
+
+    try:
+        jira_payload = {
+            "body": makeJiraDescription(full_request),
+        }
+    except Exception:
+        return Response({"ack": "Error creating jira payload"}, status=400)
+
+    headers = {
+        "Authorization": f"Basic {os.environ.get('JIRA_API_TOKEN')}",
+        "content-type": "application/json",
+    }
+    url = f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/issue/{full_request['issue_id']}/comment"
+    response = requests.post(url, json=jira_payload, headers=headers)
+    if response.status_code == 201:
+        return Response(
+            {
+                "ack": "Jira comment created",
+                "url": f"https://jira.lsstcorp.org/browse/{full_request['issue_id']}",
+            },
+            status=200,
+        )
+    return Response({"ack": "Jira comment could not be created",}, status=400,)
 
 
 @swagger_auto_schema(
@@ -1465,12 +1509,15 @@ class ExposurelogViewSet(viewsets.ViewSet):
             request.data["user_id"] = f"{request.user}@{request.get_host()}"
             request.data["lfa_files_urls"] = lfa_urls
             request.data._mutable = False
-            jira_response = jira(request)
+
+            jira_response = None
+            if request.data.get("jira_comment") == "true":
+                jira_response = jira_comment(request)
+            else:
+                jira_response = jira(request)
+
             if jira_response.status_code == 400:
-                return Response(
-                    {"ack": "Jira ticket could not be created"},
-                    jira_response.status_code,
-                )
+                return Response(jira_response.data, 400,)
             jira_url = jira_response.data.get("url")
 
         json_data = request.data.copy()
@@ -1570,12 +1617,15 @@ class NarrativelogViewSet(viewsets.ViewSet):
             request.data["user_agent"] = "LOVE"
             request.data["user_id"] = f"{request.user}@{request.get_host()}"
             request.data._mutable = False
-            jira_response = jira(request)
+
+            jira_response = None
+            if request.data.get("jira_comment") == "true":
+                jira_response = jira_comment(request)
+            else:
+                jira_response = jira(request)
+
             if jira_response.status_code == 400:
-                return Response(
-                    {"ack": "Jira ticket could not be created"},
-                    jira_response.status_code,
-                )
+                return Response(jira_response.data, 400,)
             jira_url = jira_response.data.get("url")
 
         json_data = request.data.copy()
