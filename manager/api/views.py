@@ -1190,7 +1190,7 @@ def makeJiraDescription(request_data):
             time_lost = str(request_data["time_lost"])
         except Exception:
             raise Exception("Error reading params")
-        print("#### HOLA ####", flush=True)
+
         description = (
             "*Created by* "
             + user_id
@@ -1222,7 +1222,6 @@ def makeJiraDescription(request_data):
             + "\n\n"
             + message_log
         )
-        print("#### chao ####", flush=True)
 
     return description if description is not None else ""
 
@@ -1231,87 +1230,10 @@ def jira(request):
     """Connects to JIRA API to create a ticket on a specific project.
     For more information on issuetypes refer to:
     ttps://jira.lsstcorp.org/rest/api/latest/issuetype/?projectId=JIRA_PROJECT_ID
-
     Params
     ------
     request: Request
         The Request object
-
-    Returns
-    -------
-    Response
-        The response and status code of the request to the JIRA API
-    """
-    if not request.user.has_perm("api.command.execute_command"):
-        return Response(
-            {"ack": "User does not have permissions to execute commands."}, 403
-        )
-
-    m_request = {
-        "request_type": "non-exposure",  # exposure
-        "type_comment": "test",
-        "obs_time_loss": 10,
-        "salindex": 1,
-        "subsystem": "MainTel",
-        "csc": "M1M3",
-        "csc_parameter": "actual",
-        "time_of_incedent": "00:35:00",
-        "exposure_flag": None,
-        "obs_id": None,
-        "lfa_file_url": "asdf.com",
-        "message": """Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            Donec sagittis aliquam lacus et euismod. Nullam tortor metus,
-            mollis faucibus mauris convallis, mattis commodo magna. Sed blandit
-            dapibus lectus et sollicitudin. Aliquam erat lorem, posuere
-            at fermentum quis, finibus sed nunc. Nulla facilisi.
-            Maecenas vitae dignissim quam.""",
-    }
-
-    jira_payload = {
-        "fields": {"project": {"id": 13700}},
-        "labels": ["LOVE", m_request["request_type"]],
-        "summary": getTitle(m_request),
-        "description": makeJiraDescription(m_request),
-    }
-    print("+++++++++++", flush=True)
-    print(jira_payload, flush=True)
-    print("+++++++++++", flush=True)
-    headers = {
-        "Authorization": f"Basic {os.environ.get('JIRA_API_TOKEN')}",
-        "content-type": "application/json",
-    }
-
-    # TODO: get JIRA authorization (login)
-    # url = f"http://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/issue/"
-    # lfa_file_url = "asd"
-    url = f"https://jsonplaceholder.typicode.com/posts/"
-    # response = requests.post(url, json=jira_payload, headers=headers)
-    response = requests.get(url, json=jira_payload, headers=headers)
-    print("#############", flush=True)
-    print(response.json(), flush=True)
-    print("#############", flush=True)
-
-    return Response(response.json(), status=response.status_code)
-
-
-@swagger_auto_schema(
-    method="post",
-    responses={
-        200: openapi.Response("LFA file uploaded"),
-        401: openapi.Response("Unauthenticated"),
-        403: openapi.Response("Unauthorized"),
-    },
-)
-@api_view(["POST"])
-@permission_classes((IsAuthenticated,))
-def lfa(request):
-    """Connects to LFA API to upload a new file
-
-    Params
-    ------
-    request: Request
-        The Request object
-
     Returns
     -------
     Response
