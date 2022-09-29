@@ -322,14 +322,3 @@ class CSCAuthorizationRequestCreateSerializer(serializers.ModelSerializer):
             "requested_by",
         )
         """The fields of the model class to serialize"""
-
-
-# class ExposureLogSerializer(serializers.Serializer):
-#     """Serializer to map the Model instance into JSON format."""
-#     id = serializers.IntegerField(read_only=True)
-
-#     def create(self, validated_data):
-#         return {id: 1000}
-
-#     def update(self, instance, validated_data):
-#         return {id: 20000}
