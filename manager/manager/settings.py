@@ -243,24 +243,31 @@ AUTH_LDAP_SERVER_URI = os.environ.get("AUTH_LDAP_SERVER_URI")
 # configured in the OS ENV:
 if AUTH_LDAP_SERVER_URI:
     AUTHENTICATION_BACKENDS = [
-        "django_auth_ldap.backend.LDAPBackend",
+        # "django_auth_ldap.backend.LDAPBackend",
+        "api.views.CustomLDAPBackend",
         "django.contrib.auth.backends.ModelBackend",
     ]
 
-    # AUTH_LDAP_BIND_DN = "uid=svc_love,cn=users,cn=accounts,dc=lsst,dc=cloud"
-    AUTH_LDAP_BIND_DN = "cn=read-only-admin,dc=example,dc=com"
-    AUTH_LDAP_BIND_PASSWORD = os.environ.get("AUTH_LDAP_BIND_PASS")
+    # AUTH_LDAP_BIND_DN = "uid=areyes,cn=users,cn=accounts,dc=lsst,dc=cloud"
+    AUTH_LDAP_BIND_DN = ""
+    # AUTH_LDAP_BIND_DN = "cn=accounts,dc=lsst,dc=cloud"
+    # AUTH_LDAP_BIND_DN = "cn=read-only-admin,dc=example,dc=com"
+    # AUTH_LDAP_BIND_PASSWORD = os.environ.get("AUTH_LDAP_BIND_PASS")
+    AUTH_LDAP_BIND_PASSWORD = ""
+    print("########")
+    print(AUTH_LDAP_BIND_PASSWORD)
+    print("########")
 
     # AUTH_LDAP_USER_SEARCH = LDAPSearch(
     #     "ou=people,dc=planetexpress,dc=com", ldap.SCOPE_SUBTREE, "(uid=%(user)s)",
     # )
     # Is this correct?
-    # AUTH_LDAP_USER_SEARCH = LDAPSearch(
-    #     "ou=users,dc=lsst,dc=cloud", ldap.SCOPE_SUBTREE, "(uid=%(user)s)",
-    # )
     AUTH_LDAP_USER_SEARCH = LDAPSearch(
-        "DC=example,DC=com", ldap.SCOPE_SUBTREE, "(uid=%(user)s)",
+        "cn=users,cn=accounts,dc=lsst,dc=cloud", ldap.SCOPE_SUBTREE, "(uid=%(user)s)",
     )
+    # AUTH_LDAP_USER_SEARCH = LDAPSearch(
+    #     "DC=example,DC=com", ldap.SCOPE_SUBTREE, "(uid=%(user)s)",
+    # )
 
     # Is this correct?
     AUTH_LDAP_USER_ATTR_MAP = {

@@ -5,12 +5,15 @@ import requests
 import yaml
 import jsonschema
 import collections
+import re
 from background_task import background
 from django.core.exceptions import PermissionDenied
 from django.utils import timezone
 from django.db.models.query_utils import Q
 from django.contrib.auth import authenticate, logout
 from django.contrib.auth.models import Permission, Group
+from django.core.cache import cache
+from django_auth_ldap.backend import LDAPBackend
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -109,6 +112,57 @@ def validate_token(request, *args, **kwargs):
 #     )
 
 
+class CustomLDAPBackend(LDAPBackend):
+    default_settings = {
+        "LOGIN_COUNTER_KEY": "CUSTOM_LDAP_LOGIN_ATTEMPT_COUNT",
+        "LOGIN_ATTEMPT_LIMIT": 50,
+        "RESET_TIME": 30 * 60,
+        "USERNAME_REGEX": r"^.*$",
+    }
+
+    def authenticate_ldap_user(self, ldap_user, password):
+        print("######", flush=True)
+        print(dir(ldap_user))
+        print("********")
+        print(ldap_user._get_groups)
+        print("********")
+        print(ldap_user._load_user_attrs)
+        print("********")
+        print(ldap_user._load_user_dn)
+        print("********")
+        print(ldap_user.attrs)
+        print("********")
+        print("######", flush=True)
+        if self.exceeded_login_attempt_limit():
+            # Or you can raise a 403 if you do not want
+            # to continue checking other auth backends
+            print("Login attempts exceeded.")
+            return None
+        self.increment_login_attempt_count()
+        user = ldap_user.authenticate(password)
+        # if user and self.username_matches_regex(user.username):
+        #     self.send_sms(user.username)
+        return user
+
+    @property
+    def login_attempt_count(self):
+        return cache.get_or_set(
+            self.settings.LOGIN_COUNTER_KEY, 0, self.settings.RESET_TIME
+        )
+
+    def increment_login_attempt_count(self):
+        try:
+            cache.incr(self.settings.LOGIN_COUNTER_KEY)
+        except ValueError:
+            cache.set(self.settings.LOGIN_COUNTER_KEY, 1, self.settings.RESET_TIME)
+
+    def exceeded_login_attempt_limit(self):
+        return self.login_attempt_count >= self.settings.LOGIN_ATTEMPT_LIMIT
+
+    def username_matches_regex(self, username):
+        return re.match(self.settings.USERNAME_REGEX, username)
+
+
 class LDAPLogin(APIView):
     """
     Class to authenticate a user via LDAP and
@@ -128,6 +182,8 @@ class LDAPLogin(APIView):
         username = request.data["username"]
         password = request.data["password"]
         user_obj = authenticate(username=username, password=password)
+        # ldap_custom = CustomLDAPBackend()
+        # user_obj = ldap_custom.authenticate_ldap_user(username, password)
         if user_obj is None:
             data = {"detail": "Login failed."}
             return Response(data, status=400)
