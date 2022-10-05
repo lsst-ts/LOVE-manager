@@ -121,18 +121,6 @@ class CustomLDAPBackend(LDAPBackend):
     }
 
     def authenticate_ldap_user(self, ldap_user, password):
-        print("######", flush=True)
-        print(dir(ldap_user))
-        print("********")
-        print(ldap_user._get_groups)
-        print("********")
-        print(ldap_user._load_user_attrs)
-        print("********")
-        print(ldap_user._load_user_dn)
-        print("********")
-        print(ldap_user.attrs)
-        print("********")
-        print("######", flush=True)
         if self.exceeded_login_attempt_limit():
             # Or you can raise a 403 if you do not want
             # to continue checking other auth backends
@@ -188,9 +176,6 @@ class LDAPLogin(APIView):
             data = {"detail": "Login failed."}
             return Response(data, status=400)
 
-        # print("#####", flush=True)
-        # print(dir(user_obj))
-        # print("#####", flush=True)
         # PERMISOS
         # DEFINE PERMISSIONS BASED ON LDAP PERMISSIONS
         # IF USER IS FROM DJANGO THEN PASS
