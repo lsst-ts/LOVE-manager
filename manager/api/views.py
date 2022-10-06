@@ -1348,12 +1348,6 @@ class ExposurelogViewSet(viewsets.ViewSet):
         json_data = request.data.copy()
         if "tags" in json_data:
             json_data["tags"] = json_data["tags"].split(",")
-        if "systems" in json_data:
-            json_data["systems"] = json_data["systems"].split(",")
-        if "subsystems" in json_data:
-            json_data["subsystems"] = json_data["subsystems"].split(",")
-        if "cscs" in json_data:
-            json_data["cscs"] = json_data["cscs"].split(",")
 
         if "urls" in json_data:
             json_data["urls"] = json_data["urls"].split(",")
@@ -1424,6 +1418,12 @@ class NarrativelogViewSet(viewsets.ViewSet):
 
         if "tags" in json_data:
             json_data["tags"] = json_data["tags"].split(",")
+        if "systems" in json_data:
+            json_data["systems"] = json_data["systems"].split(",")
+        if "subsystems" in json_data:
+            json_data["subsystems"] = json_data["subsystems"].split(",")
+        if "cscs" in json_data:
+            json_data["cscs"] = json_data["cscs"].split(",")
 
         json_data["urls"] = [jira_url, *lfa_urls]
         json_data["urls"] = list(filter(None, json_data["urls"]))
