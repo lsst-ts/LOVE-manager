@@ -6,6 +6,7 @@ import yaml
 import jsonschema
 import collections
 import re
+import ldap
 from background_task import background
 from django.core.exceptions import PermissionDenied
 from django.utils import timezone
@@ -176,14 +177,35 @@ class LDAPLogin(APIView):
             data = {"detail": "Login failed."}
             return Response(data, status=400)
 
-        # PERMISOS
-        # DEFINE PERMISSIONS BASED ON LDAP PERMISSIONS
-        # IF USER IS FROM DJANGO THEN PASS
-        group = Group.objects.filter(name="cmd").first()
-        permissions = Permission.objects.filter(codename="command.execute_command")
-        for permission in permissions:
-            group.permissions.add(permission)
-        group.user_set.add(user_obj)
+        # Query using ldapsearch to find users
+        try:
+            ldap_uri = ldap.init("ldap://ipa1.cp.lsst.org")
+            ldap_uri.protocol_version = ldap.VERSION3
+        except ldap.LDAPError as e:
+            print(e)
+
+        baseDN = "cn=love_ops,cn=groups,cn=compat,dc=lsst,dc=cloud"
+        searchScope = ldap.SCOPE_SUBTREE
+
+        try:
+            ldap_result = ldap_uri.search(baseDN, searchScope)
+
+            # LDAP Search
+            # list = ldapsearch -LLL -x -H ldap://ipa1.cp.lsst.org -b
+            # "cn=compat,dc=lsst,dc=cloud" "(cn=love_ops)" memberUid
+            if username in ldap_result:
+                # PERMISOS
+                # DEFINE PERMISSIONS BASED ON LDAP PERMISSIONS
+                # IF USER IS FROM DJANGO THEN PASS
+                group = Group.objects.filter(name="cmd").first()
+                permissions = Permission.objects.filter(
+                    codename="command.execute_command"
+                )
+                for permission in permissions:
+                    group.permissions.add(permission)
+                group.user_set.add(user_obj)
+        except ldap.LDAPError as e:
+            print(e)
 
         token = Token.objects.create(user=user_obj)
         return Response(TokenSerializer(token).data)
