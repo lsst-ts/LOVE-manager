@@ -12,7 +12,7 @@ from django.core.exceptions import PermissionDenied
 from django.utils import timezone
 from django.db.models.query_utils import Q
 from django.contrib.auth import authenticate, logout
-from django.contrib.auth.models import Permission, Group
+from django.contrib.auth.models import Group, User
 from django.core.cache import cache
 from django_auth_ldap.backend import LDAPBackend
 from drf_yasg import openapi
@@ -177,40 +177,53 @@ class LDAPLogin(APIView):
             data = {"detail": "Login failed."}
             return Response(data, status=400)
 
-        # Query using ldapsearch to find users
-        try:
-            ldap_uri = ldap.init("ldap://ipa1.cp.lsst.org")
-            ldap_uri.protocol_version = ldap.VERSION3
-        except ldap.LDAPError as e:
-            print(e)
+        # si el usuario no es LOVE, avanzar y hay dos casos:
+        # 2) usuario ldap love (mismo anterior pero que ya ha ingresado)
 
-        baseDN = "cn=love_ops,cn=groups,cn=compat,dc=lsst,dc=cloud"
-        searchScope = ldap.SCOPE_SUBTREE
+        # Si es usuario LOVE, saltar hasta el token
+        if User.objects.filter(username=username).first():
+            token = Token.objects.create(user=user_obj)
+            return Response(TokenSerializer(token).data)
 
-        try:
-            ldap_result = ldap_uri.search(baseDN, searchScope)
+        # 1) usuario ldap no love -> asignarle permisos: avanzar
+        else:
+            # Query using ldapsearch to find users
+            try:
+                ldap_uri = ldap.initialize("ldap://ipa1.cp.lsst.org")
+                ldap_uri.protocol_version = ldap.VERSION3
+            except ldap.LDAPError as e:
+                print(e)
 
-            # LDAP Search
-            # list = ldapsearch -LLL -x -H ldap://ipa1.cp.lsst.org -b
-            # "cn=compat,dc=lsst,dc=cloud" "(cn=love_ops)" memberUid
-            if username in ldap_result:
-                # PERMISOS
-                # DEFINE PERMISSIONS BASED ON LDAP PERMISSIONS
-                # IF USER IS FROM DJANGO THEN PASS
-                group = Group.objects.filter(name="cmd").first()
-                permissions = Permission.objects.filter(
-                    codename="command.execute_command"
+            baseDN = "cn=love_ops,cn=groups,cn=compat,dc=lsst,dc=cloud"
+            searchScope = ldap.SCOPE_SUBTREE
+
+            try:
+                ldap_result = ldap_uri.search_s(baseDN, searchScope)
+                ops_users = list(
+                    map(lambda u: u.decode(), ldap_result[0][1]["memberUid"])
                 )
-                for permission in permissions:
-                    group.permissions.add(permission)
-                group.user_set.add(user_obj)
-        except ldap.LDAPError as e:
-            print(e)
+                # LDAP Search
+                # list = ldapsearch -LLL -x -H ldap://ipa1.cp.lsst.org -b
+                # "cn=compat,dc=lsst,dc=cloud" "(cn=love_ops)" memberUid
+                print("######", flush=True)
+                print(username, ops_users[11])
+                print("######", flush=True)
+                if username in ops_users:
+                    print("######", flush=True)
+                    print("HOLA")
+                    print("######", flush=True)
+                    # PERMISOS
+                    # DEFINE PERMISSIONS BASED ON LDAP PERMISSIONS
+                    # IF USER IS FROM DJANGO THEN PASS
+                    group = Group.objects.filter(name="cmd").first()
+                    group.user_set.add(user_obj)
+            except ldap.LDAPError as e:
+                print(e)
 
-        token = Token.objects.create(user=user_obj)
-        return Response(TokenSerializer(token).data)
-        # data = {"detail": "User logged out successfully"}
-        # return Response(data, status=200)
+            token = Token.objects.create(user=user_obj)
+            return Response(TokenSerializer(token).data)
+            # data = {"detail": "User logged out successfully"}
+            # return Response(data, status=200)
 
 
 class LDAPLogout(APIView):
