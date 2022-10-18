@@ -271,7 +271,7 @@ if AUTH_LDAP_SERVER_URI:
 
     # Is this correct?
     AUTH_LDAP_USER_ATTR_MAP = {
-        "first_name": "gn",
+        "first_name": "givenname",
         "last_name": "sn",
         "email": "mail",
     }
