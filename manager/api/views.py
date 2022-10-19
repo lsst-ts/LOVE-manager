@@ -5,15 +5,11 @@ import requests
 import yaml
 import jsonschema
 import collections
-import re
-import ldap
 from background_task import background
 from django.core.exceptions import PermissionDenied
 from django.utils import timezone
 from django.db.models.query_utils import Q
 from django.contrib.auth import authenticate, logout
-from django.contrib.auth.models import Group, User
-from django.core.cache import cache
 from django_auth_ldap.backend import LDAPBackend
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -113,43 +109,16 @@ def validate_token(request, *args, **kwargs):
 #     )
 
 
-class CustomLDAPBackend(LDAPBackend):
-    default_settings = {
-        "LOGIN_COUNTER_KEY": "CUSTOM_LDAP_LOGIN_ATTEMPT_COUNT",
-        "LOGIN_ATTEMPT_LIMIT": 50,
-        "RESET_TIME": 30 * 60,
-        "USERNAME_REGEX": r"^.*$",
-    }
+class IPABackend1(LDAPBackend):
+    settings_prefix = "AUTH_LDAP_1_"
 
-    def authenticate_ldap_user(self, ldap_user, password):
-        if self.exceeded_login_attempt_limit():
-            # Or you can raise a 403 if you do not want
-            # to continue checking other auth backends
-            print("Login attempts exceeded.")
-            return None
-        self.increment_login_attempt_count()
-        user = ldap_user.authenticate(password)
-        # if user and self.username_matches_regex(user.username):
-        #     self.send_sms(user.username)
-        return user
 
-    @property
-    def login_attempt_count(self):
-        return cache.get_or_set(
-            self.settings.LOGIN_COUNTER_KEY, 0, self.settings.RESET_TIME
-        )
+class IPABackend2(LDAPBackend):
+    settings_prefix = "AUTH_LDAP_2_"
 
-    def increment_login_attempt_count(self):
-        try:
-            cache.incr(self.settings.LOGIN_COUNTER_KEY)
-        except ValueError:
-            cache.set(self.settings.LOGIN_COUNTER_KEY, 1, self.settings.RESET_TIME)
 
-    def exceeded_login_attempt_limit(self):
-        return self.login_attempt_count >= self.settings.LOGIN_ATTEMPT_LIMIT
-
-    def username_matches_regex(self, username):
-        return re.match(self.settings.USERNAME_REGEX, username)
+class IPABackend3(LDAPBackend):
+    settings_prefix = "AUTH_LDAP_3_"
 
 
 class LDAPLogin(APIView):
@@ -170,60 +139,65 @@ class LDAPLogin(APIView):
         """
         username = request.data["username"]
         password = request.data["password"]
+        # user_aux = User.objects.filter(username=username).first()
         user_obj = authenticate(username=username, password=password)
         # ldap_custom = CustomLDAPBackend()
         # user_obj = ldap_custom.authenticate_ldap_user(username, password)
-        if user_obj is None:
-            data = {"detail": "Login failed."}
-            return Response(data, status=400)
+        # if user_obj is None:
+        #     data = {"detail": "Login failed."}
+        #     return Response(data, status=400)
 
-        # si el usuario no es LOVE, avanzar y hay dos casos:
-        # 2) usuario ldap love (mismo anterior pero que ya ha ingresado)
+        #     # si el usuario no es LOVE, avanzar y hay dos casos:
+        #     # 2) usuario ldap love (mismo anterior pero que ya ha ingresado)
 
-        # Si es usuario LOVE, saltar hasta el token
-        if User.objects.filter(username=username).first():
-            token = Token.objects.create(user=user_obj)
-            return Response(TokenSerializer(token).data)
+        #     # Si es usuario LOVE, saltar hasta el token
+        #     if user_aux is None:
+        #         # Query using ldapsearch to find users
+        #         try:
+        #             ldap_uri = ldap.initialize("ldap://ipa1.cp.lsst.org")
+        #             ldap_uri.protocol_version = ldap.VERSION3
+        #         except ldap.LDAPError as e:
+        #             try:
+        #                 ldap_uri = ldap.initialize("ldap://ipa2.cp.lsst.org")
+        #             except :
+        #                 try:
+        #                     ldap_uri = ldap.initialize("ldap://ipa2.cp.lsst.org")
+        #                 except:
 
-        # 1) usuario ldap no love -> asignarle permisos: avanzar
-        else:
-            # Query using ldapsearch to find users
-            try:
-                ldap_uri = ldap.initialize("ldap://ipa1.cp.lsst.org")
-                ldap_uri.protocol_version = ldap.VERSION3
-            except ldap.LDAPError as e:
-                print(e)
+        #     print("*******", flush=True)
+        #     print("En el else")
+        #     print("*******", flush=True)
 
-            baseDN = "cn=love_ops,cn=groups,cn=compat,dc=lsst,dc=cloud"
-            searchScope = ldap.SCOPE_SUBTREE
+        #     baseDN = "cn=love_ops,cn=groups,cn=compat,dc=lsst,dc=cloud"
+        #     searchScope = ldap.SCOPE_SUBTREE
 
-            try:
-                ldap_result = ldap_uri.search_s(baseDN, searchScope)
-                ops_users = list(
-                    map(lambda u: u.decode(), ldap_result[0][1]["memberUid"])
-                )
-                # LDAP Search
-                # list = ldapsearch -LLL -x -H ldap://ipa1.cp.lsst.org -b
-                # "cn=compat,dc=lsst,dc=cloud" "(cn=love_ops)" memberUid
-                print("######", flush=True)
-                print(username, ops_users[11])
-                print("######", flush=True)
-                if username in ops_users:
-                    print("######", flush=True)
-                    print("HOLA")
-                    print("######", flush=True)
-                    # PERMISOS
-                    # DEFINE PERMISSIONS BASED ON LDAP PERMISSIONS
-                    # IF USER IS FROM DJANGO THEN PASS
-                    group = Group.objects.filter(name="cmd").first()
-                    group.user_set.add(user_obj)
-            except ldap.LDAPError as e:
-                print(e)
+        #     try:
+        #         ldap_result = ldap_uri.search_s(baseDN, searchScope)
+        #         ops_users = list(
+        #             map(lambda u: u.decode(), ldap_result[0][1]["memberUid"])
+        #         )
+        #         # LDAP Search
+        #         # list = ldapsearch -LLL -x -H ldap://ipa1.cp.lsst.org -b
+        #         # "cn=compat,dc=lsst,dc=cloud" "(cn=love_ops)" memberUid
+        #         print("######", flush=True)
+        #         print(username, ops_users[11])
+        #         print("######", flush=True)
+        #         if username in ops_users:
+        #             print("######", flush=True)
+        #             print("HOLA")
+        #             print("######", flush=True)
+        #             # PERMISOS
+        #             # DEFINE PERMISSIONS BASED ON LDAP PERMISSIONS
+        #             # IF USER IS FROM DJANGO THEN PASS
+        #             group = Group.objects.filter(name="cmd").first()
+        #             group.user_set.add(user_obj)
+        #     except ldap.LDAPError as e:
+        #         print(e)
 
-            token = Token.objects.create(user=user_obj)
-            return Response(TokenSerializer(token).data)
-            # data = {"detail": "User logged out successfully"}
-            # return Response(data, status=200)
+        token = Token.objects.create(user=user_obj)
+        return Response(TokenSerializer(token).data)
+        # data = {"detail": "User logged out successfully"}
+        # return Response(data, status=200)
 
 
 class LDAPLogout(APIView):

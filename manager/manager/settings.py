@@ -237,14 +237,19 @@ else:
 # LDAP
 # Baseline configuration:
 AUTH_LDAP_SERVER_URI = os.environ.get("AUTH_LDAP_SERVER_URI")
+AUTH_LDAP_1_SERVER_URI = os.environ.get("AUTH_LDAP_1_SERVER_URI")
+AUTH_LDAP_2_SERVER_URI = os.environ.get("AUTH_LDAP_2_SERVER_URI")
+AUTH_LDAP_3_SERVER_URI = os.environ.get("AUTH_LDAP_3_SERVER_URI")
 """URL for the LDAP server. Read from `AUTH_LDAP_SERVER_URI` environment variable (`bool`)"""
 
 # Only use LDAP activation backend if there is an AUTH_LDAP_SERVER_URI
 # configured in the OS ENV:
 if AUTH_LDAP_SERVER_URI:
     AUTHENTICATION_BACKENDS = [
-        # "django_auth_ldap.backend.LDAPBackend",
-        "api.views.CustomLDAPBackend",
+        # "api.views.IPABackend1",
+        # "api.views.IPABackend2",
+        # "api.views.IPABackend3",
+        "django_auth_ldap.backend.LDAPBackend",
         "django.contrib.auth.backends.ModelBackend",
     ]
 
@@ -265,6 +270,9 @@ if AUTH_LDAP_SERVER_URI:
     AUTH_LDAP_USER_SEARCH = LDAPSearch(
         "cn=users,cn=accounts,dc=lsst,dc=cloud", ldap.SCOPE_SUBTREE, "(uid=%(user)s)",
     )
+    AUTH_LDAP_1_USER_SEARCH = AUTH_LDAP_USER_SEARCH
+    AUTH_LDAP_2_USER_SEARCH = AUTH_LDAP_USER_SEARCH
+    AUTH_LDAP_3_USER_SEARCH = AUTH_LDAP_USER_SEARCH
     # AUTH_LDAP_USER_SEARCH = LDAPSearch(
     #     "DC=example,DC=com", ldap.SCOPE_SUBTREE, "(uid=%(user)s)",
     # )
