@@ -463,6 +463,8 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                 if csc == "Watcher":
                     print("#####", flush=True)
                     print(msg)
+                    if msg["category"] == "event" and "alarm" in msg["data"]:
+                        msg["data"]["alarm"][0]["severity"]["value"] = 1
                     print("#####", flush=True)
 
                 to_send.append({"group": group_name, "message": msg})
