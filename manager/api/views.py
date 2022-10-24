@@ -39,6 +39,11 @@ from api.serializers import (
     CSCAuthorizationRequestUpdateSerializer,
 )
 from .schema_validator import DefaultingValidator
+from manager.settings import (
+    AUTH_LDAP_1_SERVER_URI,
+    AUTH_LDAP_2_SERVER_URI,
+    AUTH_LDAP_3_SERVER_URI,
+)
 
 valid_response = openapi.Response("Valid token", TokenSerializer)
 invalid_response = openapi.Response("Invalid token")
@@ -143,9 +148,9 @@ class LDAPLogin(APIView):
         password = request.data["password"]
         user_aux = User.objects.filter(username=username).first()
         user_obj = authenticate(username=username, password=password)
-        print("#######", flush=True)
-        print(user_obj, user_aux)
-        print("#######", flush=True)
+        print("**********", flush=True)
+        print(user_aux, user_obj)
+        print("**********", flush=True)
         if user_obj is None:
             data = {"detail": "Login failed."}
             return Response(data, status=400)
@@ -154,32 +159,19 @@ class LDAPLogin(APIView):
         if user_aux is None:
             try:
                 ldap.set_option(ldap.OPT_NETWORK_TIMEOUT, 1)
-                ldap_ipa1 = ldap.initialize(os.environ.get("AUTH_LDAP_1_SERVER_URI"))
+                ldap_ipa1 = ldap.initialize(AUTH_LDAP_1_SERVER_URI)
                 ldap_ipa1.protocol_version = ldap.VERSION3
                 ldap_result = ldap_ipa1
-                print("#######", flush=True)
-                print(LDAPBackend.AUTH_LDAP_GLOBAL_OPTIONS)
-                print("#######", flush=True)
             except ldap.LDAPError:
                 try:
-                    ldap_ipa2 = ldap.initialize(
-                        os.environ.get("AUTH_LDAP_2_SERVER_URI")
-                    )
+                    ldap_ipa2 = ldap.initialize(AUTH_LDAP_2_SERVER_URI)
                     ldap_ipa2.protocol_version = ldap.VERSION3
                     ldap_result = ldap_ipa2
-                    print("#######", flush=True)
-                    print(os.environ.get("AUTH_LDAP_2_SERVER_URI"))
-                    print("#######", flush=True)
                 except ldap.LDAPError:
                     try:
-                        ldap_ipa3 = ldap.initialize(
-                            os.environ.get("AUTH_LDAP_3_SERVER_URI")
-                        )
+                        ldap_ipa3 = ldap.initialize(AUTH_LDAP_3_SERVER_URI)
                         ldap_ipa3.protocol_version = ldap.VERSION3
                         ldap_result = ldap_ipa3
-                        print("#######", flush=True)
-                        print(os.environ.get("AUTH_LDAP_3_SERVER_URI"))
-                        print("#######", flush=True)
                     except ldap.LDAPError as e:
                         print(e, flush=True)
 

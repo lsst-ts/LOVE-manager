@@ -236,8 +236,7 @@ else:
 
 # LDAP
 # Baseline configuration:
-# AUTH_LDAP_1_SERVER_URI = os.environ.get("AUTH_LDAP_1_SERVER_URI")
-AUTH_LDAP_1_SERVER_URI = "ldap://ipa1sad.cp.lsst.org"
+AUTH_LDAP_1_SERVER_URI = os.environ.get("AUTH_LDAP_1_SERVER_URI")
 AUTH_LDAP_2_SERVER_URI = os.environ.get("AUTH_LDAP_2_SERVER_URI")
 AUTH_LDAP_3_SERVER_URI = os.environ.get("AUTH_LDAP_3_SERVER_URI")
 """URL for the LDAP server. Read from `AUTH_LDAP_SERVER_URI` environment variable (`bool`)"""
@@ -253,7 +252,7 @@ if AUTH_LDAP_1_SERVER_URI and AUTH_LDAP_2_SERVER_URI and AUTH_LDAP_3_SERVER_URI:
     ]
 
     AUTH_LDAP_BIND_DN = "uid=svc_love,cn=users,cn=accounts,dc=lsst,dc=cloud"
-    AUTH_LDAP_BIND_PASSWORD = "@tsqMNhEPM4Vicq"  # PASAR A VARIABLE ENV
+    AUTH_LDAP_BIND_PASSWORD = os.environ.get("AUTH_LDAP_BIND_PASSWORD")
 
     AUTH_LDAP_1_BIND_DN = AUTH_LDAP_BIND_DN
     AUTH_LDAP_2_BIND_DN = AUTH_LDAP_BIND_DN
