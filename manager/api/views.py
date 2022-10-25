@@ -118,14 +118,35 @@ def validate_token(request, *args, **kwargs):
 
 class IPABackend1(LDAPBackend):
     settings_prefix = "AUTH_LDAP_1_"
+    successful_login = False
+
+    def authenticate_ldap_user(self, ldap_user, password):
+        user = ldap_user.authenticate(password)
+        if user:
+            IPABackend1.successful_login = True
+        return user
 
 
 class IPABackend2(LDAPBackend):
     settings_prefix = "AUTH_LDAP_2_"
+    successful_login = False
+
+    def authenticate_ldap_user(self, ldap_user, password):
+        user = ldap_user.authenticate(password)
+        if user:
+            IPABackend2.successful_login = True
+        return user
 
 
 class IPABackend3(LDAPBackend):
     settings_prefix = "AUTH_LDAP_3_"
+    successful_login = False
+
+    def authenticate_ldap_user(self, ldap_user, password):
+        user = ldap_user.authenticate(password)
+        if user:
+            IPABackend3.successful_login = True
+        return user
 
 
 class LDAPLogin(APIView):
@@ -148,32 +169,18 @@ class LDAPLogin(APIView):
         password = request.data["password"]
         user_aux = User.objects.filter(username=username).first()
         user_obj = authenticate(username=username, password=password)
-        print("**********", flush=True)
-        print(user_aux, user_obj)
-        print("**********", flush=True)
         if user_obj is None:
             data = {"detail": "Login failed."}
             return Response(data, status=400)
 
         ldap_result = None
         if user_aux is None:
-            try:
-                ldap.set_option(ldap.OPT_NETWORK_TIMEOUT, 1)
-                ldap_ipa1 = ldap.initialize(AUTH_LDAP_1_SERVER_URI)
-                ldap_ipa1.protocol_version = ldap.VERSION3
-                ldap_result = ldap_ipa1
-            except ldap.LDAPError:
-                try:
-                    ldap_ipa2 = ldap.initialize(AUTH_LDAP_2_SERVER_URI)
-                    ldap_ipa2.protocol_version = ldap.VERSION3
-                    ldap_result = ldap_ipa2
-                except ldap.LDAPError:
-                    try:
-                        ldap_ipa3 = ldap.initialize(AUTH_LDAP_3_SERVER_URI)
-                        ldap_ipa3.protocol_version = ldap.VERSION3
-                        ldap_result = ldap_ipa3
-                    except ldap.LDAPError as e:
-                        print(e, flush=True)
+            if IPABackend1.successful_login:
+                ldap_result = ldap.initialize(AUTH_LDAP_1_SERVER_URI)
+            elif IPABackend2.successful_login:
+                ldap_result = ldap.initialize(AUTH_LDAP_2_SERVER_URI)
+            elif IPABackend3.successful_login:
+                ldap_result = ldap.initialize(AUTH_LDAP_3_SERVER_URI)
 
         baseDN = "cn=love_ops,cn=groups,cn=compat,dc=lsst,dc=cloud"
         searchScope = ldap.SCOPE_SUBTREE
