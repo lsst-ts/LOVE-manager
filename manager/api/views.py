@@ -173,6 +173,8 @@ class LDAPLogin(APIView):
             data = {"detail": "Login failed."}
             return Response(data, status=400)
 
+        print("#####", flush=True)
+
         ldap_result = None
         if user_aux is None:
             if IPABackend1.successful_login:
@@ -184,6 +186,8 @@ class LDAPLogin(APIView):
 
         baseDN = "cn=love_ops,cn=groups,cn=compat,dc=lsst,dc=cloud"
         searchScope = ldap.SCOPE_SUBTREE
+
+        print("#####", flush=True)
 
         if ldap_result is not None:
             try:
@@ -201,10 +205,9 @@ class LDAPLogin(APIView):
                 # logging.error(e)
                 # pass
 
+        print("#####", flush=True)
         token = Token.objects.create(user=user_obj)
         return Response(TokenSerializer(token).data)
-        # data = {"detail": "User logged out successfully"}
-        # return Response(data, status=200)
 
 
 class LDAPLogout(APIView):
