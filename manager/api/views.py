@@ -198,6 +198,8 @@ class LDAPLogin(APIView):
                 if username in ops_users:
                     group = Group.objects.filter(name="cmd").first()
                     group.user_set.add(user_obj)
+                else:
+                    group = None
             except Exception as e:
                 print("------", flush=True)
                 print(e, flush=True)

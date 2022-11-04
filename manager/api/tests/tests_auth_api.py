@@ -23,6 +23,9 @@ LDAP_SEARCH_RESPONSE = [
         {"memberUid": [bytes(LDAP_USERNAME, encoding="utf-8"), b"user2", b"user3"]},
     ],
 ]
+LDAP_SEARCH_RESPONSE_NON_COMMANDS = [
+    [None,],
+]
 
 
 class MockLDAPUser:
@@ -47,6 +50,23 @@ class MockLDAPUserNonConnection:
 
     def authenticate(self, password):
         return None
+
+
+class MockLDAPUserNonCommands:
+    _username = LDAP_USERNAME_NON_COMMANDS
+
+    def authenticate(self, password):
+        aux_user = User.objects.filter(username=self._username).first()
+        if aux_user is None:
+            ldap_user = User.objects.create_user(
+                username=self._username,
+                password=password,
+                email=f"{self._username}@user.cl",
+                first_name="First",
+                last_name="Last",
+            )
+            return ldap_user
+        return aux_user
 
 
 class AuthApiTestCase(TestCase):
@@ -172,6 +192,29 @@ class AuthApiTestCase(TestCase):
         # Assert:
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(user_group.name, "cmd")
+
+    @patch("django_auth_ldap.backend._LDAPUser", return_value=MockLDAPUserNonCommands())
+    @patch("ldap.initialize", return_value=ldap.ldapobject.LDAPObject("ldap://test/"))
+    @patch(
+        "ldap.ldapobject.LDAPObject.search_s",
+        return_value=LDAP_SEARCH_RESPONSE_NON_COMMANDS,
+    )
+    def test_ldap_nonexistent_non_cmd_user_login(
+        self, mockLDAPUserNonCmd, mockLDAPInitialize, mockLDAPObject
+    ):
+        # Arrange:
+        data = {"username": LDAP_USERNAME_NON_COMMANDS, "password": "password"}
+
+        # Act:
+        response = self.client.post(self.login_url, data, format="json")
+        # user_token = Token.objects.filter(
+        #     user__username=LDAP_USERNAME_NON_COMMANDS
+        # ).first()
+
+        # TODO: get old user count, and asser with: new user count == old user count + 1
+
+        # Assert:
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     @patch(
         "django_auth_ldap.backend._LDAPUser", return_value=MockLDAPUserNonConnection()
