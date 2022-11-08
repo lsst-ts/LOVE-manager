@@ -34,8 +34,8 @@ urlpatterns = [
         api.views.validate_config_schema,
         name="validate-config-schema",
     ),
-    # path("logout/", api.views.logout, name="logout"),
-    path("logout/", api.views.LDAPLogout.as_view(), name="logout"),
+    path("logout/", api.views.logout, name="logout"),
+    # path("logout/", api.views.LDAPLogout.as_view(), name="logout"),
     path("swap-user/", api.views.CustomSwapAuthToken.as_view(), name="swap-user"),
     path(
         "swap-user/<flags>/", api.views.CustomSwapAuthToken.as_view(), name="swap-user"

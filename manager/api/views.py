@@ -10,7 +10,7 @@ from background_task import background
 from django.core.exceptions import PermissionDenied
 from django.utils import timezone
 from django.db.models.query_utils import Q
-from django.contrib.auth import authenticate, logout
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import Group, User
 from django_auth_ldap.backend import LDAPBackend
 from drf_yasg import openapi
@@ -88,32 +88,32 @@ def validate_token(request, *args, **kwargs):
     return Response(data)
 
 
-# @swagger_auto_schema(
-#     method="delete", responses={204: openapi.Response("Logout Successful")}
-# )
-# @api_view(["DELETE"])
-# @permission_classes((IsAuthenticated,))
-# def logout(request):
-#     """Logout and delete the token. And returns 204 code if valid.
+@swagger_auto_schema(
+    method="delete", responses={204: openapi.Response("Logout Successful")}
+)
+@api_view(["DELETE"])
+@permission_classes((IsAuthenticated,))
+def logout(request):
+    """Logout and delete the token. And returns 204 code if valid.
 
-#     If the token is invalid this function is not executed (the request fails before)
+    If the token is invalid this function is not executed (the request fails before)
 
-#     Params
-#     ------
-#     request: Request
-#         The Request object
+    Params
+    ------
+    request: Request
+        The Request object
 
-#     Returns
-#     -------
-#     Response
-#         The response stating that the token has been deleted, with a 204 status code.
-#     """
-#     token = request._auth
-#     token.delete()
-#     return Response(
-#         {"detail": "Logout successful, Token succesfully deleted"},
-#         status=status.HTTP_204_NO_CONTENT,
-#     )
+    Returns
+    -------
+    Response
+        The response stating that the token has been deleted, with a 204 status code.
+    """
+    token = request._auth
+    token.delete()
+    return Response(
+        {"detail": "Logout successful, Token succesfully deleted"},
+        status=status.HTTP_204_NO_CONTENT,
+    )
 
 
 class IPABackend1(LDAPBackend):
@@ -173,8 +173,6 @@ class LDAPLogin(APIView):
             data = {"detail": "Login failed."}
             return Response(data, status=400)
 
-        print("#####", flush=True)
-
         ldap_result = None
         if user_aux is None:
             if IPABackend1.successful_login:
@@ -187,8 +185,6 @@ class LDAPLogin(APIView):
         baseDN = "cn=love_ops,cn=groups,cn=compat,dc=lsst,dc=cloud"
         searchScope = ldap.SCOPE_SUBTREE
 
-        print("#####", flush=True)
-
         if ldap_result is not None:
             try:
                 ldap_result = ldap_result.search_s(baseDN, searchScope)
@@ -198,36 +194,12 @@ class LDAPLogin(APIView):
                 if username in ops_users:
                     group = Group.objects.filter(name="cmd").first()
                     group.user_set.add(user_obj)
-                else:
-                    group = None
-            except Exception as e:
-                print("------", flush=True)
-                print(e, flush=True)
-                print("------", flush=True)
-                # logging.error(e)
-                # pass
+            except Exception:
+                data = {"detail": "Login failed, add cmd permission error."}
+                return Response(data, status=400)
 
-        print("#####", flush=True)
         token = Token.objects.create(user=user_obj)
         return Response(TokenSerializer(token).data)
-
-
-class LDAPLogout(APIView):
-    """
-    Class for logging out a user by clearing his/her session
-    """
-
-    permission_classes = (IsAuthenticated,)
-
-    def post(self, request):
-        """
-        Api to logout a user
-        :param request:
-        :return:
-        """
-        logout(request)
-        data = {"detail": "User logged out successfully"}
-        return Response(data, status=200)
 
 
 class CustomObtainAuthToken(ObtainAuthToken):

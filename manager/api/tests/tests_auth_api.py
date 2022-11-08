@@ -14,17 +14,14 @@ from unittest.mock import patch
 from manager import utils
 import ldap
 
-
 LDAP_USERNAME = "ldap_user"
 LDAP_USERNAME_NON_COMMANDS = "ldap_user_non_commands"
+LDAP_USERNAME_EXISTENT = "ldap_user_existent"
 LDAP_SEARCH_RESPONSE = [
     [
         None,
         {"memberUid": [bytes(LDAP_USERNAME, encoding="utf-8"), b"user2", b"user3"]},
     ],
-]
-LDAP_SEARCH_RESPONSE_NON_COMMANDS = [
-    [None,],
 ]
 
 
@@ -45,28 +42,16 @@ class MockLDAPUser:
         return aux_user
 
 
-class MockLDAPUserNonConnection:
+class MockLDAPUserCommands(MockLDAPUser):
     _username = LDAP_USERNAME
 
-    def authenticate(self, password):
-        return None
 
-
-class MockLDAPUserNonCommands:
+class MockLDAPUserNonCommands(MockLDAPUser):
     _username = LDAP_USERNAME_NON_COMMANDS
 
-    def authenticate(self, password):
-        aux_user = User.objects.filter(username=self._username).first()
-        if aux_user is None:
-            ldap_user = User.objects.create_user(
-                username=self._username,
-                password=password,
-                email=f"{self._username}@user.cl",
-                first_name="First",
-                last_name="Last",
-            )
-            return ldap_user
-        return aux_user
+
+class MockLDAPUserExistent(MockLDAPUser):
+    _username = LDAP_USERNAME_EXISTENT
 
 
 class AuthApiTestCase(TestCase):
@@ -98,11 +83,19 @@ class AuthApiTestCase(TestCase):
             first_name="First2",
             last_name="Last2",
         )
+        self.user_ldap = User.objects.create_user(
+            username=LDAP_USERNAME_EXISTENT,
+            password="password",
+            email="user_ldap@user.cl",
+            first_name="First LDAP",
+            last_name="Last LDAP",
+        )
         self.user.user_permissions.add(Permission.objects.get(name="Execute Commands"))
         self.user2.user_permissions.add(Permission.objects.get(name="Execute Commands"))
 
         cmd_group = Group.objects.create(name="cmd")
         cmd_group.permissions.add(Permission.objects.get(name="Execute Commands"))
+        cmd_group.user_set.add(self.user_ldap)
 
         self.login_url = reverse("login")
         self.validate_token_url = reverse("validate-token")
@@ -128,10 +121,7 @@ class AuthApiTestCase(TestCase):
             file_name=self.filename,
         )
 
-    @patch(
-        "django_auth_ldap.backend._LDAPUser", return_value=MockLDAPUserNonConnection()
-    )
-    def test_user_login(self, mock):
+    def test_user_login(self):
         """Test that a user can request a token using name and password."""
         # Arrange:
         data = {"username": self.username, "password": self.password}
@@ -173,53 +163,92 @@ class AuthApiTestCase(TestCase):
             "The config was not requested",
         )
 
-    @patch("django_auth_ldap.backend._LDAPUser", return_value=MockLDAPUser())
+    @patch("django_auth_ldap.backend._LDAPUser", return_value=MockLDAPUserCommands())
     @patch("ldap.initialize", return_value=ldap.ldapobject.LDAPObject("ldap://test/"))
     @patch("ldap.ldapobject.LDAPObject.search_s", return_value=LDAP_SEARCH_RESPONSE)
-    def test_ldap_nonexistent_user_login(
-        self, mockLDAPUser, mockLDAPInitialize, mockLDAPObject
+    def test_ldap_nonexistent_cmd_user_login(
+        self, mockLDAPObject, mockLDAPInitialize, mockLDAPUser
     ):
         # Arrange:
         data = {"username": LDAP_USERNAME, "password": "password"}
+        total_users_before = User.objects.count()
 
         # Act:
-        response = self.client.post(self.login_url, data, format="json")
-        user_token = Token.objects.filter(user__username=LDAP_USERNAME).first()
-        user_group = user_token.user.groups.filter(name="cmd").first()
+        with self.settings(
+            AUTHENTICATION_BACKENDS=[
+                "api.views.IPABackend1",
+                "django.contrib.auth.backends.ModelBackend",
+            ]
+        ):
+            response = self.client.post(self.login_url, data, format="json")
+            user = User.objects.filter(username=LDAP_USERNAME).first()
+            user_group = user.groups.filter(name="cmd").first()
 
-        # TODO: get old user count, and asser with: new user count == old user count + 1
+        total_users_after = User.objects.count()
 
         # Assert:
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(total_users_before + 1, total_users_after)
+        self.assertEqual(user_group.name, "cmd")
+
+    @patch("django_auth_ldap.backend._LDAPUser", return_value=MockLDAPUserExistent())
+    @patch("ldap.initialize", return_value=ldap.ldapobject.LDAPObject("ldap://test/"))
+    @patch("ldap.ldapobject.LDAPObject.search_s", return_value=LDAP_SEARCH_RESPONSE)
+    def test_ldap_existent_cmd_user_login(
+        self, mockLDAPObject, mockLDAPInitialize, mockLDAPUser
+    ):
+        # Arrange:
+        data = {"username": LDAP_USERNAME_EXISTENT, "password": "password"}
+        total_users_before = User.objects.count()
+
+        # Act:
+        with self.settings(
+            AUTHENTICATION_BACKENDS=[
+                "api.views.IPABackend1",
+                "django.contrib.auth.backends.ModelBackend",
+            ]
+        ):
+            response = self.client.post(self.login_url, data, format="json")
+            user = User.objects.filter(username=LDAP_USERNAME_EXISTENT).first()
+            user_group = user.groups.filter(name="cmd").first()
+
+        total_users_after = User.objects.count()
+
+        # Assert:
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(total_users_before, total_users_after)
         self.assertEqual(user_group.name, "cmd")
 
     @patch("django_auth_ldap.backend._LDAPUser", return_value=MockLDAPUserNonCommands())
     @patch("ldap.initialize", return_value=ldap.ldapobject.LDAPObject("ldap://test/"))
     @patch(
-        "ldap.ldapobject.LDAPObject.search_s",
-        return_value=LDAP_SEARCH_RESPONSE_NON_COMMANDS,
+        "ldap.ldapobject.LDAPObject.search_s", return_value=LDAP_SEARCH_RESPONSE,
     )
     def test_ldap_nonexistent_non_cmd_user_login(
-        self, mockLDAPUserNonCmd, mockLDAPInitialize, mockLDAPObject
+        self, mockLDAPObject, mockLDAPInitialize, mockLDAPUserNonCmd
     ):
         # Arrange:
         data = {"username": LDAP_USERNAME_NON_COMMANDS, "password": "password"}
+        total_users_before = User.objects.count()
 
         # Act:
-        response = self.client.post(self.login_url, data, format="json")
-        # user_token = Token.objects.filter(
-        #     user__username=LDAP_USERNAME_NON_COMMANDS
-        # ).first()
+        with self.settings(
+            AUTHENTICATION_BACKENDS=[
+                "api.views.IPABackend1",
+                "django.contrib.auth.backends.ModelBackend",
+            ]
+        ):
+            response = self.client.post(self.login_url, data, format="json")
+            user = User.objects.filter(username=LDAP_USERNAME_NON_COMMANDS).first()
 
-        # TODO: get old user count, and asser with: new user count == old user count + 1
+        total_users_after = User.objects.count()
 
         # Assert:
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(total_users_before + 1, total_users_after)
+        self.assertEqual(user.groups.count(), 0)
 
-    @patch(
-        "django_auth_ldap.backend._LDAPUser", return_value=MockLDAPUserNonConnection()
-    )
-    def test_user_login_failed(self, mock):
+    def test_user_login_failed(self):
         """Test that a user cannot request a token if the credentials are invalid."""
         # Arrange:
         data = {"username": self.username, "password": "wrong-password"}
@@ -233,10 +262,7 @@ class AuthApiTestCase(TestCase):
         tokens_num_1 = Token.objects.filter(user__username=self.username).count()
         self.assertEqual(tokens_num_0, tokens_num_1, "The user should have no token")
 
-    @patch(
-        "django_auth_ldap.backend._LDAPUser", return_value=MockLDAPUserNonConnection()
-    )
-    def test_user_login_twice(self, mock):
+    def test_user_login_twice(self):
         """Test that a user can request a token twie receiving different tokens each time."""
         # Arrange:
         data = {"username": self.username, "password": self.password}
@@ -279,10 +305,7 @@ class AuthApiTestCase(TestCase):
             retrieved_token_1, retrieved_token_2, "The tokens should be different"
         )
 
-    @patch(
-        "django_auth_ldap.backend._LDAPUser", return_value=MockLDAPUserNonConnection()
-    )
-    def test_user_validate_token(self, mock):
+    def test_user_validate_token(self):
         """Test that a user can validate a token."""
         # Arrange:
         data = {"username": self.username, "password": self.password}
@@ -318,10 +341,7 @@ class AuthApiTestCase(TestCase):
             "The config was not requested",
         )
 
-    @patch(
-        "django_auth_ldap.backend._LDAPUser", return_value=MockLDAPUserNonConnection()
-    )
-    def test_user_validate_token_no_config(self, mock):
+    def test_user_validate_token_no_config(self):
         """Test that a user can validate a token and not receive the config passing the no_config query param."""
         # Arrange:
         data = {"username": self.username, "password": self.password}
@@ -356,10 +376,7 @@ class AuthApiTestCase(TestCase):
         )
         self.assertEqual(response.data["config"], None, "The config was requested")
 
-    @patch(
-        "django_auth_ldap.backend._LDAPUser", return_value=MockLDAPUserNonConnection()
-    )
-    def test_user_validate_token_fail(self, mock):
+    def test_user_validate_token_fail(self):
         """Test that a user fails to validate an invalid token."""
         # Arrange:
         data = {"username": self.username, "password": self.password}
@@ -373,10 +390,7 @@ class AuthApiTestCase(TestCase):
         # Assert after request:
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    @patch(
-        "django_auth_ldap.backend._LDAPUser", return_value=MockLDAPUserNonConnection()
-    )
-    def test_user_fails_to_validate_deleted_token(self, mock):
+    def test_user_fails_to_validate_deleted_token(self):
         """Test that a user fails to validate an deleted token."""
         # Arrange:
         data = {"username": self.username, "password": self.password}
@@ -391,10 +405,7 @@ class AuthApiTestCase(TestCase):
         # Assert:
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    @patch(
-        "django_auth_ldap.backend._LDAPUser", return_value=MockLDAPUserNonConnection()
-    )
-    def test_user_fails_to_validate_expired_token(self, mock):
+    def test_user_fails_to_validate_expired_token(self):
         """Test that a user fails to validate an expired token."""
         # Arrange:
         initial_time = datetime.datetime.now()
@@ -417,10 +428,7 @@ class AuthApiTestCase(TestCase):
             self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
             self.assertEqual(token_num_0 - 1, token_num_1)
 
-    @patch(
-        "django_auth_ldap.backend._LDAPUser", return_value=MockLDAPUserNonConnection()
-    )
-    def test_user_logout(self, mock):
+    def test_user_logout(self):
         """Test that a user can logout and delete the token."""
         # Arrange:
         data = {"username": self.username, "password": self.password}
@@ -444,10 +452,7 @@ class AuthApiTestCase(TestCase):
             old_tokens_count - 1, new_tokens_count, "The token was not deleted"
         )
 
-    @patch(
-        "django_auth_ldap.backend._LDAPUser", return_value=MockLDAPUserNonConnection()
-    )
-    def test_user_swap(self, mock):
+    def test_user_swap(self):
         """Test that a logged user can be swapped"""
         # Arrange login:
         data = {"username": self.username, "password": self.password}
@@ -488,10 +493,7 @@ class AuthApiTestCase(TestCase):
             "The config was not requested",
         )
 
-    @patch(
-        "django_auth_ldap.backend._LDAPUser", return_value=MockLDAPUserNonConnection()
-    )
-    def test_user_swap_no_config(self, mock):
+    def test_user_swap_no_config(self):
         """Test that a logged user can be swapped and not request config"""
         # Arrange login:
         data = {"username": self.username, "password": self.password}
@@ -529,10 +531,7 @@ class AuthApiTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["config"], None, "The config was requested")
 
-    @patch(
-        "django_auth_ldap.backend._LDAPUser", return_value=MockLDAPUserNonConnection()
-    )
-    def test_user_swap_forbidden(self, mock):
+    def test_user_swap_forbidden(self):
         """Test that a user that's not logged in cannot swap users"""
         # Arrange logout:
         self.client.delete(self.logout_url, format="json")
@@ -543,10 +542,7 @@ class AuthApiTestCase(TestCase):
         # Assert:
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    @patch(
-        "django_auth_ldap.backend._LDAPUser", return_value=MockLDAPUserNonConnection()
-    )
-    def test_user_swap_wrong_credentials(self, mock):
+    def test_user_swap_wrong_credentials(self):
         """Test that a user that's not logged in cannot swap users"""
         # Arrange login:
         data = {"username": self.username, "password": self.password}
