@@ -161,10 +161,15 @@ class LDAPLogin(APIView):
 
     def post(self, request):
         """
-        Api to login a user
-        :param request:
-        :return:
+        Api to login a user:
+
+        1. It authenticates to an LDAP server, if none is found, the default
+        login is used.
+
+        2. It searches for the 'love_ops' group and if the authenticate user
+        is present, command permissions are added.
         """
+
         username = request.data["username"]
         password = request.data["password"]
         user_aux = User.objects.filter(username=username).first()

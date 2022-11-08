@@ -25,7 +25,6 @@ import api.views
 router = DefaultRouter()
 
 urlpatterns = [
-    # path("get-token/", api.views.CustomObtainAuthToken.as_view(), name="login"),
     path("get-token/", api.views.LDAPLogin.as_view(), name="login"),
     path("validate-token/", api.views.validate_token, name="validate-token"),
     path("validate-token/<flags>/", api.views.validate_token, name="validate-token"),
@@ -35,7 +34,6 @@ urlpatterns = [
         name="validate-config-schema",
     ),
     path("logout/", api.views.logout, name="logout"),
-    # path("logout/", api.views.LDAPLogout.as_view(), name="logout"),
     path("swap-user/", api.views.CustomSwapAuthToken.as_view(), name="swap-user"),
     path(
         "swap-user/<flags>/", api.views.CustomSwapAuthToken.as_view(), name="swap-user"

@@ -279,41 +279,6 @@ if AUTH_LDAP_1_SERVER_URI:
     AUTH_LDAP_1_USER_SEARCH = AUTH_LDAP_USER_SEARCH
     AUTH_LDAP_1_USER_ATTR_MAP = AUTH_LDAP_USER_ATTR_MAP
 
-# if AUTH_LDAP_1_SERVER_URI or AUTH_LDAP_2_SERVER_URI or AUTH_LDAP_3_SERVER_URI:
-#     AUTHENTICATION_BACKENDS = [
-#         "api.views.IPABackend1",
-#         "api.views.IPABackend2",
-#         "api.views.IPABackend3",
-#         "django.contrib.auth.backends.ModelBackend",
-#     ]
-
-#     AUTH_LDAP_BIND_DN = "uid=svc_love,cn=users,cn=accounts,dc=lsst,dc=cloud"
-#     AUTH_LDAP_BIND_PASSWORD = os.environ.get("AUTH_LDAP_BIND_PASSWORD")
-
-#     AUTH_LDAP_1_BIND_DN = AUTH_LDAP_BIND_DN
-#     AUTH_LDAP_2_BIND_DN = AUTH_LDAP_BIND_DN
-#     AUTH_LDAP_3_BIND_DN = AUTH_LDAP_BIND_DN
-
-#     AUTH_LDAP_1_BIND_PASSWORD = AUTH_LDAP_BIND_PASSWORD
-#     AUTH_LDAP_2_BIND_PASSWORD = AUTH_LDAP_BIND_PASSWORD
-#     AUTH_LDAP_3_BIND_PASSWORD = AUTH_LDAP_BIND_PASSWORD
-
-#     AUTH_LDAP_USER_SEARCH = LDAPSearch(
-#         "cn=users,cn=accounts,dc=lsst,dc=cloud", ldap.SCOPE_SUBTREE, "(uid=%(user)s)",
-#     )
-#     AUTH_LDAP_1_USER_SEARCH = AUTH_LDAP_USER_SEARCH
-#     AUTH_LDAP_2_USER_SEARCH = AUTH_LDAP_USER_SEARCH
-#     AUTH_LDAP_3_USER_SEARCH = AUTH_LDAP_USER_SEARCH
-
-#     AUTH_LDAP_USER_ATTR_MAP = {
-#         "first_name": "givenname",
-#         "last_name": "sn",
-#         "email": "mail",
-#     }
-#     AUTH_LDAP_1_USER_ATTR_MAP = AUTH_LDAP_USER_ATTR_MAP
-#     AUTH_LDAP_2_USER_ATTR_MAP = AUTH_LDAP_USER_ATTR_MAP
-#     AUTH_LDAP_3_USER_ATTR_MAP = AUTH_LDAP_USER_ATTR_MAP
-
 TRACE_TIMESTAMPS = True
 """Define wether or not to add tracing timestamps to websocket messages.
 Read from TRACE_TIMESTAMPS` environment variable (`bool`)"""
