@@ -236,24 +236,48 @@ else:
         "default": {"BACKEND": "channels.layers.InMemoryChannelLayer"},
     }
 
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+]
+
 # LDAP
 # Baseline configuration:
-AUTH_LDAP_SERVER_URI = os.environ.get("AUTH_LDAP_SERVER_URI", False)
+AUTH_LDAP_1_SERVER_URI = os.environ.get("AUTH_LDAP_1_SERVER_URI")
+AUTH_LDAP_2_SERVER_URI = os.environ.get("AUTH_LDAP_2_SERVER_URI")
+AUTH_LDAP_3_SERVER_URI = os.environ.get("AUTH_LDAP_3_SERVER_URI")
 """URL for the LDAP server. Read from `AUTH_LDAP_SERVER_URI` environment variable (`bool`)"""
 
 # Only use LDAP activation backend if there is an AUTH_LDAP_SERVER_URI
-# configured in the OS ENV:
-if AUTH_LDAP_SERVER_URI and not TESTING:
-    AUTHENTICATION_BACKENDS = [
-        "django_auth_ldap.backend.LDAPBackend",
-    ]
+AUTH_LDAP_BIND_DN = "uid=svc_love,cn=users,cn=accounts,dc=lsst,dc=cloud"
+AUTH_LDAP_BIND_PASSWORD = os.environ.get("AUTH_LDAP_BIND_PASSWORD")
+AUTH_LDAP_USER_SEARCH = LDAPSearch(
+    "cn=users,cn=accounts,dc=lsst,dc=cloud", ldap.SCOPE_SUBTREE, "(uid=%(user)s)",
+)
+AUTH_LDAP_USER_ATTR_MAP = {
+    "first_name": "givenname",
+    "last_name": "sn",
+    "email": "mail",
+}
+if AUTH_LDAP_3_SERVER_URI:
+    AUTHENTICATION_BACKENDS.insert(0, "api.views.IPABackend3")
+    AUTH_LDAP_3_BIND_DN = AUTH_LDAP_BIND_DN
+    AUTH_LDAP_3_BIND_PASSWORD = AUTH_LDAP_BIND_PASSWORD
+    AUTH_LDAP_3_USER_SEARCH = AUTH_LDAP_USER_SEARCH
+    AUTH_LDAP_3_USER_ATTR_MAP = AUTH_LDAP_USER_ATTR_MAP
 
-    AUTH_LDAP_BIND_DN = ""
-    AUTH_LDAP_BIND_PASSWORD = ""
+if AUTH_LDAP_2_SERVER_URI:
+    AUTHENTICATION_BACKENDS.insert(0, "api.views.IPABackend2")
+    AUTH_LDAP_2_BIND_DN = AUTH_LDAP_BIND_DN
+    AUTH_LDAP_2_BIND_PASSWORD = AUTH_LDAP_BIND_PASSWORD
+    AUTH_LDAP_2_USER_SEARCH = AUTH_LDAP_USER_SEARCH
+    AUTH_LDAP_2_USER_ATTR_MAP = AUTH_LDAP_USER_ATTR_MAP
 
-    AUTH_LDAP_USER_SEARCH = LDAPSearch(
-        "ou=people,dc=planetexpress,dc=com", ldap.SCOPE_SUBTREE, "(uid=%(user)s)",
-    )
+if AUTH_LDAP_1_SERVER_URI:
+    AUTHENTICATION_BACKENDS.insert(0, "api.views.IPABackend1")
+    AUTH_LDAP_1_BIND_DN = AUTH_LDAP_BIND_DN
+    AUTH_LDAP_1_BIND_PASSWORD = AUTH_LDAP_BIND_PASSWORD
+    AUTH_LDAP_1_USER_SEARCH = AUTH_LDAP_USER_SEARCH
+    AUTH_LDAP_1_USER_ATTR_MAP = AUTH_LDAP_USER_ATTR_MAP
 
 TRACE_TIMESTAMPS = True
 """Define wether or not to add tracing timestamps to websocket messages.
