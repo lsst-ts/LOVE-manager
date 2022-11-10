@@ -5,19 +5,24 @@ import requests
 import yaml
 import jsonschema
 import collections
+import ldap
 from background_task import background
 from django.core.exceptions import PermissionDenied
 from django.utils import timezone
 from django.db.models.query_utils import Q
+from django.contrib.auth import authenticate
+from django.contrib.auth.models import Group, User
+from django_auth_ldap.backend import LDAPBackend
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.decorators import api_view
 from rest_framework.decorators import permission_classes
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework import viewsets, status, mixins
+from rest_framework.views import APIView
 from api.models import (
     Token,
     ConfigFile,
@@ -34,6 +39,11 @@ from api.serializers import (
     CSCAuthorizationRequestUpdateSerializer,
 )
 from .schema_validator import DefaultingValidator
+from manager.settings import (
+    AUTH_LDAP_1_SERVER_URI,
+    AUTH_LDAP_2_SERVER_URI,
+    AUTH_LDAP_3_SERVER_URI,
+)
 
 valid_response = openapi.Response("Valid token", TokenSerializer)
 invalid_response = openapi.Response("Invalid token")
@@ -104,6 +114,97 @@ def logout(request):
         {"detail": "Logout successful, Token succesfully deleted"},
         status=status.HTTP_204_NO_CONTENT,
     )
+
+
+class IPABackend1(LDAPBackend):
+    settings_prefix = "AUTH_LDAP_1_"
+    successful_login = False
+
+    def authenticate_ldap_user(self, ldap_user, password):
+        user = ldap_user.authenticate(password)
+        if user:
+            IPABackend1.successful_login = True
+        return user
+
+
+class IPABackend2(LDAPBackend):
+    settings_prefix = "AUTH_LDAP_2_"
+    successful_login = False
+
+    def authenticate_ldap_user(self, ldap_user, password):
+        user = ldap_user.authenticate(password)
+        if user:
+            IPABackend2.successful_login = True
+        return user
+
+
+class IPABackend3(LDAPBackend):
+    settings_prefix = "AUTH_LDAP_3_"
+    successful_login = False
+
+    def authenticate_ldap_user(self, ldap_user, password):
+        user = ldap_user.authenticate(password)
+        if user:
+            IPABackend3.successful_login = True
+        return user
+
+
+class LDAPLogin(APIView):
+    """
+    Class to authenticate a user via LDAP and
+    then creating a login session
+    """
+
+    authentication_classes = ()
+
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        """
+        Api to login a user:
+
+        1. It authenticates to an LDAP server, if none is found, the default
+        login is used.
+
+        2. It searches for the 'love_ops' group and if the authenticate user
+        is present, command permissions are added.
+        """
+
+        username = request.data["username"]
+        password = request.data["password"]
+        user_aux = User.objects.filter(username=username).first()
+        user_obj = authenticate(username=username, password=password)
+        if user_obj is None:
+            data = {"detail": "Login failed."}
+            return Response(data, status=400)
+
+        ldap_result = None
+        if user_aux is None:
+            if IPABackend1.successful_login:
+                ldap_result = ldap.initialize(AUTH_LDAP_1_SERVER_URI)
+            elif IPABackend2.successful_login:
+                ldap_result = ldap.initialize(AUTH_LDAP_2_SERVER_URI)
+            elif IPABackend3.successful_login:
+                ldap_result = ldap.initialize(AUTH_LDAP_3_SERVER_URI)
+
+        baseDN = "cn=love_ops,cn=groups,cn=compat,dc=lsst,dc=cloud"
+        searchScope = ldap.SCOPE_SUBTREE
+
+        if ldap_result is not None:
+            try:
+                ldap_result = ldap_result.search_s(baseDN, searchScope)
+                ops_users = list(
+                    map(lambda u: u.decode(), ldap_result[0][1]["memberUid"])
+                )
+                if username in ops_users:
+                    group = Group.objects.filter(name="cmd").first()
+                    group.user_set.add(user_obj)
+            except Exception:
+                data = {"detail": "Login failed, add cmd permission error."}
+                return Response(data, status=400)
+
+        token = Token.objects.create(user=user_obj)
+        return Response(TokenSerializer(token).data)
 
 
 class CustomObtainAuthToken(ObtainAuthToken):
