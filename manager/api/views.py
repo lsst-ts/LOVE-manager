@@ -1263,9 +1263,13 @@ def jira(request):
                 "labels": ["LOVE", *full_request["tags"].split(","),],
                 "summary": getTitle(full_request),
                 "description": makeJiraDescription(full_request),
-                "issuetype": {"id": 12601},
+                "customfield_15602": "on"
+                if int(full_request["level"]) >= 100
+                else "off",  # Is Urgent?
+                "customfield_16702": full_request["time_lost"],  # Obs. time loss
+                "issuetype": {"id": 12302},
             },
-            "update": {"components": [{"set": [{"name": "Dev"}]}],},
+            "update": {"components": [{"set": [{"name": "LOVE"}]}]},
         }
     except Exception:
         return Response({"ack": "Error creating jira payload"}, status=400)
