@@ -10,7 +10,6 @@ from background_task import background
 from django.core.exceptions import PermissionDenied
 from django.utils import timezone
 from django.db.models.query_utils import Q
-from django.contrib.auth import authenticate
 from django.contrib.auth.models import Group, User
 from django_auth_ldap.backend import LDAPBackend
 from drf_yasg import openapi
@@ -19,10 +18,9 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.decorators import api_view
 from rest_framework.decorators import permission_classes
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import viewsets, status, mixins
-from rest_framework.views import APIView
 from api.models import (
     Token,
     ConfigFile,
@@ -149,34 +147,49 @@ class IPABackend3(LDAPBackend):
         return user
 
 
-class LDAPLogin(APIView):
+class CustomObtainAuthToken(ObtainAuthToken):
+    """API endpoint to obtain authorization tokens.
+
+    This method will try first to authenticate the user againts LDAP servers.
+    If authentication fails againts LDAP servers, the authentication will be done
+    againts local database.
+
+    If trying to authenticate with a LDAP user for the first time, if login
+    succeeds and if user is part of love_ops group, then cmd permissions are added.
+
     """
-    Class to authenticate a user via LDAP and
-    then creating a login session
-    """
 
-    authentication_classes = ()
+    login_response = openapi.Response("Login succesful", TokenSerializer)
+    login_failed_response = openapi.Response("Login failed")
 
-    permission_classes = [AllowAny]
+    @swagger_auto_schema(responses={200: login_response, 400: login_failed_response})
+    def post(self, request, *args, **kwargs):
+        """Handle the (post) request for token.
 
-    def post(self, request):
+        If the token is invalid this function is not executed (the request fails before)
+
+        Params
+        ------
+        request: Request
+            The Request object
+        args: list
+            List of addittional arguments. Currenlty unused
+        kwargs: dict
+            Dictionary with addittional keyword arguments (indexed by keys in the dict). Currenlty unused
+
+        Returns
+        -------
+        Response
+            The response containing the token and other user data.
         """
-        Api to login a user:
-
-        1. It authenticates to an LDAP server, if none is found, the default
-        login is used.
-
-        2. It searches for the 'love_ops' group and if the authenticate user
-        is present, command permissions are added.
-        """
-
         username = request.data["username"]
-        password = request.data["password"]
         user_aux = User.objects.filter(username=username).first()
-        user_obj = authenticate(username=username, password=password)
-        if user_obj is None:
-            data = {"detail": "Login failed."}
-            return Response(data, status=400)
+
+        serializer = self.serializer_class(
+            data=request.data, context={"request": request}
+        )
+        serializer.is_valid(raise_exception=True)
+        user_obj = serializer.validated_data["user"]
 
         ldap_result = None
         if user_aux is None:
@@ -207,43 +220,16 @@ class LDAPLogin(APIView):
         return Response(TokenSerializer(token).data)
 
 
-class CustomObtainAuthToken(ObtainAuthToken):
-    """API endpoint to obtain authorization tokens."""
-
-    login_response = openapi.Response("Login succesful", TokenSerializer)
-    login_failed_response = openapi.Response("Login failed")
-
-    @swagger_auto_schema(responses={200: login_response, 400: login_failed_response})
-    def post(self, request, *args, **kwargs):
-        """Handle the (post) request for token.
-
-        If the token is invalid this function is not executed (the request fails before)
-
-        Params
-        ------
-        request: Request
-            The Request object
-        args: list
-            List of addittional arguments. Currenlty unused
-        kwargs: dict
-            Dictionary with addittional keyword arguments (indexed by keys in the dict). Currenlty unused
-
-        Returns
-        -------
-        Response
-            The response containing the token and other user data.
-        """
-        serializer = self.serializer_class(
-            data=request.data, context={"request": request}
-        )
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data["user"]
-        token = Token.objects.create(user=user)
-        return Response(TokenSerializer(token).data)
-
-
 class CustomSwapAuthToken(ObtainAuthToken):
-    """API endpoint to obtain authorization tokens."""
+    """API endpoint to swap authorization tokens.
+
+    This method will try first to authenticate the user againts LDAP servers.
+    If authentication fails againts LDAP servers, the authentication will be done
+    againts local database.
+
+    If trying to authenticate with a LDAP user for the first time, if login
+    succeeds and if user is part of love_ops group, then cmd permissions are added.
+    """
 
     login_response = openapi.Response("User swap succesful", TokenSerializer)
     login_failed_response = openapi.Response("User swap failed")
@@ -269,14 +255,43 @@ class CustomSwapAuthToken(ObtainAuthToken):
         Response
             The response containing the token and other user data.
         """
+        username = request.data["username"]
+        user_aux = User.objects.filter(username=username).first()
+
         if not request.user.is_authenticated or not request._auth:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         serializer = self.serializer_class(
             data=request.data, context={"request": request}
         )
         serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data["user"]
-        token = Token.objects.create(user=user)
+        user_obj = serializer.validated_data["user"]
+
+        ldap_result = None
+        if user_aux is None:
+            if IPABackend1.successful_login:
+                ldap_result = ldap.initialize(AUTH_LDAP_1_SERVER_URI)
+            elif IPABackend2.successful_login:
+                ldap_result = ldap.initialize(AUTH_LDAP_2_SERVER_URI)
+            elif IPABackend3.successful_login:
+                ldap_result = ldap.initialize(AUTH_LDAP_3_SERVER_URI)
+
+        baseDN = "cn=love_ops,cn=groups,cn=compat,dc=lsst,dc=cloud"
+        searchScope = ldap.SCOPE_SUBTREE
+
+        if ldap_result is not None:
+            try:
+                ldap_result = ldap_result.search_s(baseDN, searchScope)
+                ops_users = list(
+                    map(lambda u: u.decode(), ldap_result[0][1]["memberUid"])
+                )
+                if username in ops_users:
+                    group = Group.objects.filter(name="cmd").first()
+                    group.user_set.add(user_obj)
+            except Exception:
+                data = {"detail": "Login failed, add cmd permission error."}
+                return Response(data, status=400)
+
+        token = Token.objects.create(user=user_obj)
         old_token = request._auth
         old_token.delete()
 
