@@ -1159,8 +1159,8 @@ def makeJiraDescription(request_data):
         message_log = request_data["message_text"]
         user_id = request_data["user_id"]
         user_agent = request_data["user_agent"]
-    except Exception:
-        raise Exception("Error reading params")
+    except Exception as e:
+        raise Exception("Error reading params") from e
 
     # Exposure log params
     if request_type == "exposure":
@@ -1168,8 +1168,8 @@ def makeJiraDescription(request_data):
             obs_id = request_data["obs_id"]
             instrument = request_data["instrument"]
             exposure_flag = request_data["exposure_flag"]
-        except Exception:
-            raise Exception("Error reading params")
+        except Exception as e:
+            raise Exception("Error reading params") from e
         description = (
             "*Created by* "
             + user_id
@@ -1200,8 +1200,8 @@ def makeJiraDescription(request_data):
             begin_date = request_data["date_begin"]
             end_date = request_data["date_end"]
             time_lost = str(request_data["time_lost"])
-        except Exception:
-            raise Exception("Error reading params")
+        except Exception as e:
+            raise Exception("Error reading params") from e
 
         description = (
             "*Created by* "
@@ -1264,9 +1264,9 @@ def jira(request):
                 "summary": getTitle(full_request),
                 "description": makeJiraDescription(full_request),
                 "customfield_15602": "on"
-                if int(full_request["level"]) >= 100
+                if int(full_request.get("level", 0)) >= 100
                 else "off",  # Is Urgent?
-                "customfield_16702": full_request["time_lost"],  # Obs. time loss
+                "customfield_16702": full_request.get("time_lost", 0),  # Obs. time loss
                 "issuetype": {"id": 12302},
             },
             "update": {"components": [{"set": [{"name": "LOVE"}]}]},

@@ -23,9 +23,10 @@ class JiraTestCase(TestCase):
             "system",
             "subsystems",
             "cscs",
-            "begin_date",
-            "end_date",
+            "date_begin",
+            "date_end",
             "time_lost",
+            "level",
         ]
 
         request_shared = {
@@ -47,9 +48,10 @@ class JiraTestCase(TestCase):
             "system": "MainTel",
             "subsystems": "Camera",
             "cscs": "M1M3",
-            "begin_date": "202200703-19:58:13",
-            "end_date": "20220704-19:25:13",
+            "date_begin": "202200703-19:58:13",
+            "date_end": "20220704-19:25:13",
             "time_lost": 10,
+            "level": 0,
         }
 
         request_full_exposure = {
