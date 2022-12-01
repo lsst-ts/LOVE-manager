@@ -11,7 +11,6 @@ class JiraTestCase(TestCase):
         """Define the test suite setup."""
         # Arrange
         shared_params = [
-            "level_label",
             "lfa_files_urls",
             "message_text",
             "user_id",
@@ -30,7 +29,6 @@ class JiraTestCase(TestCase):
         ]
 
         request_shared = {
-            "level_label": "debug",
             "lfa_files_urls": ["test", "test"],
             "message_text": "Lorem ipsum",
             "user_id": "love@localhost",
