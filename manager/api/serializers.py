@@ -262,8 +262,8 @@ class CSCAuthorizationRequestSerializer(serializers.ModelSerializer):
         """The fields of the model class to serialize"""
 
 
-class CSCAuthorizationRequestUpdateSerializer(serializers.ModelSerializer):
-    """Serializer to update Authorization List Requests."""
+class CSCAuthorizationRequestAuthorizeSerializer(serializers.ModelSerializer):
+    """Serializer to Authorize Authorization List Requests."""
 
     def validate_status(self, value):
         if not self.instance:
@@ -287,6 +287,34 @@ class CSCAuthorizationRequestUpdateSerializer(serializers.ModelSerializer):
         """The model class to serialize"""
 
         fields = ("status", "message", "duration")
+        """The fields of the model class to serialize"""
+
+
+class CSCAuthorizationRequestExecuteSerializer(serializers.ModelSerializer):
+    """Serializer to Execute Authorization List Requests."""
+
+    def validate_execution_status(self, value):
+        if not self.instance:
+            raise serializers.ValidationError("No instance to update")
+        elif self.instance.status != CSCAuthorizationRequest.ExecutionStatus.PENDING:
+            raise serializers.ValidationError("Request already executed")
+        elif (
+            self.instance.status == CSCAuthorizationRequest.ExecutionStatus.PENDING
+            and value != CSCAuthorizationRequest.ExecutionStatus.SUCCESSFUL
+            and value != CSCAuthorizationRequest.ExecutionStatus.FAIL
+        ):
+            raise serializers.ValidationError(
+                "Can only resolve status to Successful or Fail"
+            )
+        return value
+
+    class Meta:
+        """Meta class to map serializer's fields with the model fields."""
+
+        model = CSCAuthorizationRequest
+        """The model class to serialize"""
+
+        fields = ("execution_status", "execution_message")
         """The fields of the model class to serialize"""
 
 
