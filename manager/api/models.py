@@ -138,13 +138,26 @@ class CSCAuthorizationRequest(models.Model):
         AUTHORIZED = "Authorized", "Authorized"
         DENIED = "Denied", "Denied"
 
-    cscs_to_change = models.TextField()
+    class ExecutionStatus(models.TextChoices):
+        SUCCESSFUL = "Successful", "Successful"
+        FAIL = "Fail", "Fail"
+        PENDING = "Pending", "Pending"
+
+    cscs_to_change = models.TextField(
+        help_text="Please use the following format: <em>ATDome:0,ScriptQueue:1</em>. Spaces are allowed after commas."
+    )
     """Comma separated list of the CSCs to change their authlists"""
 
-    authorized_users = models.TextField(blank=True)
+    authorized_users = models.TextField(
+        blank=True,
+        help_text="Please use the following format: <em>+user@host,-user@host</em>. Spaces are allowed after commas.",
+    )
     """Comma separated list of users to add or remove from the authorized lists"""
 
-    unauthorized_cscs = models.TextField(blank=True)
+    unauthorized_cscs = models.TextField(
+        blank=True,
+        help_text="Please use the following format: <em>+ATPtg:0,-ScriptQueue:2</em>. Spaces are allowed after commas.",
+    )
     """Comma separated list of CSCs to add or remove from the unauthorized lists"""
 
     requested_by = models.CharField(max_length=50)
@@ -176,6 +189,16 @@ class CSCAuthorizationRequest(models.Model):
         max_length=10, choices=RequestStatus.choices, default=RequestStatus.PENDING,
     )
     """Current status of the request"""
+
+    execution_status = models.CharField(
+        max_length=10, choices=ExecutionStatus.choices, default=ExecutionStatus.PENDING,
+    )
+    """Current status of the execution of the Authorize CSC setAuthlist command for
+    all the parameters in the current request"""
+
+    execution_message = models.TextField(blank=True, null=True)
+    """Comment added about the execution of the Authorize CSC setAuthlist command for
+    all the parameters in the current request"""
 
     resolved_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
