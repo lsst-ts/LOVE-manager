@@ -888,7 +888,8 @@ class CSCAuthorizationRequestViewSet(
 
     """
 
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
+    permission_classes = ()
 
     get_status_param_config = openapi.Parameter(
         "status",
