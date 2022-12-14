@@ -1248,7 +1248,7 @@ def jira(request):
         jira_payload = {
             "fields": {
                 "project": {"id": os.environ.get("JIRA_PROJECT_ID")},
-                "labels": ["LOVE", *full_request["tags"].split(","),],
+                "labels": ["LOVE", *(full_request.get("tags", []).split(","))],
                 "summary": getTitle(full_request),
                 "description": makeJiraDescription(full_request),
                 "customfield_15602": "on"
@@ -1259,8 +1259,8 @@ def jira(request):
             },
             "update": {"components": [{"set": [{"name": "LOVE"}]}]},
         }
-    except Exception:
-        return Response({"ack": "Error creating jira payload"}, status=400)
+    except Exception as e:
+        return Response({"ack": f"Error creating jira payload: {e}"}, status=400)
 
     headers = {
         "Authorization": f"Basic {os.environ.get('JIRA_API_TOKEN')}",
@@ -1277,7 +1277,12 @@ def jira(request):
             },
             status=200,
         )
-    return Response({"ack": "Jira ticket could not be created",}, status=400,)
+    return Response(
+        {
+            "ack": "Jira ticket could not be created",
+        },
+        status=400,
+    )
 
 
 def jira_comment(request):
@@ -1304,8 +1309,8 @@ def jira_comment(request):
         jira_payload = {
             "body": makeJiraDescription(full_request),
         }
-    except Exception:
-        return Response({"ack": "Error creating jira payload"}, status=400)
+    except Exception as e:
+        return Response({"ack": f"Error creating jira payload: {e}"}, status=400)
 
     headers = {
         "Authorization": f"Basic {os.environ.get('JIRA_API_TOKEN')}",
@@ -1321,7 +1326,12 @@ def jira_comment(request):
             },
             status=200,
         )
-    return Response({"ack": "Jira comment could not be created",}, status=400,)
+    return Response(
+        {
+            "ack": "Jira comment could not be created",
+        },
+        status=400,
+    )
 
 
 @swagger_auto_schema(
@@ -1431,7 +1441,10 @@ class ExposurelogViewSet(viewsets.ViewSet):
                 jira_response = jira(request)
 
             if jira_response.status_code == 400:
-                return Response(jira_response.data, 400,)
+                return Response(
+                    jira_response.data,
+                    400,
+                )
             jira_url = jira_response.data.get("url")
 
         json_data = request.data.copy()
@@ -1526,7 +1539,10 @@ class NarrativelogViewSet(viewsets.ViewSet):
                 jira_response = jira(request)
 
             if jira_response.status_code == 400:
-                return Response(jira_response.data, 400,)
+                return Response(
+                    jira_response.data,
+                    400,
+                )
             jira_url = jira_response.data.get("url")
 
         json_data = request.data.copy()
@@ -1582,5 +1598,8 @@ class NarrativelogViewSet(viewsets.ViewSet):
         url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/narrativelog/messages/{pk}"
         response = requests.delete(url, json=request.data)
         if response.status_code == 204:
-            return Response({"ack": "Narrative log deleted succesfully"}, status=200,)
+            return Response(
+                {"ack": "Narrative log deleted succesfully"},
+                status=200,
+            )
         return Response(response.json(), status=response.status_code)
