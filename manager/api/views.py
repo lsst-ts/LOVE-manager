@@ -1254,7 +1254,9 @@ def jira(request):
                 "customfield_15602": "on"
                 if int(full_request.get("level", 0)) >= 100
                 else "off",  # Is Urgent?
-                "customfield_16702": full_request.get("time_lost", 0),  # Obs. time loss
+                "customfield_16702": int(
+                    full_request.get("time_lost", 0)
+                ),  # Obs. time loss
                 "issuetype": {"id": 12302},
             },
             "update": {"components": [{"set": [{"name": "LOVE"}]}]},
