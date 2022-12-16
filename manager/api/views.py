@@ -1194,9 +1194,9 @@ def makeJiraDescription(request_data):
     # Narrative log params
     if request_type == "narrative":
         try:
-            systems = request_data.get("systems", [])
-            subsystems = request_data.get("subsystems", [])
-            cscs = request_data.get("cscs", [])
+            systems = ", ".join(request_data.get("systems", "").split(","))
+            subsystems = ", ".join(request_data.get("subsystems", "").split(","))
+            cscs = ", ".join(request_data.get("cscs", "").split(","))
             begin_date = request_data["date_begin"]
             end_date = request_data["date_end"]
             time_lost = str(request_data["time_lost"])
@@ -1218,15 +1218,13 @@ def makeJiraDescription(request_data):
             + time_lost
             + "\n"
             + "*System:* "
-            + str(systems)
+            + systems
             + "\n"
             + "*Subsystems:* "
-            + "\n"
-            + str(subsystems)
+            + subsystems
             + "\n"
             + "*CSCs:* "
-            + "\n"
-            + str(cscs)
+            + cscs
             + "\n"
             + "*Files:* "
             + "\n"
