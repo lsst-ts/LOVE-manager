@@ -34,7 +34,7 @@ class CreateusersTestCase(TestCase):
             User.objects.count(), old_users_num + 5, "There are no new users"
         )
         self.assertEqual(
-            Group.objects.count(), old_groups_num + 2, "There is no new group"
+            Group.objects.count(), old_groups_num + 3, "There is no new group"
         )
         admin = User.objects.filter(username=admin_username).first()
         user = User.objects.filter(username=user_username).first()
@@ -89,7 +89,7 @@ class CreateusersTestCase(TestCase):
         command.handle(*[], **options)
         # Assert:
         self.assertEqual(
-            Group.objects.count(), old_groups_num + 2, "There is no new group"
+            Group.objects.count(), old_groups_num + 3, "There is no new group"
         )
         admin = User.objects.filter(username=admin_username).first()
         user = User.objects.filter(username=user_username).first()

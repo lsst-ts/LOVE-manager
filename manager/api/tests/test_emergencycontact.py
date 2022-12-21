@@ -1,16 +1,10 @@
 """Test users' authentication through the API."""
-import datetime
-import io
 import json
 from django.test import TestCase
 from django.urls import reverse
-from django.contrib.auth.models import User, Permission
-from freezegun import freeze_time
+from django.contrib.auth.models import User
 from rest_framework.test import APIClient
-from rest_framework import status
 from api.models import EmergencyContact, Token
-from django.conf import settings
-from manager import utils
 from django.core.files.base import ContentFile
 
 # python manage.py test api.tests.tests_emergencycontact.EmergencyContactApiTestCase
