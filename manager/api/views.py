@@ -217,7 +217,9 @@ class CustomObtainAuthToken(ObtainAuthToken):
                     cmd_group.user_set.add(user_obj)
                     ui_framework_group.user_set.add(user_obj)
             except Exception:
-                data = {"detail": "Login failed, add cmd permission error."}
+                data = {
+                    "detail": "Login failed, add cmd and ui_framework permissions error."
+                }
                 return Response(data, status=400)
 
         token = Token.objects.create(user=user_obj)
@@ -289,10 +291,16 @@ class CustomSwapAuthToken(ObtainAuthToken):
                     map(lambda u: u.decode(), ldap_result[0][1]["memberUid"])
                 )
                 if username in ops_users:
-                    group = Group.objects.filter(name="cmd").first()
-                    group.user_set.add(user_obj)
+                    cmd_group = Group.objects.filter(name="cmd").first()
+                    ui_framework_group = Group.objects.filter(
+                        name="ui_framework"
+                    ).first()
+                    cmd_group.user_set.add(user_obj)
+                    ui_framework_group.user_set.add(user_obj)
             except Exception:
-                data = {"detail": "Login failed, add cmd permission error."}
+                data = {
+                    "detail": "Login failed, add cmd and ui_framework permissions error."
+                }
                 return Response(data, status=400)
 
         token = Token.objects.create(user=user_obj)
