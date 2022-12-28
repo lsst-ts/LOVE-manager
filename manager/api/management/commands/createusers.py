@@ -10,6 +10,7 @@ cmd_user_username = "cmd_user"
 admin_username = "admin"
 authlist_username = "authlist_user"
 cmd_groupname = "cmd"
+ui_framework_groupname = "ui_framework"
 authlist_groupname = "authlist"
 
 
@@ -47,9 +48,11 @@ class Command(BaseCommand):
 
     It also creates 2 Group:
     "cmd_group", which defines the commands execution permissions.
+    "ui_framework_group", which defines the permissions to add, edit and delete views.
     "authlist_group", which defines the permission to access and resolve AuthList requests
 
     "cmd_user" and "test" users belong to "cmd_group".
+    "cmd_user", "test" and "authlist_user" users belong to "ui_framework_group".
     "authlist_user" belong to "authlist_group"."""
 
     requires_migrations_checks = True
@@ -128,9 +131,17 @@ class Command(BaseCommand):
         # Create cmd_group
         cmd_group = self._create_cmd_group()
 
-        # Add cmd_user to cmd_group
+        # Add cmd_user and test users to cmd_group
         cmd_group.user_set.add(cmd_user)
         cmd_group.user_set.add(test_user)
+
+        # Create ui_framework group
+        ui_framework_group = self._create_ui_framework_group()
+
+        # Add cmd_user, test and authlist_user users to ui_framework_group
+        ui_framework_group.user_set.add(cmd_user)
+        ui_framework_group.user_set.add(test_user)
+        ui_framework_group.user_set.add(authlist_user)
 
         # Create authlist_group
         authlist_group = self._create_authlist_group()
@@ -183,6 +194,22 @@ class Command(BaseCommand):
         """
         group, created = Group.objects.get_or_create(name=cmd_groupname)
         permissions = Permission.objects.filter(codename="command.execute_command")
+        for permission in permissions:
+            group.permissions.add(permission)
+        return group
+
+    def _create_ui_framework_group(self):
+        """Create and return the group of users with permissions to save, edit and delete views.
+
+        Returns
+        -------
+        grouop: Group
+            The Group object
+        """
+        group, created = Group.objects.get_or_create(name=ui_framework_groupname)
+        permissions = Permission.objects.filter(
+            content_type__app_label__contains="ui_framework"
+        )
         for permission in permissions:
             group.permissions.add(permission)
         return group

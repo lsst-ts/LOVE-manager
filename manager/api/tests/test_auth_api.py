@@ -93,9 +93,19 @@ class AuthApiTestCase(TestCase):
         self.user.user_permissions.add(Permission.objects.get(name="Execute Commands"))
         self.user2.user_permissions.add(Permission.objects.get(name="Execute Commands"))
 
+        # Create cmd Group and add existent LDAP user
         cmd_group = Group.objects.create(name="cmd")
         cmd_group.permissions.add(Permission.objects.get(name="Execute Commands"))
         cmd_group.user_set.add(self.user_ldap)
+
+        # Create ui_framework Group and add existent LDAP user
+        ui_framework_group = Group.objects.create(name="ui_framework")
+        permissions = Permission.objects.filter(
+            content_type__app_label__contains="ui_framework"
+        )
+        for permission in permissions:
+            ui_framework_group.permissions.add(permission)
+        ui_framework_group.user_set.add(self.user_ldap)
 
         self.login_url = reverse("login")
         self.validate_token_url = reverse("validate-token")
@@ -182,14 +192,16 @@ class AuthApiTestCase(TestCase):
         ):
             response = self.client.post(self.login_url, data, format="json")
             user = User.objects.filter(username=LDAP_USERNAME).first()
-            user_group = user.groups.filter(name="cmd").first()
+            user_group_cmd = user.groups.filter(name="cmd").first()
+            user_group_ui_framework = user.groups.filter(name="ui_framework").first()
 
         total_users_after = User.objects.count()
 
         # Assert:
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(total_users_before + 1, total_users_after)
-        self.assertEqual(user_group.name, "cmd")
+        self.assertEqual(user_group_cmd.name, "cmd")
+        self.assertEqual(user_group_ui_framework.name, "ui_framework")
 
     @patch("django_auth_ldap.backend._LDAPUser", return_value=MockLDAPUserExistent())
     @patch("ldap.initialize", return_value=ldap.ldapobject.LDAPObject("ldap://test/"))
@@ -210,19 +222,22 @@ class AuthApiTestCase(TestCase):
         ):
             response = self.client.post(self.login_url, data, format="json")
             user = User.objects.filter(username=LDAP_USERNAME_EXISTENT).first()
-            user_group = user.groups.filter(name="cmd").first()
+            user_group_cmd = user.groups.filter(name="cmd").first()
+            user_group_ui_framework = user.groups.filter(name="ui_framework").first()
 
         total_users_after = User.objects.count()
 
         # Assert:
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(total_users_before, total_users_after)
-        self.assertEqual(user_group.name, "cmd")
+        self.assertEqual(user_group_cmd.name, "cmd")
+        self.assertEqual(user_group_ui_framework.name, "ui_framework")
 
     @patch("django_auth_ldap.backend._LDAPUser", return_value=MockLDAPUserNonCommands())
     @patch("ldap.initialize", return_value=ldap.ldapobject.LDAPObject("ldap://test/"))
     @patch(
-        "ldap.ldapobject.LDAPObject.search_s", return_value=LDAP_SEARCH_RESPONSE,
+        "ldap.ldapobject.LDAPObject.search_s",
+        return_value=LDAP_SEARCH_RESPONSE,
     )
     def test_ldap_nonexistent_non_cmd_user_login(
         self, mockLDAPObject, mockLDAPInitialize, mockLDAPUserNonCmd
@@ -328,7 +343,10 @@ class AuthApiTestCase(TestCase):
         )
         self.assertEqual(
             response.data["user"],
-            {"username": self.user.username, "email": self.user.email,},
+            {
+                "username": self.user.username,
+                "email": self.user.email,
+            },
             "The user is not as expected",
         )
         self.assertTrue(
@@ -367,7 +385,10 @@ class AuthApiTestCase(TestCase):
         )
         self.assertEqual(
             response.data["user"],
-            {"username": self.user.username, "email": self.user.email,},
+            {
+                "username": self.user.username,
+                "email": self.user.email,
+            },
             "The user is not as expected",
         )
         self.assertTrue(
