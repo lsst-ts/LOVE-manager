@@ -1258,7 +1258,14 @@ def jira(request):
         jira_payload = {
             "fields": {
                 "project": {"id": os.environ.get("JIRA_PROJECT_ID")},
-                "labels": ["LOVE", *(full_request.get("tags", []).split(","))],
+                "labels": [
+                    "LOVE",
+                    *(
+                        full_request.get("tags").split(",")
+                        if full_request.get("tags")
+                        else []
+                    ),
+                ],
                 "summary": getTitle(full_request),
                 "description": makeJiraDescription(full_request),
                 "customfield_15602": "on"
