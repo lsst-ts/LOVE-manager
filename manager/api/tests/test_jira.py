@@ -17,15 +17,10 @@ class JiraTestCase(TestCase):
             "user_agent",
             "tags",
         ]
-        exposure_params = ["obs_id", "instrument", "exposure_flag"]
-        narrative_params = [
-            "systems",
-            "subsystems",
-            "cscs",
+        exposure_params_required = ["obs_id", "instrument", "exposure_flag"]
+        narrative_params_required = [
             "date_begin",
             "date_end",
-            "time_lost",
-            "level",
         ]
 
         request_shared = {
@@ -92,7 +87,7 @@ class JiraTestCase(TestCase):
         )
 
         data_exposure_without_param = {**request_full_exposure}
-        del data_exposure_without_param[random.choice(exposure_params)]
+        del data_exposure_without_param[random.choice(exposure_params_required)]
         self.jira_request_exposure_without_param = requests.Request(
             data=data_exposure_without_param
         )
@@ -111,7 +106,7 @@ class JiraTestCase(TestCase):
         )
 
         data_narrative_without_param = {**request_full_narrative}
-        del data_narrative_without_param[random.choice(narrative_params)]
+        del data_narrative_without_param[random.choice(narrative_params_required)]
         self.jira_request_narrative_without_param = requests.Request(
             data=data_narrative_without_param
         )
