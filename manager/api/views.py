@@ -1194,9 +1194,9 @@ def makeJiraDescription(request_data):
     # Narrative log params
     if request_type == "narrative":
         try:
-            systems = ", ".join(request_data.get("systems", "").split(","))
-            subsystems = ", ".join(request_data.get("subsystems", "").split(","))
-            cscs = ", ".join(request_data.get("cscs", "").split(","))
+            systems = ", ".join(request_data["systems"].split(","))
+            subsystems = ", ".join(request_data["subsystems"].split(","))
+            cscs = ", ".join(request_data["cscs"].split(","))
             begin_date = request_data["date_begin"]
             end_date = request_data["date_end"]
             time_lost = str(request_data["time_lost"])
@@ -1260,11 +1260,7 @@ def jira(request):
                 "project": {"id": os.environ.get("JIRA_PROJECT_ID")},
                 "labels": [
                     "LOVE",
-                    *(
-                        full_request.get("tags").split(",")
-                        if full_request.get("tags")
-                        else []
-                    ),
+                    *(full_request["tags"].split(",") if full_request["tags"] else []),
                 ],
                 "summary": getTitle(full_request),
                 "description": makeJiraDescription(full_request),

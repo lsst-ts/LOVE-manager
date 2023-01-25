@@ -19,7 +19,7 @@ class JiraTestCase(TestCase):
         ]
         exposure_params = ["obs_id", "instrument", "exposure_flag"]
         narrative_params = [
-            "system",
+            "systems",
             "subsystems",
             "cscs",
             "date_begin",
@@ -43,7 +43,7 @@ class JiraTestCase(TestCase):
         }
 
         request_narrative = {
-            "system": "MainTel",
+            "systems": "MainTel",
             "subsystems": "Camera",
             "cscs": "M1M3",
             "date_begin": "202200703-19:58:13",
@@ -131,23 +131,23 @@ class JiraTestCase(TestCase):
 
         # exposure
         jira_response = jira(self.jira_request_exposure_without_request_type)
-        assert jira_response.data["ack"] == "Error reading request type"
+        assert "Error reading request type" in jira_response.data["ack"]
 
         jira_response = jira(self.jira_request_exposure_without_shared_param)
-        assert jira_response.data["ack"] == "Error creating jira payload"
+        assert "Error creating jira payload" in jira_response.data["ack"]
 
         jira_response = jira(self.jira_request_exposure_without_param)
-        assert jira_response.data["ack"] == "Error creating jira payload"
+        assert "Error creating jira payload" in jira_response.data["ack"]
 
         # narrative
         jira_response = jira(self.jira_request_narrative_without_request_type)
-        assert jira_response.data["ack"] == "Error reading request type"
+        assert "Error reading request type" in jira_response.data["ack"]
 
         jira_response = jira(self.jira_request_narrative_without_shared_param)
-        assert jira_response.data["ack"] == "Error creating jira payload"
+        assert "Error creating jira payload" in jira_response.data["ack"]
 
         jira_response = jira(self.jira_request_narrative_without_param)
-        assert jira_response.data["ack"] == "Error creating jira payload"
+        assert "Error creating jira payload" in jira_response.data["ack"]
 
     def test_needed_parameters(self):
         """Test call to function with all needed parameters"""
