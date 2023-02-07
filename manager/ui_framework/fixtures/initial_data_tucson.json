@@ -1120,12 +1120,20 @@
                 "Observatory": {
                   "Environment": [
                     {
+                      "name": "WeatherForecast",
+                      "salindex": 0
+                    },
+                    {
                       "name": "WeatherStation",
                       "salindex": 1
                     },
                     {
                       "name": "DIMM",
                       "salindex": 1
+                    },
+                    {
+                      "name": "DIMM",
+                      "salindex": 2
                     },
                     {
                       "name": "DSM",
@@ -1163,6 +1171,10 @@
                     },
                     {
                       "name": "Watcher",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "Authorize",
                       "salindex": 0
                     }
                   ]
@@ -1208,7 +1220,9 @@
                     {
                       "name": "MTDomeTrajectory",
                       "salindex": 0
-                    },
+                    }
+                  ],
+                  "Misc": [
                     {
                       "name": "MTAirCompressor",
                       "salindex": 1
@@ -1216,6 +1230,10 @@
                     {
                       "name": "MTAirCompressor",
                       "salindex": 2
+                    },
+                    {
+                      "name": "LaserTracker",
+                      "salindex": 1
                     }
                   ],
                   "ComCam": [
@@ -1282,15 +1300,27 @@
                       "salindex": 0
                     }
                   ]
+                },
+                "Calibration Systems": {
+                  "Miscellaneous": [
+                    {
+                      "name": "GenericCamera",
+                      "salindex": 1
+                    },
+                    {
+                      "name": "GCHeaderService",
+                      "salindex": 1
+                    }
+                  ]
                 }
               },
               "hasRawMode": true
             },
             "content": "CSCSummary",
             "properties": {
-              "h": 46,
+              "h": 51,
               "i": 1,
-              "w": 88,
+              "w": 97,
               "x": 0,
               "y": 0,
               "type": "component"
