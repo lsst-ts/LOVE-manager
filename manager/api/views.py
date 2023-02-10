@@ -974,7 +974,8 @@ class CSCAuthorizationRequestViewSet(
         request_message = request.data.get("message")
         authorization_obj.message = request_message if request_message != "" else None
 
-        if request.user.has_perm("api.authlist.administrator"):
+        is_request_from_love = request.data.get("love_request", "") != ""
+        if request.user.has_perm("api.authlist.administrator") and is_request_from_love:
             authorization_obj.status = "Authorized"
             authorization_obj.resolved_by = request.user
             authorization_obj.resolved_at = timezone.now()
