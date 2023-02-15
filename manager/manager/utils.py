@@ -1,5 +1,46 @@
+import os
+import requests
 from astropy.time import Time
 from astropy.units import hour
+from django.conf import settings
+from django.core.files.storage import Storage
+
+
+class RemoteStorage(Storage):
+    def __init__(self, location=None):
+        if location is None:
+            location = settings.MEDIA_ROOT
+        self.location = location
+
+    def _open(self, name, mode="rb"):
+        return open(os.path.join(self.location, name), mode)
+
+    def _save(self, name, content):
+        url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/lfa/upload-file"
+        upload_file_response = requests.post(url, files={"uploaded_file": content})
+        if upload_file_response.status_code == 200:
+            print("#####", flush=True)
+            print(upload_file_response.json())
+            print("#####", flush=True)
+        else:
+            print("#####", flush=True)
+            print(f"{upload_file_response.status_code} code error")
+            print("#####", flush=True)
+
+        # path = os.path.join(self.location, name)
+        # with open(path, 'wb') as f:
+        #     content.seek(0)
+        #     f.write(content.read())
+        return name
+
+    def delete(self, name):
+        os.remove(os.path.join(self.location, name))
+
+    def exists(self, name):
+        return os.path.exists(os.path.join(self.location, name))
+
+    def url(self, name):
+        return settings.MEDIA_URL + name
 
 
 def get_tai_to_utc() -> float:
