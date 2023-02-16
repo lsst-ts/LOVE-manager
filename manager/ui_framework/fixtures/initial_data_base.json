@@ -1610,6 +1610,48 @@
   },
   {
     "model": "ui_framework.view",
+    "pk": 49,
+    "fields": {
+      "creation_timestamp": "2023-01-10T21:55:48.77211Z",
+      "update_timestamp": "2023-01-10T21:55:48.772149Z",
+      "name": "Watcher",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "title": "Watcher",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "Watcher",
+            "properties": {
+              "h": 70,
+              "i": 1,
+              "w": 97,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": ""
+    }
+  },
+  {
+    "model": "ui_framework.view",
     "pk": 50,
     "fields": {
       "creation_timestamp": "2021-10-29T22:31:23.261491Z",

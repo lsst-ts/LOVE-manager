@@ -1614,7 +1614,7 @@
     "pk": 51,
     "fields": {
       "creation_timestamp": "2021-08-05T16:41:02.104589Z",
-      "update_timestamp": "2022-04-21T15:34:41.080571Z",
+      "update_timestamp": "2023-02-06T17:31:54.518903Z",
       "name": "ASummary State View",
       "data": {
         "content": {
@@ -1632,8 +1632,16 @@
                       "salindex": 1
                     },
                     {
+                      "name": "DIMM",
+                      "salindex": 2
+                    },
+                    {
                       "name": "WeatherStation",
                       "salindex": 1
+                    },
+                    {
+                      "name": "WeatherForecast",
+                      "salindex": 0
                     },
                     {
                       "name": "HVAC",
@@ -1658,6 +1666,18 @@
                     {
                       "name": "ESS",
                       "salindex": 201
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 202
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 203
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 204
                     }
                   ],
                   "HigherLevel": [
@@ -1759,6 +1779,32 @@
                       "name": "CCHeaderService",
                       "salindex": 0
                     }
+                  ],
+                  "Star Tracker": [
+                    {
+                      "name": "GenericCamera",
+                      "salindex": 101
+                    },
+                    {
+                      "name": "GCHeaderService",
+                      "salindex": 101
+                    },
+                    {
+                      "name": "GenericCamera",
+                      "salindex": 102
+                    },
+                    {
+                      "name": "GCHeaderService",
+                      "salindex": 102
+                    },
+                    {
+                      "name": "GenericCamera",
+                      "salindex": 103
+                    },
+                    {
+                      "name": "GCHeaderService",
+                      "salindex": 103
+                    }
                   ]
                 },
                 "Auxiliary Telescope": {
@@ -1817,7 +1863,7 @@
                     },
                     {
                       "name": "FiberSpectrograph",
-                      "salindex": 0
+                      "salindex": 3
                     },
                     {
                       "name": "ATWhiteLight",
@@ -1829,7 +1875,7 @@
                     },
                     {
                       "name": "Electrometer",
-                      "salindex": 2
+                      "salindex": 201
                     },
                     {
                       "name": "LinearStage",
