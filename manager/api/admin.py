@@ -8,7 +8,7 @@ https://docs.djangoproject.com/en/2.2/ref/contrib/admin/
 """
 from django.contrib import admin
 from api.models import Token
-from api.models import ConfigFile, EmergencyContact
+from api.models import ConfigFile, EmergencyContact, ImageTag
 from api.models import CSCAuthorizationRequest
 
 # from django.contrib.auth.models import Permission
@@ -17,5 +17,6 @@ from api.models import CSCAuthorizationRequest
 admin.site.register(Token)
 admin.site.register(ConfigFile)
 admin.site.register(EmergencyContact)
+admin.site.register(ImageTag)
 admin.site.register(CSCAuthorizationRequest)
 # admin.site.register(Permission)
