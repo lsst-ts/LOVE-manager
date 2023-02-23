@@ -18,7 +18,13 @@ Including another URLconf
 from django.conf.urls import include
 from django.urls import path
 from rest_framework.routers import DefaultRouter
-from api.views import ConfigFileViewSet, EmergencyContactViewSet
+from api.views import (
+    ConfigFileViewSet,
+    EmergencyContactViewSet,
+    ImageTagViewSet,
+    ExposurelogViewSet,
+    NarrativelogViewSet,
+)
 
 import api.views
 
@@ -61,12 +67,30 @@ urlpatterns = [
     path(
         "tcs/main/docstrings", api.views.tcs_main_docstrings, name="TCS-main-docstrings"
     ),
+    path("jira", api.views.jira, name="JIRA-API"),
+    path("lfa/", api.views.lfa, name="LFA-API"),
+    path("lfa/<option>/", api.views.lfa, name="LFA-API"),
+    path(
+        "ole/exposurelog/exposures",
+        api.views.ole_exposurelog_exposures,
+        name="OLE-exposurelog-exposures",
+    ),
+    path(
+        "ole/exposurelog/instruments",
+        api.views.ole_exposurelog_instruments,
+        name="OLE-exposurelog-instruments",
+    ),
 ]
 router.register("configfile", ConfigFileViewSet)
 router.register("emergencycontact", EmergencyContactViewSet)
+router.register("imagetag", ImageTagViewSet)
 router.register(
     "authlistrequest",
     api.views.CSCAuthorizationRequestViewSet,
     basename="authlistrequest",
+)
+router.register("ole/exposurelog/messages", ExposurelogViewSet, basename="ExposureLogs")
+router.register(
+    "ole/narrativelog/messages", NarrativelogViewSet, basename="NarrativeLogs"
 )
 urlpatterns.append(path("", include(router.urls)))
