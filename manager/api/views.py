@@ -1427,8 +1427,16 @@ def ole_exposurelog_instruments(request):
 class ExposurelogViewSet(viewsets.ViewSet):
     """
     A viewset that provides `list`, `create`, `retrieve`, `update`, and `destroy` actions
-    to be used to query the Open API Exposure Log Service
+    to be used to query the API Exposure Log Service
 
+    Notes
+    -----
+    The API Exposure Log Service is a service that provides a REST API to
+    query the Exposure Log database.
+
+    The endpoint is read from the environment variable OLE_API_HOSTNAME.
+
+    The API is documented at https://summit-lsp.lsst.codes/exposurelog/docs.
     """
 
     # serializer_class = ExposureLogSerializer
@@ -1526,8 +1534,16 @@ class ExposurelogViewSet(viewsets.ViewSet):
 class NarrativelogViewSet(viewsets.ViewSet):
     """
     A viewset that provides `list`, `create`, `retrieve`, `update`, and `destroy` actions
-    to be used to query the Open API Narrative Log Service
+    to be used to query the API Narrative Log Service
 
+    Notes
+    -----
+    The API Narrative Log Service is a service that provides a REST API to
+    query the Narrative Log database.
+
+    The endpoint is read from the environment variable OLE_API_HOSTNAME.
+
+    The API is documented at https://summit-lsp.lsst.codes/narrativelog/docs.
     """
 
     # serializer_class = NarrativeLogSerializer
