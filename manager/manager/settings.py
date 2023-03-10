@@ -224,7 +224,6 @@ if REDIS_HOST and not TESTING:
                 ],
                 "expiry": REDIS_CONFIG_EXPIRY,
                 "capacity": REDIS_CONFIG_CAPACITY,
-                "symmetric_encryption_keys": [SECRET_KEY],
             },
         },
     }
@@ -250,7 +249,9 @@ AUTH_LDAP_3_SERVER_URI = os.environ.get("AUTH_LDAP_3_SERVER_URI")
 AUTH_LDAP_BIND_DN = "uid=svc_love,cn=users,cn=accounts,dc=lsst,dc=cloud"
 AUTH_LDAP_BIND_PASSWORD = os.environ.get("AUTH_LDAP_BIND_PASSWORD")
 AUTH_LDAP_USER_SEARCH = LDAPSearch(
-    "cn=users,cn=accounts,dc=lsst,dc=cloud", ldap.SCOPE_SUBTREE, "(uid=%(user)s)",
+    "cn=users,cn=accounts,dc=lsst,dc=cloud",
+    ldap.SCOPE_SUBTREE,
+    "(uid=%(user)s)",
 )
 AUTH_LDAP_USER_ATTR_MAP = {
     "first_name": "givenname",
