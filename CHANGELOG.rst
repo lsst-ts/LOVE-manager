@@ -5,6 +5,7 @@ Version History
 v5.9.1
 -------
 
+* Add repository version history `<https://github.com/lsst-ts/LOVE-manager/pull/175>`_
 * Add GIS to summit ASummary State view. `<https://github.com/lsst-ts/LOVE-manager/pull/174>`_
 * Remove encryption layer for channels-redis `<https://github.com/lsst-ts/LOVE-manager/pull/173>`_
 
