@@ -1167,7 +1167,7 @@
                     },
                     {
                       "name": "OCPS",
-                      "salindex": 2
+                      "salindex": 3
                     },
                     {
                       "name": "Watcher",
@@ -1238,15 +1238,15 @@
                   ],
                   "ComCam": [
                     {
-                      "name": "CCCamera",
+                      "name": "MTCamera",
                       "salindex": 0
                     },
                     {
-                      "name": "CCOODS",
+                      "name": "MTOODS",
                       "salindex": 0
                     },
                     {
-                      "name": "CCHeaderService",
+                      "name": "MTHeaderService",
                       "salindex": 0
                     }
                   ]
