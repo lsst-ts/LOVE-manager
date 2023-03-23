@@ -2,6 +2,13 @@
 Version History
 ===============
 
+v5.9.2
+-------
+
+* Update docs: LOVE Config file `<https://github.com/lsst-ts/LOVE-manager/pull/178>`_
+* Fix view header for LSSTCam `<https://github.com/lsst-ts/LOVE-manager/pull/177>`_
+* Updates for summit and base `<https://github.com/lsst-ts/LOVE-manager/pull/176>`_
+
 v5.9.1
 -------
 

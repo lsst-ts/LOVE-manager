@@ -1227,8 +1227,8 @@ The file extension must be json and the format has the form:
       "minSeverityNotification": "mute"
     },
     "camFeeds": {
-      "generic": "/gencam",
-      "allSky": "/gencam"
+      "startrackera": "/startrackera",
+      "startrackerb": "/startrackerb"
     }
   }
 This is a normal json file with ``{“key”: “value”}`` items. You can use different variable types such as: strings, numbers, arrays and objects.
@@ -1241,8 +1241,8 @@ Available configurations:
   - minSeverityNotification: {“mute”, “muted”, “warning”, “serious”, “critical”} : minimum level to report alarm notifications. If set to “mute” or “muted” no alarm will be reported.
 - **camFeeds**:
 
-  - generic: cam feed used on the GenericCamera component. This feed will be used if the “generic” value is set on the FEEDKEY configuration parameter of the Generic Camera component.
-  - allSky: cam feed used on the GenericCamera component. This feed will be used if the “allSky” value is set on the FEEDKEY configuration parameter of the Generic Camera component.
+  - startrackera: cam feed used on the GenericCamera component. This feed will be used if the “startrackera” value is set on the FEEDKEY configuration parameter of the GenericCamera or GenericCameraControls components.
+  - startrackerb: cam feed used on the GenericCamera component. This feed will be used if the “startrackerb” value is set on the FEEDKEY configuration parameter of the GenericCamera or GenericCameraControls components.
 - **efd**:
 
   - defaultEfdInstance : {“summit_efd”, "ncsa_teststand_efd", “"ldf_stable_efd"”, “ldf_int_efd”, “base_efd”, “tucson_teststand_efd”, “test_efd”} : default efd instance to be queried on the VegaTimeSeriesPlot component.
