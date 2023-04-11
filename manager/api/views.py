@@ -28,6 +28,7 @@ from api.models import (
     EmergencyContact,
     ImageTag,
     CSCAuthorizationRequest,
+    ControlLocation,
 )
 from api.serializers import TokenSerializer, ConfigSerializer
 from api.serializers import (
@@ -39,6 +40,7 @@ from api.serializers import (
     CSCAuthorizationRequestCreateSerializer,
     CSCAuthorizationRequestAuthorizeSerializer,
     CSCAuthorizationRequestExecuteSerializer,
+    ControlLocationSerializer,
 )
 from .schema_validator import DefaultingValidator
 from manager.settings import (
@@ -1647,3 +1649,26 @@ class NarrativelogViewSet(viewsets.ViewSet):
                 status=200,
             )
         return Response(response.json(), status=response.status_code)
+
+
+class ControlLocationViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    A viewset that provides `list`, `create`, `retrieve`, `update`, and `destroy` actions
+    to be used to query the API Control Location Service
+
+    Notes
+    -----
+    The API Control Location Service is a service that provides a REST API to
+    query the Control Location database.
+    """
+
+    serializer_class = ControlLocationSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        queryset = ControlLocation.objects.all()
+        # If selected is true, filter by selected
+        selected = self.request.query_params.get("selected")
+        if selected is not None:
+            queryset = queryset.filter(selected=True)
+        return queryset

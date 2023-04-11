@@ -112,7 +112,9 @@ class ConfigFile(BaseModel):
     """Reference to the config file"""
 
     selected_by_users = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, related_name="selected_config_file", blank=True,
+        settings.AUTH_USER_MODEL,
+        related_name="selected_config_file",
+        blank=True,
     )
 
 
@@ -194,12 +196,16 @@ class CSCAuthorizationRequest(models.Model):
     """Comment added to the authorization request"""
 
     status = models.CharField(
-        max_length=10, choices=RequestStatus.choices, default=RequestStatus.PENDING,
+        max_length=10,
+        choices=RequestStatus.choices,
+        default=RequestStatus.PENDING,
     )
     """Current status of the request"""
 
     execution_status = models.CharField(
-        max_length=10, choices=ExecutionStatus.choices, default=ExecutionStatus.PENDING,
+        max_length=10,
+        choices=ExecutionStatus.choices,
+        default=ExecutionStatus.PENDING,
     )
     """Current status of the execution of the Authorize CSC setAuthlist command for
     all the parameters in the current request"""
@@ -236,3 +242,33 @@ class CSCAuthorizationRequest(models.Model):
             The string representaiton
         """
         return f"[{self.status}] {self.authorized_users} & {self.unauthorized_cscs} -> {self.cscs_to_change}"
+
+
+class ControlLocation(BaseModel):
+    """ControlLocation Model"""
+
+    name = models.CharField(max_length=100, blank=True)
+    """Control location name"""
+
+    description = models.CharField(max_length=100, blank=True)
+    """Control location description"""
+
+    selected = models.BooleanField(default=False)
+    """Control location selected"""
+
+    def save(self, *args, **kwargs):
+        if self.selected:
+            # Check if user is super user
+            if not kwargs["request"].user.is_superuser:
+                raise ValidationError(
+                    "Only administrators can select a control location."
+                )
+            # Set all other instances of the model to false
+            ControlLocation.objects.exclude(pk=self.pk).update(selected=False)
+        del kwargs["request"]
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        if self.selected:
+            raise ValidationError("Cannot delete selected control location.")
+        super().delete(*args, **kwargs)
