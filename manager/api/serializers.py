@@ -359,7 +359,7 @@ class CSCAuthorizationRequestCreateSerializer(serializers.ModelSerializer):
 
 
 class ControlLocationSerializer(serializers.ModelSerializer):
-    """Serializer to map the Model instance into JSON format."""
+    """Serializer to list ControlLocation Requests."""
 
     class Meta:
         """Meta class to map serializer's fields with the model fields."""

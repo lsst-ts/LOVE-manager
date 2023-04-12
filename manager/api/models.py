@@ -254,7 +254,7 @@ class ControlLocation(BaseModel):
     """Control location description"""
 
     selected = models.BooleanField(default=False)
-    """Control location selected"""
+    """Control location is selected"""
 
     def save(self, *args, **kwargs):
         if self.selected:
@@ -263,12 +263,12 @@ class ControlLocation(BaseModel):
                 raise ValidationError(
                     "Only administrators can select a control location."
                 )
-            # Set all other instances of the model to false
+            # Set all other instances of the model to selected=false
             ControlLocation.objects.exclude(pk=self.pk).update(selected=False)
         del kwargs["request"]
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         if self.selected:
-            raise ValidationError("Cannot delete selected control location.")
+            raise ValidationError("Cannot delete a selected control location.")
         super().delete(*args, **kwargs)

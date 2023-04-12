@@ -1653,8 +1653,7 @@ class NarrativelogViewSet(viewsets.ViewSet):
 
 class ControlLocationViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    A viewset that provides `list`, `create`, `retrieve`, `update`, and `destroy` actions
-    to be used to query the API Control Location Service
+    API endpoint that allows Control Locations to be viewed.
 
     Notes
     -----
