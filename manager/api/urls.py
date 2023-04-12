@@ -20,11 +20,12 @@ from django.urls import path
 from rest_framework.routers import DefaultRouter
 from api.views import (
     ConfigFileViewSet,
-    EmergencyContactViewSet,
-    ImageTagViewSet,
-    ExposurelogViewSet,
-    NarrativelogViewSet,
     ControlLocationViewSet,
+    EmergencyContactViewSet,
+    ExposurelogViewSet,
+    ImageTagViewSet,
+    NarrativelogViewSet,
+    ScriptConfigurationViewSet,
 )
 
 import api.views
@@ -95,4 +96,7 @@ router.register(
     "ole/narrativelog/messages", NarrativelogViewSet, basename="NarrativeLogs"
 )
 router.register("controllocation", ControlLocationViewSet, basename="ControlLocation")
+router.register(
+    "scriptconfiguration", ScriptConfigurationViewSet, basename="ScriptConfiguration"
+)
 urlpatterns.append(path("", include(router.urls)))

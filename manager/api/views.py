@@ -23,24 +23,26 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from rest_framework import viewsets, status, mixins
 from api.models import (
-    Token,
     ConfigFile,
+    ControlLocation,
+    CSCAuthorizationRequest,
     EmergencyContact,
     ImageTag,
-    CSCAuthorizationRequest,
-    ControlLocation,
+    ScriptConfiguration,
+    Token,
 )
 from api.serializers import TokenSerializer, ConfigSerializer
 from api.serializers import (
     ConfigFileSerializer,
     ConfigFileContentSerializer,
-    EmergencyContactSerializer,
-    ImageTagSerializer,
+    ControlLocationSerializer,
     CSCAuthorizationRequestSerializer,
     CSCAuthorizationRequestCreateSerializer,
     CSCAuthorizationRequestAuthorizeSerializer,
     CSCAuthorizationRequestExecuteSerializer,
-    ControlLocationSerializer,
+    EmergencyContactSerializer,
+    ImageTagSerializer,
+    ScriptConfigurationSerializer,
 )
 from .schema_validator import DefaultingValidator
 from manager.settings import (
@@ -1679,3 +1681,21 @@ class ControlLocationViewSet(viewsets.ReadOnlyModelViewSet):
         if selected is not None:
             queryset = queryset.filter(selected=True)
         return queryset
+
+
+class ScriptConfigurationViewSet(viewsets.ModelViewSet):
+    """GET instance from the ScriptConfiguration model, sorting them by their creation timestamp in descending order"""
+
+    permission_classes = (IsAuthenticated,)
+    serializer_class = ScriptConfigurationSerializer
+
+    def get_queryset(self):
+        script_path = self.request.GET.get("path", "")
+        script_type = self.request.GET.get("type", "")
+        if script_path != "" and script_type != "":
+            return (
+                ScriptConfiguration.objects.filter(script_type=script_type)
+                .filter(script_path=script_path)
+                .order_by("-creation_timestamp")
+            )
+        return ScriptConfiguration.objects.order_by("-creation_timestamp")
