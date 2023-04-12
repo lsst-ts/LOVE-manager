@@ -24,6 +24,7 @@ from api.views import (
     ImageTagViewSet,
     ExposurelogViewSet,
     NarrativelogViewSet,
+    ControlLocationViewSet,
 )
 
 import api.views
@@ -93,4 +94,5 @@ router.register("ole/exposurelog/messages", ExposurelogViewSet, basename="Exposu
 router.register(
     "ole/narrativelog/messages", NarrativelogViewSet, basename="NarrativeLogs"
 )
+router.register("controllocation", ControlLocationViewSet, basename="ControlLocation")
 urlpatterns.append(path("", include(router.urls)))
