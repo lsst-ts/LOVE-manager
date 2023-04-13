@@ -7,11 +7,24 @@ For more information see:
 https://docs.djangoproject.com/en/2.2/ref/contrib/admin/
 """
 from django.contrib import admin
-from api.models import Token
-from api.models import ConfigFile, EmergencyContact, ImageTag
-from api.models import CSCAuthorizationRequest
+from api.models import (
+    Token,
+    ConfigFile,
+    EmergencyContact,
+    ImageTag,
+    CSCAuthorizationRequest,
+    ControlLocation,
+)
 
 # from django.contrib.auth.models import Permission
+
+
+class ControlLocationAdmin(admin.ModelAdmin):
+    """Customize the ControlLocation admin page."""
+
+    def save_model(self, request, obj, form, change):
+        """Override the save_model method to pass the request argument."""
+        obj.save(request=request)
 
 
 admin.site.register(Token)
@@ -19,4 +32,5 @@ admin.site.register(ConfigFile)
 admin.site.register(EmergencyContact)
 admin.site.register(ImageTag)
 admin.site.register(CSCAuthorizationRequest)
+admin.site.register(ControlLocation, ControlLocationAdmin)
 # admin.site.register(Permission)

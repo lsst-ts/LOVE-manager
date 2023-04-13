@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v5.10.0
+-------
+
+* Add ControlLocation model `<https://github.com/lsst-ts/LOVE-manager/pull/179>`_
+
 v5.9.2
 -------
 

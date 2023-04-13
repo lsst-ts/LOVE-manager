@@ -4,7 +4,13 @@ from drf_yasg.utils import swagger_serializer_method
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from manager import utils
-from api.models import ConfigFile, EmergencyContact, ImageTag, CSCAuthorizationRequest
+from api.models import (
+    ConfigFile,
+    EmergencyContact,
+    ImageTag,
+    CSCAuthorizationRequest,
+    ControlLocation,
+)
 from typing import Union
 
 
@@ -349,4 +355,17 @@ class CSCAuthorizationRequestCreateSerializer(serializers.ModelSerializer):
             "unauthorized_cscs",
             "requested_by",
         )
+        """The fields of the model class to serialize"""
+
+
+class ControlLocationSerializer(serializers.ModelSerializer):
+    """Serializer to list ControlLocation Requests."""
+
+    class Meta:
+        """Meta class to map serializer's fields with the model fields."""
+
+        model = ControlLocation
+        """The model class to serialize"""
+
+        fields = "__all__"
         """The fields of the model class to serialize"""
