@@ -163,5 +163,35 @@
       "label": "Ticketed Issue",
       "key": "ticketed_issue"
     }
+  },
+  {
+    "model": "api.controllocation",
+    "pk": 1,
+    "fields": {
+      "creation_timestamp": "2023-04-19T17:04:24.127Z",
+      "update_timestamp": "2023-04-19T17:04:24.127Z",
+      "name": "summit",
+      "description": "Cerro Pachon Control Room"
+    }
+  },
+  {
+    "model": "api.controllocation",
+    "pk": 2,
+    "fields": {
+      "creation_timestamp": "2023-04-19T17:04:24.127Z",
+      "update_timestamp": "2023-04-19T17:04:24.127Z",
+      "name": "tucson",
+      "description": "Tucson Control Room"
+    }
+  },
+  {
+    "model": "api.controllocation",
+    "pk": 3,
+    "fields": {
+      "creation_timestamp": "2023-04-19T17:04:24.127Z",
+      "update_timestamp": "2023-04-19T17:04:24.127Z",
+      "name": "base",
+      "description": "La Serena Control Room"
+    }
   }
 ]
