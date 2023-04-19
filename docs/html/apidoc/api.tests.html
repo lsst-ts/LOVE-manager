@@ -185,8 +185,152 @@
 <div class="section" id="submodules">
 <h2><span class="section-number">5.1.1.1.1. </span>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
+<div class="section" id="module-api.tests.test_auth_api">
+<span id="api-tests-test-auth-api-module"></span><h2><span class="section-number">5.1.1.1.2. </span>api.tests.test_auth_api module<a class="headerlink" href="#module-api.tests.test_auth_api" title="Permalink to this headline">¶</a></h2>
+<p>Test users’ authentication through the API.</p>
+<dl class="class">
+<dt id="api.tests.test_auth_api.AuthApiTestCase">
+<em class="property">class </em><code class="sig-prename descclassname">api.tests.test_auth_api.</code><code class="sig-name descname">AuthApiTestCase</code><span class="sig-paren">(</span><em class="sig-param">methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_auth_api.AuthApiTestCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.test.testcases.TestCase</span></code></p>
+<p>Test suite for users’ authentication.</p>
+<dl class="method">
+<dt id="api.tests.test_auth_api.AuthApiTestCase.get_config_file_sample">
+<em class="property">static </em><code class="sig-name descname">get_config_file_sample</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">content</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_auth_api.AuthApiTestCase.get_config_file_sample" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_auth_api.AuthApiTestCase.setUp">
+<code class="sig-name descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_auth_api.AuthApiTestCase.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define the test suite setup.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_auth_api.AuthApiTestCase.test_ldap_existent_cmd_user_login">
+<code class="sig-name descname">test_ldap_existent_cmd_user_login</code><span class="sig-paren">(</span><em class="sig-param">mockLDAPObject</em>, <em class="sig-param">mockLDAPInitialize</em>, <em class="sig-param">mockLDAPUser</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_auth_api.AuthApiTestCase.test_ldap_existent_cmd_user_login" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_auth_api.AuthApiTestCase.test_ldap_nonexistent_cmd_user_login">
+<code class="sig-name descname">test_ldap_nonexistent_cmd_user_login</code><span class="sig-paren">(</span><em class="sig-param">mockLDAPObject</em>, <em class="sig-param">mockLDAPInitialize</em>, <em class="sig-param">mockLDAPUser</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_auth_api.AuthApiTestCase.test_ldap_nonexistent_cmd_user_login" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_auth_api.AuthApiTestCase.test_ldap_nonexistent_non_cmd_user_login">
+<code class="sig-name descname">test_ldap_nonexistent_non_cmd_user_login</code><span class="sig-paren">(</span><em class="sig-param">mockLDAPObject</em>, <em class="sig-param">mockLDAPInitialize</em>, <em class="sig-param">mockLDAPUserNonCmd</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_auth_api.AuthApiTestCase.test_ldap_nonexistent_non_cmd_user_login" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_auth_api.AuthApiTestCase.test_user_fails_to_validate_deleted_token">
+<code class="sig-name descname">test_user_fails_to_validate_deleted_token</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_auth_api.AuthApiTestCase.test_user_fails_to_validate_deleted_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test that a user fails to validate an deleted token.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_auth_api.AuthApiTestCase.test_user_fails_to_validate_expired_token">
+<code class="sig-name descname">test_user_fails_to_validate_expired_token</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_auth_api.AuthApiTestCase.test_user_fails_to_validate_expired_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test that a user fails to validate an expired token.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_auth_api.AuthApiTestCase.test_user_login">
+<code class="sig-name descname">test_user_login</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_auth_api.AuthApiTestCase.test_user_login" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test that a user can request a token using name and password.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_auth_api.AuthApiTestCase.test_user_login_failed">
+<code class="sig-name descname">test_user_login_failed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_auth_api.AuthApiTestCase.test_user_login_failed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test that a user cannot request a token if the credentials are invalid.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_auth_api.AuthApiTestCase.test_user_login_twice">
+<code class="sig-name descname">test_user_login_twice</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_auth_api.AuthApiTestCase.test_user_login_twice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test that a user can request a token twie receiving different tokens each time.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_auth_api.AuthApiTestCase.test_user_logout">
+<code class="sig-name descname">test_user_logout</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_auth_api.AuthApiTestCase.test_user_logout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test that a user can logout and delete the token.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_auth_api.AuthApiTestCase.test_user_swap">
+<code class="sig-name descname">test_user_swap</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_auth_api.AuthApiTestCase.test_user_swap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test that a logged user can be swapped</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_auth_api.AuthApiTestCase.test_user_swap_forbidden">
+<code class="sig-name descname">test_user_swap_forbidden</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_auth_api.AuthApiTestCase.test_user_swap_forbidden" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test that a user that’s not logged in cannot swap users</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_auth_api.AuthApiTestCase.test_user_swap_no_config">
+<code class="sig-name descname">test_user_swap_no_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_auth_api.AuthApiTestCase.test_user_swap_no_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test that a logged user can be swapped and not request config</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_auth_api.AuthApiTestCase.test_user_swap_wrong_credentials">
+<code class="sig-name descname">test_user_swap_wrong_credentials</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_auth_api.AuthApiTestCase.test_user_swap_wrong_credentials" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test that a user that’s not logged in cannot swap users</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_auth_api.AuthApiTestCase.test_user_validate_token">
+<code class="sig-name descname">test_user_validate_token</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_auth_api.AuthApiTestCase.test_user_validate_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test that a user can validate a token.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_auth_api.AuthApiTestCase.test_user_validate_token_fail">
+<code class="sig-name descname">test_user_validate_token_fail</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_auth_api.AuthApiTestCase.test_user_validate_token_fail" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test that a user fails to validate an invalid token.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_auth_api.AuthApiTestCase.test_user_validate_token_no_config">
+<code class="sig-name descname">test_user_validate_token_no_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_auth_api.AuthApiTestCase.test_user_validate_token_no_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test that a user can validate a token and not receive the config passing the no_config query param.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="api.tests.test_auth_api.MockLDAPUser">
+<em class="property">class </em><code class="sig-prename descclassname">api.tests.test_auth_api.</code><code class="sig-name descname">MockLDAPUser</code><a class="headerlink" href="#api.tests.test_auth_api.MockLDAPUser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="api.tests.test_auth_api.MockLDAPUser.authenticate">
+<code class="sig-name descname">authenticate</code><span class="sig-paren">(</span><em class="sig-param">password</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_auth_api.MockLDAPUser.authenticate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="api.tests.test_auth_api.MockLDAPUserCommands">
+<em class="property">class </em><code class="sig-prename descclassname">api.tests.test_auth_api.</code><code class="sig-name descname">MockLDAPUserCommands</code><a class="headerlink" href="#api.tests.test_auth_api.MockLDAPUserCommands" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#api.tests.test_auth_api.MockLDAPUser" title="api.tests.test_auth_api.MockLDAPUser"><code class="xref py py-class docutils literal notranslate"><span class="pre">api.tests.test_auth_api.MockLDAPUser</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="api.tests.test_auth_api.MockLDAPUserExistent">
+<em class="property">class </em><code class="sig-prename descclassname">api.tests.test_auth_api.</code><code class="sig-name descname">MockLDAPUserExistent</code><a class="headerlink" href="#api.tests.test_auth_api.MockLDAPUserExistent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#api.tests.test_auth_api.MockLDAPUser" title="api.tests.test_auth_api.MockLDAPUser"><code class="xref py py-class docutils literal notranslate"><span class="pre">api.tests.test_auth_api.MockLDAPUser</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="api.tests.test_auth_api.MockLDAPUserNonCommands">
+<em class="property">class </em><code class="sig-prename descclassname">api.tests.test_auth_api.</code><code class="sig-name descname">MockLDAPUserNonCommands</code><a class="headerlink" href="#api.tests.test_auth_api.MockLDAPUserNonCommands" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#api.tests.test_auth_api.MockLDAPUser" title="api.tests.test_auth_api.MockLDAPUser"><code class="xref py py-class docutils literal notranslate"><span class="pre">api.tests.test_auth_api.MockLDAPUser</span></code></a></p>
+</dd></dl>
+
+</div>
 <div class="section" id="module-api.tests.test_authlist">
-<span id="api-tests-test-authlist-module"></span><h2><span class="section-number">5.1.1.1.2. </span>api.tests.test_authlist module<a class="headerlink" href="#module-api.tests.test_authlist" title="Permalink to this headline">¶</a></h2>
+<span id="api-tests-test-authlist-module"></span><h2><span class="section-number">5.1.1.1.3. </span>api.tests.test_authlist module<a class="headerlink" href="#module-api.tests.test_authlist" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="api.tests.test_authlist.AuthlistTestCase">
 <em class="property">class </em><code class="sig-prename descclassname">api.tests.test_authlist.</code><code class="sig-name descname">AuthlistTestCase</code><span class="sig-paren">(</span><em class="sig-param">methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_authlist.AuthlistTestCase" title="Permalink to this definition">¶</a></dt>
@@ -231,8 +375,8 @@ and also the ones which authorized_users parameter include the <a class="referen
 <code class="sig-name descname">test_csc_authorization_self_remove_normal_user</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_authlist.AuthlistTestCase.test_csc_authorization_self_remove_normal_user" title="Permalink to this definition">¶</a></dt>
 <dd><p>Test CSCAuthorizationRequest with a self removal for non authlist users
 This request will create two instances:
-1. With the information of the request without the self removed user
-2. With just the information of the self removed user. This one will be set with status = Authorized</p>
+1. With just the information of the self removed user. This one will be set with status = Authorized
+2. With the information of the request without the self removed user</p>
 </dd></dl>
 
 <dl class="method">
@@ -246,7 +390,7 @@ This request will update the specified CSCAuthorizationRequest instance</p>
 
 </div>
 <div class="section" id="module-api.tests.test_commander">
-<span id="api-tests-test-commander-module"></span><h2><span class="section-number">5.1.1.1.3. </span>api.tests.test_commander module<a class="headerlink" href="#module-api.tests.test_commander" title="Permalink to this headline">¶</a></h2>
+<span id="api-tests-test-commander-module"></span><h2><span class="section-number">5.1.1.1.4. </span>api.tests.test_commander module<a class="headerlink" href="#module-api.tests.test_commander" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="api.tests.test_commander.CommanderTestCase">
 <em class="property">class </em><code class="sig-prename descclassname">api.tests.test_commander.</code><code class="sig-name descname">CommanderTestCase</code><span class="sig-paren">(</span><em class="sig-param">methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_commander.CommanderTestCase" title="Permalink to this definition">¶</a></dt>
@@ -400,8 +544,120 @@ This request will update the specified CSCAuthorizationRequest instance</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-api.tests.test_configfile">
+<span id="api-tests-test-configfile-module"></span><h2><span class="section-number">5.1.1.1.5. </span>api.tests.test_configfile module<a class="headerlink" href="#module-api.tests.test_configfile" title="Permalink to this headline">¶</a></h2>
+<p>Test users’ authentication through the API.</p>
+<dl class="class">
+<dt id="api.tests.test_configfile.ConfigFileApiTestCase">
+<em class="property">class </em><code class="sig-prename descclassname">api.tests.test_configfile.</code><code class="sig-name descname">ConfigFileApiTestCase</code><span class="sig-paren">(</span><em class="sig-param">methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_configfile.ConfigFileApiTestCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.test.testcases.TestCase</span></code></p>
+<p>Test suite for config files handling.</p>
+<dl class="method">
+<dt id="api.tests.test_configfile.ConfigFileApiTestCase.get_config_file_sample">
+<em class="property">static </em><code class="sig-name descname">get_config_file_sample</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">content</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_configfile.ConfigFileApiTestCase.get_config_file_sample" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_configfile.ConfigFileApiTestCase.setUp">
+<code class="sig-name descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_configfile.ConfigFileApiTestCase.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define the test suite setup.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_configfile.ConfigFileApiTestCase.test_get_config_file">
+<code class="sig-name descname">test_get_config_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_configfile.ConfigFileApiTestCase.test_get_config_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test that an authenticated user can get a config file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_configfile.ConfigFileApiTestCase.test_get_config_file_content">
+<code class="sig-name descname">test_get_config_file_content</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_configfile.ConfigFileApiTestCase.test_get_config_file_content" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test that an authenticated user can get a config file content.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_configfile.ConfigFileApiTestCase.test_get_config_files_list">
+<code class="sig-name descname">test_get_config_files_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_configfile.ConfigFileApiTestCase.test_get_config_files_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test that an authenticated user can get a config file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_configfile.ConfigFileApiTestCase.test_unauthenticated_cannot_get_config_file">
+<code class="sig-name descname">test_unauthenticated_cannot_get_config_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_configfile.ConfigFileApiTestCase.test_unauthenticated_cannot_get_config_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test that an unauthenticated user cannot get the config file.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="api.tests.test_configfile.setUp">
+<code class="sig-prename descclassname">api.tests.test_configfile.</code><code class="sig-name descname">setUp</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_configfile.setUp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-api.tests.test_emergencycontact">
+<span id="api-tests-test-emergencycontact-module"></span><h2><span class="section-number">5.1.1.1.6. </span>api.tests.test_emergencycontact module<a class="headerlink" href="#module-api.tests.test_emergencycontact" title="Permalink to this headline">¶</a></h2>
+<p>Test users’ authentication through the API.</p>
+<dl class="class">
+<dt id="api.tests.test_emergencycontact.EmergencyContactApiTestCase">
+<em class="property">class </em><code class="sig-prename descclassname">api.tests.test_emergencycontact.</code><code class="sig-name descname">EmergencyContactApiTestCase</code><span class="sig-paren">(</span><em class="sig-param">methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_emergencycontact.EmergencyContactApiTestCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.test.testcases.TestCase</span></code></p>
+<p>Test suite for config files handling.</p>
+<dl class="method">
+<dt id="api.tests.test_emergencycontact.EmergencyContactApiTestCase.get_config_file_sample">
+<em class="property">static </em><code class="sig-name descname">get_config_file_sample</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">content</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_emergencycontact.EmergencyContactApiTestCase.get_config_file_sample" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_emergencycontact.EmergencyContactApiTestCase.setUp">
+<code class="sig-name descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_emergencycontact.EmergencyContactApiTestCase.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define the test suite setup.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_emergencycontact.EmergencyContactApiTestCase.test_list_emergency_contacts">
+<code class="sig-name descname">test_list_emergency_contacts</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_emergencycontact.EmergencyContactApiTestCase.test_list_emergency_contacts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test that an authenticated user can get a config file.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-api.tests.test_jira">
+<span id="api-tests-test-jira-module"></span><h2><span class="section-number">5.1.1.1.7. </span>api.tests.test_jira module<a class="headerlink" href="#module-api.tests.test_jira" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="api.tests.test_jira.JiraTestCase">
+<em class="property">class </em><code class="sig-prename descclassname">api.tests.test_jira.</code><code class="sig-name descname">JiraTestCase</code><span class="sig-paren">(</span><em class="sig-param">methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_jira.JiraTestCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.test.testcases.TestCase</span></code></p>
+<dl class="method">
+<dt id="api.tests.test_jira.JiraTestCase.setUp">
+<code class="sig-name descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_jira.JiraTestCase.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define the test suite setup.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_jira.JiraTestCase.test_add_comment">
+<code class="sig-name descname">test_add_comment</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_jira.JiraTestCase.test_add_comment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test call to function with all needed parameters</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_jira.JiraTestCase.test_missing_parameters">
+<code class="sig-name descname">test_missing_parameters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_jira.JiraTestCase.test_missing_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test call to function with missing parameters</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_jira.JiraTestCase.test_needed_parameters">
+<code class="sig-name descname">test_needed_parameters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_jira.JiraTestCase.test_needed_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test call to function with all needed parameters</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-api.tests.test_lovecsc">
-<span id="api-tests-test-lovecsc-module"></span><h2><span class="section-number">5.1.1.1.4. </span>api.tests.test_lovecsc module<a class="headerlink" href="#module-api.tests.test_lovecsc" title="Permalink to this headline">¶</a></h2>
+<span id="api-tests-test-lovecsc-module"></span><h2><span class="section-number">5.1.1.1.8. </span>api.tests.test_lovecsc module<a class="headerlink" href="#module-api.tests.test_lovecsc" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="api.tests.test_lovecsc.LOVECscTestCase">
 <em class="property">class </em><code class="sig-prename descclassname">api.tests.test_lovecsc.</code><code class="sig-name descname">LOVECscTestCase</code><span class="sig-paren">(</span><em class="sig-param">methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_lovecsc.LOVECscTestCase" title="Permalink to this definition">¶</a></dt>
@@ -432,8 +688,59 @@ This request will update the specified CSCAuthorizationRequest instance</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-api.tests.test_ole">
+<span id="api-tests-test-ole-module"></span><h2><span class="section-number">5.1.1.1.9. </span>api.tests.test_ole module<a class="headerlink" href="#module-api.tests.test_ole" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="api.tests.test_ole.OLETestCase">
+<em class="property">class </em><code class="sig-prename descclassname">api.tests.test_ole.</code><code class="sig-name descname">OLETestCase</code><span class="sig-paren">(</span><em class="sig-param">methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_ole.OLETestCase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.test.testcases.TestCase</span></code></p>
+<dl class="method">
+<dt id="api.tests.test_ole.OLETestCase.setUp">
+<code class="sig-name descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_ole.OLETestCase.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define the test suite setup.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_ole.OLETestCase.test_exposurelog_list">
+<code class="sig-name descname">test_exposurelog_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_ole.OLETestCase.test_exposurelog_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test exposurelog list.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_ole.OLETestCase.test_exposurelog_update">
+<code class="sig-name descname">test_exposurelog_update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_ole.OLETestCase.test_exposurelog_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test exposurelog update.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_ole.OLETestCase.test_narrativelog_list">
+<code class="sig-name descname">test_narrativelog_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_ole.OLETestCase.test_narrativelog_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test narrativelog list.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_ole.OLETestCase.test_narrativelog_update">
+<code class="sig-name descname">test_narrativelog_update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_ole.OLETestCase.test_narrativelog_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test narrativelog update.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_ole.OLETestCase.test_simple_exposurelog_create">
+<code class="sig-name descname">test_simple_exposurelog_create</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_ole.OLETestCase.test_simple_exposurelog_create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test exposurelog create.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.tests.test_ole.OLETestCase.test_simple_narrativelog_create">
+<code class="sig-name descname">test_simple_narrativelog_create</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_ole.OLETestCase.test_simple_narrativelog_create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test narrativelog create.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-api.tests.test_schema_validation">
-<span id="api-tests-test-schema-validation-module"></span><h2><span class="section-number">5.1.1.1.5. </span>api.tests.test_schema_validation module<a class="headerlink" href="#module-api.tests.test_schema_validation" title="Permalink to this headline">¶</a></h2>
+<span id="api-tests-test-schema-validation-module"></span><h2><span class="section-number">5.1.1.1.10. </span>api.tests.test_schema_validation module<a class="headerlink" href="#module-api.tests.test_schema_validation" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="api.tests.test_schema_validation.SchemaValidationTestCase">
 <em class="property">class </em><code class="sig-prename descclassname">api.tests.test_schema_validation.</code><code class="sig-name descname">SchemaValidationTestCase</code><span class="sig-paren">(</span><em class="sig-param">methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.test_schema_validation.SchemaValidationTestCase" title="Permalink to this definition">¶</a></dt>
@@ -475,187 +782,8 @@ This request will update the specified CSCAuthorizationRequest instance</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-api.tests.tests_auth_api">
-<span id="api-tests-tests-auth-api-module"></span><h2><span class="section-number">5.1.1.1.6. </span>api.tests.tests_auth_api module<a class="headerlink" href="#module-api.tests.tests_auth_api" title="Permalink to this headline">¶</a></h2>
-<p>Test users’ authentication through the API.</p>
-<dl class="class">
-<dt id="api.tests.tests_auth_api.AuthApiTestCase">
-<em class="property">class </em><code class="sig-prename descclassname">api.tests.tests_auth_api.</code><code class="sig-name descname">AuthApiTestCase</code><span class="sig-paren">(</span><em class="sig-param">methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_auth_api.AuthApiTestCase" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.test.testcases.TestCase</span></code></p>
-<p>Test suite for users’ authentication.</p>
-<dl class="method">
-<dt id="api.tests.tests_auth_api.AuthApiTestCase.get_config_file_sample">
-<em class="property">static </em><code class="sig-name descname">get_config_file_sample</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">content</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_auth_api.AuthApiTestCase.get_config_file_sample" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="api.tests.tests_auth_api.AuthApiTestCase.setUp">
-<code class="sig-name descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_auth_api.AuthApiTestCase.setUp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Define the test suite setup.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="api.tests.tests_auth_api.AuthApiTestCase.test_user_fails_to_validate_deleted_token">
-<code class="sig-name descname">test_user_fails_to_validate_deleted_token</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_auth_api.AuthApiTestCase.test_user_fails_to_validate_deleted_token" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test that a user fails to validate an deleted token.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="api.tests.tests_auth_api.AuthApiTestCase.test_user_fails_to_validate_expired_token">
-<code class="sig-name descname">test_user_fails_to_validate_expired_token</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_auth_api.AuthApiTestCase.test_user_fails_to_validate_expired_token" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test that a user fails to validate an expired token.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="api.tests.tests_auth_api.AuthApiTestCase.test_user_login">
-<code class="sig-name descname">test_user_login</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_auth_api.AuthApiTestCase.test_user_login" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test that a user can request a token using name and password.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="api.tests.tests_auth_api.AuthApiTestCase.test_user_login_failed">
-<code class="sig-name descname">test_user_login_failed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_auth_api.AuthApiTestCase.test_user_login_failed" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test that a user cannot request a token if the credentials are invalid.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="api.tests.tests_auth_api.AuthApiTestCase.test_user_login_twice">
-<code class="sig-name descname">test_user_login_twice</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_auth_api.AuthApiTestCase.test_user_login_twice" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test that a user can request a token twie receiving different tokens each time.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="api.tests.tests_auth_api.AuthApiTestCase.test_user_logout">
-<code class="sig-name descname">test_user_logout</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_auth_api.AuthApiTestCase.test_user_logout" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test that a user can logout and delete the token.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="api.tests.tests_auth_api.AuthApiTestCase.test_user_swap">
-<code class="sig-name descname">test_user_swap</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_auth_api.AuthApiTestCase.test_user_swap" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test that a logged user can be swapped</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="api.tests.tests_auth_api.AuthApiTestCase.test_user_swap_forbidden">
-<code class="sig-name descname">test_user_swap_forbidden</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_auth_api.AuthApiTestCase.test_user_swap_forbidden" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test that a user that’s not logged in cannot swap users</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="api.tests.tests_auth_api.AuthApiTestCase.test_user_swap_no_config">
-<code class="sig-name descname">test_user_swap_no_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_auth_api.AuthApiTestCase.test_user_swap_no_config" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test that a logged user can be swapped and not request config</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="api.tests.tests_auth_api.AuthApiTestCase.test_user_swap_wrong_credentials">
-<code class="sig-name descname">test_user_swap_wrong_credentials</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_auth_api.AuthApiTestCase.test_user_swap_wrong_credentials" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test that a user that’s not logged in cannot swap users</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="api.tests.tests_auth_api.AuthApiTestCase.test_user_validate_token">
-<code class="sig-name descname">test_user_validate_token</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_auth_api.AuthApiTestCase.test_user_validate_token" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test that a user can validate a token.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="api.tests.tests_auth_api.AuthApiTestCase.test_user_validate_token_fail">
-<code class="sig-name descname">test_user_validate_token_fail</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_auth_api.AuthApiTestCase.test_user_validate_token_fail" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test that a user fails to validate an invalid token.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="api.tests.tests_auth_api.AuthApiTestCase.test_user_validate_token_no_config">
-<code class="sig-name descname">test_user_validate_token_no_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_auth_api.AuthApiTestCase.test_user_validate_token_no_config" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test that a user can validate a token and not receive the config passing the no_config query param.</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-api.tests.tests_configfile">
-<span id="api-tests-tests-configfile-module"></span><h2><span class="section-number">5.1.1.1.7. </span>api.tests.tests_configfile module<a class="headerlink" href="#module-api.tests.tests_configfile" title="Permalink to this headline">¶</a></h2>
-<p>Test users’ authentication through the API.</p>
-<dl class="class">
-<dt id="api.tests.tests_configfile.ConfigFileApiTestCase">
-<em class="property">class </em><code class="sig-prename descclassname">api.tests.tests_configfile.</code><code class="sig-name descname">ConfigFileApiTestCase</code><span class="sig-paren">(</span><em class="sig-param">methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_configfile.ConfigFileApiTestCase" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.test.testcases.TestCase</span></code></p>
-<p>Test suite for config files handling.</p>
-<dl class="method">
-<dt id="api.tests.tests_configfile.ConfigFileApiTestCase.get_config_file_sample">
-<em class="property">static </em><code class="sig-name descname">get_config_file_sample</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">content</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_configfile.ConfigFileApiTestCase.get_config_file_sample" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="api.tests.tests_configfile.ConfigFileApiTestCase.setUp">
-<code class="sig-name descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_configfile.ConfigFileApiTestCase.setUp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Define the test suite setup.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="api.tests.tests_configfile.ConfigFileApiTestCase.test_get_config_file">
-<code class="sig-name descname">test_get_config_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_configfile.ConfigFileApiTestCase.test_get_config_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test that an authenticated user can get a config file.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="api.tests.tests_configfile.ConfigFileApiTestCase.test_get_config_file_content">
-<code class="sig-name descname">test_get_config_file_content</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_configfile.ConfigFileApiTestCase.test_get_config_file_content" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test that an authenticated user can get a config file content.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="api.tests.tests_configfile.ConfigFileApiTestCase.test_get_config_files_list">
-<code class="sig-name descname">test_get_config_files_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_configfile.ConfigFileApiTestCase.test_get_config_files_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test that an authenticated user can get a config file.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="api.tests.tests_configfile.ConfigFileApiTestCase.test_unauthenticated_cannot_get_config_file">
-<code class="sig-name descname">test_unauthenticated_cannot_get_config_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_configfile.ConfigFileApiTestCase.test_unauthenticated_cannot_get_config_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test that an unauthenticated user cannot get the config file.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="api.tests.tests_configfile.setUp">
-<code class="sig-prename descclassname">api.tests.tests_configfile.</code><code class="sig-name descname">setUp</code><span class="sig-paren">(</span><em class="sig-param">self</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_configfile.setUp" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</div>
-<div class="section" id="module-api.tests.tests_emergencycontact">
-<span id="api-tests-tests-emergencycontact-module"></span><h2><span class="section-number">5.1.1.1.8. </span>api.tests.tests_emergencycontact module<a class="headerlink" href="#module-api.tests.tests_emergencycontact" title="Permalink to this headline">¶</a></h2>
-<p>Test users’ authentication through the API.</p>
-<dl class="class">
-<dt id="api.tests.tests_emergencycontact.EmergencyContactApiTestCase">
-<em class="property">class </em><code class="sig-prename descclassname">api.tests.tests_emergencycontact.</code><code class="sig-name descname">EmergencyContactApiTestCase</code><span class="sig-paren">(</span><em class="sig-param">methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_emergencycontact.EmergencyContactApiTestCase" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.test.testcases.TestCase</span></code></p>
-<p>Test suite for config files handling.</p>
-<dl class="method">
-<dt id="api.tests.tests_emergencycontact.EmergencyContactApiTestCase.get_config_file_sample">
-<em class="property">static </em><code class="sig-name descname">get_config_file_sample</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">content</em><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_emergencycontact.EmergencyContactApiTestCase.get_config_file_sample" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="api.tests.tests_emergencycontact.EmergencyContactApiTestCase.setUp">
-<code class="sig-name descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_emergencycontact.EmergencyContactApiTestCase.setUp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Define the test suite setup.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="api.tests.tests_emergencycontact.EmergencyContactApiTestCase.test_list_emergency_contacts">
-<code class="sig-name descname">test_list_emergency_contacts</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.tests.tests_emergencycontact.EmergencyContactApiTestCase.test_list_emergency_contacts" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test that an authenticated user can get a config file.</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
 <div class="section" id="module-api.tests">
-<span id="module-contents"></span><h2><span class="section-number">5.1.1.1.9. </span>Module contents<a class="headerlink" href="#module-api.tests" title="Permalink to this headline">¶</a></h2>
+<span id="module-contents"></span><h2><span class="section-number">5.1.1.1.11. </span>Module contents<a class="headerlink" href="#module-api.tests" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 

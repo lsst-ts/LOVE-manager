@@ -1227,8 +1227,8 @@ The file extension must be json and the format has the form:
       "minSeverityNotification": "mute"
     },
     "camFeeds": {
-      "generic": "/gencam",
-      "allSky": "/gencam"
+      "startrackera": "/startrackera",
+      "startrackerb": "/startrackerb"
     }
   }
 This is a normal json file with ``{“key”: “value”}`` items. You can use different variable types such as: strings, numbers, arrays and objects.
@@ -1241,8 +1241,8 @@ Available configurations:
   - minSeverityNotification: {“mute”, “muted”, “warning”, “serious”, “critical”} : minimum level to report alarm notifications. If set to “mute” or “muted” no alarm will be reported.
 - **camFeeds**:
 
-  - generic: cam feed used on the GenericCamera component. This feed will be used if the “generic” value is set on the FEEDKEY configuration parameter of the Generic Camera component.
-  - allSky: cam feed used on the GenericCamera component. This feed will be used if the “allSky” value is set on the FEEDKEY configuration parameter of the Generic Camera component.
+  - startrackera: cam feed used on the GenericCamera component. This feed will be used if the “startrackera” value is set on the FEEDKEY configuration parameter of the GenericCamera or GenericCameraControls components.
+  - startrackerb: cam feed used on the GenericCamera component. This feed will be used if the “startrackerb” value is set on the FEEDKEY configuration parameter of the GenericCamera or GenericCameraControls components.
 - **efd**:
 
   - defaultEfdInstance : {“summit_efd”, "ncsa_teststand_efd", “"ldf_stable_efd"”, “ldf_int_efd”, “base_efd”, “tucson_teststand_efd”, “test_efd”} : default efd instance to be queried on the VegaTimeSeriesPlot component.
@@ -1351,3 +1351,23 @@ Endpoint to send ATCS commands.
       "ack": "Done",
     }
   }
+
+Control Locations
+=================
+
+The Control Locations feature allows the user to define a set of locations that can be used to control the telescope. Only one location can be active at a time. The user can define a location by providing a name and a description.
+
+The LOVE system will come with a set of predefined locations that can be used to control the telescope. These locations are:
+
+- **summit**: Cerro Pachon.
+- **tucson**: Tucson Control Room.
+- **base**: La Serena Control Room.
+
+To set a location of control, the user must activate the specific location through the administration interface (the user can also deactivate the current location of control):
+
+1. Enter http://love-host/manager/admin/. You have to replace **love-host** with the host you are using, e.g. http://love01.cp.lsst.org/manager/admin
+2. Login with your admin credentials
+3. Go to http://love-host/manager/admin/api/controllocation/ 
+4. Select the location you want to activate
+5. Mark the "Selected" parameter checkbox
+6. Click the SAVE button
