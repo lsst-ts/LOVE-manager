@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v5.10.1
+-------
+
+* Add documentation for Control Location feature `<https://github.com/lsst-ts/LOVE-manager/pull/180>`_
+
 v5.10.0
 -------
 
