@@ -1351,3 +1351,23 @@ Endpoint to send ATCS commands.
       "ack": "Done",
     }
   }
+
+Control Locations
+=================
+
+The Control Locations feature allows the user to define a set of locations that can be used to control the telescope. Only one location can be active at a time. The user can define a location by providing a name and a description.
+
+The LOVE system will come with a set of predefined locations that can be used to control the telescope. These locations are:
+
+- **summit**: Cerro Pachon.
+- **tucson**: Tucson Control Room.
+- **base**: La Serena Control Room.
+
+To set a location of control, the user must activate the specific location through the administration interface (the user can also deactivate the current location of control):
+
+1. Enter http://love-host/manager/admin/. You have to replace **love-host** with the host you are using, e.g. http://love01.cp.lsst.org/manager/admin
+2. Login with your admin credentials
+3. Go to http://love-host/manager/admin/api/controllocation/ 
+4. Select the location you want to activate
+5. Mark the "Selected" parameter checkbox
+6. Click the SAVE button

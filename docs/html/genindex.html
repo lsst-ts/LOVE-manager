@@ -161,6 +161,8 @@
  | <a href="#G"><strong>G</strong></a>
  | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
+ | <a href="#J"><strong>J</strong></a>
+ | <a href="#K"><strong>K</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#N"><strong>N</strong></a>
@@ -206,21 +208,25 @@
 </li>
       <li><a href="apidoc/api.tests.html#module-api.tests">api.tests (module)</a>
 </li>
+      <li><a href="apidoc/api.tests.html#module-api.tests.test_auth_api">api.tests.test_auth_api (module)</a>
+</li>
       <li><a href="apidoc/api.tests.html#module-api.tests.test_authlist">api.tests.test_authlist (module)</a>
 </li>
       <li><a href="apidoc/api.tests.html#module-api.tests.test_commander">api.tests.test_commander (module)</a>
 </li>
-      <li><a href="apidoc/api.tests.html#module-api.tests.test_lovecsc">api.tests.test_lovecsc (module)</a>
+      <li><a href="apidoc/api.tests.html#module-api.tests.test_configfile">api.tests.test_configfile (module)</a>
+</li>
+      <li><a href="apidoc/api.tests.html#module-api.tests.test_emergencycontact">api.tests.test_emergencycontact (module)</a>
+</li>
+      <li><a href="apidoc/api.tests.html#module-api.tests.test_jira">api.tests.test_jira (module)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/api.tests.html#module-api.tests.test_lovecsc">api.tests.test_lovecsc (module)</a>
+</li>
+      <li><a href="apidoc/api.tests.html#module-api.tests.test_ole">api.tests.test_ole (module)</a>
+</li>
       <li><a href="apidoc/api.tests.html#module-api.tests.test_schema_validation">api.tests.test_schema_validation (module)</a>
-</li>
-      <li><a href="apidoc/api.tests.html#module-api.tests.tests_auth_api">api.tests.tests_auth_api (module)</a>
-</li>
-      <li><a href="apidoc/api.tests.html#module-api.tests.tests_configfile">api.tests.tests_configfile (module)</a>
-</li>
-      <li><a href="apidoc/api.tests.html#module-api.tests.tests_emergencycontact">api.tests.tests_emergencycontact (module)</a>
 </li>
       <li><a href="apidoc/api.html#module-api.urls">api.urls (module)</a>
 </li>
@@ -230,12 +236,22 @@
 </li>
       <li><a href="apidoc/manager.html#manager.utils.assert_time_data">assert_time_data() (in module manager.utils)</a>
 </li>
-      <li><a href="apidoc/manager.html#manager.settings.AUTH_LDAP_SERVER_URI">AUTH_LDAP_SERVER_URI (in module manager.settings)</a>
+      <li><a href="apidoc/manager.html#manager.settings.AUTH_LDAP_3_SERVER_URI">AUTH_LDAP_3_SERVER_URI (in module manager.settings)</a>
 </li>
-      <li><a href="apidoc/api.tests.html#api.tests.tests_auth_api.AuthApiTestCase">AuthApiTestCase (class in api.tests.tests_auth_api)</a>
+      <li><a href="apidoc/api.tests.html#api.tests.test_auth_api.AuthApiTestCase">AuthApiTestCase (class in api.tests.test_auth_api)</a>
+</li>
+      <li><a href="apidoc/api.tests.html#api.tests.test_auth_api.MockLDAPUser.authenticate">authenticate() (api.tests.test_auth_api.MockLDAPUser method)</a>
 </li>
       <li><a href="apidoc/api.html#api.authentication.ExpiringTokenAuthentication.authenticate_credentials">authenticate_credentials() (api.authentication.ExpiringTokenAuthentication method)</a>
 </li>
+      <li><a href="apidoc/api.html#api.views.IPABackend1.authenticate_ldap_user">authenticate_ldap_user() (api.views.IPABackend1 method)</a>
+
+      <ul>
+        <li><a href="apidoc/api.html#api.views.IPABackend2.authenticate_ldap_user">(api.views.IPABackend2 method)</a>
+</li>
+        <li><a href="apidoc/api.html#api.views.IPABackend3.authenticate_ldap_user">(api.views.IPABackend3 method)</a>
+</li>
+      </ul></li>
       <li><a href="apidoc/api.tests.html#api.tests.test_authlist.AuthlistTestCase">AuthlistTestCase (class in api.tests.test_authlist)</a>
 </li>
       <li><a href="apidoc/api.html#api.models.CSCAuthorizationRequest.RequestStatus.AUTHORIZED">AUTHORIZED (api.models.CSCAuthorizationRequest.RequestStatus attribute)</a>
@@ -271,9 +287,17 @@
       <li><a href="apidoc/api.html#api.views.ConfigFileViewSet.basename">basename (api.views.ConfigFileViewSet attribute)</a>
 
       <ul>
+        <li><a href="apidoc/api.html#api.views.ControlLocationViewSet.basename">(api.views.ControlLocationViewSet attribute)</a>
+</li>
         <li><a href="apidoc/api.html#api.views.CSCAuthorizationRequestViewSet.basename">(api.views.CSCAuthorizationRequestViewSet attribute)</a>
 </li>
         <li><a href="apidoc/api.html#api.views.EmergencyContactViewSet.basename">(api.views.EmergencyContactViewSet attribute)</a>
+</li>
+        <li><a href="apidoc/api.html#api.views.ExposurelogViewSet.basename">(api.views.ExposurelogViewSet attribute)</a>
+</li>
+        <li><a href="apidoc/api.html#api.views.ImageTagViewSet.basename">(api.views.ImageTagViewSet attribute)</a>
+</li>
+        <li><a href="apidoc/api.html#api.views.NarrativelogViewSet.basename">(api.views.NarrativelogViewSet attribute)</a>
 </li>
         <li><a href="apidoc/ui_framework.html#ui_framework.views.ViewViewSet.basename">(ui_framework.views.ViewViewSet attribute)</a>
 </li>
@@ -308,7 +332,7 @@
 </li>
       <li><a href="apidoc/api.html#api.models.ConfigFile.MultipleObjectsReturned">ConfigFile.MultipleObjectsReturned</a>
 </li>
-      <li><a href="apidoc/api.tests.html#api.tests.tests_configfile.ConfigFileApiTestCase">ConfigFileApiTestCase (class in api.tests.tests_configfile)</a>
+      <li><a href="apidoc/api.tests.html#api.tests.test_configfile.ConfigFileApiTestCase">ConfigFileApiTestCase (class in api.tests.test_configfile)</a>
 </li>
       <li><a href="apidoc/api.html#api.serializers.ConfigFileContentSerializer">ConfigFileContentSerializer (class in api.serializers)</a>
 </li>
@@ -326,12 +350,32 @@
 </li>
       <li><a href="apidoc/api.html#api.models.EmergencyContact.contact_info">contact_info (api.models.EmergencyContact attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/api.html#api.views.ConfigFileViewSet.content">content() (api.views.ConfigFileViewSet method)</a>
 </li>
-      <li><a href="apidoc/api.html#api.views.CSCAuthorizationRequestViewSet.create">create() (api.views.CSCAuthorizationRequestViewSet method)</a>
+      <li><a href="apidoc/api.html#api.models.ControlLocation">ControlLocation (class in api.models)</a>
 </li>
+      <li><a href="apidoc/api.html#api.models.ControlLocation.DoesNotExist">ControlLocation.DoesNotExist</a>
+</li>
+      <li><a href="apidoc/api.html#api.models.ControlLocation.MultipleObjectsReturned">ControlLocation.MultipleObjectsReturned</a>
+</li>
+      <li><a href="apidoc/api.html#api.admin.ControlLocationAdmin">ControlLocationAdmin (class in api.admin)</a>
+</li>
+      <li><a href="apidoc/api.html#api.serializers.ControlLocationSerializer">ControlLocationSerializer (class in api.serializers)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/api.html#api.serializers.ControlLocationSerializer.Meta">ControlLocationSerializer.Meta (class in api.serializers)</a>
+</li>
+      <li><a href="apidoc/api.html#api.views.ControlLocationViewSet">ControlLocationViewSet (class in api.views)</a>
+</li>
+      <li><a href="apidoc/api.html#api.views.CSCAuthorizationRequestViewSet.create">create() (api.views.CSCAuthorizationRequestViewSet method)</a>
+
+      <ul>
+        <li><a href="apidoc/api.html#api.views.ExposurelogViewSet.create">(api.views.ExposurelogViewSet method)</a>
+</li>
+        <li><a href="apidoc/api.html#api.views.NarrativelogViewSet.create">(api.views.NarrativelogViewSet method)</a>
+</li>
+      </ul></li>
       <li><a href="apidoc/api.html#api.models.BaseModel.creation_timestamp">creation_timestamp (api.models.BaseModel attribute)</a>
 
       <ul>
@@ -342,21 +386,27 @@
 </li>
       <li><a href="apidoc/api.html#api.models.CSCAuthorizationRequest.DoesNotExist">CSCAuthorizationRequest.DoesNotExist</a>
 </li>
+      <li><a href="apidoc/api.html#api.models.CSCAuthorizationRequest.ExecutionStatus">CSCAuthorizationRequest.ExecutionStatus (class in api.models)</a>
+</li>
       <li><a href="apidoc/api.html#api.models.CSCAuthorizationRequest.MultipleObjectsReturned">CSCAuthorizationRequest.MultipleObjectsReturned</a>
 </li>
       <li><a href="apidoc/api.html#api.models.CSCAuthorizationRequest.RequestStatus">CSCAuthorizationRequest.RequestStatus (class in api.models)</a>
+</li>
+      <li><a href="apidoc/api.html#api.serializers.CSCAuthorizationRequestAuthorizeSerializer">CSCAuthorizationRequestAuthorizeSerializer (class in api.serializers)</a>
+</li>
+      <li><a href="apidoc/api.html#api.serializers.CSCAuthorizationRequestAuthorizeSerializer.Meta">CSCAuthorizationRequestAuthorizeSerializer.Meta (class in api.serializers)</a>
 </li>
       <li><a href="apidoc/api.html#api.serializers.CSCAuthorizationRequestCreateSerializer">CSCAuthorizationRequestCreateSerializer (class in api.serializers)</a>
 </li>
       <li><a href="apidoc/api.html#api.serializers.CSCAuthorizationRequestCreateSerializer.Meta">CSCAuthorizationRequestCreateSerializer.Meta (class in api.serializers)</a>
 </li>
+      <li><a href="apidoc/api.html#api.serializers.CSCAuthorizationRequestExecuteSerializer">CSCAuthorizationRequestExecuteSerializer (class in api.serializers)</a>
+</li>
+      <li><a href="apidoc/api.html#api.serializers.CSCAuthorizationRequestExecuteSerializer.Meta">CSCAuthorizationRequestExecuteSerializer.Meta (class in api.serializers)</a>
+</li>
       <li><a href="apidoc/api.html#api.serializers.CSCAuthorizationRequestSerializer">CSCAuthorizationRequestSerializer (class in api.serializers)</a>
 </li>
       <li><a href="apidoc/api.html#api.serializers.CSCAuthorizationRequestSerializer.Meta">CSCAuthorizationRequestSerializer.Meta (class in api.serializers)</a>
-</li>
-      <li><a href="apidoc/api.html#api.serializers.CSCAuthorizationRequestUpdateSerializer">CSCAuthorizationRequestUpdateSerializer (class in api.serializers)</a>
-</li>
-      <li><a href="apidoc/api.html#api.serializers.CSCAuthorizationRequestUpdateSerializer.Meta">CSCAuthorizationRequestUpdateSerializer.Meta (class in api.serializers)</a>
 </li>
       <li><a href="apidoc/api.html#api.views.CSCAuthorizationRequestViewSet">CSCAuthorizationRequestViewSet (class in api.views)</a>
 </li>
@@ -378,14 +428,26 @@
 </li>
       <li><a href="apidoc/api.html#api.schema_validator.DefaultingValidator">DefaultingValidator (class in api.schema_validator)</a>
 </li>
+      <li><a href="apidoc/api.html#api.models.ControlLocation.delete">delete() (api.models.ControlLocation method)</a>
+</li>
       <li><a href="apidoc/api.html#api.models.CSCAuthorizationRequest.RequestStatus.DENIED">DENIED (api.models.CSCAuthorizationRequest.RequestStatus attribute)</a>
 </li>
-      <li><a href="apidoc/api.html#api.views.ConfigFileViewSet.description">description (api.views.ConfigFileViewSet attribute)</a>
+      <li><a href="apidoc/api.html#api.models.ControlLocation.description">description (api.models.ControlLocation attribute)</a>
 
       <ul>
+        <li><a href="apidoc/api.html#api.views.ConfigFileViewSet.description">(api.views.ConfigFileViewSet attribute)</a>
+</li>
+        <li><a href="apidoc/api.html#api.views.ControlLocationViewSet.description">(api.views.ControlLocationViewSet attribute)</a>
+</li>
         <li><a href="apidoc/api.html#api.views.CSCAuthorizationRequestViewSet.description">(api.views.CSCAuthorizationRequestViewSet attribute)</a>
 </li>
         <li><a href="apidoc/api.html#api.views.EmergencyContactViewSet.description">(api.views.EmergencyContactViewSet attribute)</a>
+</li>
+        <li><a href="apidoc/api.html#api.views.ExposurelogViewSet.description">(api.views.ExposurelogViewSet attribute)</a>
+</li>
+        <li><a href="apidoc/api.html#api.views.ImageTagViewSet.description">(api.views.ImageTagViewSet attribute)</a>
+</li>
+        <li><a href="apidoc/api.html#api.views.NarrativelogViewSet.description">(api.views.NarrativelogViewSet attribute)</a>
 </li>
         <li><a href="apidoc/ui_framework.html#ui_framework.views.ViewViewSet.description">(ui_framework.views.ViewViewSet attribute)</a>
 </li>
@@ -396,12 +458,26 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/api.html#api.views.ExposurelogViewSet.destroy">destroy() (api.views.ExposurelogViewSet method)</a>
+
+      <ul>
+        <li><a href="apidoc/api.html#api.views.NarrativelogViewSet.destroy">(api.views.NarrativelogViewSet method)</a>
+</li>
+      </ul></li>
       <li><a href="apidoc/api.html#api.views.ConfigFileViewSet.detail">detail (api.views.ConfigFileViewSet attribute)</a>
 
       <ul>
+        <li><a href="apidoc/api.html#api.views.ControlLocationViewSet.detail">(api.views.ControlLocationViewSet attribute)</a>
+</li>
         <li><a href="apidoc/api.html#api.views.CSCAuthorizationRequestViewSet.detail">(api.views.CSCAuthorizationRequestViewSet attribute)</a>
 </li>
         <li><a href="apidoc/api.html#api.views.EmergencyContactViewSet.detail">(api.views.EmergencyContactViewSet attribute)</a>
+</li>
+        <li><a href="apidoc/api.html#api.views.ExposurelogViewSet.detail">(api.views.ExposurelogViewSet attribute)</a>
+</li>
+        <li><a href="apidoc/api.html#api.views.ImageTagViewSet.detail">(api.views.ImageTagViewSet attribute)</a>
+</li>
+        <li><a href="apidoc/api.html#api.views.NarrativelogViewSet.detail">(api.views.NarrativelogViewSet attribute)</a>
 </li>
         <li><a href="apidoc/ui_framework.html#ui_framework.views.ViewViewSet.detail">(ui_framework.views.ViewViewSet attribute)</a>
 </li>
@@ -430,19 +506,27 @@
 </li>
       <li><a href="apidoc/api.html#api.models.EmergencyContact.MultipleObjectsReturned">EmergencyContact.MultipleObjectsReturned</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="apidoc/api.tests.html#api.tests.tests_emergencycontact.EmergencyContactApiTestCase">EmergencyContactApiTestCase (class in api.tests.tests_emergencycontact)</a>
+      <li><a href="apidoc/api.tests.html#api.tests.test_emergencycontact.EmergencyContactApiTestCase">EmergencyContactApiTestCase (class in api.tests.test_emergencycontact)</a>
 </li>
       <li><a href="apidoc/api.html#api.serializers.EmergencyContactSerializer">EmergencyContactSerializer (class in api.serializers)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/api.html#api.serializers.EmergencyContactSerializer.Meta">EmergencyContactSerializer.Meta (class in api.serializers)</a>
 </li>
       <li><a href="apidoc/api.html#api.views.EmergencyContactViewSet">EmergencyContactViewSet (class in api.views)</a>
 </li>
+      <li><a href="apidoc/api.html#api.views.CSCAuthorizationRequestViewSet.execute">execute() (api.views.CSCAuthorizationRequestViewSet method)</a>
+</li>
+      <li><a href="apidoc/api.html#api.models.CSCAuthorizationRequest.execution_message">execution_message (api.models.CSCAuthorizationRequest attribute)</a>
+</li>
+      <li><a href="apidoc/api.html#api.models.CSCAuthorizationRequest.execution_status">execution_status (api.models.CSCAuthorizationRequest attribute)</a>
+</li>
       <li><a href="apidoc/api.html#api.authentication.ExpiringTokenAuthentication.expires_in">expires_in() (api.authentication.ExpiringTokenAuthentication class method)</a>
 </li>
       <li><a href="apidoc/api.html#api.authentication.ExpiringTokenAuthentication">ExpiringTokenAuthentication (class in api.authentication)</a>
+</li>
+      <li><a href="apidoc/api.html#api.views.ExposurelogViewSet">ExposurelogViewSet (class in api.views)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -450,18 +534,26 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/api.html#api.models.CSCAuthorizationRequest.ExecutionStatus.FAIL">FAIL (api.models.CSCAuthorizationRequest.ExecutionStatus attribute)</a>
+</li>
       <li><a href="apidoc/api.html#api.serializers.ConfigFileContentSerializer.Meta.fields">fields (api.serializers.ConfigFileContentSerializer.Meta attribute)</a>
 
       <ul>
         <li><a href="apidoc/api.html#api.serializers.ConfigFileSerializer.Meta.fields">(api.serializers.ConfigFileSerializer.Meta attribute)</a>
 </li>
+        <li><a href="apidoc/api.html#api.serializers.ControlLocationSerializer.Meta.fields">(api.serializers.ControlLocationSerializer.Meta attribute)</a>
+</li>
+        <li><a href="apidoc/api.html#api.serializers.CSCAuthorizationRequestAuthorizeSerializer.Meta.fields">(api.serializers.CSCAuthorizationRequestAuthorizeSerializer.Meta attribute)</a>
+</li>
         <li><a href="apidoc/api.html#api.serializers.CSCAuthorizationRequestCreateSerializer.Meta.fields">(api.serializers.CSCAuthorizationRequestCreateSerializer.Meta attribute)</a>
+</li>
+        <li><a href="apidoc/api.html#api.serializers.CSCAuthorizationRequestExecuteSerializer.Meta.fields">(api.serializers.CSCAuthorizationRequestExecuteSerializer.Meta attribute)</a>
 </li>
         <li><a href="apidoc/api.html#api.serializers.CSCAuthorizationRequestSerializer.Meta.fields">(api.serializers.CSCAuthorizationRequestSerializer.Meta attribute)</a>
 </li>
-        <li><a href="apidoc/api.html#api.serializers.CSCAuthorizationRequestUpdateSerializer.Meta.fields">(api.serializers.CSCAuthorizationRequestUpdateSerializer.Meta attribute)</a>
-</li>
         <li><a href="apidoc/api.html#api.serializers.EmergencyContactSerializer.Meta.fields">(api.serializers.EmergencyContactSerializer.Meta attribute)</a>
+</li>
+        <li><a href="apidoc/api.html#api.serializers.ImageTagSerializer.Meta.fields">(api.serializers.ImageTagSerializer.Meta attribute)</a>
 </li>
         <li><a href="apidoc/api.html#api.serializers.UserSerializer.Meta.fields">(api.serializers.UserSerializer.Meta attribute)</a>
 </li>
@@ -498,17 +590,21 @@
         <li><a href="apidoc/api.html#api.views.get_config">(in module api.views)</a>
 </li>
       </ul></li>
-      <li><a href="apidoc/api.tests.html#api.tests.tests_auth_api.AuthApiTestCase.get_config_file_sample">get_config_file_sample() (api.tests.tests_auth_api.AuthApiTestCase static method)</a>
+      <li><a href="apidoc/api.tests.html#api.tests.test_auth_api.AuthApiTestCase.get_config_file_sample">get_config_file_sample() (api.tests.test_auth_api.AuthApiTestCase static method)</a>
 
       <ul>
-        <li><a href="apidoc/api.tests.html#api.tests.tests_configfile.ConfigFileApiTestCase.get_config_file_sample">(api.tests.tests_configfile.ConfigFileApiTestCase static method)</a>
+        <li><a href="apidoc/api.tests.html#api.tests.test_configfile.ConfigFileApiTestCase.get_config_file_sample">(api.tests.test_configfile.ConfigFileApiTestCase static method)</a>
 </li>
-        <li><a href="apidoc/api.tests.html#api.tests.tests_emergencycontact.EmergencyContactApiTestCase.get_config_file_sample">(api.tests.tests_emergencycontact.EmergencyContactApiTestCase static method)</a>
+        <li><a href="apidoc/api.tests.html#api.tests.test_emergencycontact.EmergencyContactApiTestCase.get_config_file_sample">(api.tests.test_emergencycontact.EmergencyContactApiTestCase static method)</a>
 </li>
       </ul></li>
       <li><a href="apidoc/api.html#api.serializers.ConfigFileContentSerializer.get_content">get_content() (api.serializers.ConfigFileContentSerializer method)</a>
 </li>
       <li><a href="apidoc/ui_framework.tests.html#ui_framework.tests.utils.get_dict">get_dict() (in module ui_framework.tests.utils)</a>
+</li>
+      <li><a href="apidoc/api.html#api.models.CSCAuthorizationRequest.get_execution_status_display">get_execution_status_display() (api.models.CSCAuthorizationRequest method)</a>
+</li>
+      <li><a href="apidoc/api.html#api.views.CSCAuthorizationRequestViewSet.get_execution_status_param_config">get_execution_status_param_config (api.views.CSCAuthorizationRequestViewSet attribute)</a>
 </li>
       <li><a href="apidoc/ui_framework.html#ui_framework.serializers.Base64ImageField.get_file_extension">get_file_extension() (ui_framework.serializers.Base64ImageField method)</a>
 </li>
@@ -525,7 +621,11 @@
       <ul>
         <li><a href="apidoc/api.html#api.models.ConfigFile.get_next_by_creation_timestamp">(api.models.ConfigFile method)</a>
 </li>
+        <li><a href="apidoc/api.html#api.models.ControlLocation.get_next_by_creation_timestamp">(api.models.ControlLocation method)</a>
+</li>
         <li><a href="apidoc/api.html#api.models.EmergencyContact.get_next_by_creation_timestamp">(api.models.EmergencyContact method)</a>
+</li>
+        <li><a href="apidoc/api.html#api.models.ImageTag.get_next_by_creation_timestamp">(api.models.ImageTag method)</a>
 </li>
         <li><a href="apidoc/ui_framework.html#ui_framework.models.BaseModel.get_next_by_creation_timestamp">(ui_framework.models.BaseModel method)</a>
 </li>
@@ -543,7 +643,11 @@
       <ul>
         <li><a href="apidoc/api.html#api.models.ConfigFile.get_next_by_update_timestamp">(api.models.ConfigFile method)</a>
 </li>
+        <li><a href="apidoc/api.html#api.models.ControlLocation.get_next_by_update_timestamp">(api.models.ControlLocation method)</a>
+</li>
         <li><a href="apidoc/api.html#api.models.EmergencyContact.get_next_by_update_timestamp">(api.models.EmergencyContact method)</a>
+</li>
+        <li><a href="apidoc/api.html#api.models.ImageTag.get_next_by_update_timestamp">(api.models.ImageTag method)</a>
 </li>
         <li><a href="apidoc/ui_framework.html#ui_framework.models.BaseModel.get_next_by_update_timestamp">(ui_framework.models.BaseModel method)</a>
 </li>
@@ -565,7 +669,11 @@
       <ul>
         <li><a href="apidoc/api.html#api.models.ConfigFile.get_previous_by_creation_timestamp">(api.models.ConfigFile method)</a>
 </li>
+        <li><a href="apidoc/api.html#api.models.ControlLocation.get_previous_by_creation_timestamp">(api.models.ControlLocation method)</a>
+</li>
         <li><a href="apidoc/api.html#api.models.EmergencyContact.get_previous_by_creation_timestamp">(api.models.EmergencyContact method)</a>
+</li>
+        <li><a href="apidoc/api.html#api.models.ImageTag.get_previous_by_creation_timestamp">(api.models.ImageTag method)</a>
 </li>
         <li><a href="apidoc/ui_framework.html#ui_framework.models.BaseModel.get_previous_by_creation_timestamp">(ui_framework.models.BaseModel method)</a>
 </li>
@@ -583,7 +691,11 @@
       <ul>
         <li><a href="apidoc/api.html#api.models.ConfigFile.get_previous_by_update_timestamp">(api.models.ConfigFile method)</a>
 </li>
+        <li><a href="apidoc/api.html#api.models.ControlLocation.get_previous_by_update_timestamp">(api.models.ControlLocation method)</a>
+</li>
         <li><a href="apidoc/api.html#api.models.EmergencyContact.get_previous_by_update_timestamp">(api.models.EmergencyContact method)</a>
+</li>
+        <li><a href="apidoc/api.html#api.models.ImageTag.get_previous_by_update_timestamp">(api.models.ImageTag method)</a>
 </li>
         <li><a href="apidoc/ui_framework.html#ui_framework.models.BaseModel.get_previous_by_update_timestamp">(ui_framework.models.BaseModel method)</a>
 </li>
@@ -594,13 +706,19 @@
         <li><a href="apidoc/ui_framework.html#ui_framework.models.WorkspaceView.get_previous_by_update_timestamp">(ui_framework.models.WorkspaceView method)</a>
 </li>
       </ul></li>
-      <li><a href="apidoc/api.html#api.views.CSCAuthorizationRequestViewSet.get_queryset">get_queryset() (api.views.CSCAuthorizationRequestViewSet method)</a>
+      <li><a href="apidoc/api.html#api.views.ControlLocationViewSet.get_queryset">get_queryset() (api.views.ControlLocationViewSet method)</a>
+
+      <ul>
+        <li><a href="apidoc/api.html#api.views.CSCAuthorizationRequestViewSet.get_queryset">(api.views.CSCAuthorizationRequestViewSet method)</a>
 </li>
+      </ul></li>
       <li><a href="apidoc/api.html#api.views.CSCAuthorizationRequestViewSet.get_serializer_class">get_serializer_class() (api.views.CSCAuthorizationRequestViewSet method)</a>
 </li>
       <li><a href="apidoc/ui_framework.html#ui_framework.models.Workspace.get_sorted_views">get_sorted_views() (ui_framework.models.Workspace method)</a>
 </li>
       <li><a href="apidoc/api.html#api.models.CSCAuthorizationRequest.get_status_display">get_status_display() (api.models.CSCAuthorizationRequest method)</a>
+</li>
+      <li><a href="apidoc/api.html#api.views.CSCAuthorizationRequestViewSet.get_status_param_config">get_status_param_config (api.views.CSCAuthorizationRequestViewSet attribute)</a>
 </li>
       <li><a href="apidoc/manager.html#manager.utils.get_tai_to_utc">get_tai_to_utc() (in module manager.utils)</a>
 </li>
@@ -613,6 +731,8 @@
       <li><a href="apidoc/subscription.html#subscription.auth.get_user">get_user (in module subscription.auth)</a>
 </li>
       <li><a href="apidoc/api.html#api.serializers.ConfigFileSerializer.get_username">get_username() (api.serializers.ConfigFileSerializer method)</a>
+</li>
+      <li><a href="apidoc/api.html#api.views.getTitle">getTitle() (in module api.views)</a>
 </li>
       <li><a href="apidoc/api.html#api.middleware.GetTokenMiddleware">GetTokenMiddleware (class in api.middleware)</a>
 </li>
@@ -653,11 +773,15 @@
       <li><a href="apidoc/api.html#api.models.ConfigFile.id">id (api.models.ConfigFile attribute)</a>
 
       <ul>
+        <li><a href="apidoc/api.html#api.models.ControlLocation.id">(api.models.ControlLocation attribute)</a>
+</li>
         <li><a href="apidoc/api.html#api.models.CSCAuthorizationRequest.id">(api.models.CSCAuthorizationRequest attribute)</a>
 </li>
         <li><a href="apidoc/api.html#api.models.EmergencyContact.id">(api.models.EmergencyContact attribute)</a>
 </li>
         <li><a href="apidoc/api.html#api.models.GlobalPermissions.id">(api.models.GlobalPermissions attribute)</a>
+</li>
+        <li><a href="apidoc/api.html#api.models.ImageTag.id">(api.models.ImageTag attribute)</a>
 </li>
         <li><a href="apidoc/api.html#api.models.Token.id">(api.models.Token attribute)</a>
 </li>
@@ -668,9 +792,27 @@
         <li><a href="apidoc/ui_framework.html#ui_framework.models.WorkspaceView.id">(ui_framework.models.WorkspaceView attribute)</a>
 </li>
       </ul></li>
+      <li><a href="apidoc/api.html#api.models.ImageTag">ImageTag (class in api.models)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/api.html#api.models.ImageTag.DoesNotExist">ImageTag.DoesNotExist</a>
+</li>
+      <li><a href="apidoc/api.html#api.models.ImageTag.MultipleObjectsReturned">ImageTag.MultipleObjectsReturned</a>
+</li>
+      <li><a href="apidoc/api.html#api.serializers.ImageTagSerializer">ImageTagSerializer (class in api.serializers)</a>
+</li>
+      <li><a href="apidoc/api.html#api.serializers.ImageTagSerializer.Meta">ImageTagSerializer.Meta (class in api.serializers)</a>
+</li>
+      <li><a href="apidoc/api.html#api.views.ImageTagViewSet">ImageTagViewSet (class in api.views)</a>
+</li>
       <li><a href="apidoc/subscription.html#subscription.heartbeat_manager.HeartbeatManager.instance">instance (subscription.heartbeat_manager.HeartbeatManager attribute)</a>
+</li>
+      <li><a href="apidoc/api.html#api.views.IPABackend1">IPABackend1 (class in api.views)</a>
+</li>
+      <li><a href="apidoc/api.html#api.views.IPABackend2">IPABackend2 (class in api.views)</a>
+</li>
+      <li><a href="apidoc/api.html#api.views.IPABackend3">IPABackend3 (class in api.views)</a>
 </li>
       <li><a href="apidoc/api.html#api.serializers.UserPermissionsSerializer.is_authlist_admin">is_authlist_admin() (api.serializers.UserPermissionsSerializer method)</a>
 </li>
@@ -679,25 +821,59 @@
   </ul></td>
 </tr></table>
 
+<h2 id="J">J</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/api.html#api.views.jira">jira() (in module api.views)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/api.html#api.views.jira_comment">jira_comment() (in module api.views)</a>
+</li>
+      <li><a href="apidoc/api.tests.html#api.tests.test_jira.JiraTestCase">JiraTestCase (class in api.tests.test_jira)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="K">K</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/api.html#api.models.ImageTag.key">key (api.models.ImageTag attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/api.html#api.models.ImageTag.label">label (api.models.ImageTag attribute)</a>
+</li>
       <li><a href="apidoc/manager.html#manager.settings.LANGUAGE_CODE">LANGUAGE_CODE (in module manager.settings)</a>
 </li>
+      <li><a href="apidoc/api.html#api.views.lfa">lfa() (in module api.views)</a>
+</li>
+      <li><a href="apidoc/api.html#api.views.CSCAuthorizationRequestViewSet.list">list() (api.views.CSCAuthorizationRequestViewSet method)</a>
+
+      <ul>
+        <li><a href="apidoc/api.html#api.views.ExposurelogViewSet.list">(api.views.ExposurelogViewSet method)</a>
+</li>
+        <li><a href="apidoc/api.html#api.views.NarrativelogViewSet.list">(api.views.NarrativelogViewSet method)</a>
+</li>
+      </ul></li>
       <li><a href="apidoc/api.html#api.views.CustomObtainAuthToken.login_failed_response">login_failed_response (api.views.CustomObtainAuthToken attribute)</a>
 
       <ul>
         <li><a href="apidoc/api.html#api.views.CustomSwapAuthToken.login_failed_response">(api.views.CustomSwapAuthToken attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/api.html#api.views.CustomObtainAuthToken.login_response">login_response (api.views.CustomObtainAuthToken attribute)</a>
 
       <ul>
         <li><a href="apidoc/api.html#api.views.CustomSwapAuthToken.login_response">(api.views.CustomSwapAuthToken attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/api.html#api.views.logout">logout() (in module api.views)</a>
 
       <ul>
@@ -714,6 +890,8 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/api.html#api.views.makeJiraDescription">makeJiraDescription() (in module api.views)</a>
+</li>
       <li><a href="apidoc/manage.html#module-manage">manage (module)</a>
 </li>
       <li><a href="apidoc/manager.html#module-manager">manager (module)</a>
@@ -744,11 +922,21 @@
         <li><a href="apidoc/api.tests.html#api.tests.test_schema_validation.SchemaValidationTestCase.maxDiff">(api.tests.test_schema_validation.SchemaValidationTestCase attribute)</a>
 </li>
       </ul></li>
+      <li><a href="apidoc/api.html#api.admin.ControlLocationAdmin.media">media() (api.admin.ControlLocationAdmin property)</a>
+</li>
       <li><a href="apidoc/manager.html#manager.settings.MEDIA_URL">MEDIA_URL (in module manager.settings)</a>
+</li>
+      <li><a href="apidoc/api.html#api.models.CSCAuthorizationRequest.message">message (api.models.CSCAuthorizationRequest attribute)</a>
+</li>
+      <li><a href="apidoc/api.tests.html#api.tests.test_auth_api.MockLDAPUser">MockLDAPUser (class in api.tests.test_auth_api)</a>
+</li>
+      <li><a href="apidoc/api.tests.html#api.tests.test_auth_api.MockLDAPUserCommands">MockLDAPUserCommands (class in api.tests.test_auth_api)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="apidoc/api.html#api.models.CSCAuthorizationRequest.message">message (api.models.CSCAuthorizationRequest attribute)</a>
+      <li><a href="apidoc/api.tests.html#api.tests.test_auth_api.MockLDAPUserExistent">MockLDAPUserExistent (class in api.tests.test_auth_api)</a>
+</li>
+      <li><a href="apidoc/api.tests.html#api.tests.test_auth_api.MockLDAPUserNonCommands">MockLDAPUserNonCommands (class in api.tests.test_auth_api)</a>
 </li>
       <li><a href="apidoc/api.html#api.authentication.ExpiringTokenAuthentication.model">model (api.authentication.ExpiringTokenAuthentication attribute)</a>
 
@@ -759,13 +947,19 @@
 </li>
         <li><a href="apidoc/api.html#api.serializers.ConfigFileSerializer.Meta.model">(api.serializers.ConfigFileSerializer.Meta attribute)</a>
 </li>
+        <li><a href="apidoc/api.html#api.serializers.ControlLocationSerializer.Meta.model">(api.serializers.ControlLocationSerializer.Meta attribute)</a>
+</li>
+        <li><a href="apidoc/api.html#api.serializers.CSCAuthorizationRequestAuthorizeSerializer.Meta.model">(api.serializers.CSCAuthorizationRequestAuthorizeSerializer.Meta attribute)</a>
+</li>
         <li><a href="apidoc/api.html#api.serializers.CSCAuthorizationRequestCreateSerializer.Meta.model">(api.serializers.CSCAuthorizationRequestCreateSerializer.Meta attribute)</a>
+</li>
+        <li><a href="apidoc/api.html#api.serializers.CSCAuthorizationRequestExecuteSerializer.Meta.model">(api.serializers.CSCAuthorizationRequestExecuteSerializer.Meta attribute)</a>
 </li>
         <li><a href="apidoc/api.html#api.serializers.CSCAuthorizationRequestSerializer.Meta.model">(api.serializers.CSCAuthorizationRequestSerializer.Meta attribute)</a>
 </li>
-        <li><a href="apidoc/api.html#api.serializers.CSCAuthorizationRequestUpdateSerializer.Meta.model">(api.serializers.CSCAuthorizationRequestUpdateSerializer.Meta attribute)</a>
-</li>
         <li><a href="apidoc/api.html#api.serializers.EmergencyContactSerializer.Meta.model">(api.serializers.EmergencyContactSerializer.Meta attribute)</a>
+</li>
+        <li><a href="apidoc/api.html#api.serializers.ImageTagSerializer.Meta.model">(api.serializers.ImageTagSerializer.Meta attribute)</a>
 </li>
         <li><a href="apidoc/api.html#api.serializers.UserSerializer.Meta.model">(api.serializers.UserSerializer.Meta attribute)</a>
 </li>
@@ -791,13 +985,23 @@
       <li><a href="apidoc/api.html#api.apps.ApiConfig.name">name (api.apps.ApiConfig attribute)</a>
 
       <ul>
+        <li><a href="apidoc/api.html#api.models.ControlLocation.name">(api.models.ControlLocation attribute)</a>
+</li>
         <li><a href="apidoc/api.html#api.models.EmergencyContact.name">(api.models.EmergencyContact attribute)</a>
 </li>
         <li><a href="apidoc/api.html#api.views.ConfigFileViewSet.name">(api.views.ConfigFileViewSet attribute)</a>
 </li>
+        <li><a href="apidoc/api.html#api.views.ControlLocationViewSet.name">(api.views.ControlLocationViewSet attribute)</a>
+</li>
         <li><a href="apidoc/api.html#api.views.CSCAuthorizationRequestViewSet.name">(api.views.CSCAuthorizationRequestViewSet attribute)</a>
 </li>
         <li><a href="apidoc/api.html#api.views.EmergencyContactViewSet.name">(api.views.EmergencyContactViewSet attribute)</a>
+</li>
+        <li><a href="apidoc/api.html#api.views.ExposurelogViewSet.name">(api.views.ExposurelogViewSet attribute)</a>
+</li>
+        <li><a href="apidoc/api.html#api.views.ImageTagViewSet.name">(api.views.ImageTagViewSet attribute)</a>
+</li>
+        <li><a href="apidoc/api.html#api.views.NarrativelogViewSet.name">(api.views.NarrativelogViewSet attribute)</a>
 </li>
         <li><a href="apidoc/subscription.html#subscription.apps.SubscriptionConfig.name">(subscription.apps.SubscriptionConfig attribute)</a>
 </li>
@@ -815,6 +1019,10 @@
 </li>
       </ul></li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/api.html#api.views.NarrativelogViewSet">NarrativelogViewSet (class in api.views)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="O">O</h2>
@@ -823,11 +1031,15 @@
       <li><a href="apidoc/api.html#api.models.ConfigFile.objects">objects (api.models.ConfigFile attribute)</a>
 
       <ul>
+        <li><a href="apidoc/api.html#api.models.ControlLocation.objects">(api.models.ControlLocation attribute)</a>
+</li>
         <li><a href="apidoc/api.html#api.models.CSCAuthorizationRequest.objects">(api.models.CSCAuthorizationRequest attribute)</a>
 </li>
         <li><a href="apidoc/api.html#api.models.EmergencyContact.objects">(api.models.EmergencyContact attribute)</a>
 </li>
         <li><a href="apidoc/api.html#api.models.GlobalPermissions.objects">(api.models.GlobalPermissions attribute)</a>
+</li>
+        <li><a href="apidoc/api.html#api.models.ImageTag.objects">(api.models.ImageTag attribute)</a>
 </li>
         <li><a href="apidoc/api.html#api.models.Token.objects">(api.models.Token attribute)</a>
 </li>
@@ -840,6 +1052,12 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/api.html#api.views.ole_exposurelog_exposures">ole_exposurelog_exposures() (in module api.views)</a>
+</li>
+      <li><a href="apidoc/api.html#api.views.ole_exposurelog_instruments">ole_exposurelog_instruments() (in module api.views)</a>
+</li>
+      <li><a href="apidoc/api.tests.html#api.tests.test_ole.OLETestCase">OLETestCase (class in api.tests.test_ole)</a>
+</li>
       <li><a href="apidoc/ui_framework.html#ui_framework.models.OverwriteStorage">OverwriteStorage (class in ui_framework.models)</a>
 </li>
   </ul></td>
@@ -848,10 +1066,24 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="apidoc/api.html#api.models.CSCAuthorizationRequest.RequestStatus.PENDING">PENDING (api.models.CSCAuthorizationRequest.RequestStatus attribute)</a>
+      <li><a href="apidoc/api.html#api.views.ExposurelogViewSet.parser_classes">parser_classes (api.views.ExposurelogViewSet attribute)</a>
 </li>
-      <li><a href="apidoc/api.html#api.views.CSCAuthorizationRequestViewSet.permission_classes">permission_classes (api.views.CSCAuthorizationRequestViewSet attribute)</a>
+      <li><a href="apidoc/api.html#api.models.CSCAuthorizationRequest.ExecutionStatus.PENDING">PENDING (api.models.CSCAuthorizationRequest.ExecutionStatus attribute)</a>
+
+      <ul>
+        <li><a href="apidoc/api.html#api.models.CSCAuthorizationRequest.RequestStatus.PENDING">(api.models.CSCAuthorizationRequest.RequestStatus attribute)</a>
 </li>
+      </ul></li>
+      <li><a href="apidoc/api.html#api.views.ControlLocationViewSet.permission_classes">permission_classes (api.views.ControlLocationViewSet attribute)</a>
+
+      <ul>
+        <li><a href="apidoc/api.html#api.views.CSCAuthorizationRequestViewSet.permission_classes">(api.views.CSCAuthorizationRequestViewSet attribute)</a>
+</li>
+        <li><a href="apidoc/api.html#api.views.ExposurelogViewSet.permission_classes">(api.views.ExposurelogViewSet attribute)</a>
+</li>
+        <li><a href="apidoc/api.html#api.views.NarrativelogViewSet.permission_classes">(api.views.NarrativelogViewSet attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/api.html#api.views.CustomObtainAuthToken.post">post() (api.views.CustomObtainAuthToken method)</a>
@@ -862,26 +1094,26 @@
       </ul></li>
       <li><a href="apidoc/manager.html#manager.settings.PROCESS_CONNECTION_PASS">PROCESS_CONNECTION_PASS (in module manager.settings)</a>
 </li>
+      <li><a href="apidoc/api.html#api.views.CSCAuthorizationRequestViewSet.put_authorize_params_body">put_authorize_params_body (api.views.CSCAuthorizationRequestViewSet attribute)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="Q">Q</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="apidoc/api.html#api.views.CSCAuthorizationRequestViewSet.query_authorize_csc">query_authorize_csc() (api.views.CSCAuthorizationRequestViewSet method)</a>
-</li>
       <li><a href="apidoc/api.html#api.views.query_efd_clients">query_efd_clients() (in module api.views)</a>
 </li>
       <li><a href="apidoc/api.html#api.views.query_efd_logs">query_efd_logs() (in module api.views)</a>
 </li>
       <li><a href="apidoc/api.html#api.views.query_efd_timeseries">query_efd_timeseries() (in module api.views)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/api.html#api.views.ConfigFileViewSet.queryset">queryset (api.views.ConfigFileViewSet attribute)</a>
 
       <ul>
         <li><a href="apidoc/api.html#api.views.EmergencyContactViewSet.queryset">(api.views.EmergencyContactViewSet attribute)</a>
+</li>
+        <li><a href="apidoc/api.html#api.views.ImageTagViewSet.queryset">(api.views.ImageTagViewSet attribute)</a>
 </li>
         <li><a href="apidoc/ui_framework.html#ui_framework.views.ViewViewSet.queryset">(ui_framework.views.ViewViewSet attribute)</a>
 </li>
@@ -906,16 +1138,22 @@
 </li>
       <li><a href="apidoc/api.html#api.models.CSCAuthorizationRequest.requested_at">requested_at (api.models.CSCAuthorizationRequest attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/api.html#api.models.CSCAuthorizationRequest.requested_by">requested_by (api.models.CSCAuthorizationRequest attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/api.html#api.models.CSCAuthorizationRequest.resolved_at">resolved_at (api.models.CSCAuthorizationRequest attribute)</a>
 </li>
       <li><a href="apidoc/api.html#api.models.CSCAuthorizationRequest.resolved_by">resolved_by (api.models.CSCAuthorizationRequest attribute)</a>
 </li>
       <li><a href="apidoc/api.html#api.models.CSCAuthorizationRequest.resolved_by_id">resolved_by_id (api.models.CSCAuthorizationRequest attribute)</a>
 </li>
+      <li><a href="apidoc/api.html#api.views.ExposurelogViewSet.retrieve">retrieve() (api.views.ExposurelogViewSet method)</a>
+
+      <ul>
+        <li><a href="apidoc/api.html#api.views.NarrativelogViewSet.retrieve">(api.views.NarrativelogViewSet method)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -930,6 +1168,10 @@
 </li>
       <li><a href="apidoc/api.tests.html#api.tests.test_commander.SalinfoTestCase">SalinfoTestCase (class in api.tests.test_commander)</a>
 </li>
+      <li><a href="apidoc/api.html#api.models.ControlLocation.save">save() (api.models.ControlLocation method)</a>
+</li>
+      <li><a href="apidoc/api.html#api.admin.ControlLocationAdmin.save_model">save_model() (api.admin.ControlLocationAdmin method)</a>
+</li>
       <li><a href="apidoc/api.tests.html#api.tests.test_schema_validation.SchemaValidationTestCase">SchemaValidationTestCase (class in api.tests.test_schema_validation)</a>
 </li>
       <li><a href="apidoc/api.tests.html#api.tests.test_schema_validation.SchemaValidationTestCase.script_schema">script_schema (api.tests.test_schema_validation.SchemaValidationTestCase attribute)</a>
@@ -938,12 +1180,20 @@
 </li>
       <li><a href="apidoc/manager.html#manager.settings.SECRET_KEY">SECRET_KEY (in module manager.settings)</a>
 </li>
+      <li><a href="apidoc/api.html#api.models.ControlLocation.selected">selected (api.models.ControlLocation attribute)</a>
+</li>
+      <li><a href="apidoc/api.html#api.models.ConfigFile.selected_by_users">selected_by_users (api.models.ConfigFile attribute)</a>
+</li>
       <li><a href="apidoc/subscription.html#subscription.consumers.SubscriptionConsumer.send_heartbeat">send_heartbeat() (subscription.consumers.SubscriptionConsumer method)</a>
 </li>
       <li><a href="apidoc/api.html#api.views.ConfigFileViewSet.serializer_class">serializer_class (api.views.ConfigFileViewSet attribute)</a>
 
       <ul>
+        <li><a href="apidoc/api.html#api.views.ControlLocationViewSet.serializer_class">(api.views.ControlLocationViewSet attribute)</a>
+</li>
         <li><a href="apidoc/api.html#api.views.EmergencyContactViewSet.serializer_class">(api.views.EmergencyContactViewSet attribute)</a>
+</li>
+        <li><a href="apidoc/api.html#api.views.ImageTagViewSet.serializer_class">(api.views.ImageTagViewSet attribute)</a>
 </li>
         <li><a href="apidoc/ui_framework.html#ui_framework.views.ViewViewSet.serializer_class">(ui_framework.views.ViewViewSet attribute)</a>
 </li>
@@ -952,11 +1202,23 @@
         <li><a href="apidoc/ui_framework.html#ui_framework.views.WorkspaceViewViewSet.serializer_class">(ui_framework.views.WorkspaceViewViewSet attribute)</a>
 </li>
       </ul></li>
+      <li><a href="apidoc/api.html#api.views.set_config_selected">set_config_selected() (in module api.views)</a>
+</li>
       <li><a href="apidoc/api.html#api.schema_validator.DefaultingValidator.set_default_properties">set_default_properties() (api.schema_validator.DefaultingValidator static method)</a>
 </li>
-      <li><a href="apidoc/api.tests.html#api.tests.test_authlist.AuthlistTestCase.setUp">setUp() (api.tests.test_authlist.AuthlistTestCase method)</a>
+      <li><a href="apidoc/api.html#api.views.IPABackend1.settings_prefix">settings_prefix (api.views.IPABackend1 attribute)</a>
 
       <ul>
+        <li><a href="apidoc/api.html#api.views.IPABackend2.settings_prefix">(api.views.IPABackend2 attribute)</a>
+</li>
+        <li><a href="apidoc/api.html#api.views.IPABackend3.settings_prefix">(api.views.IPABackend3 attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="apidoc/api.tests.html#api.tests.test_auth_api.AuthApiTestCase.setUp">setUp() (api.tests.test_auth_api.AuthApiTestCase method)</a>
+
+      <ul>
+        <li><a href="apidoc/api.tests.html#api.tests.test_authlist.AuthlistTestCase.setUp">(api.tests.test_authlist.AuthlistTestCase method)</a>
+</li>
         <li><a href="apidoc/api.tests.html#api.tests.test_commander.CommanderTestCase.setUp">(api.tests.test_commander.CommanderTestCase method)</a>
 </li>
         <li><a href="apidoc/api.tests.html#api.tests.test_commander.EFDTestCase.setUp">(api.tests.test_commander.EFDTestCase method)</a>
@@ -965,17 +1227,19 @@
 </li>
         <li><a href="apidoc/api.tests.html#api.tests.test_commander.TCSTestCase.setUp">(api.tests.test_commander.TCSTestCase method)</a>
 </li>
+        <li><a href="apidoc/api.tests.html#api.tests.test_configfile.ConfigFileApiTestCase.setUp">(api.tests.test_configfile.ConfigFileApiTestCase method)</a>
+</li>
+        <li><a href="apidoc/api.tests.html#api.tests.test_emergencycontact.EmergencyContactApiTestCase.setUp">(api.tests.test_emergencycontact.EmergencyContactApiTestCase method)</a>
+</li>
+        <li><a href="apidoc/api.tests.html#api.tests.test_jira.JiraTestCase.setUp">(api.tests.test_jira.JiraTestCase method)</a>
+</li>
         <li><a href="apidoc/api.tests.html#api.tests.test_lovecsc.LOVECscTestCase.setUp">(api.tests.test_lovecsc.LOVECscTestCase method)</a>
+</li>
+        <li><a href="apidoc/api.tests.html#api.tests.test_ole.OLETestCase.setUp">(api.tests.test_ole.OLETestCase method)</a>
 </li>
         <li><a href="apidoc/api.tests.html#api.tests.test_schema_validation.SchemaValidationTestCase.setUp">(api.tests.test_schema_validation.SchemaValidationTestCase method)</a>
 </li>
-        <li><a href="apidoc/api.tests.html#api.tests.tests_auth_api.AuthApiTestCase.setUp">(api.tests.tests_auth_api.AuthApiTestCase method)</a>
-</li>
-        <li><a href="apidoc/api.tests.html#api.tests.tests_configfile.ConfigFileApiTestCase.setUp">(api.tests.tests_configfile.ConfigFileApiTestCase method)</a>
-</li>
-        <li><a href="apidoc/api.tests.html#api.tests.tests_emergencycontact.EmergencyContactApiTestCase.setUp">(api.tests.tests_emergencycontact.EmergencyContactApiTestCase method)</a>
-</li>
-        <li><a href="apidoc/api.tests.html#api.tests.tests_configfile.setUp">(in module api.tests.tests_configfile)</a>
+        <li><a href="apidoc/api.tests.html#api.tests.test_configfile.setUp">(in module api.tests.test_configfile)</a>
 </li>
         <li><a href="apidoc/ui_framework.tests.html#ui_framework.tests.test_view_thumbnail.ViewThumbnailTestCase.setUp">(ui_framework.tests.test_view_thumbnail.ViewThumbnailTestCase method)</a>
 </li>
@@ -1030,12 +1294,30 @@
 </li>
       <li><a href="apidoc/api.html#api.models.EmergencyContact.subsystem">subsystem (api.models.EmergencyContact attribute)</a>
 </li>
+      <li><a href="apidoc/api.html#api.models.CSCAuthorizationRequest.ExecutionStatus.SUCCESSFUL">SUCCESSFUL (api.models.CSCAuthorizationRequest.ExecutionStatus attribute)</a>
+</li>
+      <li><a href="apidoc/api.html#api.views.IPABackend1.successful_login">successful_login (api.views.IPABackend1 attribute)</a>
+
+      <ul>
+        <li><a href="apidoc/api.html#api.views.IPABackend2.successful_login">(api.views.IPABackend2 attribute)</a>
+</li>
+        <li><a href="apidoc/api.html#api.views.IPABackend3.successful_login">(api.views.IPABackend3 attribute)</a>
+</li>
+      </ul></li>
       <li><a href="apidoc/api.html#api.views.ConfigFileViewSet.suffix">suffix (api.views.ConfigFileViewSet attribute)</a>
 
       <ul>
+        <li><a href="apidoc/api.html#api.views.ControlLocationViewSet.suffix">(api.views.ControlLocationViewSet attribute)</a>
+</li>
         <li><a href="apidoc/api.html#api.views.CSCAuthorizationRequestViewSet.suffix">(api.views.CSCAuthorizationRequestViewSet attribute)</a>
 </li>
         <li><a href="apidoc/api.html#api.views.EmergencyContactViewSet.suffix">(api.views.EmergencyContactViewSet attribute)</a>
+</li>
+        <li><a href="apidoc/api.html#api.views.ExposurelogViewSet.suffix">(api.views.ExposurelogViewSet attribute)</a>
+</li>
+        <li><a href="apidoc/api.html#api.views.ImageTagViewSet.suffix">(api.views.ImageTagViewSet attribute)</a>
+</li>
+        <li><a href="apidoc/api.html#api.views.NarrativelogViewSet.suffix">(api.views.NarrativelogViewSet attribute)</a>
 </li>
         <li><a href="apidoc/ui_framework.html#ui_framework.views.ViewViewSet.suffix">(ui_framework.views.ViewViewSet attribute)</a>
 </li>
@@ -1063,6 +1345,8 @@
       <li><a href="apidoc/api.tests.html#api.tests.test_commander.TCSTestCase">TCSTestCase (class in api.tests.test_commander)</a>
 </li>
       <li><a href="apidoc/ui_framework.tests.html#ui_framework.tests.tests_models.WorkspaceAndViewsRelationsTestCase.test_add_and_get_views_to_workspace">test_add_and_get_views_to_workspace() (ui_framework.tests.tests_models.WorkspaceAndViewsRelationsTestCase method)</a>
+</li>
+      <li><a href="apidoc/api.tests.html#api.tests.test_jira.JiraTestCase.test_add_comment">test_add_comment() (api.tests.test_jira.JiraTestCase method)</a>
 </li>
       <li><a href="apidoc/api.tests.html#api.tests.test_commander.CommanderTestCase.test_authorized_commander_data">test_authorized_commander_data() (api.tests.test_commander.CommanderTestCase method)</a>
 </li>
@@ -1118,11 +1402,15 @@
 </li>
       <li><a href="apidoc/api.tests.html#api.tests.test_commander.TCSTestCase.test_docstrings_query_mtcs">test_docstrings_query_mtcs() (api.tests.test_commander.TCSTestCase method)</a>
 </li>
-      <li><a href="apidoc/api.tests.html#api.tests.tests_configfile.ConfigFileApiTestCase.test_get_config_file">test_get_config_file() (api.tests.tests_configfile.ConfigFileApiTestCase method)</a>
+      <li><a href="apidoc/api.tests.html#api.tests.test_ole.OLETestCase.test_exposurelog_list">test_exposurelog_list() (api.tests.test_ole.OLETestCase method)</a>
 </li>
-      <li><a href="apidoc/api.tests.html#api.tests.tests_configfile.ConfigFileApiTestCase.test_get_config_file_content">test_get_config_file_content() (api.tests.tests_configfile.ConfigFileApiTestCase method)</a>
+      <li><a href="apidoc/api.tests.html#api.tests.test_ole.OLETestCase.test_exposurelog_update">test_exposurelog_update() (api.tests.test_ole.OLETestCase method)</a>
 </li>
-      <li><a href="apidoc/api.tests.html#api.tests.tests_configfile.ConfigFileApiTestCase.test_get_config_files_list">test_get_config_files_list() (api.tests.tests_configfile.ConfigFileApiTestCase method)</a>
+      <li><a href="apidoc/api.tests.html#api.tests.test_configfile.ConfigFileApiTestCase.test_get_config_file">test_get_config_file() (api.tests.test_configfile.ConfigFileApiTestCase method)</a>
+</li>
+      <li><a href="apidoc/api.tests.html#api.tests.test_configfile.ConfigFileApiTestCase.test_get_config_file_content">test_get_config_file_content() (api.tests.test_configfile.ConfigFileApiTestCase method)</a>
+</li>
+      <li><a href="apidoc/api.tests.html#api.tests.test_configfile.ConfigFileApiTestCase.test_get_config_files_list">test_get_config_files_list() (api.tests.test_configfile.ConfigFileApiTestCase method)</a>
 </li>
       <li><a href="apidoc/ui_framework.tests.html#ui_framework.tests.tests_custom_api.AuthorizedCrudTestCase.test_get_full_workspace">test_get_full_workspace() (ui_framework.tests.tests_custom_api.AuthorizedCrudTestCase method)</a>
 </li>
@@ -1132,7 +1420,21 @@
 </li>
       <li><a href="apidoc/api.tests.html#api.tests.test_schema_validation.SchemaValidationTestCase.test_invalid_config">test_invalid_config() (api.tests.test_schema_validation.SchemaValidationTestCase method)</a>
 </li>
-      <li><a href="apidoc/api.tests.html#api.tests.tests_emergencycontact.EmergencyContactApiTestCase.test_list_emergency_contacts">test_list_emergency_contacts() (api.tests.tests_emergencycontact.EmergencyContactApiTestCase method)</a>
+      <li><a href="apidoc/api.tests.html#api.tests.test_auth_api.AuthApiTestCase.test_ldap_existent_cmd_user_login">test_ldap_existent_cmd_user_login() (api.tests.test_auth_api.AuthApiTestCase method)</a>
+</li>
+      <li><a href="apidoc/api.tests.html#api.tests.test_auth_api.AuthApiTestCase.test_ldap_nonexistent_cmd_user_login">test_ldap_nonexistent_cmd_user_login() (api.tests.test_auth_api.AuthApiTestCase method)</a>
+</li>
+      <li><a href="apidoc/api.tests.html#api.tests.test_auth_api.AuthApiTestCase.test_ldap_nonexistent_non_cmd_user_login">test_ldap_nonexistent_non_cmd_user_login() (api.tests.test_auth_api.AuthApiTestCase method)</a>
+</li>
+      <li><a href="apidoc/api.tests.html#api.tests.test_emergencycontact.EmergencyContactApiTestCase.test_list_emergency_contacts">test_list_emergency_contacts() (api.tests.test_emergencycontact.EmergencyContactApiTestCase method)</a>
+</li>
+      <li><a href="apidoc/api.tests.html#api.tests.test_jira.JiraTestCase.test_missing_parameters">test_missing_parameters() (api.tests.test_jira.JiraTestCase method)</a>
+</li>
+      <li><a href="apidoc/api.tests.html#api.tests.test_ole.OLETestCase.test_narrativelog_list">test_narrativelog_list() (api.tests.test_ole.OLETestCase method)</a>
+</li>
+      <li><a href="apidoc/api.tests.html#api.tests.test_ole.OLETestCase.test_narrativelog_update">test_narrativelog_update() (api.tests.test_ole.OLETestCase method)</a>
+</li>
+      <li><a href="apidoc/api.tests.html#api.tests.test_jira.JiraTestCase.test_needed_parameters">test_needed_parameters() (api.tests.test_jira.JiraTestCase method)</a>
 </li>
       <li><a href="apidoc/ui_framework.tests.html#ui_framework.tests.test_view_thumbnail.ViewThumbnailTestCase.test_new_view">test_new_view() (ui_framework.tests.test_view_thumbnail.ViewThumbnailTestCase method)</a>
 </li>
@@ -1144,6 +1446,8 @@
 </li>
       <li><a href="apidoc/api.tests.html#api.tests.test_commander.SalinfoTestCase.test_salinfo_metadata">test_salinfo_metadata() (api.tests.test_commander.SalinfoTestCase method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/api.tests.html#api.tests.test_commander.SalinfoTestCase.test_salinfo_topic_data">test_salinfo_topic_data() (api.tests.test_commander.SalinfoTestCase method)</a>
 </li>
       <li><a href="apidoc/api.tests.html#api.tests.test_commander.SalinfoTestCase.test_salinfo_topic_data_with_param">test_salinfo_topic_data_with_param() (api.tests.test_commander.SalinfoTestCase method)</a>
@@ -1152,13 +1456,15 @@
 </li>
       <li><a href="apidoc/api.tests.html#api.tests.test_commander.SalinfoTestCase.test_salinfo_topic_names_with_param">test_salinfo_topic_names_with_param() (api.tests.test_commander.SalinfoTestCase method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/api.tests.html#api.tests.test_ole.OLETestCase.test_simple_exposurelog_create">test_simple_exposurelog_create() (api.tests.test_ole.OLETestCase method)</a>
+</li>
+      <li><a href="apidoc/api.tests.html#api.tests.test_ole.OLETestCase.test_simple_narrativelog_create">test_simple_narrativelog_create() (api.tests.test_ole.OLETestCase method)</a>
+</li>
       <li><a href="apidoc/api.tests.html#api.tests.test_schema_validation.SchemaValidationTestCase.test_syntax_error">test_syntax_error() (api.tests.test_schema_validation.SchemaValidationTestCase method)</a>
 </li>
       <li><a href="apidoc/api.tests.html#api.tests.test_commander.EFDTestCase.test_timeseries_query">test_timeseries_query() (api.tests.test_commander.EFDTestCase method)</a>
 </li>
-      <li><a href="apidoc/api.tests.html#api.tests.tests_configfile.ConfigFileApiTestCase.test_unauthenticated_cannot_get_config_file">test_unauthenticated_cannot_get_config_file() (api.tests.tests_configfile.ConfigFileApiTestCase method)</a>
+      <li><a href="apidoc/api.tests.html#api.tests.test_configfile.ConfigFileApiTestCase.test_unauthenticated_cannot_get_config_file">test_unauthenticated_cannot_get_config_file() (api.tests.test_configfile.ConfigFileApiTestCase method)</a>
 </li>
       <li><a href="apidoc/ui_framework.tests.html#ui_framework.tests.tests_api.UnauthenticatedCrudTestCase.test_unauthenticated_create_objects">test_unauthenticated_create_objects() (ui_framework.tests.tests_api.UnauthenticatedCrudTestCase method)</a>
 </li>
@@ -1190,31 +1496,31 @@
 </li>
       <li><a href="apidoc/ui_framework.tests.html#ui_framework.tests.tests_models.WorkspaceViewModelTestCase.test_update_workspace_view">test_update_workspace_view() (ui_framework.tests.tests_models.WorkspaceViewModelTestCase method)</a>
 </li>
-      <li><a href="apidoc/api.tests.html#api.tests.tests_auth_api.AuthApiTestCase.test_user_fails_to_validate_deleted_token">test_user_fails_to_validate_deleted_token() (api.tests.tests_auth_api.AuthApiTestCase method)</a>
+      <li><a href="apidoc/api.tests.html#api.tests.test_auth_api.AuthApiTestCase.test_user_fails_to_validate_deleted_token">test_user_fails_to_validate_deleted_token() (api.tests.test_auth_api.AuthApiTestCase method)</a>
 </li>
-      <li><a href="apidoc/api.tests.html#api.tests.tests_auth_api.AuthApiTestCase.test_user_fails_to_validate_expired_token">test_user_fails_to_validate_expired_token() (api.tests.tests_auth_api.AuthApiTestCase method)</a>
+      <li><a href="apidoc/api.tests.html#api.tests.test_auth_api.AuthApiTestCase.test_user_fails_to_validate_expired_token">test_user_fails_to_validate_expired_token() (api.tests.test_auth_api.AuthApiTestCase method)</a>
 </li>
-      <li><a href="apidoc/api.tests.html#api.tests.tests_auth_api.AuthApiTestCase.test_user_login">test_user_login() (api.tests.tests_auth_api.AuthApiTestCase method)</a>
+      <li><a href="apidoc/api.tests.html#api.tests.test_auth_api.AuthApiTestCase.test_user_login">test_user_login() (api.tests.test_auth_api.AuthApiTestCase method)</a>
 </li>
-      <li><a href="apidoc/api.tests.html#api.tests.tests_auth_api.AuthApiTestCase.test_user_login_failed">test_user_login_failed() (api.tests.tests_auth_api.AuthApiTestCase method)</a>
+      <li><a href="apidoc/api.tests.html#api.tests.test_auth_api.AuthApiTestCase.test_user_login_failed">test_user_login_failed() (api.tests.test_auth_api.AuthApiTestCase method)</a>
 </li>
-      <li><a href="apidoc/api.tests.html#api.tests.tests_auth_api.AuthApiTestCase.test_user_login_twice">test_user_login_twice() (api.tests.tests_auth_api.AuthApiTestCase method)</a>
+      <li><a href="apidoc/api.tests.html#api.tests.test_auth_api.AuthApiTestCase.test_user_login_twice">test_user_login_twice() (api.tests.test_auth_api.AuthApiTestCase method)</a>
 </li>
-      <li><a href="apidoc/api.tests.html#api.tests.tests_auth_api.AuthApiTestCase.test_user_logout">test_user_logout() (api.tests.tests_auth_api.AuthApiTestCase method)</a>
+      <li><a href="apidoc/api.tests.html#api.tests.test_auth_api.AuthApiTestCase.test_user_logout">test_user_logout() (api.tests.test_auth_api.AuthApiTestCase method)</a>
 </li>
-      <li><a href="apidoc/api.tests.html#api.tests.tests_auth_api.AuthApiTestCase.test_user_swap">test_user_swap() (api.tests.tests_auth_api.AuthApiTestCase method)</a>
+      <li><a href="apidoc/api.tests.html#api.tests.test_auth_api.AuthApiTestCase.test_user_swap">test_user_swap() (api.tests.test_auth_api.AuthApiTestCase method)</a>
 </li>
-      <li><a href="apidoc/api.tests.html#api.tests.tests_auth_api.AuthApiTestCase.test_user_swap_forbidden">test_user_swap_forbidden() (api.tests.tests_auth_api.AuthApiTestCase method)</a>
+      <li><a href="apidoc/api.tests.html#api.tests.test_auth_api.AuthApiTestCase.test_user_swap_forbidden">test_user_swap_forbidden() (api.tests.test_auth_api.AuthApiTestCase method)</a>
 </li>
-      <li><a href="apidoc/api.tests.html#api.tests.tests_auth_api.AuthApiTestCase.test_user_swap_no_config">test_user_swap_no_config() (api.tests.tests_auth_api.AuthApiTestCase method)</a>
+      <li><a href="apidoc/api.tests.html#api.tests.test_auth_api.AuthApiTestCase.test_user_swap_no_config">test_user_swap_no_config() (api.tests.test_auth_api.AuthApiTestCase method)</a>
 </li>
-      <li><a href="apidoc/api.tests.html#api.tests.tests_auth_api.AuthApiTestCase.test_user_swap_wrong_credentials">test_user_swap_wrong_credentials() (api.tests.tests_auth_api.AuthApiTestCase method)</a>
+      <li><a href="apidoc/api.tests.html#api.tests.test_auth_api.AuthApiTestCase.test_user_swap_wrong_credentials">test_user_swap_wrong_credentials() (api.tests.test_auth_api.AuthApiTestCase method)</a>
 </li>
-      <li><a href="apidoc/api.tests.html#api.tests.tests_auth_api.AuthApiTestCase.test_user_validate_token">test_user_validate_token() (api.tests.tests_auth_api.AuthApiTestCase method)</a>
+      <li><a href="apidoc/api.tests.html#api.tests.test_auth_api.AuthApiTestCase.test_user_validate_token">test_user_validate_token() (api.tests.test_auth_api.AuthApiTestCase method)</a>
 </li>
-      <li><a href="apidoc/api.tests.html#api.tests.tests_auth_api.AuthApiTestCase.test_user_validate_token_fail">test_user_validate_token_fail() (api.tests.tests_auth_api.AuthApiTestCase method)</a>
+      <li><a href="apidoc/api.tests.html#api.tests.test_auth_api.AuthApiTestCase.test_user_validate_token_fail">test_user_validate_token_fail() (api.tests.test_auth_api.AuthApiTestCase method)</a>
 </li>
-      <li><a href="apidoc/api.tests.html#api.tests.tests_auth_api.AuthApiTestCase.test_user_validate_token_no_config">test_user_validate_token_no_config() (api.tests.tests_auth_api.AuthApiTestCase method)</a>
+      <li><a href="apidoc/api.tests.html#api.tests.test_auth_api.AuthApiTestCase.test_user_validate_token_no_config">test_user_validate_token_no_config() (api.tests.test_auth_api.AuthApiTestCase method)</a>
 </li>
       <li><a href="apidoc/api.tests.html#api.tests.test_schema_validation.SchemaValidationTestCase.test_valid_config">test_valid_config() (api.tests.test_schema_validation.SchemaValidationTestCase method)</a>
 </li>
@@ -1288,10 +1594,10 @@
 </li>
       <li><a href="apidoc/ui_framework.html#module-ui_framework.views">ui_framework.views (module)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/ui_framework.html#ui_framework.apps.UiFrameworkConfig">UiFrameworkConfig (class in ui_framework.apps)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="apidoc/ui_framework.tests.html#ui_framework.tests.tests_api.UnauthenticatedCrudTestCase">UnauthenticatedCrudTestCase (class in ui_framework.tests.tests_api)</a>
 </li>
       <li><a href="apidoc/api.html#api.models.CSCAuthorizationRequest.unauthorized_cscs">unauthorized_cscs (api.models.CSCAuthorizationRequest attribute)</a>
@@ -1299,7 +1605,13 @@
       <li><a href="apidoc/ui_framework.tests.html#ui_framework.tests.tests_api.UnauthorizedCrudTestCase">UnauthorizedCrudTestCase (class in ui_framework.tests.tests_api)</a>
 </li>
       <li><a href="apidoc/api.html#api.views.CSCAuthorizationRequestViewSet.update">update() (api.views.CSCAuthorizationRequestViewSet method)</a>
+
+      <ul>
+        <li><a href="apidoc/api.html#api.views.ExposurelogViewSet.update">(api.views.ExposurelogViewSet method)</a>
 </li>
+        <li><a href="apidoc/api.html#api.views.NarrativelogViewSet.update">(api.views.NarrativelogViewSet method)</a>
+</li>
+      </ul></li>
       <li><a href="apidoc/api.html#api.models.BaseModel.update_timestamp">update_timestamp (api.models.BaseModel attribute)</a>
 
       <ul>
@@ -1336,9 +1648,13 @@
 </li>
       <li><a href="apidoc/api.html#api.views.validate_config_schema">validate_config_schema() (in module api.views)</a>
 </li>
+      <li><a href="apidoc/api.html#api.serializers.CSCAuthorizationRequestExecuteSerializer.validate_execution_status">validate_execution_status() (api.serializers.CSCAuthorizationRequestExecuteSerializer method)</a>
+</li>
       <li><a href="apidoc/api.html#api.models.ConfigFile.validate_file_extension">validate_file_extension() (api.models.ConfigFile method)</a>
 </li>
-      <li><a href="apidoc/api.html#api.serializers.CSCAuthorizationRequestUpdateSerializer.validate_status">validate_status() (api.serializers.CSCAuthorizationRequestUpdateSerializer method)</a>
+      <li><a href="apidoc/api.html#api.models.ConfigFile.validate_json_file">validate_json_file() (api.models.ConfigFile method)</a>
+</li>
+      <li><a href="apidoc/api.html#api.serializers.CSCAuthorizationRequestAuthorizeSerializer.validate_status">validate_status() (api.serializers.CSCAuthorizationRequestAuthorizeSerializer method)</a>
 </li>
       <li><a href="apidoc/api.html#api.views.validate_token">validate_token() (in module api.views)</a>
 </li>
@@ -1348,10 +1664,10 @@
 </li>
       <li><a href="apidoc/ui_framework.html#ui_framework.models.View.DoesNotExist">View.DoesNotExist</a>
 </li>
-      <li><a href="apidoc/ui_framework.html#ui_framework.models.View.MultipleObjectsReturned">View.MultipleObjectsReturned</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="apidoc/ui_framework.html#ui_framework.models.View.MultipleObjectsReturned">View.MultipleObjectsReturned</a>
+</li>
       <li><a href="apidoc/ui_framework.html#ui_framework.models.WorkspaceView.view_id">view_id (ui_framework.models.WorkspaceView attribute)</a>
 </li>
       <li><a href="apidoc/ui_framework.html#ui_framework.models.WorkspaceView.view_name">view_name (ui_framework.models.WorkspaceView attribute)</a>

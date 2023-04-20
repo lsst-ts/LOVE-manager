@@ -186,14 +186,16 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api.tests.html">5.1.1.1. api.tests package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api.tests.html#submodules">5.1.1.1.1. Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.tests.html#module-api.tests.test_authlist">5.1.1.1.2. api.tests.test_authlist module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.tests.html#module-api.tests.test_commander">5.1.1.1.3. api.tests.test_commander module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.tests.html#module-api.tests.test_lovecsc">5.1.1.1.4. api.tests.test_lovecsc module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.tests.html#module-api.tests.test_schema_validation">5.1.1.1.5. api.tests.test_schema_validation module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.tests.html#module-api.tests.tests_auth_api">5.1.1.1.6. api.tests.tests_auth_api module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.tests.html#module-api.tests.tests_configfile">5.1.1.1.7. api.tests.tests_configfile module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.tests.html#module-api.tests.tests_emergencycontact">5.1.1.1.8. api.tests.tests_emergencycontact module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.tests.html#module-api.tests">5.1.1.1.9. Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.tests.html#module-api.tests.test_auth_api">5.1.1.1.2. api.tests.test_auth_api module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.tests.html#module-api.tests.test_authlist">5.1.1.1.3. api.tests.test_authlist module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.tests.html#module-api.tests.test_commander">5.1.1.1.4. api.tests.test_commander module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.tests.html#module-api.tests.test_configfile">5.1.1.1.5. api.tests.test_configfile module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.tests.html#module-api.tests.test_emergencycontact">5.1.1.1.6. api.tests.test_emergencycontact module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.tests.html#module-api.tests.test_jira">5.1.1.1.7. api.tests.test_jira module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.tests.html#module-api.tests.test_lovecsc">5.1.1.1.8. api.tests.test_lovecsc module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.tests.html#module-api.tests.test_ole">5.1.1.1.9. api.tests.test_ole module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.tests.html#module-api.tests.test_schema_validation">5.1.1.1.10. api.tests.test_schema_validation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.tests.html#module-api.tests">5.1.1.1.11. Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -208,6 +210,24 @@
 <p>Registers the models that will be available throgh the Djangpo Admin interface.</p>
 <p>For more information see:
 <a class="reference external" href="https://docs.djangoproject.com/en/2.2/ref/contrib/admin/">https://docs.djangoproject.com/en/2.2/ref/contrib/admin/</a></p>
+<dl class="class">
+<dt id="api.admin.ControlLocationAdmin">
+<em class="property">class </em><code class="sig-prename descclassname">api.admin.</code><code class="sig-name descname">ControlLocationAdmin</code><span class="sig-paren">(</span><em class="sig-param">model</em>, <em class="sig-param">admin_site</em><span class="sig-paren">)</span><a class="headerlink" href="#api.admin.ControlLocationAdmin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.contrib.admin.options.ModelAdmin</span></code></p>
+<p>Customize the ControlLocation admin page.</p>
+<dl class="method">
+<dt id="api.admin.ControlLocationAdmin.media">
+<em class="property">property </em><code class="sig-name descname">media</code><a class="headerlink" href="#api.admin.ControlLocationAdmin.media" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.admin.ControlLocationAdmin.save_model">
+<code class="sig-name descname">save_model</code><span class="sig-paren">(</span><em class="sig-param">request</em>, <em class="sig-param">obj</em>, <em class="sig-param">form</em>, <em class="sig-param">change</em><span class="sig-paren">)</span><a class="headerlink" href="#api.admin.ControlLocationAdmin.save_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override the save_model method to pass the request argument.</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-api.apps">
 <span id="api-apps-module"></span><h2><span class="section-number">5.1.4. </span>api.apps module<a class="headerlink" href="#module-api.apps" title="Permalink to this headline">¶</a></h2>
@@ -408,12 +428,34 @@
 
 <dl class="class">
 <dt id="api.models.CSCAuthorizationRequest">
-<em class="property">class </em><code class="sig-prename descclassname">api.models.</code><code class="sig-name descname">CSCAuthorizationRequest</code><span class="sig-paren">(</span><em class="sig-param">id</em>, <em class="sig-param">cscs_to_change</em>, <em class="sig-param">authorized_users</em>, <em class="sig-param">unauthorized_cscs</em>, <em class="sig-param">requested_by</em>, <em class="sig-param">user</em>, <em class="sig-param">requested_at</em>, <em class="sig-param">duration</em>, <em class="sig-param">message</em>, <em class="sig-param">status</em>, <em class="sig-param">resolved_by</em>, <em class="sig-param">resolved_at</em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.CSCAuthorizationRequest" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">api.models.</code><code class="sig-name descname">CSCAuthorizationRequest</code><span class="sig-paren">(</span><em class="sig-param">id</em>, <em class="sig-param">cscs_to_change</em>, <em class="sig-param">authorized_users</em>, <em class="sig-param">unauthorized_cscs</em>, <em class="sig-param">requested_by</em>, <em class="sig-param">user</em>, <em class="sig-param">requested_at</em>, <em class="sig-param">duration</em>, <em class="sig-param">message</em>, <em class="sig-param">status</em>, <em class="sig-param">execution_status</em>, <em class="sig-param">execution_message</em>, <em class="sig-param">resolved_by</em>, <em class="sig-param">resolved_at</em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.CSCAuthorizationRequest" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.db.models.base.Model</span></code></p>
 <dl class="exception">
 <dt id="api.models.CSCAuthorizationRequest.DoesNotExist">
 <em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#api.models.CSCAuthorizationRequest.DoesNotExist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.core.exceptions.ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="api.models.CSCAuthorizationRequest.ExecutionStatus">
+<em class="property">class </em><code class="sig-name descname">ExecutionStatus</code><a class="headerlink" href="#api.models.CSCAuthorizationRequest.ExecutionStatus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.db.models.enums.TextChoices</span></code></p>
+<p>An enumeration.</p>
+<dl class="attribute">
+<dt id="api.models.CSCAuthorizationRequest.ExecutionStatus.FAIL">
+<code class="sig-name descname">FAIL</code><em class="property"> = 'Fail'</em><a class="headerlink" href="#api.models.CSCAuthorizationRequest.ExecutionStatus.FAIL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="api.models.CSCAuthorizationRequest.ExecutionStatus.PENDING">
+<code class="sig-name descname">PENDING</code><em class="property"> = 'Pending'</em><a class="headerlink" href="#api.models.CSCAuthorizationRequest.ExecutionStatus.PENDING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="api.models.CSCAuthorizationRequest.ExecutionStatus.SUCCESSFUL">
+<code class="sig-name descname">SUCCESSFUL</code><em class="property"> = 'Successful'</em><a class="headerlink" href="#api.models.CSCAuthorizationRequest.ExecutionStatus.SUCCESSFUL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="exception">
@@ -461,6 +503,25 @@
 <code class="sig-name descname">duration</code><a class="headerlink" href="#api.models.CSCAuthorizationRequest.duration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Duration of the authorization once it is resolved</p>
 </dd></dl>
+
+<dl class="attribute">
+<dt id="api.models.CSCAuthorizationRequest.execution_message">
+<code class="sig-name descname">execution_message</code><a class="headerlink" href="#api.models.CSCAuthorizationRequest.execution_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Comment added about the execution of the Authorize CSC setAuthlist command for
+all the parameters in the current request</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="api.models.CSCAuthorizationRequest.execution_status">
+<code class="sig-name descname">execution_status</code><a class="headerlink" href="#api.models.CSCAuthorizationRequest.execution_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Current status of the execution of the Authorize CSC setAuthlist command for
+all the parameters in the current request</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.models.CSCAuthorizationRequest.get_execution_status_display">
+<code class="sig-name descname">get_execution_status_display</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">field=&lt;django.db.models.fields.CharField: execution_status&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.CSCAuthorizationRequest.get_execution_status_display" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="api.models.CSCAuthorizationRequest.get_next_by_requested_at">
@@ -612,6 +673,22 @@ object the first time, the query is executed.</p>
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="api.models.ConfigFile.selected_by_users">
+<code class="sig-name descname">selected_by_users</code><a class="headerlink" href="#api.models.ConfigFile.selected_by_users" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accessor to the related objects manager on the forward and reverse sides of
+a many-to-many relation.</p>
+<p>In the example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Pizza</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">toppings</span> <span class="o">=</span> <span class="n">ManyToManyField</span><span class="p">(</span><span class="n">Topping</span><span class="p">,</span> <span class="n">related_name</span><span class="o">=</span><span class="s1">&#39;pizzas&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Pizza.toppings</span></code> and <code class="docutils literal notranslate"><span class="pre">Topping.pizzas</span></code> are <code class="docutils literal notranslate"><span class="pre">ManyToManyDescriptor</span></code>
+instances.</p>
+<p>Most of the implementation is delegated to a dynamically defined manager
+class built by <code class="docutils literal notranslate"><span class="pre">create_forward_many_to_many_manager()</span></code> defined below.</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="api.models.ConfigFile.user">
 <code class="sig-name descname">user</code><a class="headerlink" href="#api.models.ConfigFile.user" title="Permalink to this definition">¶</a></dt>
 <dd><p>User who created the config file</p>
@@ -626,6 +703,95 @@ object the first time, the query is executed.</p>
 <dt id="api.models.ConfigFile.validate_file_extension">
 <code class="sig-name descname">validate_file_extension</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.models.ConfigFile.validate_file_extension" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="api.models.ConfigFile.validate_json_file">
+<code class="sig-name descname">validate_json_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.models.ConfigFile.validate_json_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="api.models.ControlLocation">
+<em class="property">class </em><code class="sig-prename descclassname">api.models.</code><code class="sig-name descname">ControlLocation</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.ControlLocation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#api.models.BaseModel" title="api.models.BaseModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">api.models.BaseModel</span></code></a></p>
+<p>ControlLocation Model</p>
+<dl class="exception">
+<dt id="api.models.ControlLocation.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#api.models.ControlLocation.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.core.exceptions.ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="api.models.ControlLocation.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#api.models.ControlLocation.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.models.ControlLocation.delete">
+<code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.ControlLocation.delete" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="api.models.ControlLocation.description">
+<code class="sig-name descname">description</code><a class="headerlink" href="#api.models.ControlLocation.description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Control location description</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.models.ControlLocation.get_next_by_creation_timestamp">
+<code class="sig-name descname">get_next_by_creation_timestamp</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">field=&lt;django.db.models.fields.DateTimeField: creation_timestamp&gt;</em>, <em class="sig-param">is_next=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.ControlLocation.get_next_by_creation_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.models.ControlLocation.get_next_by_update_timestamp">
+<code class="sig-name descname">get_next_by_update_timestamp</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">field=&lt;django.db.models.fields.DateTimeField: update_timestamp&gt;</em>, <em class="sig-param">is_next=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.ControlLocation.get_next_by_update_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.models.ControlLocation.get_previous_by_creation_timestamp">
+<code class="sig-name descname">get_previous_by_creation_timestamp</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">field=&lt;django.db.models.fields.DateTimeField: creation_timestamp&gt;</em>, <em class="sig-param">is_next=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.ControlLocation.get_previous_by_creation_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.models.ControlLocation.get_previous_by_update_timestamp">
+<code class="sig-name descname">get_previous_by_update_timestamp</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">field=&lt;django.db.models.fields.DateTimeField: update_timestamp&gt;</em>, <em class="sig-param">is_next=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.ControlLocation.get_previous_by_update_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="api.models.ControlLocation.id">
+<code class="sig-name descname">id</code><a class="headerlink" href="#api.models.ControlLocation.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="api.models.ControlLocation.name">
+<code class="sig-name descname">name</code><a class="headerlink" href="#api.models.ControlLocation.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Control location name</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="api.models.ControlLocation.objects">
+<code class="sig-name descname">objects</code><em class="property"> = &lt;django.db.models.manager.Manager object&gt;</em><a class="headerlink" href="#api.models.ControlLocation.objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.models.ControlLocation.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.ControlLocation.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the current instance. Override this in a subclass if you want to
+control the saving process.</p>
+<p>The ‘force_insert’ and ‘force_update’ parameters can be used to insist
+that the “save” must be an SQL insert or update (or equivalent for
+non-SQL backends), respectively. Normally, they should not be set.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="api.models.ControlLocation.selected">
+<code class="sig-name descname">selected</code><a class="headerlink" href="#api.models.ControlLocation.selected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Control location is selected</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -731,6 +897,70 @@ object the first time, the query is executed.</p>
 <dl class="attribute">
 <dt id="api.models.GlobalPermissions.objects">
 <code class="sig-name descname">objects</code><em class="property"> = &lt;django.db.models.manager.Manager object&gt;</em><a class="headerlink" href="#api.models.GlobalPermissions.objects" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="api.models.ImageTag">
+<em class="property">class </em><code class="sig-prename descclassname">api.models.</code><code class="sig-name descname">ImageTag</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.ImageTag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#api.models.BaseModel" title="api.models.BaseModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">api.models.BaseModel</span></code></a></p>
+<p>ImageTag Model</p>
+<dl class="exception">
+<dt id="api.models.ImageTag.DoesNotExist">
+<em class="property">exception </em><code class="sig-name descname">DoesNotExist</code><a class="headerlink" href="#api.models.ImageTag.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.core.exceptions.ObjectDoesNotExist</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="api.models.ImageTag.MultipleObjectsReturned">
+<em class="property">exception </em><code class="sig-name descname">MultipleObjectsReturned</code><a class="headerlink" href="#api.models.ImageTag.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django.core.exceptions.MultipleObjectsReturned</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="api.models.ImageTag.get_next_by_creation_timestamp">
+<code class="sig-name descname">get_next_by_creation_timestamp</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">field=&lt;django.db.models.fields.DateTimeField: creation_timestamp&gt;</em>, <em class="sig-param">is_next=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.ImageTag.get_next_by_creation_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.models.ImageTag.get_next_by_update_timestamp">
+<code class="sig-name descname">get_next_by_update_timestamp</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">field=&lt;django.db.models.fields.DateTimeField: update_timestamp&gt;</em>, <em class="sig-param">is_next=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.ImageTag.get_next_by_update_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.models.ImageTag.get_previous_by_creation_timestamp">
+<code class="sig-name descname">get_previous_by_creation_timestamp</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">field=&lt;django.db.models.fields.DateTimeField: creation_timestamp&gt;</em>, <em class="sig-param">is_next=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.ImageTag.get_previous_by_creation_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.models.ImageTag.get_previous_by_update_timestamp">
+<code class="sig-name descname">get_previous_by_update_timestamp</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">field=&lt;django.db.models.fields.DateTimeField: update_timestamp&gt;</em>, <em class="sig-param">is_next=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.models.ImageTag.get_previous_by_update_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="api.models.ImageTag.id">
+<code class="sig-name descname">id</code><a class="headerlink" href="#api.models.ImageTag.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="api.models.ImageTag.key">
+<code class="sig-name descname">key</code><a class="headerlink" href="#api.models.ImageTag.key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Image label</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="api.models.ImageTag.label">
+<code class="sig-name descname">label</code><a class="headerlink" href="#api.models.ImageTag.label" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="api.models.ImageTag.objects">
+<code class="sig-name descname">objects</code><em class="property"> = &lt;django.db.models.manager.Manager object&gt;</em><a class="headerlink" href="#api.models.ImageTag.objects" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -844,6 +1074,37 @@ If None then an empty dict is used.</p>
 <span id="api-serializers-module"></span><h2><span class="section-number">5.1.9. </span>api.serializers module<a class="headerlink" href="#module-api.serializers" title="Permalink to this headline">¶</a></h2>
 <p>Defines the serializer used by the REST API exposed by this app (‘api’).</p>
 <dl class="class">
+<dt id="api.serializers.CSCAuthorizationRequestAuthorizeSerializer">
+<em class="property">class </em><code class="sig-prename descclassname">api.serializers.</code><code class="sig-name descname">CSCAuthorizationRequestAuthorizeSerializer</code><span class="sig-paren">(</span><em class="sig-param">instance=None</em>, <em class="sig-param">data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.serializers.CSCAuthorizationRequestAuthorizeSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">rest_framework.serializers.ModelSerializer</span></code></p>
+<p>Serializer to Authorize Authorization List Requests.</p>
+<dl class="class">
+<dt id="api.serializers.CSCAuthorizationRequestAuthorizeSerializer.Meta">
+<em class="property">class </em><code class="sig-name descname">Meta</code><a class="headerlink" href="#api.serializers.CSCAuthorizationRequestAuthorizeSerializer.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Meta class to map serializer’s fields with the model fields.</p>
+<dl class="attribute">
+<dt id="api.serializers.CSCAuthorizationRequestAuthorizeSerializer.Meta.fields">
+<code class="sig-name descname">fields</code><em class="property"> = ('status', 'message', 'duration')</em><a class="headerlink" href="#api.serializers.CSCAuthorizationRequestAuthorizeSerializer.Meta.fields" title="Permalink to this definition">¶</a></dt>
+<dd><p>The fields of the model class to serialize</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="api.serializers.CSCAuthorizationRequestAuthorizeSerializer.Meta.model">
+<code class="sig-name descname">model</code><a class="headerlink" href="#api.serializers.CSCAuthorizationRequestAuthorizeSerializer.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#api.models.CSCAuthorizationRequest" title="api.models.CSCAuthorizationRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">api.models.CSCAuthorizationRequest</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="method">
+<dt id="api.serializers.CSCAuthorizationRequestAuthorizeSerializer.validate_status">
+<code class="sig-name descname">validate_status</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#api.serializers.CSCAuthorizationRequestAuthorizeSerializer.validate_status" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="api.serializers.CSCAuthorizationRequestCreateSerializer">
 <em class="property">class </em><code class="sig-prename descclassname">api.serializers.</code><code class="sig-name descname">CSCAuthorizationRequestCreateSerializer</code><span class="sig-paren">(</span><em class="sig-param">instance=None</em>, <em class="sig-param">data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.serializers.CSCAuthorizationRequestCreateSerializer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">rest_framework.serializers.ModelSerializer</span></code></p>
@@ -870,6 +1131,37 @@ If None then an empty dict is used.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="api.serializers.CSCAuthorizationRequestExecuteSerializer">
+<em class="property">class </em><code class="sig-prename descclassname">api.serializers.</code><code class="sig-name descname">CSCAuthorizationRequestExecuteSerializer</code><span class="sig-paren">(</span><em class="sig-param">instance=None</em>, <em class="sig-param">data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.serializers.CSCAuthorizationRequestExecuteSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">rest_framework.serializers.ModelSerializer</span></code></p>
+<p>Serializer to Execute Authorization List Requests.</p>
+<dl class="class">
+<dt id="api.serializers.CSCAuthorizationRequestExecuteSerializer.Meta">
+<em class="property">class </em><code class="sig-name descname">Meta</code><a class="headerlink" href="#api.serializers.CSCAuthorizationRequestExecuteSerializer.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Meta class to map serializer’s fields with the model fields.</p>
+<dl class="attribute">
+<dt id="api.serializers.CSCAuthorizationRequestExecuteSerializer.Meta.fields">
+<code class="sig-name descname">fields</code><em class="property"> = ('execution_status', 'execution_message')</em><a class="headerlink" href="#api.serializers.CSCAuthorizationRequestExecuteSerializer.Meta.fields" title="Permalink to this definition">¶</a></dt>
+<dd><p>The fields of the model class to serialize</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="api.serializers.CSCAuthorizationRequestExecuteSerializer.Meta.model">
+<code class="sig-name descname">model</code><a class="headerlink" href="#api.serializers.CSCAuthorizationRequestExecuteSerializer.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#api.models.CSCAuthorizationRequest" title="api.models.CSCAuthorizationRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">api.models.CSCAuthorizationRequest</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="method">
+<dt id="api.serializers.CSCAuthorizationRequestExecuteSerializer.validate_execution_status">
+<code class="sig-name descname">validate_execution_status</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#api.serializers.CSCAuthorizationRequestExecuteSerializer.validate_execution_status" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="api.serializers.CSCAuthorizationRequestSerializer">
 <em class="property">class </em><code class="sig-prename descclassname">api.serializers.</code><code class="sig-name descname">CSCAuthorizationRequestSerializer</code><span class="sig-paren">(</span><em class="sig-param">instance=None</em>, <em class="sig-param">data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.serializers.CSCAuthorizationRequestSerializer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">rest_framework.serializers.ModelSerializer</span></code></p>
@@ -892,37 +1184,6 @@ If None then an empty dict is used.</p>
 </dd></dl>
 
 </dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="api.serializers.CSCAuthorizationRequestUpdateSerializer">
-<em class="property">class </em><code class="sig-prename descclassname">api.serializers.</code><code class="sig-name descname">CSCAuthorizationRequestUpdateSerializer</code><span class="sig-paren">(</span><em class="sig-param">instance=None</em>, <em class="sig-param">data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.serializers.CSCAuthorizationRequestUpdateSerializer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">rest_framework.serializers.ModelSerializer</span></code></p>
-<p>Serializer to update Authorization List Requests.</p>
-<dl class="class">
-<dt id="api.serializers.CSCAuthorizationRequestUpdateSerializer.Meta">
-<em class="property">class </em><code class="sig-name descname">Meta</code><a class="headerlink" href="#api.serializers.CSCAuthorizationRequestUpdateSerializer.Meta" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Meta class to map serializer’s fields with the model fields.</p>
-<dl class="attribute">
-<dt id="api.serializers.CSCAuthorizationRequestUpdateSerializer.Meta.fields">
-<code class="sig-name descname">fields</code><em class="property"> = ('status', 'message', 'duration')</em><a class="headerlink" href="#api.serializers.CSCAuthorizationRequestUpdateSerializer.Meta.fields" title="Permalink to this definition">¶</a></dt>
-<dd><p>The fields of the model class to serialize</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="api.serializers.CSCAuthorizationRequestUpdateSerializer.Meta.model">
-<code class="sig-name descname">model</code><a class="headerlink" href="#api.serializers.CSCAuthorizationRequestUpdateSerializer.Meta.model" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="#api.models.CSCAuthorizationRequest" title="api.models.CSCAuthorizationRequest"><code class="xref py py-class docutils literal notranslate"><span class="pre">api.models.CSCAuthorizationRequest</span></code></a></p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="method">
-<dt id="api.serializers.CSCAuthorizationRequestUpdateSerializer.validate_status">
-<code class="sig-name descname">validate_status</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#api.serializers.CSCAuthorizationRequestUpdateSerializer.validate_status" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 </dd></dl>
 
@@ -1002,7 +1263,33 @@ If None then an empty dict is used.</p>
 <dt id="api.serializers.ConfigSerializer">
 <em class="property">class </em><code class="sig-prename descclassname">api.serializers.</code><code class="sig-name descname">ConfigSerializer</code><span class="sig-paren">(</span><em class="sig-param">instance=None</em>, <em class="sig-param">data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.serializers.ConfigSerializer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">rest_framework.serializers.Serializer</span></code></p>
-<p>Custom Serializer to describe the confi file field for the Apidocs.</p>
+<p>Custom Serializer to describe the config file field for the Apidocs.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="api.serializers.ControlLocationSerializer">
+<em class="property">class </em><code class="sig-prename descclassname">api.serializers.</code><code class="sig-name descname">ControlLocationSerializer</code><span class="sig-paren">(</span><em class="sig-param">instance=None</em>, <em class="sig-param">data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.serializers.ControlLocationSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">rest_framework.serializers.ModelSerializer</span></code></p>
+<p>Serializer to list ControlLocation Requests.</p>
+<dl class="class">
+<dt id="api.serializers.ControlLocationSerializer.Meta">
+<em class="property">class </em><code class="sig-name descname">Meta</code><a class="headerlink" href="#api.serializers.ControlLocationSerializer.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Meta class to map serializer’s fields with the model fields.</p>
+<dl class="attribute">
+<dt id="api.serializers.ControlLocationSerializer.Meta.fields">
+<code class="sig-name descname">fields</code><em class="property"> = '__all__'</em><a class="headerlink" href="#api.serializers.ControlLocationSerializer.Meta.fields" title="Permalink to this definition">¶</a></dt>
+<dd><p>The fields of the model class to serialize</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="api.serializers.ControlLocationSerializer.Meta.model">
+<code class="sig-name descname">model</code><a class="headerlink" href="#api.serializers.ControlLocationSerializer.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#api.models.ControlLocation" title="api.models.ControlLocation"><code class="xref py py-class docutils literal notranslate"><span class="pre">api.models.ControlLocation</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -1025,6 +1312,32 @@ If None then an empty dict is used.</p>
 <dt id="api.serializers.EmergencyContactSerializer.Meta.model">
 <code class="sig-name descname">model</code><a class="headerlink" href="#api.serializers.EmergencyContactSerializer.Meta.model" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <a class="reference internal" href="#api.models.EmergencyContact" title="api.models.EmergencyContact"><code class="xref py py-class docutils literal notranslate"><span class="pre">api.models.EmergencyContact</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="api.serializers.ImageTagSerializer">
+<em class="property">class </em><code class="sig-prename descclassname">api.serializers.</code><code class="sig-name descname">ImageTagSerializer</code><span class="sig-paren">(</span><em class="sig-param">instance=None</em>, <em class="sig-param">data=&lt;class 'rest_framework.fields.empty'&gt;</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.serializers.ImageTagSerializer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">rest_framework.serializers.ModelSerializer</span></code></p>
+<p>Serializer to map the Model instance into JSON format.</p>
+<dl class="class">
+<dt id="api.serializers.ImageTagSerializer.Meta">
+<em class="property">class </em><code class="sig-name descname">Meta</code><a class="headerlink" href="#api.serializers.ImageTagSerializer.Meta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Meta class to map serializer’s fields with the model fields.</p>
+<dl class="attribute">
+<dt id="api.serializers.ImageTagSerializer.Meta.fields">
+<code class="sig-name descname">fields</code><em class="property"> = '__all__'</em><a class="headerlink" href="#api.serializers.ImageTagSerializer.Meta.fields" title="Permalink to this definition">¶</a></dt>
+<dd><p>The fields of the model class to serialize</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="api.serializers.ImageTagSerializer.Meta.model">
+<code class="sig-name descname">model</code><a class="headerlink" href="#api.serializers.ImageTagSerializer.Meta.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#api.models.ImageTag" title="api.models.ImageTag"><code class="xref py py-class docutils literal notranslate"><span class="pre">api.models.ImageTag</span></code></a></p>
 </dd></dl>
 
 </dd></dl>
@@ -1258,9 +1571,7 @@ that was deleted</p></li>
 <dt id="api.views.CSCAuthorizationRequestViewSet">
 <em class="property">class </em><code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">CSCAuthorizationRequestViewSet</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.CSCAuthorizationRequestViewSet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">rest_framework.mixins.CreateModelMixin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">rest_framework.mixins.ListModelMixin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">rest_framework.mixins.UpdateModelMixin</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">rest_framework.viewsets.GenericViewSet</span></code></p>
-<p>A viewset that provides <cite>retrieve</cite>, <cite>create</cite>, and <cite>list</cite> actions.</p>
-<p>To use it, override the class and set the <cite>.queryset</cite> and
-<cite>.serializer_class</cite> attributes.</p>
+<p>A viewset that provides <cite>retrieve</cite>, <cite>create</cite>, <cite>update</cite> and <cite>list</cite> actions    to interact with Authorization List Requests.</p>
 <dl class="attribute">
 <dt id="api.views.CSCAuthorizationRequestViewSet.basename">
 <code class="sig-name descname">basename</code><em class="property"> = None</em><a class="headerlink" href="#api.views.CSCAuthorizationRequestViewSet.basename" title="Permalink to this definition">¶</a></dt>
@@ -1279,6 +1590,16 @@ that was deleted</p></li>
 <dl class="attribute">
 <dt id="api.views.CSCAuthorizationRequestViewSet.detail">
 <code class="sig-name descname">detail</code><em class="property"> = None</em><a class="headerlink" href="#api.views.CSCAuthorizationRequestViewSet.detail" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.views.CSCAuthorizationRequestViewSet.execute">
+<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param">request</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.CSCAuthorizationRequestViewSet.execute" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="api.views.CSCAuthorizationRequestViewSet.get_execution_status_param_config">
+<code class="sig-name descname">get_execution_status_param_config</code><em class="property"> = {'description': &quot;Parameter used to get CSCAuthorizationRequests filtered by        its execution_status &lt;em&gt;['Successful', 'Fail', 'Pending']&lt;/em&gt;&quot;, 'in': 'query', 'name': 'execution_status', 'type': 'string'}</em><a class="headerlink" href="#api.views.CSCAuthorizationRequestViewSet.get_execution_status_param_config" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1306,6 +1627,16 @@ serializations depending on the incoming request.</p>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="api.views.CSCAuthorizationRequestViewSet.get_status_param_config">
+<code class="sig-name descname">get_status_param_config</code><em class="property"> = {'description': &quot;Parameter used to get CSCAuthorizationRequests filtered by        its status &lt;em&gt;['Pending', 'Authorized', 'Denied']&lt;/em&gt;&quot;, 'in': 'query', 'name': 'status', 'type': 'string'}</em><a class="headerlink" href="#api.views.CSCAuthorizationRequestViewSet.get_status_param_config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.views.CSCAuthorizationRequestViewSet.list">
+<code class="sig-name descname">list</code><span class="sig-paren">(</span><em class="sig-param">request</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.CSCAuthorizationRequestViewSet.list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="api.views.CSCAuthorizationRequestViewSet.name">
 <code class="sig-name descname">name</code><em class="property"> = None</em><a class="headerlink" href="#api.views.CSCAuthorizationRequestViewSet.name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -1315,9 +1646,9 @@ serializations depending on the incoming request.</p>
 <code class="sig-name descname">permission_classes</code><em class="property"> = (&lt;class 'rest_framework.permissions.IsAuthenticated'&gt;,)</em><a class="headerlink" href="#api.views.CSCAuthorizationRequestViewSet.permission_classes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="api.views.CSCAuthorizationRequestViewSet.query_authorize_csc">
-<code class="sig-name descname">query_authorize_csc</code><span class="sig-paren">(</span><em class="sig-param">request_data</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.CSCAuthorizationRequestViewSet.query_authorize_csc" title="Permalink to this definition">¶</a></dt>
+<dl class="attribute">
+<dt id="api.views.CSCAuthorizationRequestViewSet.put_authorize_params_body">
+<code class="sig-name descname">put_authorize_params_body</code><em class="property"> = {'properties': {'status': {'type': 'string'}}, 'type': 'object'}</em><a class="headerlink" href="#api.views.CSCAuthorizationRequestViewSet.put_authorize_params_body" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1379,7 +1710,7 @@ serializations depending on the incoming request.</p>
 
 <dl class="attribute">
 <dt id="api.views.ConfigFileViewSet.queryset">
-<code class="sig-name descname">queryset</code><em class="property"> = &lt;QuerySet [&lt;ConfigFile: ConfigFile object (1)&gt;]&gt;</em><a class="headerlink" href="#api.views.ConfigFileViewSet.queryset" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">queryset</code><em class="property"> = &lt;QuerySet []&gt;</em><a class="headerlink" href="#api.views.ConfigFileViewSet.queryset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set of objects to be accessed by queries to this viewsets endpoints</p>
 </dd></dl>
 
@@ -1397,10 +1728,75 @@ serializations depending on the incoming request.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="api.views.ControlLocationViewSet">
+<em class="property">class </em><code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">ControlLocationViewSet</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.ControlLocationViewSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">rest_framework.viewsets.ReadOnlyModelViewSet</span></code></p>
+<p>API endpoint that allows Control Locations to be viewed.</p>
+<p class="rubric">Notes</p>
+<p>The API Control Location Service is a service that provides a REST API to
+query the Control Location database.</p>
+<dl class="attribute">
+<dt id="api.views.ControlLocationViewSet.basename">
+<code class="sig-name descname">basename</code><em class="property"> = None</em><a class="headerlink" href="#api.views.ControlLocationViewSet.basename" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="api.views.ControlLocationViewSet.description">
+<code class="sig-name descname">description</code><em class="property"> = None</em><a class="headerlink" href="#api.views.ControlLocationViewSet.description" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="api.views.ControlLocationViewSet.detail">
+<code class="sig-name descname">detail</code><em class="property"> = None</em><a class="headerlink" href="#api.views.ControlLocationViewSet.detail" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.views.ControlLocationViewSet.get_queryset">
+<code class="sig-name descname">get_queryset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#api.views.ControlLocationViewSet.get_queryset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the list of items for this view.
+This must be an iterable, and may be a queryset.
+Defaults to using <cite>self.queryset</cite>.</p>
+<p>This method should always be used rather than accessing <cite>self.queryset</cite>
+directly, as <cite>self.queryset</cite> gets evaluated only once, and those results
+are cached for all subsequent requests.</p>
+<p>You may want to override this if you need to provide different
+querysets depending on the incoming request.</p>
+<p>(Eg. return a list of items that is specific to the user)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="api.views.ControlLocationViewSet.name">
+<code class="sig-name descname">name</code><em class="property"> = None</em><a class="headerlink" href="#api.views.ControlLocationViewSet.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="api.views.ControlLocationViewSet.permission_classes">
+<code class="sig-name descname">permission_classes</code><em class="property"> = (&lt;class 'rest_framework.permissions.IsAuthenticated'&gt;,)</em><a class="headerlink" href="#api.views.ControlLocationViewSet.permission_classes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="api.views.ControlLocationViewSet.serializer_class">
+<code class="sig-name descname">serializer_class</code><a class="headerlink" href="#api.views.ControlLocationViewSet.serializer_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#api.serializers.ControlLocationSerializer" title="api.serializers.ControlLocationSerializer"><code class="xref py py-class docutils literal notranslate"><span class="pre">api.serializers.ControlLocationSerializer</span></code></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="api.views.ControlLocationViewSet.suffix">
+<code class="sig-name descname">suffix</code><em class="property"> = None</em><a class="headerlink" href="#api.views.ControlLocationViewSet.suffix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="api.views.CustomObtainAuthToken">
 <em class="property">class </em><code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">CustomObtainAuthToken</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.CustomObtainAuthToken" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">rest_framework.authtoken.views.ObtainAuthToken</span></code></p>
 <p>API endpoint to obtain authorization tokens.</p>
+<p>This method will try first to authenticate the user againts LDAP servers.
+If authentication fails againts LDAP servers, the authentication will be done
+againts local database.</p>
+<p>If trying to authenticate with a LDAP user for the first time, if login
+succeeds and if user is part of love_ops group, then cmd permissions are added.</p>
 <dl class="attribute">
 <dt id="api.views.CustomObtainAuthToken.login_failed_response">
 <code class="sig-name descname">login_failed_response</code><em class="property"> = {'description': 'Login failed'}</em><a class="headerlink" href="#api.views.CustomObtainAuthToken.login_failed_response" title="Permalink to this definition">¶</a></dt>
@@ -1440,7 +1836,12 @@ serializations depending on the incoming request.</p>
 <dt id="api.views.CustomSwapAuthToken">
 <em class="property">class </em><code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">CustomSwapAuthToken</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.CustomSwapAuthToken" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">rest_framework.authtoken.views.ObtainAuthToken</span></code></p>
-<p>API endpoint to obtain authorization tokens.</p>
+<p>API endpoint to swap authorization tokens.</p>
+<p>This method will try first to authenticate the user againts LDAP servers.
+If authentication fails againts LDAP servers, the authentication will be done
+againts local database.</p>
+<p>If trying to authenticate with a LDAP user for the first time, if login
+succeeds and if user is part of love_ops group, then cmd permissions are added.</p>
 <dl class="attribute">
 <dt id="api.views.CustomSwapAuthToken.login_failed_response">
 <code class="sig-name descname">login_failed_response</code><em class="property"> = {'description': 'User swap failed'}</em><a class="headerlink" href="#api.views.CustomSwapAuthToken.login_failed_response" title="Permalink to this definition">¶</a></dt>
@@ -1503,7 +1904,7 @@ serializations depending on the incoming request.</p>
 
 <dl class="attribute">
 <dt id="api.views.EmergencyContactViewSet.queryset">
-<code class="sig-name descname">queryset</code><em class="property"> = &lt;QuerySet [&lt;EmergencyContact: EmergencyContact object (1)&gt;, &lt;EmergencyContact: EmergencyContact object (2)&gt;]&gt;</em><a class="headerlink" href="#api.views.EmergencyContactViewSet.queryset" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">queryset</code><em class="property"> = &lt;QuerySet []&gt;</em><a class="headerlink" href="#api.views.EmergencyContactViewSet.queryset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set of objects to be accessed by queries to this viewsets endpoints</p>
 </dd></dl>
 
@@ -1516,6 +1917,257 @@ serializations depending on the incoming request.</p>
 <dl class="attribute">
 <dt id="api.views.EmergencyContactViewSet.suffix">
 <code class="sig-name descname">suffix</code><em class="property"> = None</em><a class="headerlink" href="#api.views.EmergencyContactViewSet.suffix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="api.views.ExposurelogViewSet">
+<em class="property">class </em><code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">ExposurelogViewSet</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.ExposurelogViewSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">rest_framework.viewsets.ViewSet</span></code></p>
+<p>A viewset that provides <cite>list</cite>, <cite>create</cite>, <cite>retrieve</cite>, <cite>update</cite>, and <cite>destroy</cite> actions
+to be used to query the API Exposure Log Service</p>
+<p class="rubric">Notes</p>
+<p>The API Exposure Log Service is a service that provides a REST API to
+query the Exposure Log database.</p>
+<p>The endpoint is read from the environment variable OLE_API_HOSTNAME.</p>
+<p>The API is documented at <a class="reference external" href="https://summit-lsp.lsst.codes/exposurelog/docs">https://summit-lsp.lsst.codes/exposurelog/docs</a>.</p>
+<dl class="attribute">
+<dt id="api.views.ExposurelogViewSet.basename">
+<code class="sig-name descname">basename</code><em class="property"> = None</em><a class="headerlink" href="#api.views.ExposurelogViewSet.basename" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.views.ExposurelogViewSet.create">
+<code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param">request</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.ExposurelogViewSet.create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="api.views.ExposurelogViewSet.description">
+<code class="sig-name descname">description</code><em class="property"> = None</em><a class="headerlink" href="#api.views.ExposurelogViewSet.description" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.views.ExposurelogViewSet.destroy">
+<code class="sig-name descname">destroy</code><span class="sig-paren">(</span><em class="sig-param">request</em>, <em class="sig-param">pk=None</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.ExposurelogViewSet.destroy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="api.views.ExposurelogViewSet.detail">
+<code class="sig-name descname">detail</code><em class="property"> = None</em><a class="headerlink" href="#api.views.ExposurelogViewSet.detail" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.views.ExposurelogViewSet.list">
+<code class="sig-name descname">list</code><span class="sig-paren">(</span><em class="sig-param">request</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.ExposurelogViewSet.list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="api.views.ExposurelogViewSet.name">
+<code class="sig-name descname">name</code><em class="property"> = None</em><a class="headerlink" href="#api.views.ExposurelogViewSet.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="api.views.ExposurelogViewSet.parser_classes">
+<code class="sig-name descname">parser_classes</code><em class="property"> = (&lt;class 'rest_framework.parsers.MultiPartParser'&gt;,)</em><a class="headerlink" href="#api.views.ExposurelogViewSet.parser_classes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="api.views.ExposurelogViewSet.permission_classes">
+<code class="sig-name descname">permission_classes</code><em class="property"> = (&lt;class 'rest_framework.permissions.IsAuthenticated'&gt;,)</em><a class="headerlink" href="#api.views.ExposurelogViewSet.permission_classes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.views.ExposurelogViewSet.retrieve">
+<code class="sig-name descname">retrieve</code><span class="sig-paren">(</span><em class="sig-param">request</em>, <em class="sig-param">pk=None</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.ExposurelogViewSet.retrieve" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="api.views.ExposurelogViewSet.suffix">
+<code class="sig-name descname">suffix</code><em class="property"> = None</em><a class="headerlink" href="#api.views.ExposurelogViewSet.suffix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.views.ExposurelogViewSet.update">
+<code class="sig-name descname">update</code><span class="sig-paren">(</span><em class="sig-param">request</em>, <em class="sig-param">pk=None</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.ExposurelogViewSet.update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="api.views.IPABackend1">
+<em class="property">class </em><code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">IPABackend1</code><a class="headerlink" href="#api.views.IPABackend1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django_auth_ldap.backend.LDAPBackend</span></code></p>
+<dl class="method">
+<dt id="api.views.IPABackend1.authenticate_ldap_user">
+<code class="sig-name descname">authenticate_ldap_user</code><span class="sig-paren">(</span><em class="sig-param">ldap_user</em>, <em class="sig-param">password</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.IPABackend1.authenticate_ldap_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an authenticated Django user or None.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="api.views.IPABackend1.settings_prefix">
+<code class="sig-name descname">settings_prefix</code><em class="property"> = 'AUTH_LDAP_1_'</em><a class="headerlink" href="#api.views.IPABackend1.settings_prefix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="api.views.IPABackend1.successful_login">
+<code class="sig-name descname">successful_login</code><em class="property"> = False</em><a class="headerlink" href="#api.views.IPABackend1.successful_login" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="api.views.IPABackend2">
+<em class="property">class </em><code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">IPABackend2</code><a class="headerlink" href="#api.views.IPABackend2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django_auth_ldap.backend.LDAPBackend</span></code></p>
+<dl class="method">
+<dt id="api.views.IPABackend2.authenticate_ldap_user">
+<code class="sig-name descname">authenticate_ldap_user</code><span class="sig-paren">(</span><em class="sig-param">ldap_user</em>, <em class="sig-param">password</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.IPABackend2.authenticate_ldap_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an authenticated Django user or None.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="api.views.IPABackend2.settings_prefix">
+<code class="sig-name descname">settings_prefix</code><em class="property"> = 'AUTH_LDAP_2_'</em><a class="headerlink" href="#api.views.IPABackend2.settings_prefix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="api.views.IPABackend2.successful_login">
+<code class="sig-name descname">successful_login</code><em class="property"> = False</em><a class="headerlink" href="#api.views.IPABackend2.successful_login" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="api.views.IPABackend3">
+<em class="property">class </em><code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">IPABackend3</code><a class="headerlink" href="#api.views.IPABackend3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">django_auth_ldap.backend.LDAPBackend</span></code></p>
+<dl class="method">
+<dt id="api.views.IPABackend3.authenticate_ldap_user">
+<code class="sig-name descname">authenticate_ldap_user</code><span class="sig-paren">(</span><em class="sig-param">ldap_user</em>, <em class="sig-param">password</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.IPABackend3.authenticate_ldap_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an authenticated Django user or None.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="api.views.IPABackend3.settings_prefix">
+<code class="sig-name descname">settings_prefix</code><em class="property"> = 'AUTH_LDAP_3_'</em><a class="headerlink" href="#api.views.IPABackend3.settings_prefix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="api.views.IPABackend3.successful_login">
+<code class="sig-name descname">successful_login</code><em class="property"> = False</em><a class="headerlink" href="#api.views.IPABackend3.successful_login" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="api.views.ImageTagViewSet">
+<em class="property">class </em><code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">ImageTagViewSet</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.ImageTagViewSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">rest_framework.viewsets.ModelViewSet</span></code></p>
+<p>GET, POST, PUT, PATCH or DELETE instances the EmergencyContact model.</p>
+<dl class="attribute">
+<dt id="api.views.ImageTagViewSet.basename">
+<code class="sig-name descname">basename</code><em class="property"> = None</em><a class="headerlink" href="#api.views.ImageTagViewSet.basename" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="api.views.ImageTagViewSet.description">
+<code class="sig-name descname">description</code><em class="property"> = None</em><a class="headerlink" href="#api.views.ImageTagViewSet.description" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="api.views.ImageTagViewSet.detail">
+<code class="sig-name descname">detail</code><em class="property"> = None</em><a class="headerlink" href="#api.views.ImageTagViewSet.detail" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="api.views.ImageTagViewSet.name">
+<code class="sig-name descname">name</code><em class="property"> = None</em><a class="headerlink" href="#api.views.ImageTagViewSet.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="api.views.ImageTagViewSet.queryset">
+<code class="sig-name descname">queryset</code><em class="property"> = &lt;QuerySet []&gt;</em><a class="headerlink" href="#api.views.ImageTagViewSet.queryset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set of objects to be accessed by queries to this viewsets endpoints</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="api.views.ImageTagViewSet.serializer_class">
+<code class="sig-name descname">serializer_class</code><a class="headerlink" href="#api.views.ImageTagViewSet.serializer_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#api.serializers.ImageTagSerializer" title="api.serializers.ImageTagSerializer"><code class="xref py py-class docutils literal notranslate"><span class="pre">api.serializers.ImageTagSerializer</span></code></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="api.views.ImageTagViewSet.suffix">
+<code class="sig-name descname">suffix</code><em class="property"> = None</em><a class="headerlink" href="#api.views.ImageTagViewSet.suffix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="api.views.NarrativelogViewSet">
+<em class="property">class </em><code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">NarrativelogViewSet</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.NarrativelogViewSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">rest_framework.viewsets.ViewSet</span></code></p>
+<p>A viewset that provides <cite>list</cite>, <cite>create</cite>, <cite>retrieve</cite>, <cite>update</cite>, and <cite>destroy</cite> actions
+to be used to query the API Narrative Log Service</p>
+<p class="rubric">Notes</p>
+<p>The API Narrative Log Service is a service that provides a REST API to
+query the Narrative Log database.</p>
+<p>The endpoint is read from the environment variable OLE_API_HOSTNAME.</p>
+<p>The API is documented at <a class="reference external" href="https://summit-lsp.lsst.codes/narrativelog/docs">https://summit-lsp.lsst.codes/narrativelog/docs</a>.</p>
+<dl class="attribute">
+<dt id="api.views.NarrativelogViewSet.basename">
+<code class="sig-name descname">basename</code><em class="property"> = None</em><a class="headerlink" href="#api.views.NarrativelogViewSet.basename" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.views.NarrativelogViewSet.create">
+<code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param">request</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.NarrativelogViewSet.create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="api.views.NarrativelogViewSet.description">
+<code class="sig-name descname">description</code><em class="property"> = None</em><a class="headerlink" href="#api.views.NarrativelogViewSet.description" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.views.NarrativelogViewSet.destroy">
+<code class="sig-name descname">destroy</code><span class="sig-paren">(</span><em class="sig-param">request</em>, <em class="sig-param">pk=None</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.NarrativelogViewSet.destroy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="api.views.NarrativelogViewSet.detail">
+<code class="sig-name descname">detail</code><em class="property"> = None</em><a class="headerlink" href="#api.views.NarrativelogViewSet.detail" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.views.NarrativelogViewSet.list">
+<code class="sig-name descname">list</code><span class="sig-paren">(</span><em class="sig-param">request</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.NarrativelogViewSet.list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="api.views.NarrativelogViewSet.name">
+<code class="sig-name descname">name</code><em class="property"> = None</em><a class="headerlink" href="#api.views.NarrativelogViewSet.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="api.views.NarrativelogViewSet.permission_classes">
+<code class="sig-name descname">permission_classes</code><em class="property"> = (&lt;class 'rest_framework.permissions.IsAuthenticated'&gt;,)</em><a class="headerlink" href="#api.views.NarrativelogViewSet.permission_classes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.views.NarrativelogViewSet.retrieve">
+<code class="sig-name descname">retrieve</code><span class="sig-paren">(</span><em class="sig-param">request</em>, <em class="sig-param">pk=None</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.NarrativelogViewSet.retrieve" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="api.views.NarrativelogViewSet.suffix">
+<code class="sig-name descname">suffix</code><em class="property"> = None</em><a class="headerlink" href="#api.views.NarrativelogViewSet.suffix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="api.views.NarrativelogViewSet.update">
+<code class="sig-name descname">update</code><span class="sig-paren">(</span><em class="sig-param">request</em>, <em class="sig-param">pk=None</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.NarrativelogViewSet.update" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1539,6 +2191,11 @@ serializations depending on the incoming request.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="api.views.getTitle">
+<code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">getTitle</code><span class="sig-paren">(</span><em class="sig-param">request_data</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.getTitle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="api.views.get_config">
 <code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">get_config</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">request</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.get_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the config file</p>
@@ -1549,6 +2206,70 @@ serializations depending on the incoming request.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Containing the contents of the config file</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="api.views.jira">
+<code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">jira</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.jira" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connects to JIRA API to create a ticket on a specific project.
+For more information on issuetypes refer to:
+ttps://jira.lsstcorp.org/rest/api/latest/issuetype/?projectId=JIRA_PROJECT_ID
+Params
+——
+request: Request</p>
+<blockquote>
+<div><p>The Request object</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The response and status code of the request to the JIRA API</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="api.views.jira_comment">
+<code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">jira_comment</code><span class="sig-paren">(</span><em class="sig-param">request</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.jira_comment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connects to JIRA API to add a comment to a previously created ticket on a specific project.
+For more information on issuetypes refer to:
+ttps://jira.lsstcorp.org/rest/api/latest/issuetype/?projectId=JIRA_PROJECT_ID</p>
+<dl class="simple">
+<dt>request: Request</dt><dd><p>The Request object</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The response and status code of the request to the JIRA API</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="api.views.lfa">
+<code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">lfa</code><span class="sig-paren">(</span><em class="sig-param">request</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.lfa" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connects to LFA API to upload a new file</p>
+<dl class="simple">
+<dt>request: Request</dt><dd><p>The Request object</p>
+</dd>
+<dt>args: list</dt><dd><p>List of addittional arguments. Currently unused</p>
+</dd>
+<dt>kwargs: dict</dt><dd><p>Dictionary with request arguments. Currently unused</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The response and status code of the request to the LOVE-commander LFA API</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>Response</p>
@@ -1586,6 +2307,47 @@ serializations depending on the incoming request.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>The response and status code of the request to the LOVE-Commander</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="api.views.makeJiraDescription">
+<code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">makeJiraDescription</code><span class="sig-paren">(</span><em class="sig-param">request_data</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.makeJiraDescription" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="api.views.ole_exposurelog_exposures">
+<code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">ole_exposurelog_exposures</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">request</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.ole_exposurelog_exposures" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connects to Open API exposurelog service and get the list of exposures</p>
+<dl class="simple">
+<dt>request: Request</dt><dd><p>The Request object</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The response and status code of the request to the Open API exposurelog service</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="api.views.ole_exposurelog_instruments">
+<code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">ole_exposurelog_instruments</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">request</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.ole_exposurelog_instruments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connects to Open API exposurelog service and get the list of instruments</p>
+<dl class="simple">
+<dt>request: Request</dt><dd><p>The Request object</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The response and status code of the request to the Open API exposurelog service</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>Response</p>
@@ -1754,6 +2516,24 @@ of &lt;csc name&gt;: { “command_names”: [], “event_names”: [], “teleme
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>The response and status code of the request to the LOVE-Commander</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="api.views.set_config_selected">
+<code class="sig-prename descclassname">api.views.</code><code class="sig-name descname">set_config_selected</code><span class="sig-paren">(</span><em class="sig-param">self</em>, <em class="sig-param">request</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#api.views.set_config_selected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds the current User to the selected_by_users of the specified Config file</p>
+<dl class="simple">
+<dt>request: Request</dt><dd><p>The Request object</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Containing the contents of the config file</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>Response</p>
