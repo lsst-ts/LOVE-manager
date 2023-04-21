@@ -1636,10 +1636,6 @@
                       "salindex": 2
                     },
                     {
-                      "name": "WeatherStation",
-                      "salindex": 1
-                    },
-                    {
                       "name": "WeatherForecast",
                       "salindex": 0
                     },
@@ -1710,10 +1706,6 @@
                       "salindex": 0
                     },
                     {
-                      "name": "PMD",
-                      "salindex": 1
-                    },
-                    {
                       "name": "OCPS",
                       "salindex": 1
                     },
@@ -1727,7 +1719,7 @@
                     }
                   ]
                 },
-                "Main Telescope": {
+                "Simonyi Survey Telescope": {
                   "MTCS": [
                     {
                       "name": "MTMount",
@@ -1768,7 +1760,9 @@
                     {
                       "name": "MTDomeTrajectory",
                       "salindex": 0
-                    },
+                    }
+                  ],
+                  "Support & Monitoring": [
                     {
                       "name": "MTAirCompressor",
                       "salindex": 1
@@ -1776,6 +1770,10 @@
                     {
                       "name": "MTAirCompressor",
                       "salindex": 2
+                    },
+                    {
+                      "name": "LaserTracker",
+                      "salindex": 1
                     }
                   ],
                   "ComCam": [
@@ -1816,6 +1814,12 @@
                     {
                       "name": "GCHeaderService",
                       "salindex": 103
+                    }
+                  ],
+                  "Calibration Systems": [
+                    {
+                      "name": "Electrometer",
+                      "salindex": 1
                     }
                   ]
                 },
@@ -1868,7 +1872,13 @@
                       "salindex": 0
                     }
                   ],
-                  "ATCalSys": [
+                  "Support & Monitoring": [
+                    {
+                      "name": "PMD",
+                      "salindex": 1
+                    }
+                  ],
+                  "Calibration Systems": [
                     {
                       "name": "ATMonochromator",
                       "salindex": 0
@@ -1880,10 +1890,6 @@
                     {
                       "name": "ATWhiteLight",
                       "salindex": 0
-                    },
-                    {
-                      "name": "Electrometer",
-                      "salindex": 1
                     },
                     {
                       "name": "Electrometer",
