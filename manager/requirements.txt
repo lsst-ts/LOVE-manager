@@ -81,7 +81,7 @@ sphinxcontrib-htmlhelp==1.0.3
 sphinxcontrib-jsmath==1.0.1
 sphinxcontrib-qthelp==1.0.3
 sphinxcontrib-serializinghtml==1.1.4
-sqlparse==0.3.1
+sqlparse==0.4.4
 Twisted==22.10.0
 txaio==20.1.1
 uritemplate==3.0.1
