@@ -16,7 +16,9 @@ class RemoteStorage(Storage):
         return open(os.path.join(self.location, name), mode)
 
     def _save(self, name, content):
-        url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/lfa/upload-file"
+        # url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:
+        # {os.environ.get('COMMANDER_PORT')}/lfa/upload-love-config-file"
+        url = "http://google"
         upload_file_response = requests.post(url, files={"uploaded_file": content})
         if upload_file_response.status_code == 200:
             print("#####", flush=True)
@@ -24,7 +26,7 @@ class RemoteStorage(Storage):
             print("#####", flush=True)
         else:
             print("#####", flush=True)
-            print(f"{upload_file_response.status_code} code error")
+            print(upload_file_response.json())
             print("#####", flush=True)
 
         # path = os.path.join(self.location, name)
