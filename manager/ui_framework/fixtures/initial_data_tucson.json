@@ -1124,10 +1124,6 @@
                       "salindex": 0
                     },
                     {
-                      "name": "WeatherStation",
-                      "salindex": 1
-                    },
-                    {
                       "name": "DIMM",
                       "salindex": 1
                     },
@@ -1142,6 +1138,46 @@
                     {
                       "name": "DSM",
                       "salindex": 2
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 1
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 101
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 102
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 103
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 104
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 201
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 202
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 203
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 204
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 301
                     }
                   ],
                   "HigherLevel": [
@@ -1179,7 +1215,7 @@
                     }
                   ]
                 },
-                "Main Telescope": {
+                "Simonyi Survey Telescope": {
                   "MTCS": [
                     {
                       "name": "MTMount",
@@ -1222,7 +1258,7 @@
                       "salindex": 0
                     }
                   ],
-                  "Misc": [
+                  "Support & Monitoring": [
                     {
                       "name": "MTAirCompressor",
                       "salindex": 1
