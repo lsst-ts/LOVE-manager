@@ -2,6 +2,12 @@
 Version History
 ===============
 
+v5.10.2
+--------
+
+* Bump sqlparse from 0.3.1 to 0.4.4 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/182>`_
+* tickets/SITCOM-764  `<https://github.com/lsst-ts/LOVE-manager/pull/181>`_
+
 v5.10.1
 -------
 
