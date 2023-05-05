@@ -1,0 +1,197 @@
+[
+  {
+    "model": "api.configfile",
+    "pk": 1,
+    "fields": {
+      "creation_timestamp": "2020-12-29T14:21:31.040Z",
+      "update_timestamp": "2020-12-29T14:21:31.040Z",
+      "user": 1,
+      "file_name": "default.json",
+      "config_file": "http://love01.cp.lsst.org/media/configs/default.json"
+    }
+  },
+  {
+    "model": "api.emergencycontact",
+    "pk": 1,
+    "fields": {
+      "creation_timestamp": "2021-01-05T17:03:55.382Z",
+      "update_timestamp": "2021-01-05T17:03:55.382Z",
+      "subsystem": "ATDome",
+      "name": "Name Lastname",
+      "contact_info": "+5689846515",
+      "email": "name@email.com"
+    }
+  },
+  {
+    "model": "api.emergencycontact",
+    "pk": 2,
+    "fields": {
+      "creation_timestamp": "2021-01-05T17:04:24.127Z",
+      "update_timestamp": "2021-01-05T17:04:24.127Z",
+      "subsystem": "ATMCS",
+      "name": "Name2 Lastname2",
+      "contact_info": "none",
+      "email": "name2@email.com"
+    }
+  },
+  {
+    "model": "api.imagetag",
+    "pk": 1,
+    "fields": {
+      "creation_timestamp": "2021-01-05T17:04:24.127Z",
+      "update_timestamp": "2021-01-05T17:04:24.127Z",
+      "label": "Satellite",
+      "key": "satellite"
+    }
+  },
+  {
+    "model": "api.imagetag",
+    "pk": 2,
+    "fields": {
+      "creation_timestamp": "2021-01-05T17:04:24.127Z",
+      "update_timestamp": "2021-01-05T17:04:24.127Z",
+      "label": "Bright Artifact",
+      "key": "bright_artifact"
+    }
+  },
+  {
+    "model": "api.imagetag",
+    "pk": 3,
+    "fields": {
+      "creation_timestamp": "2021-01-05T17:04:24.127Z",
+      "update_timestamp": "2021-01-05T17:04:24.127Z",
+      "label": "Wind",
+      "key": "wind"
+    }
+  },
+  {
+    "model": "api.imagetag",
+    "pk": 4,
+    "fields": {
+      "creation_timestamp": "2021-01-05T17:04:24.127Z",
+      "update_timestamp": "2021-01-05T17:04:24.127Z",
+      "label": "Clouds",
+      "key": "clouds"
+    }
+  },
+  {
+    "model": "api.imagetag",
+    "pk": 5,
+    "fields": {
+      "creation_timestamp": "2021-01-05T17:04:24.127Z",
+      "update_timestamp": "2021-01-05T17:04:24.127Z",
+      "label": "Notable Image",
+      "key": "notable_image"
+    }
+  },
+  {
+    "model": "api.imagetag",
+    "pk": 6,
+    "fields": {
+      "creation_timestamp": "2021-01-05T17:04:24.127Z",
+      "update_timestamp": "2021-01-05T17:04:24.127Z",
+      "label": "PR/EPO",
+      "key": "pr_epo"
+    }
+  },
+  {
+    "model": "api.imagetag",
+    "pk": 7,
+    "fields": {
+      "creation_timestamp": "2021-01-05T17:04:24.127Z",
+      "update_timestamp": "2021-01-05T17:04:24.127Z",
+      "label": "Background Issue",
+      "key": "background_issue"
+    }
+  },
+  {
+    "model": "api.imagetag",
+    "pk": 8,
+    "fields": {
+      "creation_timestamp": "2021-01-05T17:04:24.127Z",
+      "update_timestamp": "2021-01-05T17:04:24.127Z",
+      "label": "Bad PSF/Movement",
+      "key": "bad_psf_movement"
+    }
+  },
+  {
+    "model": "api.imagetag",
+    "pk": 9,
+    "fields": {
+      "creation_timestamp": "2021-01-05T17:04:24.127Z",
+      "update_timestamp": "2021-01-05T17:04:24.127Z",
+      "label": "Focus Issue",
+      "key": "focus_issue"
+    }
+  },
+  {
+    "model": "api.imagetag",
+    "pk": 10,
+    "fields": {
+      "creation_timestamp": "2021-01-05T17:04:24.127Z",
+      "update_timestamp": "2021-01-05T17:04:24.127Z",
+      "label": "Pointing Issue",
+      "key": "pointing_issue"
+    }
+  },
+  {
+    "model": "api.imagetag",
+    "pk": 11,
+    "fields": {
+      "creation_timestamp": "2021-01-05T17:04:24.127Z",
+      "update_timestamp": "2021-01-05T17:04:24.127Z",
+      "label": "Camera Issue",
+      "key": "camera_issue"
+    }
+  },
+  {
+    "model": "api.imagetag",
+    "pk": 12,
+    "fields": {
+      "creation_timestamp": "2021-01-05T17:04:24.127Z",
+      "update_timestamp": "2021-01-05T17:04:24.127Z",
+      "label": "DM Issue",
+      "key": "dm_issue"
+    }
+  },
+  {
+    "model": "api.imagetag",
+    "pk": 13,
+    "fields": {
+      "creation_timestamp": "2021-01-05T17:04:24.127Z",
+      "update_timestamp": "2021-01-05T17:04:24.127Z",
+      "label": "Ticketed Issue",
+      "key": "ticketed_issue"
+    }
+  },
+  {
+    "model": "api.controllocation",
+    "pk": 1,
+    "fields": {
+      "creation_timestamp": "2023-04-19T17:04:24.127Z",
+      "update_timestamp": "2023-04-19T17:04:24.127Z",
+      "name": "summit",
+      "description": "Cerro Pachon Control Room"
+    }
+  },
+  {
+    "model": "api.controllocation",
+    "pk": 2,
+    "fields": {
+      "creation_timestamp": "2023-04-19T17:04:24.127Z",
+      "update_timestamp": "2023-04-19T17:04:24.127Z",
+      "name": "tucson",
+      "description": "Tucson Control Room"
+    }
+  },
+  {
+    "model": "api.controllocation",
+    "pk": 3,
+    "fields": {
+      "creation_timestamp": "2023-04-19T17:04:24.127Z",
+      "update_timestamp": "2023-04-19T17:04:24.127Z",
+      "name": "base",
+      "description": "La Serena Control Room"
+    }
+  }
+]

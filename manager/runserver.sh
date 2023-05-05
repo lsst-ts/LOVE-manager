@@ -28,7 +28,12 @@ mkdir -p media/configs
 cp -u api/fixtures/configs/* media/configs
 
 python manage.py loaddata ui_framework/fixtures/initial_data_${love_site}.json
-python manage.py loaddata api/fixtures/initial_data.json
+
+if [ -z ${REMOTE_STORAGE} ]; then
+  python manage.py loaddata api/fixtures/initial_data.json
+else
+  python manage.py loaddata api/fixtures/initial_data_remote_${love_site}.json
+fi
 
 echo -e "\nStarting server"
 daphne -b 0.0.0.0 -p 8000 manager.asgi:application
