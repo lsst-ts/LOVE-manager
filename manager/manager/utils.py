@@ -1,9 +1,14 @@
+import json
 import os
 import requests
+import urllib
 from astropy.time import Time
 from astropy.units import hour
 from django.conf import settings
+from django.core.files import File
 from django.core.files.storage import Storage
+from tempfile import TemporaryFile
+from api.models import ConfigFile 
 
 
 class RemoteStorage(Storage):
@@ -13,36 +18,45 @@ class RemoteStorage(Storage):
         self.location = location
 
     def _open(self, name, mode="rb"):
-        return open(os.path.join(self.location, name), mode)
+        """Return the remote file object."""
+        # url = "https://dummyjson.com/carts"
+        
+        response = requests.get(name)
+        try:
+            json_response = response.json()
+        except Exception:
+            json_response = {"error": "File is not a valid json format"}
+
+        byte_encoded_response = json.dumps(json_response).encode('utf-8')
+        tf = TemporaryFile()
+        tf.write(byte_encoded_response)
+        tf.seek(0)
+        return File(tf)
 
     def _save(self, name, content):
-        # url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:
-        # {os.environ.get('COMMANDER_PORT')}/lfa/upload-love-config-file"
-        url = "http://google"
-        upload_file_response = requests.post(url, files={"uploaded_file": content})
-        if upload_file_response.status_code == 200:
-            print("#####", flush=True)
-            print(upload_file_response.json())
-            print("#####", flush=True)
-        else:
-            print("#####", flush=True)
-            print(upload_file_response.json())
-            print("#####", flush=True)
+        """Upload the file to the remote server.
 
-        # path = os.path.join(self.location, name)
-        # with open(path, 'wb') as f:
-        #     content.seek(0)
-        #     f.write(content.read())
-        return name
+        Notes
+        -----
+        This methods connects to the LOVE-commander lfa endpoint to upload the file.
+        Currently, only files uploaded for the ConfigFile model are uploaded to the remote server.
+        """
+        url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/lfa/upload-love-config-file"
+        upload_file_response = requests.post(url, files={"uploaded_file": content})
+        stored_url = None
+        if upload_file_response.status_code == 200:
+            stored_url = upload_file_response.json()["url"]
+        return stored_url
 
     def delete(self, name):
-        os.remove(os.path.join(self.location, name))
+        pass
 
     def exists(self, name):
-        return os.path.exists(os.path.join(self.location, name))
+        return False
 
     def url(self, name):
-        return settings.MEDIA_URL + name
+        """Return the URL of the remote file."""
+        return name
 
 
 def get_tai_to_utc() -> float:
