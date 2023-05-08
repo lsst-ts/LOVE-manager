@@ -126,7 +126,7 @@ class ViewSerializer(serializers.ModelSerializer):
     thumbnail = serializers.ImageField(
         required=False,
         max_length=None,
-        use_url=True,
+        use_url=False,
         allow_empty_file=True,
         allow_null=True,
     )
