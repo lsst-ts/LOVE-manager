@@ -1,19 +1,19 @@
 import json
 import os
 import requests
-import urllib
 from astropy.time import Time
 from astropy.units import hour
-from django.conf import settings
 from django.core.files import File
 from django.core.files.storage import Storage
 from tempfile import TemporaryFile
-from api.models import ConfigFile 
 
 
 class RemoteStorage(Storage):
     PREFIX_THUMBNAIL = "thumbnails/"
     PREFIX_CONFIG = "configs/"
+
+    PREFIX_S3_THUMBNAIL = "LOVE/THUMBNAIL/"
+    PREFIX_S3_CONFIG = "LOVE/CONFIG/"
 
     def __init__(self, location=None):
         self.location = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/lfa"
@@ -21,14 +21,28 @@ class RemoteStorage(Storage):
     def _open(self, name, mode="rb"):
         """Return the remote file object."""
         response = requests.get(name)
-        try:
-            json_response = response.json()
-        except Exception:
-            json_response = {"error": "File is not a valid json format"}
-
-        byte_encoded_response = json.dumps(json_response).encode('utf-8')
         tf = TemporaryFile()
-        tf.write(byte_encoded_response)
+
+        # If response is image
+        if RemoteStorage.PREFIX_S3_THUMBNAIL in name:
+            if response.headers.get("content-type") in [
+                "image/png",
+                "image/jpeg",
+                "image/jpg",
+            ]:
+                byte_encoded_response = response.content
+                tf.write(byte_encoded_response)
+
+        # If response is json
+        elif RemoteStorage.PREFIX_S3_CONFIG in name:
+            try:
+                json_response = response.json()
+            except Exception:
+                json_response = {"error": "File is not a valid json format"}
+
+            byte_encoded_response = json.dumps(json_response).encode("utf-8")
+            tf.write(byte_encoded_response)
+
         tf.seek(0)
         return File(tf)
 

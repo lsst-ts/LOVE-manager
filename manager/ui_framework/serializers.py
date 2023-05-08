@@ -38,7 +38,6 @@ class Base64ImageField(serializers.ImageField):
 
     def to_representation(self, value):
         """Return a string representation of the image based on a given value.
-        The returned value is the centralized MEDIA_URL concatenated with a string representation of the given value.
         If value is None, then None is returned.
 
         Parameters
@@ -51,9 +50,11 @@ class Base64ImageField(serializers.ImageField):
         string
             The string representation
         """
-
+        string_value = str(value)
         if value is not None and value != "":
-            return settings.MEDIA_URL + str(value)
+            if string_value.startswith("http"):
+                return str(value)
+            return f"{settings.MEDIA_URL}{string_value}"
         return None
 
     def to_internal_value(self, data):
@@ -123,10 +124,10 @@ class Base64ImageField(serializers.ImageField):
 class ViewSerializer(serializers.ModelSerializer):
     """Serializer for the View model."""
 
-    thumbnail = serializers.ImageField(
+    thumbnail = Base64ImageField(
         required=False,
         max_length=None,
-        use_url=False,
+        use_url=True,
         allow_empty_file=True,
         allow_null=True,
     )
@@ -142,10 +143,10 @@ class ViewSerializer(serializers.ModelSerializer):
 class ViewSummarySerializer(serializers.ModelSerializer):
     """Serializer for the View model including only id and name."""
 
-    thumbnail = serializers.ImageField(
+    thumbnail = Base64ImageField(
         required=False,
         max_length=None,
-        use_url=False,
+        use_url=True,
         allow_empty_file=True,
         allow_null=True,
     )
