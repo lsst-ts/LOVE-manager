@@ -28,10 +28,8 @@ mkdir -p media/configs
 cp -u api/fixtures/configs/* media/configs
 
 if [ -z ${REMOTE_STORAGE} ]; then
-  python manage.py loaddata api/fixtures/initial_data.json
-  #python manage.py loaddata api/fixtures/initial_data_${love_site}.json
+  python manage.py loaddata api/fixtures/initial_data_${love_site}.json
 else
-  python manage.py loaddata api/fixtures/initial_data_remote.json
   python manage.py loaddata api/fixtures/initial_data_remote_${love_site}.json
 fi
 
