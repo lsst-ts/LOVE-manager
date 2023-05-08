@@ -91,7 +91,10 @@ class Base64ImageField(serializers.ImageField):
             # Get the file name extension:
             file_extension = self.get_file_extension(file_name, decoded_file)
 
-            complete_file_name = "%s.%s" % (file_name, file_extension,)
+            complete_file_name = "%s.%s" % (
+                file_name,
+                file_extension,
+            )
 
             data = ContentFile(decoded_file, name=complete_file_name)
 
@@ -120,10 +123,10 @@ class Base64ImageField(serializers.ImageField):
 class ViewSerializer(serializers.ModelSerializer):
     """Serializer for the View model."""
 
-    thumbnail = Base64ImageField(
+    thumbnail = serializers.ImageField(
         required=False,
         max_length=None,
-        use_url=False,
+        use_url=True,
         allow_empty_file=True,
         allow_null=True,
     )
@@ -139,7 +142,7 @@ class ViewSerializer(serializers.ModelSerializer):
 class ViewSummarySerializer(serializers.ModelSerializer):
     """Serializer for the View model including only id and name."""
 
-    thumbnail = Base64ImageField(
+    thumbnail = serializers.ImageField(
         required=False,
         max_length=None,
         use_url=False,
