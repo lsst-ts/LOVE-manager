@@ -27,13 +27,15 @@ fi
 mkdir -p media/configs
 cp -u api/fixtures/configs/* media/configs
 
-python manage.py loaddata ui_framework/fixtures/initial_data_${love_site}.json
-
 if [ -z ${REMOTE_STORAGE} ]; then
   python manage.py loaddata api/fixtures/initial_data.json
+  #python manage.py loaddata api/fixtures/initial_data_${love_site}.json
 else
+  python manage.py loaddata api/fixtures/initial_data_remote.json
   python manage.py loaddata api/fixtures/initial_data_remote_${love_site}.json
 fi
+
+python manage.py loaddata ui_framework/fixtures/initial_data_${love_site}.json
 
 echo -e "\nStarting server"
 python manage.py runserver 0.0.0.0:8000
