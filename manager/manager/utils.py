@@ -12,15 +12,14 @@ from api.models import ConfigFile
 
 
 class RemoteStorage(Storage):
+    PREFIX_THUMBNAIL = "thumbnails/"
+    PREFIX_CONFIG = "configs/"
+
     def __init__(self, location=None):
-        if location is None:
-            location = settings.MEDIA_ROOT
-        self.location = location
+        self.location = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/lfa"
 
     def _open(self, name, mode="rb"):
         """Return the remote file object."""
-        # url = "https://dummyjson.com/carts"
-        
         response = requests.get(name)
         try:
             json_response = response.json()
@@ -39,9 +38,12 @@ class RemoteStorage(Storage):
         Notes
         -----
         This methods connects to the LOVE-commander lfa endpoint to upload the file.
-        Currently, only files uploaded for the ConfigFile model are uploaded to the remote server.
         """
-        url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/lfa/upload-love-config-file"
+        if name.startswith(RemoteStorage.PREFIX_THUMBNAIL):
+            url = f"{self.location}/upload-love-thumbnail"
+        elif name.startswith(RemoteStorage.PREFIX_CONFIG):
+            url = f"{self.location}/upload-love-config-file"
+
         upload_file_response = requests.post(url, files={"uploaded_file": content})
         stored_url = None
         if upload_file_response.status_code == 200:
