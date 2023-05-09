@@ -3,9 +3,15 @@ import os
 import requests
 from astropy.time import Time
 from astropy.units import hour
+from django.conf import settings
 from django.core.files import File
 from django.core.files.storage import Storage
 from tempfile import TemporaryFile
+
+
+# Constants
+JSON_RESPONSE_LOCAL_STORAGE_NOT_ALLOWED = {"error": "Local storage not allowed."}
+JSON_RESPONSE_ERROR_NOT_VALID_JSON = {"error": "Not a valid JSON response."}
 
 
 class RemoteStorage(Storage):
@@ -20,11 +26,20 @@ class RemoteStorage(Storage):
 
     def _open(self, name, mode="rb"):
         """Return the remote file object."""
-        response = requests.get(name)
-        tf = TemporaryFile()
+        # Validate name is a remote url
+        if name.startswith("http"):
+            response = requests.get(name)
+        else:
+            response = requests.Response()
+            response.status_code = 404
+            response.json = lambda: JSON_RESPONSE_LOCAL_STORAGE_NOT_ALLOWED
 
+        tf = TemporaryFile()
         # If response is image
-        if RemoteStorage.PREFIX_S3_THUMBNAIL in name:
+        if (
+            RemoteStorage.PREFIX_S3_THUMBNAIL in name
+            or RemoteStorage.PREFIX_THUMBNAIL in name
+        ):
             if response.headers.get("content-type") in [
                 "image/png",
                 "image/jpeg",
@@ -34,11 +49,14 @@ class RemoteStorage(Storage):
                 tf.write(byte_encoded_response)
 
         # If response is json
-        elif RemoteStorage.PREFIX_S3_CONFIG in name:
+        elif (
+            RemoteStorage.PREFIX_S3_CONFIG in name
+            or RemoteStorage.PREFIX_CONFIG in name
+        ):
             try:
                 json_response = response.json()
-            except Exception:
-                json_response = {"error": "File is not a valid json format"}
+            except ValueError:
+                json_response = JSON_RESPONSE_ERROR_NOT_VALID_JSON
 
             byte_encoded_response = json.dumps(json_response).encode("utf-8")
             tf.write(byte_encoded_response)
@@ -72,7 +90,9 @@ class RemoteStorage(Storage):
 
     def url(self, name):
         """Return the URL of the remote file."""
-        return name
+        if "http" in name:
+            return name
+        return f"{settings.MEDIA_URL}{name}"
 
 
 def get_tai_to_utc() -> float:
