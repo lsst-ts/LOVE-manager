@@ -927,22 +927,27 @@ def lfa(request, *args, **kwargs):
     option = kwargs.get("option", None)
     url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/lfa/{option}"
 
-    uploaded_files_urls = []
-    for file in request.FILES:
-        upload_file_response = requests.post(
-            url, files={"uploaded_file": request.FILES[file]}
-        )
-        if upload_file_response.status_code == 200:
-            uploaded_files_urls.append(upload_file_response.json().get("url"))
-        elif upload_file_response.status_code == 404:
-            return Response({"ack": "Option not available"}, status=400)
-        else:
-            return Response(
-                upload_file_response.json(), status=upload_file_response.status_code
+    if option == "upload-file":
+        uploaded_files_urls = []
+        for file in request.FILES:
+            upload_file_response = requests.post(
+                url, files={"uploaded_file": request.FILES[file]}
             )
+            if upload_file_response.status_code == 200:
+                uploaded_files_urls.append(upload_file_response.json().get("url"))
+            elif upload_file_response.status_code == 404:
+                return Response({"ack": "Option not available"}, status=400)
+            else:
+                return Response(
+                    upload_file_response.json(), status=upload_file_response.status_code
+                )
 
+        return Response(
+            {"ack": "All files uploaded correctly", "urls": uploaded_files_urls}, status=200
+        )
+    
     return Response(
-        {"ack": "All files uploaded correctly", "urls": uploaded_files_urls}, status=200
+        {"ack": "Option not found"}, status=400
     )
 
 

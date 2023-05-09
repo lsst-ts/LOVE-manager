@@ -105,8 +105,8 @@ class ConfigFile(BaseModel):
     """The custom name for the configuration"""
 
     config_file = models.FileField(
+        max_length=200,
         upload_to="configs/",
-        default="configs/default.json",
         validators=[validate_file_extension, validate_json_file],
     )
     """Reference to the config file"""

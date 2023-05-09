@@ -15,6 +15,7 @@ All these variables are initialized with default variables defined in :code:`.en
 - `USER_USER_PASS`: password for the default `user` user, which has readonly permissions and cannot execute commands.
 - `CMD_USER_PASS`: password for the default `cmd` user, which has readonly permissions but can execute commands.
 - `AUTHLIST_USER_PASS`: password for the default `authlist` user, which has permissions to manage the authlist authorization requests.
+- `SECRET_KEY`: overrides Django's SECRET_KEY, if not defined the default value (public in this repo) will be used.
 - `REDIS_HOST`: the location of the redis host that implements the `Channels Layer`.
 - `REDIS_PASS`: the password that the LOVE-manager needs to use to connect with `redis`.
 - `PROCESS_CONNECTION_PASS`: the password that the LOVE-producer will use to establish a websocket connection with the LOVE-manager.
@@ -25,9 +26,19 @@ All these variables are initialized with default variables defined in :code:`.en
 - `DB_HOST`: defines the host of the Database. Only used if `DB_ENGINE=postgresql`.
 - `DB_PORT`: defines the port of the Database. Only used if `DB_ENGINE=postgresql`.
 - `NO_DEBUG`: defines wether or not the LOVE-.manager will be run using Django's debug mode. If the variable is defined, then Debug mode will be off.
+- `COMMANDER_HOSTNAME`: defines the hostname of the LOVE-commander server.
+- `COMMANDER_PORT`: defines the port of the LOVE-commander server.
 - `LOVE_PRODUCER_LEGACY`: defines wether or not ussing the legacy LOVE-producer version. If the variable is defined, then the CSC Client won't be used and the legacy version will.
-- `SECRET_KEY`: overrides Django's SECRET_KEY, if not defined the default value (public in this repo) will be used.
-- `AUTH_LDAP_SERVER_URI`: (deprecated) the location of the LDAP authentication server. No LDAP server is used if this variable is empty
+- `OLE_API_HOSTNAME`: defines the hostname of the OLE API server.
+- `JIRA_API_HOSTNAME`: defines the hostname of the JIRA API server.
+- `JIRA_PROJECT_ID`: defines the JIRA project ID to use.
+- `JIRA_API_TOKEN`: defines the JIRA API token to use. This value is the `<user>:<password>` encoded as base64.
+- `AUTH_LDAP_1_SERVER_URI`: defines the location of the LDAP authentication server, replica n°1. No LDAP server is used if this variable or its equivalents is empty
+- `AUTH_LDAP_2_SERVER_URI`: defines the location of the LDAP authentication server, replica n°2. No LDAP server is used if this variable or its equivalents is empty
+- `AUTH_LDAP_3_SERVER_URI`: defines the location of the LDAP authentication server, replica n°3. No LDAP server is used if this variable or its equivalents is empty
+- `AUTH_LDAP_BIND_PASSWORD`: defines the password to use to bind to the LDAP server. This is the password of the provided user for LDAP actions: svc_love.
+- `LOVE_SITE`: defines the site name of the LOVE system. This value is used to identify the LOVE system in the LOVE-manager.
+- `REMOTE_STORAGE`: defines if remote storage is used. If this variable is defined, then the LOVE-manager will connect to the LFA to upload files. If not defined, then the LOVE-manager will store the files locally.
 
 # Local load for development
 

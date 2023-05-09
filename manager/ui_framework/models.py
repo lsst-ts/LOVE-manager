@@ -78,7 +78,10 @@ class View(BaseModel):
 
     """ default="thumbnails/default.png", """
     thumbnail = models.ImageField(
-        upload_to="thumbnails/", storage=OverwriteStorage(), null=True, blank=True
+        max_length=200,
+        upload_to="thumbnails/",
+        null=True,
+        blank=True
     )
     """A reference to the image thumbnail of the view"""
 
