@@ -2,6 +2,12 @@
 Version History
 ===============
 
+v5.11.0
+--------
+
+* Add remote storage method `<https://github.com/lsst-ts/LOVE-manager/pull/184>`_
+* tickets/SITCOM-801 `<https://github.com/lsst-ts/LOVE-manager/pull/183>`_
+
 v5.10.2
 --------
 

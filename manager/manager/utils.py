@@ -1,5 +1,98 @@
+import json
+import os
+import requests
 from astropy.time import Time
 from astropy.units import hour
+from django.conf import settings
+from django.core.files import File
+from django.core.files.storage import Storage
+from tempfile import TemporaryFile
+
+
+# Constants
+JSON_RESPONSE_LOCAL_STORAGE_NOT_ALLOWED = {"error": "Local storage not allowed."}
+JSON_RESPONSE_ERROR_NOT_VALID_JSON = {"error": "Not a valid JSON response."}
+
+
+class RemoteStorage(Storage):
+    PREFIX_THUMBNAIL = "thumbnails/"
+    PREFIX_CONFIG = "configs/"
+
+    PREFIX_S3_THUMBNAIL = "LOVE/THUMBNAIL/"
+    PREFIX_S3_CONFIG = "LOVE/CONFIG/"
+
+    def __init__(self, location=None):
+        self.location = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/lfa"
+
+    def _open(self, name, mode="rb"):
+        """Return the remote file object."""
+        # Validate name is a remote url
+        if name.startswith("http"):
+            response = requests.get(name)
+        else:
+            response = requests.Response()
+            response.status_code = 404
+            response.json = lambda: JSON_RESPONSE_LOCAL_STORAGE_NOT_ALLOWED
+
+        tf = TemporaryFile()
+        # If response is image
+        if (
+            RemoteStorage.PREFIX_S3_THUMBNAIL in name
+            or RemoteStorage.PREFIX_THUMBNAIL in name
+        ):
+            if response.headers.get("content-type") in [
+                "image/png",
+                "image/jpeg",
+                "image/jpg",
+            ]:
+                byte_encoded_response = response.content
+                tf.write(byte_encoded_response)
+
+        # If response is json
+        elif (
+            RemoteStorage.PREFIX_S3_CONFIG in name
+            or RemoteStorage.PREFIX_CONFIG in name
+        ):
+            try:
+                json_response = response.json()
+            except ValueError:
+                json_response = JSON_RESPONSE_ERROR_NOT_VALID_JSON
+
+            byte_encoded_response = json.dumps(json_response).encode("utf-8")
+            tf.write(byte_encoded_response)
+
+        tf.seek(0)
+        return File(tf)
+
+    def _save(self, name, content):
+        """Upload the file to the remote server.
+
+        Notes
+        -----
+        This methods connects to the LOVE-commander lfa endpoint to upload the file.
+        """
+        if name.startswith(RemoteStorage.PREFIX_THUMBNAIL):
+            url = f"{self.location}/upload-love-thumbnail"
+        elif name.startswith(RemoteStorage.PREFIX_CONFIG):
+            url = f"{self.location}/upload-love-config-file"
+
+        upload_file_response = requests.post(url, files={"uploaded_file": content})
+        stored_url = None
+        if upload_file_response.status_code == 200:
+            stored_url = upload_file_response.json()["url"]
+        return stored_url
+
+    def delete(self, name):
+        pass
+
+    def exists(self, name):
+        return False
+
+    def url(self, name):
+        """Return the URL of the remote file."""
+        if "http" in name:
+            return name
+        return f"{settings.MEDIA_URL}{name}"
 
 
 def get_tai_to_utc() -> float:

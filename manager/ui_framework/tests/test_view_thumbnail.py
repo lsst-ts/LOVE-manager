@@ -1,16 +1,18 @@
 """Test the UI Framework thumbnail behavior."""
+import filecmp
+import glob
+import os
 import pytest
-from manager import settings
+import requests
 from django.contrib.auth.models import User, Permission
 from django.urls import reverse
 from django.test import TestCase, override_settings
 from rest_framework import status
 from rest_framework.test import APIClient
-from api.models import Token
 from ui_framework.models import View
-import os
-import glob
-import filecmp
+from unittest import mock
+from api.models import Token
+from manager import settings
 
 
 @override_settings(DEBUG=True)
@@ -42,8 +44,68 @@ class ViewThumbnailTestCase(TestCase):
         for file in thumbnail_files_list:
             os.remove(file)
 
+    @override_settings(DEFAULT_FILE_STORAGE="manager.utils.RemoteStorage")
+    def test_new_view_from_remote_storage(self):
+        """Test thumbnail behavior when adding a new view from remote storage"""
+        # Arrange
+        # read test data (base64 string)
+        old_count = View.objects.count()
+        mock_location = os.path.join(
+            os.getcwd(), "ui_framework", "tests", "media", "mock", "test"
+        )
+        with open(mock_location) as f:
+            image_data = f.read()
+
+        request_data = {
+            "name": "view name",
+            "data": {"key1": "value1"},
+            "thumbnail": image_data,
+        }
+
+        mock_requests_get = mock.patch("requests.get")
+        mock_requests_get_client = mock_requests_get.start()
+        response_requests_get = requests.Response()
+        response_requests_get.status_code = 200
+        mock_requests_get_client.return_value = response_requests_get
+
+        mock_requests_post = mock.patch("requests.post")
+        mock_requests_post_client = mock_requests_post.start()
+        response_requests_post = requests.Response()
+        response_requests_post.status_code = 200
+        response_requests_post.json = lambda: {"ack": "ok", "url": "http://test/"}
+        mock_requests_post_client.return_value = response_requests_post
+
+        # Act 1
+        # send POST request with data
+        request_url = reverse("view-list")
+        response = self.client.post(request_url, request_data, format="json")
+
+        # Assert
+        # - response status code 201
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # - new object was created
+        new_count = View.objects.count()
+        self.assertEqual(old_count + 1, new_count)
+
+        # - thumbnail url
+        view = View.objects.get(name="view name")
+        self.assertEqual(view.thumbnail.url, "http://test/")
+
+        # - expected response data
+        expected_response = {
+            "id": view.id,
+            "name": "view name",
+            "thumbnail": view.thumbnail.url,
+            "data": {"key1": "value1"},
+        }
+        self.assertEqual(response.data, expected_response)
+
+        mock_requests_get.stop()
+        mock_requests_post.stop()
+
     def test_new_view(self):
-        """ Test thumbnail behavior when adding a new view """
+        """Test thumbnail behavior when adding a new view"""
         # Arrange
         # read test data (base64 string)
         old_count = View.objects.count()
@@ -93,7 +155,7 @@ class ViewThumbnailTestCase(TestCase):
         )
 
     def test_delete_view(self):
-        """ Test thumbnail behavior when deleting a view """
+        """Test thumbnail behavior when deleting a view"""
         # Arrange
         # add view with thumbnail
         mock_location = os.path.join(
