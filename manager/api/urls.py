@@ -23,7 +23,6 @@ from api.views import (
     ControlLocationViewSet,
     EmergencyContactViewSet,
     ExposurelogViewSet,
-    FinishedScriptMetadataViewSet,
     ImageTagViewSet,
     NarrativelogViewSet,
     ScriptConfigurationViewSet,
@@ -99,10 +98,5 @@ router.register(
 router.register("controllocation", ControlLocationViewSet, basename="ControlLocation")
 router.register(
     "scriptconfiguration", ScriptConfigurationViewSet, basename="ScriptConfiguration"
-)
-router.register(
-    "finishedscriptmetadata",
-    FinishedScriptMetadataViewSet,
-    basename="FinishedScriptMetadata",
 )
 urlpatterns.append(path("", include(router.urls)))

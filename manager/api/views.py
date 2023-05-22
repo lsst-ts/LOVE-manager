@@ -27,7 +27,6 @@ from api.models import (
     ControlLocation,
     CSCAuthorizationRequest,
     EmergencyContact,
-    FinishedScriptMetadata,
     ImageTag,
     ScriptConfiguration,
     Token,
@@ -42,7 +41,6 @@ from api.serializers import (
     CSCAuthorizationRequestAuthorizeSerializer,
     CSCAuthorizationRequestExecuteSerializer,
     EmergencyContactSerializer,
-    FinishedScriptMetadataSerializer,
     ImageTagSerializer,
     ScriptConfigurationSerializer,
 )
@@ -1701,13 +1699,3 @@ class ScriptConfigurationViewSet(viewsets.ModelViewSet):
                 .order_by("-creation_timestamp")
             )
         return ScriptConfiguration.objects.order_by("-creation_timestamp")
-
-
-class FinishedScriptMetadataViewSet(viewsets.ModelViewSet):
-    """GET, POST, PUT, PATCH or DELETE instances of the FinishedScriptMetadata model."""
-
-    permission_classes = (IsAuthenticated,)
-    serializer_class = FinishedScriptMetadataSerializer
-
-    def get_queryset(self):
-        return FinishedScriptMetadata.objects.all()

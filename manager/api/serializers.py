@@ -9,7 +9,6 @@ from api.models import (
     ControlLocation,
     CSCAuthorizationRequest,
     EmergencyContact,
-    FinishedScriptMetadata,
     ImageTag,
     ScriptConfiguration,
 )
@@ -397,16 +396,3 @@ class ScriptConfigurationSerializer(serializers.Serializer):
         )
         instance.save()
         return instance
-
-
-class FinishedScriptMetadataSerializer(serializers.ModelSerializer):
-    """Serializer to map the Model instance into JSON format."""
-
-    class Meta:
-        """Meta class to map serializer's fields with the model fields."""
-
-        model = FinishedScriptMetadata
-        """The model class to serialize"""
-
-        fields = "__all__"
-        """The fields of the model class to serialize"""

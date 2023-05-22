@@ -295,14 +295,3 @@ class ScriptConfiguration(models.Model):
     """The creation timestamp.
     This timestamp will generate automatically once the script is saved
     """
-
-
-class FinishedScriptMetadata(models.Model):
-    """FinishedScriptMetadata model, includes all the fields"""
-
-    script_salindex = models.CharField(max_length=100)
-    """The salindex of the script"""
-    script_execution_time = models.IntegerField()
-    """The execution time of the script"""
-    script_configuration = models.TextField()
-    """The configuration used  to run the script"""
