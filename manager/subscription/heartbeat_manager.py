@@ -32,14 +32,21 @@ class HeartbeatManager:
             and the other to request the heartbeats from the LOVE-Commander periodically.
             """
             cls.heartbeat_data = {}
-            if not cls.heartbeat_task and settings.HEARTBEAT_QUERY_COMMANDED == True:
-                cls.heartbeat_task = asyncio.create_task(
-                    cls.dispatch_heartbeats()
-                )
-            if not cls.commander_heartbeat_task and settings.HEARTBEAT_QUERY_COMMANDED == True:
-                cls.commander_heartbeat_task = asyncio.create_task(
-                    cls.query_commander()
-                )
+            if not cls.heartbeat_task:
+                if settings.HEARTBEAT_QUERY_COMMANDED == True:
+                    cls.heartbeat_task = asyncio.create_task(
+                        cls.dispatch_heartbeats()
+                    )
+                else:
+                    cls.heartbeat_task = None
+
+            if not cls.commander_heartbeat_task:
+                if settings.HEARTBEAT_QUERY_COMMANDED == True:
+                    cls.commander_heartbeat_task = asyncio.create_task(
+                        cls.query_commander()
+                    )
+                else:
+                    cls.commander_heartbeat_task = None
 
         @classmethod
         def set_heartbeat_timestamp(cls, source, timestamp):
