@@ -34,8 +34,7 @@ class RemoteStorage(Storage):
             response.status_code = 404
             response.json = lambda: JSON_RESPONSE_LOCAL_STORAGE_NOT_ALLOWED
 
-        tf = TemporaryFile()
-        # If response is image
+        # If request is for thumbnail (image file)
         if (
             RemoteStorage.PREFIX_S3_THUMBNAIL in name
             or RemoteStorage.PREFIX_THUMBNAIL in name
@@ -46,10 +45,14 @@ class RemoteStorage(Storage):
                 "image/jpg",
             ]:
                 byte_encoded_response = response.content
-                tf.write(byte_encoded_response)
+                with TemporaryFile() as tf:
+                    tf.write(byte_encoded_response)
+                    # Before sending the file, we need to reset the file pointer to the beginning
+                    tf.seek(0)
+                    return File(tf)
 
-        # If response is json
-        elif (
+        # If request is for config files (json file)
+        if (
             RemoteStorage.PREFIX_S3_CONFIG in name
             or RemoteStorage.PREFIX_CONFIG in name
         ):
@@ -59,10 +62,14 @@ class RemoteStorage(Storage):
                 json_response = JSON_RESPONSE_ERROR_NOT_VALID_JSON
 
             byte_encoded_response = json.dumps(json_response).encode("utf-8")
-            tf.write(byte_encoded_response)
+            with TemporaryFile() as tf:
+                tf.write(byte_encoded_response)
+                # Before sending the file, we need to reset the file pointer to the beginning
+                tf.seek(0)
+                return File(tf)
 
-        tf.seek(0)
-        return File(tf)
+        # If something went wrong, raise an error
+        raise Exception("Something went wrong while trying to open the file.")
 
     def _save(self, name, content):
         """Upload the file to the remote server.
@@ -75,6 +82,9 @@ class RemoteStorage(Storage):
             url = f"{self.location}/upload-love-thumbnail"
         elif name.startswith(RemoteStorage.PREFIX_CONFIG):
             url = f"{self.location}/upload-love-config-file"
+
+        # Before sending the file, we need to reset the file pointer to the beginning
+        content.seek(0)
 
         upload_file_response = requests.post(url, files={"uploaded_file": content})
         stored_url = None
