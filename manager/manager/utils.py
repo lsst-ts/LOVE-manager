@@ -4,7 +4,6 @@ import requests
 from astropy.time import Time
 from astropy.units import hour
 from django.conf import settings
-from django.core.files import File
 from django.core.files.storage import Storage
 from tempfile import TemporaryFile
 
@@ -34,6 +33,7 @@ class RemoteStorage(Storage):
             response.status_code = 404
             response.json = lambda: JSON_RESPONSE_LOCAL_STORAGE_NOT_ALLOWED
 
+        tf = TemporaryFile()
         # If request is for thumbnail (image file)
         if (
             RemoteStorage.PREFIX_S3_THUMBNAIL in name
@@ -45,11 +45,10 @@ class RemoteStorage(Storage):
                 "image/jpg",
             ]:
                 byte_encoded_response = response.content
-                with TemporaryFile() as tf:
-                    tf.write(byte_encoded_response)
-                    # Before sending the file, we need to reset the file pointer to the beginning
-                    tf.seek(0)
-                    return File(tf)
+                tf.write(byte_encoded_response)
+                # Before sending the file, we need to reset the file pointer to the beginning
+                tf.seek(0)
+                return tf
 
         # If request is for config files (json file)
         if (
@@ -62,14 +61,13 @@ class RemoteStorage(Storage):
                 json_response = JSON_RESPONSE_ERROR_NOT_VALID_JSON
 
             byte_encoded_response = json.dumps(json_response).encode("utf-8")
-            with TemporaryFile() as tf:
-                tf.write(byte_encoded_response)
-                # Before sending the file, we need to reset the file pointer to the beginning
-                tf.seek(0)
-                return File(tf)
+            tf.write(byte_encoded_response)
+            # Before sending the file, we need to reset the file pointer to the beginning
+            tf.seek(0)
+            return tf
 
-        # If something went wrong, raise an error
-        raise Exception("Something went wrong while trying to open the file.")
+        # Raise error if file was not found
+        raise FileNotFoundError(f"File {name} not found.")
 
     def _save(self, name, content):
         """Upload the file to the remote server.
