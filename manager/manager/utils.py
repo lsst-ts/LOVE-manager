@@ -84,7 +84,7 @@ class RemoteStorage(Storage):
             url = f"{self.location}/upload-love-config-file"
 
         # Before sending the file, we need to reset the file pointer to the beginning
-        content.file.seek(0)
+        content.seek(0)
 
         upload_file_response = requests.post(url, files={"uploaded_file": content})
         stored_url = None
