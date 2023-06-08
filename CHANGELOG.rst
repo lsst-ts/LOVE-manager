@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v5.11.2
+--------
+
+* Fix file handling on RemoteStorage class `<https://github.com/lsst-ts/LOVE-manager/pull/192>`_
+
 v5.11.1
 --------
 
