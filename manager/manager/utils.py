@@ -26,11 +26,9 @@ class RemoteStorage(Storage):
     def _validate_LFA_url(self, name):
         """Validate the name of the file is a valid LFA url."""
         allowed_file_types = [t.split("/")[1] for t in RemoteStorage.ALLOWED_FILE_TYPES]
-        lfa_url_pattern = (
-            rf"https?:\/\/?.*lsst\.org\/.*\/LOVE\/.*({'|'.join(allowed_file_types)})$"
-        )
+        lfa_url_pattern = rf"https?:\/\/?.*\/.*({'|'.join(allowed_file_types)})$"
         if not re.match(lfa_url_pattern, name):
-            raise ValueError(f"Invalid LFA url: {name}")
+            raise ValueError(f"Invalid remote url: {name}")
 
     def _open(self, name, mode="rb"):
         """Return the remote file object."""
