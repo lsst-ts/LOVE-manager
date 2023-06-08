@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import requests
 from astropy.time import Time
 from astropy.units import hour
@@ -17,57 +18,51 @@ class RemoteStorage(Storage):
     PREFIX_THUMBNAIL = "thumbnails/"
     PREFIX_CONFIG = "configs/"
 
-    PREFIX_S3_THUMBNAIL = "LOVE/THUMBNAIL/"
-    PREFIX_S3_CONFIG = "LOVE/CONFIG/"
+    ALLOWED_FILE_TYPES = ["image/png", "image/jpeg", "image/jpg", "application/json"]
 
     def __init__(self, location=None):
         self.location = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/lfa"
 
+    def _validate_LFA_url(self, name):
+        """Validate the name of the file is a valid LFA url."""
+        allowed_file_types = [t.split("/")[1] for t in RemoteStorage.ALLOWED_FILE_TYPES]
+        lfa_url_pattern = (
+            rf"https?:\/\/?.*lsst\.org\/.*\/LOVE\/.*({'|'.join(allowed_file_types)})$"
+        )
+        if not re.match(lfa_url_pattern, name):
+            raise ValueError(f"Invalid LFA url: {name}")
+
     def _open(self, name, mode="rb"):
         """Return the remote file object."""
+
         # Validate name is a remote url
-        if name.startswith("http"):
-            response = requests.get(name)
-        else:
-            response = requests.Response()
-            response.status_code = 404
-            response.json = lambda: JSON_RESPONSE_LOCAL_STORAGE_NOT_ALLOWED
+        self._validate_LFA_url(name)
+        response = requests.get(name)
+        if response.status_code != 200:
+            raise FileNotFoundError(f"Error requesting file at: {name}.")
 
         tf = TemporaryFile()
         # If request is for thumbnail (image file)
-        if (
-            RemoteStorage.PREFIX_S3_THUMBNAIL in name
-            or RemoteStorage.PREFIX_THUMBNAIL in name
-        ):
-            if response.headers.get("content-type") in [
-                "image/png",
-                "image/jpeg",
-                "image/jpg",
-            ]:
-                byte_encoded_response = response.content
-                tf.write(byte_encoded_response)
-                # Before sending the file, we need to reset the file pointer to the beginning
-                tf.seek(0)
-                return tf
-
-        # If request is for config files (json file)
-        if (
-            RemoteStorage.PREFIX_S3_CONFIG in name
-            or RemoteStorage.PREFIX_CONFIG in name
-        ):
-            try:
-                json_response = response.json()
-            except ValueError:
-                json_response = JSON_RESPONSE_ERROR_NOT_VALID_JSON
-
-            byte_encoded_response = json.dumps(json_response).encode("utf-8")
+        if response.headers.get("content-type") in RemoteStorage.ALLOWED_FILE_TYPES[:3]:
+            byte_encoded_response = response.content
             tf.write(byte_encoded_response)
             # Before sending the file, we need to reset the file pointer to the beginning
             tf.seek(0)
             return tf
 
-        # Raise error if file was not found
-        raise FileNotFoundError(f"File {name} not found.")
+        # If request is for config files (json file)
+        if response.headers.get("content-type") == RemoteStorage.ALLOWED_FILE_TYPES[3]:
+            json_response = response.json()
+            byte_encoded_response = json.dumps(json_response).encode("ascii")
+            tf.write(byte_encoded_response)
+            # Before sending the file, we need to reset the file pointer to the beginning
+            tf.seek(0)
+            return tf
+
+        # Raise error if file type is not supported
+        raise ValueError(
+            f"File type not supported: {response.headers.get('content-type')}"
+        )
 
     def _save(self, name, content):
         """Upload the file to the remote server.
@@ -83,12 +78,10 @@ class RemoteStorage(Storage):
 
         # Before sending the file, we need to reset the file pointer to the beginning
         content.seek(0)
-
         upload_file_response = requests.post(url, files={"uploaded_file": content})
-        stored_url = None
-        if upload_file_response.status_code == 200:
-            stored_url = upload_file_response.json()["url"]
-        return stored_url
+        if upload_file_response.status_code != 200:
+            raise ValueError("Error uploading file to the LFA.")
+        return upload_file_response.json()["url"]
 
     def delete(self, name):
         pass
