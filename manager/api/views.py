@@ -666,8 +666,12 @@ class ConfigFileViewSet(viewsets.ModelViewSet):
         except ConfigFile.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        serializer = ConfigFileContentSerializer(cf)
-        return Response(serializer.data)
+        try:
+            serializer_data = ConfigFileContentSerializer(cf).data
+        except Exception:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(serializer_data)
 
 
 class EmergencyContactViewSet(viewsets.ModelViewSet):
@@ -943,12 +947,11 @@ def lfa(request, *args, **kwargs):
                 )
 
         return Response(
-            {"ack": "All files uploaded correctly", "urls": uploaded_files_urls}, status=200
+            {"ack": "All files uploaded correctly", "urls": uploaded_files_urls},
+            status=200,
         )
-    
-    return Response(
-        {"ack": "Option not found"}, status=400
-    )
+
+    return Response({"ack": "Option not found"}, status=400)
 
 
 class CSCAuthorizationRequestViewSet(
