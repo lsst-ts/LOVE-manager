@@ -77,7 +77,7 @@ class ConfigFileApiTestCase(TestCase):
         self.remote_config_file_invalid_url = ConfigFile.objects.create(
             user=self.user,
             config_file=ConfigFileApiTestCase.get_config_file_sample(
-                "http://foo.bar/remote_filename.json",
+                "ftp://foo.bar/remote_filename.json",
                 self.remote_config_file_content,
             ),
             file_name="remote_filename_invalid_url",
@@ -196,7 +196,7 @@ class ConfigFileApiTestCase(TestCase):
         self.assertEqual(response.data["filename"], expected_data["filename"])
 
     @override_settings(DEFAULT_FILE_STORAGE="manager.utils.RemoteStorage")
-    def test_get_config_file_content_with_remote_storagex(self):
+    def test_get_config_file_content_with_remote_storage(self):
         """Test that an authenticated user can get a config file content."""
 
         # Arrange:
