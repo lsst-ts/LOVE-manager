@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v5.12.0
+--------
+
+* ScriptQueue Upgrade implementation `<https://github.com/lsst-ts/LOVE-manager/pull/186>`_
+
 v5.11.2
 --------
 
