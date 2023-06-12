@@ -50,6 +50,7 @@ from manager.settings import (
     AUTH_LDAP_2_SERVER_URI,
     AUTH_LDAP_3_SERVER_URI,
 )
+from manager.utils import LocationPermission
 
 valid_response = openapi.Response("Valid token", TokenSerializer)
 invalid_response = openapi.Response("Invalid token")
@@ -641,6 +642,8 @@ def set_config_selected(request):
 class ConfigFileViewSet(viewsets.ModelViewSet):
     """GET, POST, PUT, PATCH or DELETE instances the ConfigFile model."""
 
+    permission_classes = [IsAuthenticated, LocationPermission]
+
     queryset = ConfigFile.objects.order_by("-update_timestamp").all()
     """Set of objects to be accessed by queries to this viewsets endpoints"""
 
@@ -663,6 +666,7 @@ class ConfigFileViewSet(viewsets.ModelViewSet):
         Response
             The response containing the serialized ConfigFile content
         """
+
         try:
             cf = ConfigFile.objects.get(pk=pk)
         except ConfigFile.DoesNotExist:
