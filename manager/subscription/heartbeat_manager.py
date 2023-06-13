@@ -4,7 +4,7 @@ import json
 import requests
 import os
 from channels.layers import get_channel_layer
-
+from django.conf import settings
 
 class HeartbeatManager:
     """Manages the heartbeats of LOVE software components.
@@ -32,12 +32,15 @@ class HeartbeatManager:
             and the other to request the heartbeats from the LOVE-Commander periodically.
             """
             cls.heartbeat_data = {}
-            if not cls.heartbeat_task:
-                cls.heartbeat_task = asyncio.create_task(cls.dispatch_heartbeats())
-            if not cls.commander_heartbeat_task:
-                cls.commander_heartbeat_task = asyncio.create_task(
-                    cls.query_commander()
-                )
+            if settings.HEARTBEAT_QUERY_COMMANDER == True:
+                if not cls.heartbeat_task:
+                    cls.heartbeat_task = asyncio.create_task(
+                        cls.dispatch_heartbeats()
+                    )
+                if not cls.commander_heartbeat_task:
+                    cls.commander_heartbeat_task = asyncio.create_task(
+                        cls.query_commander()
+                    )
 
         @classmethod
         def set_heartbeat_timestamp(cls, source, timestamp):
@@ -69,8 +72,8 @@ class HeartbeatManager:
                 try:
                     # query commander
                     resp = requests.get(heartbeat_url)
-                    timestamp = resp.json()["timestamp"]
                     # get timestamp
+                    timestamp = resp.json()["timestamp"]
                     cls.set_heartbeat_timestamp("Commander", timestamp)
                     await asyncio.sleep(3)
                 except Exception as e:
