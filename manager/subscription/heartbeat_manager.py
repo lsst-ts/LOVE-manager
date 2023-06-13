@@ -32,7 +32,7 @@ class HeartbeatManager:
             and the other to request the heartbeats from the LOVE-Commander periodically.
             """
             cls.heartbeat_data = {}
-            if settings.HEARTBEAT_QUERY_COMMANDED == True:
+            if settings.HEARTBEAT_QUERY_COMMANDER == True:
                 if not cls.heartbeat_task:
                     cls.heartbeat_task = asyncio.create_task(
                         cls.dispatch_heartbeats()

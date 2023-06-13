@@ -26,7 +26,7 @@ class TestHeartbeat:
 
     @pytest.mark.asyncio
     @pytest.mark.django_db(transaction=True)
-    @override_settings(HEARTBEAT_QUERY_COMMANDED=True)
+    @override_settings(HEARTBEAT_QUERY_COMMANDER=True)
     async def test_join_and_leave_subscription(self):
         # Arrange
         hb_manager = HeartbeatManager()
@@ -117,7 +117,7 @@ class TestHeartbeat:
 
     @pytest.mark.asyncio
     @pytest.mark.django_db(transaction=True)
-    @override_settings(HEARTBEAT_QUERY_COMMANDED=True)
+    @override_settings(HEARTBEAT_QUERY_COMMANDER=True)
     async def test_heartbeat_manager_setter(self):
 
         hb_manager = HeartbeatManager()
@@ -160,7 +160,7 @@ class TestHeartbeat:
 
     @pytest.mark.asyncio
     @pytest.mark.django_db(transaction=True)
-    @override_settings(HEARTBEAT_QUERY_COMMANDED=True)
+    @override_settings(HEARTBEAT_QUERY_COMMANDER=True)
     async def test_producer_heartbeat(self):
 
         # Arrange
@@ -213,7 +213,7 @@ class TestHeartbeat:
 
     @pytest.mark.asyncio
     @pytest.mark.django_db(transaction=True)
-    @override_settings(HEARTBEAT_QUERY_COMMANDED=True)
+    @override_settings(HEARTBEAT_QUERY_COMMANDER=True)
     async def test_unauthorized_commander(self):
 
         # Arrange
@@ -261,8 +261,8 @@ class TestHeartbeat:
 
     @pytest.mark.asyncio
     @pytest.mark.django_db(transaction=True)
-    @override_settings(HEARTBEAT_QUERY_COMMANDED=True)
-    async def test_heartbeat_commander_with_heartbeat_query_commanded(self):
+    @override_settings(HEARTBEAT_QUERY_COMMANDER=True)
+    async def test_heartbeat_commander_with_heartbeat_query_commander_in_true(self):
 
         hb_manager = HeartbeatManager()
         # Arrange
@@ -304,8 +304,8 @@ class TestHeartbeat:
 
     @pytest.mark.asyncio
     @pytest.mark.django_db(transaction=True)
-    @override_settings(HEARTBEAT_QUERY_COMMANDED=False)
-    async def test_heartbeat_commander_without_heartbeat_query_commanded(self):
+    @override_settings(HEARTBEAT_QUERY_COMMANDER=False)
+    async def test_heartbeat_commander_with_heartbeat_query_commander_in_false(self):
 
         hb_manager = HeartbeatManager()
         # Arrange
