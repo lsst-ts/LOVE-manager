@@ -292,6 +292,8 @@ Read from TRACE_TIMESTAMPS` environment variable (`bool`)"""
 if os.environ.get("HIDE_TRACE_TIMESTAMPS", False):
     TRACE_TIMESTAMPS = False
 
+# Check HeartBeat Commanded
+HEARTBEAT_QUERY_COMMANDER = os.environ.get("HEARTBEAT_QUERY_COMMANDER", 'true').lower() == 'true'
 
 # LOVE-PRODUCER-CONFIGURATION
 """Defines wether or not ussing the legacy LOVE-producer version, i.e. not the LOVE CSC Producer"""

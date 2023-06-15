@@ -2,6 +2,16 @@
 Version History
 ===============
 
+v5.12.0
+--------
+
+* Extend Manager to receive configuration for querying Commander `<https://github.com/lsst-ts/LOVE-manager/pull/189>`_
+* Add changelog checker github action `<https://github.com/lsst-ts/LOVE-manager/pull/193>`_
+* Fix file handling on RemoteStorage class `<https://github.com/lsst-ts/LOVE-manager/pull/192>`_
+* Hotfix/v5.11.0 `<https://github.com/lsst-ts/LOVE-manager/pull/191>`_
+* Bump cryptography from 39.0.1 to 41.0.0 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/187>`_
+* ScriptQueue Upgrade implementation `<https://github.com/lsst-ts/LOVE-manager/pull/186>`_
+
 v5.11.2
 --------
 

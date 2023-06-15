@@ -14,6 +14,7 @@ from api.models import (
     ImageTag,
     CSCAuthorizationRequest,
     ControlLocation,
+    ScriptConfiguration,
 )
 
 # from django.contrib.auth.models import Permission
@@ -33,4 +34,5 @@ admin.site.register(EmergencyContact)
 admin.site.register(ImageTag)
 admin.site.register(CSCAuthorizationRequest)
 admin.site.register(ControlLocation, ControlLocationAdmin)
+admin.site.register(ScriptConfiguration)
 # admin.site.register(Permission)
