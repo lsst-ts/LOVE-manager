@@ -5,7 +5,7 @@ Version History
 v5.12.0
 --------
 
-* Extend Manager to receive configuration for querying Commander `<https://github.com/lsst-ts/LOVE-manager/pull/189>`
+* Extend Manager to receive configuration for querying Commander `<https://github.com/lsst-ts/LOVE-manager/pull/189>`_
 * Add changelog checker github action `<https://github.com/lsst-ts/LOVE-manager/pull/193>`_
 * Fix file handling on RemoteStorage class `<https://github.com/lsst-ts/LOVE-manager/pull/192>`_
 * Hotfix/v5.11.0 `<https://github.com/lsst-ts/LOVE-manager/pull/191>`_
