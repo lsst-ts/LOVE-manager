@@ -37,7 +37,7 @@ class LocationPermission(BasePermission):
 class UserBasedPermission(BasePermission):
     """Permission class to check if the user has commanding permissions."""
 
-    message = {"ack": "Your don't have commanding permissions."}
+    message = {"ack": "Your user is not allowed to command the observatory."}
 
     def has_permission(self, request, view):
         """Return True if the user has command permissions."""
