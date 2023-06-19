@@ -28,6 +28,9 @@ class LocationPermission(BasePermission):
             selected_location if selected_location else ControlLocation.objects.first()
         )
         client_ip = get_client_ip(request)
+        print("#######", flush=True)
+        print(client_ip)
+        print("#######", flush=True)
         return client_ip in location.ip_whitelist
 
 

@@ -238,6 +238,9 @@ class CustomObtainAuthToken(ObtainAuthToken):
                 return Response(data, status=400)
 
         token = Token.objects.create(user=user_obj)
+        request.user = (
+            user_obj  # This is required to pass a logged user to the serializer
+        )
         return Response(TokenSerializer(token, context={"request": request}).data)
 
 
@@ -324,8 +327,16 @@ class CustomSwapAuthToken(ObtainAuthToken):
 
         flags = kwargs.get("flags", None)
         no_config = flags == "no_config" or flags == "no-config"
-        data = TokenSerializer(token, context={"no_config": no_config}).data
-        return Response(data)
+
+        request.user = (
+            user_obj  # This is required to pass a logged user to the serializer
+        )
+        return Response(
+            TokenSerializer(
+                token,
+                context={"no_config": no_config, "request": request},
+            ).data
+        )
 
 
 @api_view(["POST"])
