@@ -13,6 +13,7 @@ from api.models import (
     ScriptConfiguration,
 )
 from typing import Union
+from manager.utils import CommandPermission
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -47,7 +48,8 @@ class UserPermissionsSerializer(serializers.Serializer):
         Bool
             True if the user can execute commands, False if not.
         """
-        return user.has_perm("api.command.execute_command")
+        request = self.context.get("request")
+        return CommandPermission().has_permission(request, None)
 
     def is_authlist_admin(self, user) -> bool:
         """Define wether or not the given user has permissions of authlist administration.
@@ -114,7 +116,8 @@ class TokenSerializer(serializers.Serializer):
         Bool
             True if the user can execute commands, False if not.
         """
-        return UserPermissionsSerializer(token.user).data
+        request = self.context.get("request")
+        return UserPermissionsSerializer(token.user, context={"request": request}).data
 
     def get_token(self, token):
         """Return the token key.

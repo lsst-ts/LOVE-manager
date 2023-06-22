@@ -2,16 +2,59 @@ import json
 import os
 import re
 import requests
+from api.models import ControlLocation
 from astropy.time import Time
 from astropy.units import hour
 from django.conf import settings
 from django.core.files.storage import Storage
+from rest_framework.permissions import BasePermission
 from tempfile import TemporaryFile
 
 
 # Constants
 JSON_RESPONSE_LOCAL_STORAGE_NOT_ALLOWED = {"error": "Local storage not allowed."}
 JSON_RESPONSE_ERROR_NOT_VALID_JSON = {"error": "Not a valid JSON response."}
+
+
+class LocationPermission(BasePermission):
+    """Permission class to check if the user is in the location whitelist."""
+
+    message = {"ack": "Your location is not allowed to command the observatory."}
+
+    def has_permission(self, request, view):
+        """Return True if the request comes from a location configured as command location."""
+        selected_location = ControlLocation.objects.filter(selected=True).first()
+        location = (
+            selected_location if selected_location else ControlLocation.objects.first()
+        )
+        client_ip = get_client_ip(request)
+        return client_ip in location.ip_whitelist
+
+
+class UserBasedPermission(BasePermission):
+    """Permission class to check if the user has commanding permissions."""
+
+    message = {"ack": "Your user is not allowed to command the observatory."}
+
+    def has_permission(self, request, view):
+        """Return True if the user has command permissions."""
+        return request.user.has_perm("api.command.execute_command")
+
+
+class CommandPermission(BasePermission):
+    """Permission class to check if the user has commanding permissions."""
+
+    def __new__(cls) -> BasePermission:
+        """Return the correct permission class based on the configured permission type."""
+        configured_command_permission = settings.COMMANDING_PERMISSION_TYPE
+        if configured_command_permission == "user":
+            return UserBasedPermission()
+        elif configured_command_permission == "location":
+            return LocationPermission()
+        else:
+            raise ValueError(
+                f"Invalid permission type: {configured_command_permission}"
+            )
 
 
 class RemoteStorage(Storage):
@@ -92,6 +135,25 @@ class RemoteStorage(Storage):
         if "http" in name:
             return name
         return f"{settings.MEDIA_URL}{name}"
+
+
+def get_client_ip(request):
+    """Return the client IP address.
+
+    Parameters
+    ----------
+    request : HttpRequest
+        The request object
+
+    Returns
+    -------
+    String
+        The client IP address
+    """
+    x_real_ip = request.META.get("HTTP_X_REAL_IP")
+    if x_real_ip:
+        return x_real_ip
+    return request.META.get("REMOTE_ADDR")
 
 
 def get_tai_to_utc() -> float:

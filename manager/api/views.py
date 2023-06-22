@@ -50,6 +50,7 @@ from manager.settings import (
     AUTH_LDAP_2_SERVER_URI,
     AUTH_LDAP_3_SERVER_URI,
 )
+from manager.utils import CommandPermission
 
 valid_response = openapi.Response("Valid token", TokenSerializer)
 invalid_response = openapi.Response("Invalid token")
@@ -90,7 +91,13 @@ def validate_token(request, *args, **kwargs):
     no_config = flags == "no_config" or flags == "no-config"
     token_key = request.META.get("HTTP_AUTHORIZATION")[6:]
     token = Token.objects.get(key=token_key)
-    data = TokenSerializer(token, context={"no_config": no_config}).data
+    data = TokenSerializer(
+        token,
+        context={
+            "no_config": no_config,
+            "request": request,
+        },
+    ).data
     return Response(data)
 
 
@@ -231,7 +238,10 @@ class CustomObtainAuthToken(ObtainAuthToken):
                 return Response(data, status=400)
 
         token = Token.objects.create(user=user_obj)
-        return Response(TokenSerializer(token).data)
+        request.user = (
+            user_obj  # This is required to pass a logged user to the serializer
+        )
+        return Response(TokenSerializer(token, context={"request": request}).data)
 
 
 class CustomSwapAuthToken(ObtainAuthToken):
@@ -317,8 +327,16 @@ class CustomSwapAuthToken(ObtainAuthToken):
 
         flags = kwargs.get("flags", None)
         no_config = flags == "no_config" or flags == "no-config"
-        data = TokenSerializer(token, context={"no_config": no_config}).data
-        return Response(data)
+
+        request.user = (
+            user_obj  # This is required to pass a logged user to the serializer
+        )
+        return Response(
+            TokenSerializer(
+                token,
+                context={"no_config": no_config, "request": request},
+            ).data
+        )
 
 
 @api_view(["POST"])
@@ -379,7 +397,7 @@ def validate_config_schema(request):
     },
 )
 @api_view(["POST"])
-@permission_classes((IsAuthenticated,))
+@permission_classes((IsAuthenticated, CommandPermission))
 def commander(request):
     """Sends a command to the LOVE-commander according to the received parameters
 
@@ -393,10 +411,6 @@ def commander(request):
     Response
         The response and status code of the request to the LOVE-Commander
     """
-    if not request.user.has_perm("api.command.execute_command"):
-        return Response(
-            {"ack": "User does not have permissions to execute commands."}, 401
-        )
     url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/cmd"
     response = requests.post(url, json=request.data)
 
@@ -413,7 +427,7 @@ def commander(request):
     },
 )
 @api_view(["POST"])
-@permission_classes((IsAuthenticated,))
+@permission_classes((IsAuthenticated, CommandPermission))
 def lovecsc_observinglog(request):
     """Sends an observing log message to the LOVE-commander according to the received parameters
 
@@ -427,10 +441,6 @@ def lovecsc_observinglog(request):
     Response
         The response and status code of the request to the LOVE-Commander
     """
-    if not request.user.has_perm("api.command.execute_command"):
-        return Response(
-            {"ack": "User does not have permissions to send observing logs."}, 401
-        )
     url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/lovecsc/observinglog"
     response = requests.post(url, json=request.data)
 
@@ -641,6 +651,10 @@ def set_config_selected(request):
 class ConfigFileViewSet(viewsets.ModelViewSet):
     """GET, POST, PUT, PATCH or DELETE instances the ConfigFile model."""
 
+    permission_classes = [
+        IsAuthenticated,
+    ]
+
     queryset = ConfigFile.objects.order_by("-update_timestamp").all()
     """Set of objects to be accessed by queries to this viewsets endpoints"""
 
@@ -663,6 +677,7 @@ class ConfigFileViewSet(viewsets.ModelViewSet):
         Response
             The response containing the serialized ConfigFile content
         """
+
         try:
             cf = ConfigFile.objects.get(pk=pk)
         except ConfigFile.DoesNotExist:
@@ -793,7 +808,7 @@ def query_efd_logs(request, *args, **kwargs):
 
 
 @api_view(["POST"])
-@permission_classes((IsAuthenticated,))
+@permission_classes((IsAuthenticated, CommandPermission))
 def tcs_aux_command(request, *args, **kwargs):
     """Sends command to the ATCS
 
@@ -818,10 +833,6 @@ def tcs_aux_command(request, *args, **kwargs):
     Response
         The response and status code of the request to the LOVE-Commander
     """
-    if not request.user.has_perm("api.command.execute_command"):
-        return Response(
-            {"ack": "User does not have permissions to execute commands."}, 401
-        )
     url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/tcs/aux"
     response = requests.post(url, json=request.data)
     return Response(response.json(), status=response.status_code)
@@ -852,7 +863,7 @@ def tcs_aux_docstrings(request, *args, **kwargs):
 
 
 @api_view(["POST"])
-@permission_classes((IsAuthenticated,))
+@permission_classes((IsAuthenticated, CommandPermission))
 def tcs_main_command(request, *args, **kwargs):
     """Sends command to the MTCS
 
@@ -877,10 +888,6 @@ def tcs_main_command(request, *args, **kwargs):
     Response
         The response and status code of the request to the LOVE-Commander
     """
-    if not request.user.has_perm("api.command.execute_command"):
-        return Response(
-            {"ack": "User does not have permissions to execute commands."}, 401
-        )
     url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/tcs/main"
     response = requests.post(url, json=request.data)
     return Response(response.json(), status=response.status_code)

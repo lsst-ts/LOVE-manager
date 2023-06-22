@@ -256,6 +256,9 @@ class ControlLocation(BaseModel):
     selected = models.BooleanField(default=False)
     """Control location is selected"""
 
+    ip_whitelist = models.TextField(blank=True)
+    """IP whitelist"""
+
     def save(self, *args, **kwargs):
         if self.selected:
             # Check if user is super user
