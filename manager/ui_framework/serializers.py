@@ -137,7 +137,7 @@ class ViewSerializer(serializers.ModelSerializer):
         """Meta class to map serializer's fields with the model fields."""
 
         model = View
-        fields = ("id", "name", "thumbnail", "data")
+        fields = ("id", "name", "thumbnail", "screen", "data")
 
 
 class ViewSummarySerializer(serializers.ModelSerializer):
@@ -155,7 +155,7 @@ class ViewSummarySerializer(serializers.ModelSerializer):
         """Meta class to map serializer's fields with the model fields."""
 
         model = View
-        fields = ("id", "name", "thumbnail")
+        fields = ("id", "name", "thumbnail", "screen")
 
 
 class WorkspaceSerializer(serializers.ModelSerializer):

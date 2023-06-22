@@ -6,13 +6,25 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ui_framework', '0004_auto_20211027_1557'),
+        ("ui_framework", "0004_auto_20211027_1557"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='view',
-            name='thumbnail',
-            field=models.ImageField(blank=True, max_length=200, null=True, upload_to='thumbnails/'),
+            model_name="view",
+            name="thumbnail",
+            field=models.ImageField(
+                blank=True, max_length=200, null=True, upload_to="thumbnails/"
+            ),
+        ),
+        migrations.AddField(
+            model_name="view",
+            name="screen",
+            field=models.CharField(
+                choices=[("4k", "4k"), ("desktop", "desktop"), ("mobile", "mobile")],
+                default="desktop",
+                max_length=20,
+                null=True,
+            ),
         ),
     ]
