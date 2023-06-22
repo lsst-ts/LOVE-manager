@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v5.13.0
+--------
+
+* LOVE screen sizes enhancement `<https://github.com/lsst-ts/LOVE-manager/pull/188>`_
+
 v5.12.0
 --------
 
