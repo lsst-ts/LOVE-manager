@@ -1,10 +1,11 @@
+import os
 from django.test import TestCase, override_settings
 from django.urls import reverse
 from api.models import Token
 from rest_framework.test import APIClient
 from django.contrib.auth.models import User, Permission
-import yaml
 from unittest.mock import patch, call
+from manager.utils import UserBasedPermission
 
 
 @override_settings(DEBUG=True)
@@ -30,15 +31,11 @@ class LOVECscTestCase(TestCase):
             Permission.objects.get(codename="delete_view"),
             Permission.objects.get(codename="change_view"),
         )
+        os.environ["COMMANDER_HOSTNAME"] = "foo"
+        os.environ["COMMANDER_PORT"] = "bar"
 
-    @patch(
-        "os.environ.get",
-        side_effect=lambda arg: "fakehost"
-        if arg == "COMMANDER_HOSTNAME"
-        else "fakeport",
-    )
     @patch("requests.post")
-    def test_authorized_lovecsc_data(self, mock_requests, mock_environ):
+    def test_authorized_lovecsc_data(self, mock_requests):
         """Test authorized user observing log is sent to love-commander"""
         # Arrange:
         self.user.user_permissions.add(Permission.objects.get(name="Execute Commands"))
@@ -53,17 +50,11 @@ class LOVECscTestCase(TestCase):
         with self.assertRaises(ValueError):
             self.client.post(url, data, format="json")
 
-        expected_url = f"http://fakehost:fakeport/lovecsc/observinglog"
+        expected_url = "http://foo:bar/lovecsc/observinglog"
         self.assertEqual(mock_requests.call_args, call(expected_url, json=data))
 
-    @patch(
-        "os.environ.get",
-        side_effect=lambda arg: "fakehost"
-        if arg == "COMMANDER_HOSTNAME"
-        else "fakeport",
-    )
     @patch("requests.post")
-    def test_unauthorized_lovecsc(self, mock_requests, mock_environ):
+    def test_unauthorized_lovecsc(self, mock_requests):
         """Test an unauthorized user can't send commands"""
         # Act:
         url = reverse("lovecsc-observinglog")
@@ -75,7 +66,5 @@ class LOVECscTestCase(TestCase):
         response = self.client.post(url, data, format="json")
         result = response.json()
 
-        self.assertEqual(response.status_code, 401)
-        self.assertEqual(
-            result, {"ack": "User does not have permissions to send observing logs."}
-        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(result, UserBasedPermission.message)

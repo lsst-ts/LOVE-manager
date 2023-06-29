@@ -39,6 +39,7 @@ All these variables are initialized with default variables defined in :code:`.en
 - `AUTH_LDAP_BIND_PASSWORD`: defines the password to use to bind to the LDAP server. This is the password of the provided user for LDAP actions: svc_love.
 - `LOVE_SITE`: defines the site name of the LOVE system. This value is used to identify the LOVE system in the LOVE-manager.
 - `REMOTE_STORAGE`: defines if remote storage is used. If this variable is defined, then the LOVE-manager will connect to the LFA to upload files. If not defined, then the LOVE-manager will store the files locally.
+- `COMMANDING_PERMISSION_TYPE`: defines the type of permission to use for commanding. Currently two options are available: `user` and `location`. If `user` is used, then requests from users with `api.command.execute_command` permission are allowed. If `location` is used, then only requests from the configured location of control will be allowed. If not defined, then `user` will be used.
 
 # Local load for development
 

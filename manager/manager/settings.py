@@ -293,8 +293,16 @@ if os.environ.get("HIDE_TRACE_TIMESTAMPS", False):
     TRACE_TIMESTAMPS = False
 
 # Check HeartBeat Commanded
-HEARTBEAT_QUERY_COMMANDER = os.environ.get("HEARTBEAT_QUERY_COMMANDER", 'true').lower() == 'true'
+HEARTBEAT_QUERY_COMMANDER = (
+    os.environ.get("HEARTBEAT_QUERY_COMMANDER", "true").lower() == "true"
+)
 
 # LOVE-PRODUCER-CONFIGURATION
 """Defines wether or not ussing the legacy LOVE-producer version, i.e. not the LOVE CSC Producer"""
 LOVE_PRODUCER_LEGACY = os.environ.get("LOVE_PRODUCER_LEGACY", False)
+
+
+# Get permision type configuration
+COMMANDING_PERMISSION_TYPE = os.environ.get(
+    "COMMANDING_PERMISSION_TYPE", "user"
+).lower()

@@ -70,6 +70,11 @@ class OverwriteStorage(FileSystemStorage):
 class View(BaseModel):
     """View Model."""
 
+    class ScreenSizes(models.TextChoices):
+        FULL_4K = "4k", "4k"
+        DESKTOP = "desktop", "desktop"
+        MOBILE = "mobile", "mobile"
+
     name = models.CharField(max_length=20)
     """The name of the View. e.g 'My View'"""
 
@@ -84,6 +89,14 @@ class View(BaseModel):
         blank=True
     )
     """A reference to the image thumbnail of the view"""
+
+    screen = models.CharField(
+        max_length=20,
+        null=True,
+        choices=ScreenSizes.choices,
+        default=ScreenSizes.DESKTOP,
+    )
+    """The screen size for which the View is optimized"""
 
     def __str__(self):
         """Redefine how objects of this class are transformed to string."""

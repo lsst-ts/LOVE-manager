@@ -72,7 +72,10 @@ class ViewThumbnailTestCase(TestCase):
         mock_requests_post_client = mock_requests_post.start()
         response_requests_post = requests.Response()
         response_requests_post.status_code = 200
-        response_requests_post.json = lambda: {"ack": "ok", "url": "http://test/"}
+        response_requests_post.json = lambda: {
+            "ack": "ok",
+            "url": "http://foo.bar/file.png",
+        }
         mock_requests_post_client.return_value = response_requests_post
 
         # Act 1
@@ -90,7 +93,7 @@ class ViewThumbnailTestCase(TestCase):
 
         # - thumbnail url
         view = View.objects.get(name="view name")
-        self.assertEqual(view.thumbnail.url, "http://test/")
+        self.assertEqual(view.thumbnail.url, "http://foo.bar/file.png")
 
         # - expected response data
         expected_response = {
@@ -98,6 +101,7 @@ class ViewThumbnailTestCase(TestCase):
             "name": "view name",
             "thumbnail": view.thumbnail.url,
             "data": {"key1": "value1"},
+            "screen": "desktop",
         }
         self.assertEqual(response.data, expected_response)
 
@@ -143,6 +147,7 @@ class ViewThumbnailTestCase(TestCase):
             "name": "view name",
             "thumbnail": view.thumbnail.url,
             "data": {"key1": "value1"},
+            "screen": "desktop",
         }
         self.assertEqual(response.data, expected_response)
 
