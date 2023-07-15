@@ -17,6 +17,10 @@ from django_auth_ldap.config import LDAPSearch
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
+# Define the URL subpath for this application when deployed:
+FORCE_SCRIPT_NAME = os.environ.get("URL_SUBPATH")
+
+# Define the type of storage to use for media files: remote or local
 DEFAULT_FILE_STORAGE = (
     "manager.utils.RemoteStorage"
     if os.environ.get("REMOTE_STORAGE")
@@ -181,7 +185,11 @@ TOKEN_EXPIRED_AFTER_DAYS = 30
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
-STATIC_URL = "/manager/static/"
+
+STATIC_URL = (
+    f"{FORCE_SCRIPT_NAME}/manager/static/" if FORCE_SCRIPT_NAME else "/manager/static/"
+)
+
 """URL to access Django static files (`string`)"""
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
@@ -197,7 +205,9 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static_files"),
 ]
 
-MEDIA_URL = "/media/"
+MEDIA_URL = (
+    f"{FORCE_SCRIPT_NAME}/manager/media/" if FORCE_SCRIPT_NAME else "/manager/media/"
+)
 """URL for media files access (`string`)"""
 
 if TESTING:
