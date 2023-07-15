@@ -7,7 +7,7 @@
       "update_timestamp": "2020-12-29T14:21:31.040Z",
       "user": 1,
       "file_name": "default.json",
-      "config_file": "http://love.tu.lsst.org/media/configs/default.json"
+      "config_file": "https://tucson-teststand.lsst.codes/love/manager/media/configs/default.json"
     }
   },
   {
