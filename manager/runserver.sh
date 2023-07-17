@@ -36,4 +36,8 @@ fi
 python manage.py loaddata ui_framework/fixtures/initial_data_${love_site}.json
 
 echo -e "\nStarting server"
-daphne -b 0.0.0.0 -p 8000 manager.asgi:application
+if [ -z ${URL_SUBPATH} ]; then
+  daphne -b 0.0.0.0 -p 8000 manager.asgi:application
+else
+  daphne --root-path=${URL_SUBPATH} -b 0.0.0.0 -p 8000 manager.asgi:application
+fi

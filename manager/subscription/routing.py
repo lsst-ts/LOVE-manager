@@ -5,11 +5,11 @@ from .consumers import SubscriptionConsumer
 from django.conf import settings
 
 
+URL_PREFIX = settings.FORCE_SCRIPT_NAME[1:] + "/" if settings.FORCE_SCRIPT_NAME else ""
+
 websocket_urlpatterns = [
     url(
-        rf"^{settings.FORCE_SCRIPT_NAME[1:]}/manager(.*?)/ws/subscription/?$"
-        if settings.FORCE_SCRIPT_NAME
-        else r"^manager(.*?)/ws/subscription/?$",
+        rf"^{URL_PREFIX}manager(.*?)/ws/subscription/?$",
         TokenAuthMiddleware(SubscriptionConsumer.as_asgi()),
     ),
 ]
