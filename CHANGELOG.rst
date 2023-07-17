@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v5.14.0
+--------
+
+* Extend LOVE manager routing system for subpath app serving `<https://github.com/lsst-ts/LOVE-manager/pull/196>`_
+
 v5.13.0
 --------
 
