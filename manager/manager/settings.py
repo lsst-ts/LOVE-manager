@@ -209,13 +209,8 @@ MEDIA_URL = (
     f"{FORCE_SCRIPT_NAME}/manager/media/" if FORCE_SCRIPT_NAME else "/manager/media/"
 )
 """URL for media files access (`string`)"""
-
-if TESTING:
-    MEDIA_BASE = os.path.join(BASE_DIR, "ui_framework", "tests")
-    MEDIA_ROOT = os.path.join(BASE_DIR, "ui_framework", "tests", "media")
-else:
-    MEDIA_BASE = BASE_DIR
-    MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_BASE = BASE_DIR
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # Channels
 ASGI_APPLICATION = "manager.routing.application"
