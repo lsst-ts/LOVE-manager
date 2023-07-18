@@ -12,7 +12,7 @@ from rest_framework.test import APIClient
 from ui_framework.models import View
 from unittest import mock
 from api.models import Token
-from manager import settings
+from django.conf import settings
 
 
 @override_settings(DEBUG=True)
@@ -139,7 +139,9 @@ class ViewThumbnailTestCase(TestCase):
 
         # - thumbnail url
         view = View.objects.get(name="view name")
-        self.assertEqual(view.thumbnail.url, "/media/thumbnails/view_1.png")
+        self.assertEqual(
+            view.thumbnail.url, f"{settings.MEDIA_URL}thumbnails/view_1.png"
+        )
 
         # - expected response data
         expected_response = {
@@ -152,7 +154,8 @@ class ViewThumbnailTestCase(TestCase):
         self.assertEqual(response.data, expected_response)
 
         # - stored file content
-        file_url = settings.MEDIA_BASE + view.thumbnail.url
+        thumbnail_url = view.thumbnail.url.replace("/manager/media/", "/")
+        file_url = settings.MEDIA_ROOT + thumbnail_url
         expected_url = mock_location + ".png"
         self.assertTrue(
             filecmp.cmp(file_url, expected_url),

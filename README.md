@@ -40,6 +40,7 @@ All these variables are initialized with default variables defined in :code:`.en
 - `LOVE_SITE`: defines the site name of the LOVE system. This value is used to identify the LOVE system in the LOVE-manager.
 - `REMOTE_STORAGE`: defines if remote storage is used. If this variable is defined, then the LOVE-manager will connect to the LFA to upload files. If not defined, then the LOVE-manager will store the files locally.
 - `COMMANDING_PERMISSION_TYPE`: defines the type of permission to use for commanding. Currently two options are available: `user` and `location`. If `user` is used, then requests from users with `api.command.execute_command` permission are allowed. If `location` is used, then only requests from the configured location of control will be allowed. If not defined, then `user` will be used.
+- `URL_SUBPATH`: defines the path where the LOVE-manager will be served. If not defined, then requests will be served from the root path `/`. Note: the application has its own routing system, so this variable must be thought of as a prefix to the application's routes.
 
 # Local load for development
 

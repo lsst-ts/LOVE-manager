@@ -61,7 +61,13 @@ class RemoteStorage(Storage):
     PREFIX_THUMBNAIL = "thumbnails/"
     PREFIX_CONFIG = "configs/"
 
-    ALLOWED_FILE_TYPES = ["image/png", "image/jpeg", "image/jpg", "application/json"]
+    ALLOWED_FILE_TYPES = [
+        "image/png",
+        "image/jpeg",
+        "image/jpg",
+        "application/json",
+        "binary/octet-stream",
+    ]
 
     def __init__(self, location=None):
         self.location = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/lfa"
@@ -78,13 +84,21 @@ class RemoteStorage(Storage):
 
         # Validate name is a remote url
         self._validate_LFA_url(name)
+
+        # Make request to remote server
         response = requests.get(name)
         if response.status_code != 200:
             raise FileNotFoundError(f"Error requesting file at: {name}.")
 
+        # Create temporary file to store the response
         tf = TemporaryFile()
+
         # If request is for thumbnail (image file)
-        if response.headers.get("content-type") in RemoteStorage.ALLOWED_FILE_TYPES[:3]:
+        if (
+            response.headers.get("content-type") in RemoteStorage.ALLOWED_FILE_TYPES[:3]
+        ) or response.headers.get("content-type") == RemoteStorage.ALLOWED_FILE_TYPES[
+            4
+        ]:
             byte_encoded_response = response.content
             tf.write(byte_encoded_response)
             # Before sending the file, we need to reset the file pointer to the beginning
@@ -92,7 +106,11 @@ class RemoteStorage(Storage):
             return tf
 
         # If request is for config files (json file)
-        if response.headers.get("content-type") == RemoteStorage.ALLOWED_FILE_TYPES[3]:
+        if (
+            response.headers.get("content-type") == RemoteStorage.ALLOWED_FILE_TYPES[3]
+            or response.headers.get("content-type")
+            == RemoteStorage.ALLOWED_FILE_TYPES[4]
+        ):
             json_response = response.json()
             byte_encoded_response = json.dumps(json_response).encode("ascii")
             tf.write(byte_encoded_response)

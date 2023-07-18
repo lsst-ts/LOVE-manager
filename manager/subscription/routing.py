@@ -2,10 +2,14 @@
 from django.conf.urls import url
 from subscription.auth import TokenAuthMiddleware
 from .consumers import SubscriptionConsumer
+from django.conf import settings
+
+
+URL_PREFIX = settings.FORCE_SCRIPT_NAME[1:] + "/" if settings.FORCE_SCRIPT_NAME else ""
 
 websocket_urlpatterns = [
     url(
-        r"^manager(.*?)/ws/subscription/?$",
+        rf"^{URL_PREFIX}manager(.*?)/ws/subscription/?$",
         TokenAuthMiddleware(SubscriptionConsumer.as_asgi()),
     ),
 ]
