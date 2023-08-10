@@ -650,8 +650,8 @@
             "properties": {
               "h": 34,
               "i": 4,
-              "w": 15,
-              "x": 66,
+              "w": 24,
+              "x": 64,
               "y": 0,
               "type": "component"
             }
@@ -1162,6 +1162,10 @@
                     {
                       "name": "ESS",
                       "salindex": 105
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 106
                     },
                     {
                       "name": "ESS",
