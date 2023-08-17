@@ -1146,30 +1146,46 @@ class CSCAuthorizationRequestViewSet(
         return Response({"error": "Bad request"}, status=status.HTTP_400_BAD_REQUEST)
 
 
-def getTitle(request_data):
-    # Shared params
-    request_type = request_data["request_type"]
+def get_jira_title(request_data):
+    """Generate title for Jira ticket
 
-    # # Exposure log params
-    # if request_type == "exposure":
-    #     try:
-    #         obs_id = request_data["obs_id"]
-    #         return "LOVE generated: " + request_type
-    #     except Exception:
-    #         raise Exception("Error reading params")
-    # # Narrative log params
-    # if request_type == "narrative":
-    #     try:
-    #         system = request_data["system"]
-    #         return "LOVE generated: " + request_type
-    #     except Exception:
-    #         raise Exception("Error reading params")
-    # return ""
+    Parameters:
+    -----------
+    request_data: dict
+        Request data
+
+    Returns:
+    --------
+    title: str
+        Jira ticket title
+    """
+    request_type = request_data.get("request_type")
+    jira_title = request_data.get("jira_issue_title")
+
+    if jira_title is not None and jira_title != "":
+        return jira_title
 
     return "LOVE generated: " + request_type
 
 
-def makeJiraDescription(request_data):
+def get_jira_description(request_data):
+    """Generate description for Jira ticket
+
+    Parameters:
+    -----------
+    request_data: dict
+        Request data
+
+    Returns:
+    --------
+    description: str
+        Jira ticket description
+
+    Raises:
+    -------
+    Exception
+        If there is an error reading the request data
+    """
     # Shared params
     request_type = request_data["request_type"]
     try:
@@ -1266,23 +1282,35 @@ def makeJiraDescription(request_data):
     return description if description is not None else ""
 
 
-def jira(request):
+def jira_ticket(request):
     """Connects to JIRA API to create a ticket on a specific project.
     For more information on issuetypes refer to:
     ttps://jira.lsstcorp.org/rest/api/latest/issuetype/?projectId=JIRA_PROJECT_ID
+
     Params
     ------
     request: Request
-        The Request object
+        The request object from the Django view
+
     Returns
     -------
     Response
         The response and status code of the request to the JIRA API
-    """
-    full_request = request.data
 
-    if "request_type" not in full_request:
+    Raises
+    ------
+    Exception
+        If there is an error reading the request data
+    """
+    request_data = request.data
+    if "request_type" not in request_data:
         return Response({"ack": "Error reading request type"}, status=400)
+
+    tags_data = (
+        request_data.get("tags").split(",")
+        if request_data.get("tags") != "undefined"
+        else []
+    )
 
     try:
         jira_payload = {
@@ -1290,15 +1318,15 @@ def jira(request):
                 "project": {"id": os.environ.get("JIRA_PROJECT_ID")},
                 "labels": [
                     "LOVE",
-                    *(full_request["tags"].split(",") if full_request["tags"] else []),
+                    *tags_data,
                 ],
-                "summary": getTitle(full_request),
-                "description": makeJiraDescription(full_request),
+                "summary": get_jira_title(request_data),
+                "description": get_jira_description(request_data),
                 "customfield_15602": "on"
-                if int(full_request.get("level", 0)) >= 100
+                if int(request_data.get("level", 0)) >= 100
                 else "off",  # Is Urgent?
                 "customfield_16702": float(
-                    full_request.get("time_lost", 0)
+                    request_data.get("time_lost", 0)
                 ),  # Obs. time loss
                 "issuetype": {"id": 12302},
             },
@@ -1322,6 +1350,7 @@ def jira(request):
             },
             status=200,
         )
+
     return Response(
         {
             "ack": "Jira ticket could not be created",
@@ -1345,15 +1374,21 @@ def jira_comment(request):
     -------
     Response
         The response and status code of the request to the JIRA API
-    """
-    full_request = request.data
 
-    if "issue_id" not in full_request:
+    Raises
+    ------
+    Exception
+        If there is an error reading the request data
+    """
+    request_data = request.data
+    if "jira_issue_id" not in request_data:
         return Response({"ack": "Error reading the JIRA issue ID"}, status=400)
+
+    jira_id = request_data.get("jira_issue_id")
 
     try:
         jira_payload = {
-            "body": makeJiraDescription(full_request),
+            "body": get_jira_description(request_data),
         }
     except Exception as e:
         return Response({"ack": f"Error creating jira payload: {e}"}, status=400)
@@ -1362,13 +1397,13 @@ def jira_comment(request):
         "Authorization": f"Basic {os.environ.get('JIRA_API_TOKEN')}",
         "content-type": "application/json",
     }
-    url = f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/issue/{full_request['issue_id']}/comment"
+    url = f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/issue/{jira_id}/comment"
     response = requests.post(url, json=jira_payload, headers=headers)
     if response.status_code == 201:
         return Response(
             {
                 "ack": "Jira comment created",
-                "url": f"https://jira.lsstcorp.org/browse/{full_request['issue_id']}",
+                "url": f"https://jira.lsstcorp.org/browse/{jira_id}",
             },
             status=200,
         )
@@ -1472,7 +1507,7 @@ class ExposurelogViewSet(viewsets.ViewSet):
         query_params_string = urllib.parse.urlencode(request.query_params)
         url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/exposurelog/messages?{query_params_string}"
 
-        # Upload files to LFA
+        # Upload files to the LFA
         lfa_urls = []
         files_to_upload = request.FILES.getlist("file[]")
         if len(files_to_upload) > 0:
@@ -1491,10 +1526,10 @@ class ExposurelogViewSet(viewsets.ViewSet):
             request.data._mutable = False
 
             jira_response = None
-            if request.data.get("jira_comment") == "true":
-                jira_response = jira_comment(request)
+            if request.data.get("jira_new") == "true":
+                jira_response = jira_ticket(request)
             else:
-                jira_response = jira(request)
+                jira_response = jira_comment(request)
 
             if jira_response.status_code == 400:
                 return Response(
@@ -1510,8 +1545,10 @@ class ExposurelogViewSet(viewsets.ViewSet):
         if "file[]" in json_data:
             del json_data["file[]"]
 
-        if "tags" in json_data:
-            json_data["tags"] = json_data["tags"].split(",")
+        array_keys = {"tags"}
+        for key in array_keys:
+            if key in json_data:
+                json_data[key] = json_data[key].split(",")
 
         # Add LFA and JIRA urls to the payload
         json_data["urls"] = [jira_url, *lfa_urls]
@@ -1554,10 +1591,13 @@ class ExposurelogViewSet(viewsets.ViewSet):
         if "file[]" in json_data:
             del json_data["file[]"]
 
-        if "tags" in json_data:
-            json_data["tags"] = json_data["tags"].split(",")
-        if "urls" in json_data:
-            json_data["urls"] = json_data["urls"].split(",")
+        array_keys = {
+            "urls",
+            "tags",
+        }
+        for key in array_keys:
+            if key in json_data:
+                json_data[key] = json_data[key].split(",")
 
         # Add LFA urls to the payload
         json_data["urls"] = [
@@ -1608,7 +1648,7 @@ class NarrativelogViewSet(viewsets.ViewSet):
         query_params_string = urllib.parse.urlencode(request.query_params)
         url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/narrativelog/messages?{query_params_string}"
 
-        # Upload files to LFA
+        # Upload files to the LFA
         lfa_urls = []
         files_to_upload = request.FILES.getlist("file[]")
         if len(files_to_upload) > 0:
@@ -1627,10 +1667,10 @@ class NarrativelogViewSet(viewsets.ViewSet):
             request.data._mutable = False
 
             jira_response = None
-            if request.data.get("jira_comment") == "true":
-                jira_response = jira_comment(request)
+            if request.data.get("jira_new") == "true":
+                jira_response = jira_ticket(request)
             else:
-                jira_response = jira(request)
+                jira_response = jira_comment(request)
 
             if jira_response.status_code == 400:
                 return Response(
@@ -1646,14 +1686,18 @@ class NarrativelogViewSet(viewsets.ViewSet):
         if "file[]" in json_data:
             del json_data["file[]"]
 
-        if "tags" in json_data:
-            json_data["tags"] = json_data["tags"].split(",")
-        if "systems" in json_data:
-            json_data["systems"] = json_data["systems"].split(",")
-        if "subsystems" in json_data:
-            json_data["subsystems"] = json_data["subsystems"].split(",")
-        if "cscs" in json_data:
-            json_data["cscs"] = json_data["cscs"].split(",")
+        array_keys = {
+            "tags",
+            "systems",
+            "subsystems",
+            "cscs",
+            "components",
+            "primary_software_components",
+            "primary_hardware_components",
+        }
+        for key in array_keys:
+            if key in json_data:
+                json_data[key] = json_data[key].split(",")
 
         # Add LFA and JIRA urls to the payload
         json_data["urls"] = [jira_url, *lfa_urls]
@@ -1692,16 +1736,19 @@ class NarrativelogViewSet(viewsets.ViewSet):
         if "file[]" in json_data:
             del json_data["file[]"]
 
-        if "tags" in json_data:
-            json_data["tags"] = json_data["tags"].split(",")
-        if "systems" in json_data:
-            json_data["systems"] = json_data["systems"].split(",")
-        if "subsystems" in json_data:
-            json_data["subsystems"] = json_data["subsystems"].split(",")
-        if "cscs" in json_data:
-            json_data["cscs"] = json_data["cscs"].split(",")
-        if "urls" in json_data:
-            json_data["urls"] = json_data["urls"].split(",")
+        array_keys = {
+            "urls",
+            "tags",
+            "systems",
+            "subsystems",
+            "cscs",
+            "components",
+            "primary_software_components",
+            "primary_hardware_components",
+        }
+        for key in array_keys:
+            if key in json_data:
+                json_data[key] = json_data[key].split(",")
 
         # Add LFA urls to the payload
         json_data["urls"] = [
