@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v5.14.3
+-------
+
+* Extend OLE narrativelog view to implement new jira fields `<https://github.com/lsst-ts/LOVE-manager/pull/201>`_
+
 v5.14.2
 --------
 
