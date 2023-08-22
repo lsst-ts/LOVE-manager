@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v5.14.2
+--------
+
+* Add string representation for ScriptConfiguration model `<https://github.com/lsst-ts/LOVE-manager/pull/202>`_
+
 v5.14.1
 --------
 
