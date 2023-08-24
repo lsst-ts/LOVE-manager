@@ -8,6 +8,7 @@ from astropy.units import hour
 from django.conf import settings
 from django.core.files.storage import Storage
 from rest_framework.permissions import BasePermission
+from rest_framework.response import Response
 from tempfile import TemporaryFile
 
 
@@ -154,6 +155,312 @@ class RemoteStorage(Storage):
             return name
         return f"{settings.MEDIA_URL}{name}"
 
+def upload_to_lfa(request, *args, **kwargs):
+    """Connects to LFA API to upload a new file
+
+    Params
+    ------
+    request: Request
+        The Request object
+    args: list
+        List of addittional arguments. Currently unused
+    kwargs: dict
+        Dictionary with request arguments. Currently unused
+
+    Returns
+    -------
+    Response
+        The response and status code of the request to the LOVE-commander LFA API
+    """
+
+    option = kwargs.get("option", None)
+    url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/lfa/{option}"
+
+    if len(request.FILES.getlist("file[]")) == 0:
+        return Response({"ack": "No files to upload"}, status=400)
+
+    if option == "upload-file":
+        uploaded_files_urls = []
+        files_to_upload = request.FILES.getlist("file[]")
+        for file in files_to_upload:
+            upload_file_response = requests.post(url, files={"uploaded_file": file})
+            if upload_file_response.status_code == 200:
+                uploaded_files_urls.append(upload_file_response.json().get("url"))
+
+        if len(uploaded_files_urls) != len(files_to_upload):
+            return Response({"ack": "Error when uploading files"}, status=400)
+
+        return Response(
+            {"ack": "All files uploaded correctly", "urls": uploaded_files_urls},
+            status=200,
+        )
+
+    return Response({"ack": "Option not found"}, status=400)
+
+def get_jira_title(request_data):
+    """Generate title for a jira ticket
+
+    Parameters:
+    -----------
+    request_data: dict
+        Request data
+
+    Returns:
+    --------
+    title: str
+        Jira ticket title
+    """
+    request_type = request_data.get("request_type")
+    jira_title = request_data.get("jira_issue_title")
+
+    if jira_title is not None and jira_title != "":
+        return jira_title
+
+    return "LOVE generated: " + request_type
+
+
+def get_jira_description(request_data):
+    """Generate description for a jira ticket
+
+    Parameters:
+    -----------
+    request_data: dict
+        Request data
+
+    Returns:
+    --------
+    description: str
+        Jira ticket description
+
+    Raises:
+    -------
+    Exception
+        If there is an error reading the request data
+    """
+    # Shared params
+    request_type = request_data["request_type"]
+    try:
+        lfa_files_urls = request_data["lfa_files_urls"]
+        message_log = request_data["message_text"]
+        user_id = request_data["user_id"]
+        user_agent = request_data["user_agent"]
+    except Exception as e:
+        raise Exception("Error reading params") from e
+
+    # Exposure log params
+    if request_type == "exposure":
+        try:
+            obs_id = request_data["obs_id"]
+            instrument = request_data["instrument"]
+            exposure_flag = request_data["exposure_flag"]
+        except Exception as e:
+            raise Exception("Error reading params") from e
+        description = (
+            "*Created by* "
+            + user_id
+            + " *from* "
+            + user_agent
+            + "\n"
+            + "*Observation ids:* "
+            + str(obs_id)
+            + "\n"
+            + "*Instrument:* "
+            + instrument
+            + "\n"
+            + "*Exposure flag:* "
+            + exposure_flag
+            + "\n"
+            + "*Files:* "
+            + "\n"
+            + str(lfa_files_urls)
+            + "\n\n"
+            + message_log
+        )
+    # Narrative log params
+    if request_type == "narrative":
+        try:
+            systems = (
+                ", ".join(request_data["systems"].split(","))
+                if request_data.get("systems", False)
+                else "None"
+            )
+            subsystems = (
+                ", ".join(request_data["subsystems"].split(","))
+                if request_data.get("subsystems", False)
+                else "None"
+            )
+            cscs = (
+                ", ".join(request_data["cscs"].split(","))
+                if request_data.get("cscs", False)
+                else "None"
+            )
+            begin_date = request_data["date_begin"]
+            end_date = request_data["date_end"]
+            time_lost = str(request_data["time_lost"])
+        except Exception as e:
+            raise Exception("Error reading params") from e
+
+        description = (
+            "*Created by* "
+            + user_id
+            + " *from* "
+            + user_agent
+            + "\n"
+            + "*Time of incident:* "
+            + begin_date
+            + " *-* "
+            + end_date
+            + "\n"
+            + "*Time lost:* "
+            + time_lost
+            + "\n"
+            + "*System:* "
+            + systems
+            + "\n"
+            + "*Subsystems:* "
+            + subsystems
+            + "\n"
+            + "*CSCs:* "
+            + cscs
+            + "\n"
+            + "*Files:* "
+            + "\n"
+            + str(lfa_files_urls)
+            + "\n\n"
+            + message_log
+        )
+
+    return description if description is not None else ""
+
+
+def jira_ticket(request_data):
+    """Connects to JIRA API to create a ticket on a specific project.
+    For more information on issuetypes refer to:
+    ttps://jira.lsstcorp.org/rest/api/latest/issuetype/?projectId=JIRA_PROJECT_ID
+
+    Params
+    ------
+    request_data: dict
+        Request data
+
+    Returns
+    -------
+    Response
+        The response and status code of the request to the JIRA API
+
+    Raises
+    ------
+    Exception
+        If there is an error reading the request data
+    """
+    if "request_type" not in request_data:
+        return Response({"ack": "Error reading request type"}, status=400)
+
+    tags_data = (
+        request_data.get("tags").split(",")
+        if request_data.get("tags") != 'undefined'
+        else []
+    )
+
+    try:
+        jira_payload = {
+            "fields": {
+                "project": {"id": os.environ.get("JIRA_PROJECT_ID")},
+                "labels": [
+                    "LOVE",
+                    *tags_data,
+                ],
+                "summary": get_jira_title(request_data),
+                "description": get_jira_description(request_data),
+                "customfield_15602": "on"
+                if int(request_data.get("level", 0)) >= 100
+                else "off",  # Is Urgent?
+                "customfield_16702": float(
+                    request_data.get("time_lost", 0)
+                ),  # Obs. time loss
+                "issuetype": {"id": 12302},
+            },
+            "update": {"components": [{"set": [{"name": "LOVE"}]}]},
+        }
+    except Exception as e:
+        return Response({"ack": f"Error creating jira payload: {e}"}, status=400)
+
+    headers = {
+        "Authorization": f"Basic {os.environ.get('JIRA_API_TOKEN')}",
+        "content-type": "application/json",
+    }
+    url = f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/issue/"
+    response = requests.post(url, json=jira_payload, headers=headers)
+    response_data = response.json()
+    if response.status_code == 201:
+        return Response(
+            {
+                "ack": "Jira ticket created",
+                "url": f"https://jira.lsstcorp.org/browse/{response_data['key']}",
+            },
+            status=200,
+        )
+
+    return Response(
+        {
+            "ack": "Jira ticket could not be created",
+            "error": response_data,
+        },
+        status=400,
+    )
+
+def jira_comment(request_data):
+    """Connects to JIRA API to add a comment to a previously created ticket on a specific project.
+    For more information on issuetypes refer to:
+    ttps://jira.lsstcorp.org/rest/api/latest/issuetype/?projectId=JIRA_PROJECT_ID
+
+    Params
+    ------
+    request_data: dict
+        Request data
+
+    Returns
+    -------
+    Response
+        The response and status code of the request to the JIRA API
+
+    Raises
+    ------
+    Exception
+        If there is an error reading the request data
+    """
+    if "jira_issue_id" not in request_data:
+        return Response({"ack": "Error reading the JIRA issue ID"}, status=400)
+
+    jira_id = request_data.get("jira_issue_id")
+
+    try:
+        jira_payload = {
+            "body": get_jira_description(request_data),
+        }
+    except Exception as e:
+        return Response({"ack": f"Error creating jira payload: {e}"}, status=400)
+
+    headers = {
+        "Authorization": f"Basic {os.environ.get('JIRA_API_TOKEN')}",
+        "content-type": "application/json",
+    }
+    url = f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/issue/{jira_id}/comment"
+    response = requests.post(url, json=jira_payload, headers=headers)
+    if response.status_code == 201:
+        return Response(
+            {
+                "ack": "Jira comment created",
+                "url": f"https://jira.lsstcorp.org/browse/{jira_id}",
+            },
+            status=200,
+        )
+    return Response(
+        {
+            "ack": "Jira comment could not be created",
+        },
+        status=400,
+    )
 
 def get_client_ip(request):
     """Return the client IP address.
