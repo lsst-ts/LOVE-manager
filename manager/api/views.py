@@ -940,20 +940,19 @@ def lfa(request, *args, **kwargs):
     option = kwargs.get("option", None)
     url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/lfa/{option}"
 
+    if len(request.FILES.getlist("file[]")) == 0:
+        return Response({"ack": "No files to upload"}, status=400)
+
     if option == "upload-file":
         uploaded_files_urls = []
-        for file in request.FILES:
-            upload_file_response = requests.post(
-                url, files={"uploaded_file": request.FILES[file]}
-            )
+        files_to_upload = request.FILES.getlist("file[]")
+        for file in files_to_upload:
+            upload_file_response = requests.post(url, files={"uploaded_file": file})
             if upload_file_response.status_code == 200:
                 uploaded_files_urls.append(upload_file_response.json().get("url"))
-            elif upload_file_response.status_code == 404:
-                return Response({"ack": "Option not available"}, status=400)
-            else:
-                return Response(
-                    upload_file_response.json(), status=upload_file_response.status_code
-                )
+
+        if len(uploaded_files_urls) != len(files_to_upload):
+            return Response({"ack": "Error when uploading files"}, status=400)
 
         return Response(
             {"ack": "All files uploaded correctly", "urls": uploaded_files_urls},
@@ -1475,10 +1474,11 @@ class ExposurelogViewSet(viewsets.ViewSet):
         url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/exposurelog/messages?{query_params_string}"
 
         lfa_urls = []
-        if "file" in request.data:
+        files_to_upload = request.FILES.getlist("file[]")
+        if len(files_to_upload) > 0:
             lfa_response = lfa(request, option="upload-file")
-            if lfa_response.status_code == 400 or lfa_response.status_code == 404:
-                return Response(lfa_response.json(), lfa_response.status_code)
+            if lfa_response.status_code != 200:
+                return lfa_response
             lfa_urls = lfa_response.data.get("urls")
 
         jira_url = None
@@ -1503,8 +1503,8 @@ class ExposurelogViewSet(viewsets.ViewSet):
             jira_url = jira_response.data.get("url")
 
         json_data = request.data.copy()
-        if "file" in json_data:
-            del json_data["file"]
+        if "file[]" in json_data:
+            del json_data["file[]"]
 
         if "tags" in json_data:
             json_data["tags"] = json_data["tags"].split(",")
@@ -1567,6 +1567,7 @@ class NarrativelogViewSet(viewsets.ViewSet):
 
     # serializer_class = NarrativeLogSerializer
     permission_classes = (IsAuthenticated,)
+    parser_classes = (MultiPartParser,)
 
     @swagger_auto_schema(responses={200: "Narrative logs listed"})
     def list(self, request, *args, **kwargs):
@@ -1581,10 +1582,11 @@ class NarrativelogViewSet(viewsets.ViewSet):
         url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/narrativelog/messages?{query_params_string}"
 
         lfa_urls = []
-        if "file" in request.data:
+        files_to_upload = request.FILES.getlist("file[]")
+        if len(files_to_upload) > 0:
             lfa_response = lfa(request, option="upload-file")
-            if lfa_response.status_code == 400 or lfa_response.status_code == 404:
-                return Response(lfa_response.json(), lfa_response.status_code)
+            if lfa_response.status_code != 200:
+                return lfa_response
             lfa_urls = lfa_response.data.get("urls")
 
         jira_url = None
@@ -1609,8 +1611,8 @@ class NarrativelogViewSet(viewsets.ViewSet):
             jira_url = jira_response.data.get("url")
 
         json_data = request.data.copy()
-        if "file" in json_data:
-            del json_data["file"]
+        if "file[]" in json_data:
+            del json_data["file[]"]
 
         if "tags" in json_data:
             json_data["tags"] = json_data["tags"].split(",")
