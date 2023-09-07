@@ -238,7 +238,7 @@ class CSCAuthorizationRequest(models.Model):
 
         Returns
         -------
-        f"{}{self.target_csc}:{self.username}@{self.hostname}": string
+        f"[{self.status}] {self.authorized_users}  & {self.unauthorized_cscs} -> {self.cscs_to_change}": string
             The string representaiton
         """
         return f"[{self.status}] {self.authorized_users} & {self.unauthorized_cscs} -> {self.cscs_to_change}"
@@ -298,3 +298,13 @@ class ScriptConfiguration(models.Model):
     """The creation timestamp.
     This timestamp will generate automatically once the script is saved
     """
+
+    def __str__(self) -> str:
+        """Define the string representation for objects of this class.
+
+        Returns
+        -------
+        f"[self.id] {self.script_type} - {self.script_path}[{self.config_name}]": string
+            The string representaiton
+        """
+        return f"[{self.id}] {self.script_type} - {self.script_path} - {self.config_name}"
