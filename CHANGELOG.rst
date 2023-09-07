@@ -5,6 +5,7 @@ Version History
 v5.14.2
 --------
 
+* Extend OLE views to allow multiple file upload `<https://github.com/lsst-ts/LOVE-manager/pull/203>`_
 * Add string representation for ScriptConfiguration model `<https://github.com/lsst-ts/LOVE-manager/pull/202>`_
 
 v5.14.1
