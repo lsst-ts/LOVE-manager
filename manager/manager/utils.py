@@ -155,6 +155,7 @@ class RemoteStorage(Storage):
             return name
         return f"{settings.MEDIA_URL}{name}"
 
+
 def upload_to_lfa(request, *args, **kwargs):
     """Connects to LFA API to upload a new file
 
@@ -196,6 +197,7 @@ def upload_to_lfa(request, *args, **kwargs):
         )
 
     return Response({"ack": "Option not found"}, status=400)
+
 
 def get_jira_title(request_data):
     """Generate title for a jira ticket
@@ -356,11 +358,7 @@ def jira_ticket(request_data):
     if "request_type" not in request_data:
         return Response({"ack": "Error reading request type"}, status=400)
 
-    tags_data = (
-        request_data.get("tags").split(",")
-        if request_data.get("tags") != 'undefined'
-        else []
-    )
+    tags_data = request_data.get("tags").split(",") if request_data.get("tags") else []
 
     try:
         jira_payload = {
@@ -408,6 +406,7 @@ def jira_ticket(request_data):
         },
         status=400,
     )
+
 
 def jira_comment(request_data):
     """Connects to JIRA API to add a comment to a previously created ticket on a specific project.
@@ -461,6 +460,7 @@ def jira_comment(request_data):
         },
         status=400,
     )
+
 
 def get_client_ip(request):
     """Return the client IP address.

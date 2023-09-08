@@ -3,7 +3,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpRequest
 from django.test import TestCase, override_settings
 from django.utils.datastructures import MultiValueDict
-from api.views import lfa
+from manager.utils import upload_to_lfa
 
 
 @override_settings(DEBUG=True)
@@ -17,7 +17,7 @@ class LFATestCase(TestCase):
     def test_no_files_uploaded(self, mock_post):
         request = HttpRequest()
         request.FILES = MultiValueDict()
-        response = lfa(request, option="upload-file")
+        response = upload_to_lfa(request, option="upload-file")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data, {"ack": "No files to upload"})
 
@@ -30,7 +30,7 @@ class LFATestCase(TestCase):
 
         request = HttpRequest()
         request.FILES["file[]"] = [SimpleUploadedFile("test.txt", b"file_content")]
-        response = lfa(request, option="upload-file")
+        response = upload_to_lfa(request, option="upload-file")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.data,
@@ -61,7 +61,7 @@ class LFATestCase(TestCase):
         uploaded_file2 = SimpleUploadedFile("test2.txt", b"file_content_2")
         request.FILES = MultiValueDict({"file[]": [uploaded_file1, uploaded_file2]})
 
-        response = lfa(request, option="upload-file")
+        response = upload_to_lfa(request, option="upload-file")
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
@@ -83,13 +83,13 @@ class LFATestCase(TestCase):
 
         request = HttpRequest()
         request.FILES["file[]"] = [SimpleUploadedFile("test.txt", b"file_content")]
-        response = lfa(request, option="upload-file")
+        response = upload_to_lfa(request, option="upload-file")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data, {"ack": "Error when uploading files"})
 
     def test_invalid_option(self):
         request = HttpRequest()
         request.FILES["file[]"] = [SimpleUploadedFile("test.txt", b"file_content")]
-        response = lfa(request, option="invalid-option")
+        response = upload_to_lfa(request, option="invalid-option")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data, {"ack": "Option not found"})
