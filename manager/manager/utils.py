@@ -281,24 +281,8 @@ def get_jira_description(request_data):
     # Narrative log params
     if request_type == "narrative":
         try:
-            systems = (
-                ", ".join(request_data["systems"].split(","))
-                if request_data.get("systems", False)
-                else "None"
-            )
-            subsystems = (
-                ", ".join(request_data["subsystems"].split(","))
-                if request_data.get("subsystems", False)
-                else "None"
-            )
-            cscs = (
-                ", ".join(request_data["cscs"].split(","))
-                if request_data.get("cscs", False)
-                else "None"
-            )
             begin_date = request_data["date_begin"]
             end_date = request_data["date_end"]
-            time_lost = str(request_data["time_lost"])
         except Exception as e:
             raise Exception("Error reading params") from e
 
@@ -312,18 +296,6 @@ def get_jira_description(request_data):
             + begin_date
             + " *-* "
             + end_date
-            + "\n"
-            + "*Time lost:* "
-            + time_lost
-            + "\n"
-            + "*System:* "
-            + systems
-            + "\n"
-            + "*Subsystems:* "
-            + subsystems
-            + "\n"
-            + "*CSCs:* "
-            + cscs
             + "\n"
             + "*Files:* "
             + "\n"
@@ -359,6 +331,11 @@ def jira_ticket(request_data):
         return Response({"ack": "Error reading request type"}, status=400)
 
     tags_data = request_data.get("tags").split(",") if request_data.get("tags") else []
+    components_data = (
+        request_data.get("components").split(",")
+        if request_data.get("components")
+        else []
+    )
 
     try:
         jira_payload = {
@@ -372,13 +349,13 @@ def jira_ticket(request_data):
                 "description": get_jira_description(request_data),
                 "customfield_15602": "on"
                 if int(request_data.get("level", 0)) >= 100
-                else "off",  # Is Urgent?
-                "customfield_16702": float(
-                    request_data.get("time_lost", 0)
-                ),  # Obs. time loss
+                else "off",
+                "customfield_16702": float(request_data.get("time_lost", 0)),
+                "customfield_17204": request_data.get("primary_software_component", -1),
+                "customfield_17205": request_data.get("primary_hardware_component", -1),
                 "issuetype": {"id": 12302},
             },
-            "update": {"components": [{"set": [{"name": "LOVE"}]}]},
+            "update": {"components": [{"set": [{"id": id} for id in components_data]}]},
         }
     except Exception as e:
         return Response({"ack": f"Error creating jira payload: {e}"}, status=400)
@@ -388,6 +365,7 @@ def jira_ticket(request_data):
         "content-type": "application/json",
     }
     url = f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/issue/"
+
     response = requests.post(url, json=jira_payload, headers=headers)
     response_data = response.json()
     if response.status_code == 201:
