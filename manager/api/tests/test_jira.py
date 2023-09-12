@@ -1,8 +1,14 @@
-import requests
 import random
-from unittest.mock import patch
+import requests
+
+from api.views import jira_ticket, jira_comment
 from django.test import TestCase, override_settings
-from api.views import jira, jira_comment
+from unittest.mock import patch
+from manager.utils import (
+    OLE_JIRA_OBS_COMPONENTS_FIELDS,
+    OLE_JIRA_OBS_PRIMARY_SOFTWARE_COMPONENT_FIELDS,
+    OLE_JIRA_OBS_PRIMARY_HARDWARE_COMPONENT_FIELDS,
+)
 
 
 @override_settings(DEBUG=True)
@@ -15,9 +21,12 @@ class JiraTestCase(TestCase):
             "message_text",
             "user_id",
             "user_agent",
-            "tags",
         ]
-        exposure_params_required = ["obs_id", "instrument", "exposure_flag"]
+        exposure_params_required = [
+            "obs_id",
+            "instrument",
+            "exposure_flag",
+        ]
         narrative_params_required = [
             "date_begin",
             "date_end",
@@ -28,7 +37,6 @@ class JiraTestCase(TestCase):
             "message_text": "Lorem ipsum",
             "user_id": "love@localhost",
             "user_agent": "LOVE",
-            "tags": "tag1, tag2",
         }
 
         request_exposure = {
@@ -38,9 +46,13 @@ class JiraTestCase(TestCase):
         }
 
         request_narrative = {
-            "systems": "MainTel",
-            "subsystems": "Camera",
-            "cscs": "M1M3",
+            "components": ",".join(list(OLE_JIRA_OBS_COMPONENTS_FIELDS.keys())[:2]),
+            "primary_software_components": list(
+                OLE_JIRA_OBS_PRIMARY_SOFTWARE_COMPONENT_FIELDS.keys()
+            )[0],
+            "primary_hardware_components": list(
+                OLE_JIRA_OBS_PRIMARY_HARDWARE_COMPONENT_FIELDS.keys()
+            )[0],
             "date_begin": "202200703-19:58:13",
             "date_end": "20220704-19:25:13",
             "time_lost": 10,
@@ -63,48 +75,52 @@ class JiraTestCase(TestCase):
             **request_shared,
             **request_exposure,
             "request_type": "exposure",
-            "issue_id": "TEST-XX",
+            "jira_issue_id": "TEST-XX",
         }
 
         request_full_narrative_jira_comment = {
             **request_shared,
             **request_narrative,
             "request_type": "narrative",
-            "issue_id": "TEST-XX",
+            "jira_issue_id": "TEST-XX",
         }
 
-        # exposure
+        # exposure without request type
         data_exposure_without_request_type = {**request_full_exposure}
         del data_exposure_without_request_type["request_type"]
         self.jira_request_exposure_without_request_type = requests.Request(
             data=data_exposure_without_request_type
         )
 
+        # exposure without shared param
         data_exposure_without_shared_param = {**request_full_exposure}
         del data_exposure_without_shared_param[random.choice(shared_params)]
         self.jira_request_exposure_without_shared_param = requests.Request(
             data=data_exposure_without_shared_param
         )
 
+        # exposure without param
         data_exposure_without_param = {**request_full_exposure}
         del data_exposure_without_param[random.choice(exposure_params_required)]
         self.jira_request_exposure_without_param = requests.Request(
             data=data_exposure_without_param
         )
 
-        # narrative
+        # narrative without request type
         data_narrative_without_request_type = {**request_full_narrative}
         del data_narrative_without_request_type["request_type"]
         self.jira_request_narrative_without_request_type = requests.Request(
             data=data_narrative_without_request_type
         )
 
+        # narrative without shared param
         data_narrative_without_shared_param = {**request_full_narrative}
         del data_narrative_without_shared_param[random.choice(shared_params)]
         self.jira_request_narrative_without_shared_param = requests.Request(
             data=data_narrative_without_shared_param
         )
 
+        # narrative without param
         data_narrative_without_param = {**request_full_narrative}
         del data_narrative_without_param[random.choice(narrative_params_required)]
         self.jira_request_narrative_without_param = requests.Request(
@@ -125,23 +141,31 @@ class JiraTestCase(TestCase):
         """Test call to function with missing parameters"""
 
         # exposure
-        jira_response = jira(self.jira_request_exposure_without_request_type)
+        jira_response = jira_ticket(
+            self.jira_request_exposure_without_request_type.data
+        )
         assert "Error reading request type" in jira_response.data["ack"]
 
-        jira_response = jira(self.jira_request_exposure_without_shared_param)
+        jira_response = jira_ticket(
+            self.jira_request_exposure_without_shared_param.data
+        )
         assert "Error creating jira payload" in jira_response.data["ack"]
 
-        jira_response = jira(self.jira_request_exposure_without_param)
+        jira_response = jira_ticket(self.jira_request_exposure_without_param.data)
         assert "Error creating jira payload" in jira_response.data["ack"]
 
         # narrative
-        jira_response = jira(self.jira_request_narrative_without_request_type)
+        jira_response = jira_ticket(
+            self.jira_request_narrative_without_request_type.data
+        )
         assert "Error reading request type" in jira_response.data["ack"]
 
-        jira_response = jira(self.jira_request_narrative_without_shared_param)
+        jira_response = jira_ticket(
+            self.jira_request_narrative_without_shared_param.data
+        )
         assert "Error creating jira payload" in jira_response.data["ack"]
 
-        jira_response = jira(self.jira_request_narrative_without_param)
+        jira_response = jira_ticket(self.jira_request_narrative_without_param.data)
         assert "Error creating jira payload" in jira_response.data["ack"]
 
     def test_needed_parameters(self):
@@ -153,12 +177,12 @@ class JiraTestCase(TestCase):
         response.json = lambda: {"key": "LOVE-XX"}
         mock_jira_client.return_value = response
 
-        jira_response = jira(self.jira_request_exposure_full)
+        jira_response = jira_ticket(self.jira_request_exposure_full.data)
         assert jira_response.status_code == 200
         assert jira_response.data["ack"] == "Jira ticket created"
         assert jira_response.data["url"] == "https://jira.lsstcorp.org/browse/LOVE-XX"
 
-        jira_response = jira(self.jira_request_narrative_full)
+        jira_response = jira_ticket(self.jira_request_narrative_full.data)
         assert jira_response.status_code == 200
         assert jira_response.data["ack"] == "Jira ticket created"
         assert jira_response.data["url"] == "https://jira.lsstcorp.org/browse/LOVE-XX"
@@ -173,10 +197,10 @@ class JiraTestCase(TestCase):
         response.status_code = 201
         mock_jira_client.return_value = response
 
-        jira_response = jira_comment(self.jira_request_exposure_full_jira_comment)
+        jira_response = jira_comment(self.jira_request_exposure_full_jira_comment.data)
         assert jira_response.status_code == 200
         assert jira_response.data["ack"] == "Jira comment created"
 
-        jira_response = jira_comment(self.jira_request_narrative_full_jira_comment)
+        jira_response = jira_comment(self.jira_request_narrative_full_jira_comment.data)
         assert jira_response.status_code == 200
         assert jira_response.data["ack"] == "Jira comment created"
