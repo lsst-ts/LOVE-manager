@@ -4,6 +4,11 @@ import requests
 from api.views import jira_ticket, jira_comment
 from django.test import TestCase, override_settings
 from unittest.mock import patch
+from manager.utils import (
+    OLE_JIRA_OBS_COMPONENTS_FIELDS,
+    OLE_JIRA_OBS_PRIMARY_SOFTWARE_COMPONENT_FIELDS,
+    OLE_JIRA_OBS_PRIMARY_HARDWARE_COMPONENT_FIELDS,
+)
 
 
 @override_settings(DEBUG=True)
@@ -41,9 +46,13 @@ class JiraTestCase(TestCase):
         }
 
         request_narrative = {
-            "components": "MainTel",
-            "primary_software_components": "Camera",
-            "primary_hardware_components": "M1M3",
+            "components": ",".join(list(OLE_JIRA_OBS_COMPONENTS_FIELDS.keys())[:2]),
+            "primary_software_components": list(
+                OLE_JIRA_OBS_PRIMARY_SOFTWARE_COMPONENT_FIELDS.keys()
+            )[0],
+            "primary_hardware_components": list(
+                OLE_JIRA_OBS_PRIMARY_HARDWARE_COMPONENT_FIELDS.keys()
+            )[0],
             "date_begin": "202200703-19:58:13",
             "date_end": "20220704-19:25:13",
             "time_lost": 10,
