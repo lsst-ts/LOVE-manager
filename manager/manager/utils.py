@@ -16,6 +16,43 @@ from tempfile import TemporaryFile
 JSON_RESPONSE_LOCAL_STORAGE_NOT_ALLOWED = {"error": "Local storage not allowed."}
 JSON_RESPONSE_ERROR_NOT_VALID_JSON = {"error": "Not a valid JSON response."}
 
+# Mappings
+OLE_JIRA_OBS_COMPONENTS_FIELDS = {
+    "AuxTel": 20710,
+    "Calibrations": 20714,
+    "Environmental Monitoring Systems": 20711,
+    "Facilities": 20712,
+    "IT Infrastricture": 20718,
+    "MainTel": 20709,
+    "Observer Remark": 20717,
+    "Other": 20713,
+    "Unknown": 19507,
+}
+
+OLE_JIRA_OBS_PRIMARY_SOFTWARE_COMPONENT_FIELDS = {
+    "None": -1,
+    "CSC level": 16810,
+    "Component Level (EUI)": 16811,
+    "Visualization": 16812,
+    "Analysis": 16813,
+    "Other": 16814,
+    "Camera Control Software": 16815,
+}
+
+OLE_JIRA_OBS_PRIMARY_HARDWARE_COMPONENT_FIELDS = {
+    "None": -1,
+    "Mount": 16816,
+    "Rotator": 16817,
+    "Hexapod": 16818,
+    "M2": 16819,
+    "Science Cameras": 16820,
+    "M1M3": 16821,
+    "Dome": 16822,
+    "Utilities": 16825,
+    "Calibration": 16826,
+    "Other": 16827,
+}
+
 
 class LocationPermission(BasePermission):
     """Permission class to check if the user is in the location whitelist."""
@@ -336,6 +373,19 @@ def jira_ticket(request_data):
         if request_data.get("components")
         else []
     )
+    components_ids = [OLE_JIRA_OBS_COMPONENTS_FIELDS[c] for c in components_data]
+    primary_software_component_data = request_data.get(
+        "primary_software_components", "None"
+    )
+    primary_software_component_id = OLE_JIRA_OBS_PRIMARY_SOFTWARE_COMPONENT_FIELDS[
+        primary_software_component_data
+    ]
+    primary_hardware_component_data = request_data.get(
+        "primary_hardware_components", "None"
+    )
+    primary_hardware_component_id = OLE_JIRA_OBS_PRIMARY_HARDWARE_COMPONENT_FIELDS[
+        primary_hardware_component_data
+    ]
 
     try:
         jira_payload = {
@@ -351,11 +401,11 @@ def jira_ticket(request_data):
                 if int(request_data.get("level", 0)) >= 100
                 else "off",
                 "customfield_16702": float(request_data.get("time_lost", 0)),
-                "customfield_17204": request_data.get("primary_software_component", -1),
-                "customfield_17205": request_data.get("primary_hardware_component", -1),
+                "customfield_17204": primary_software_component_id,
+                "customfield_17205": primary_hardware_component_id,
                 "issuetype": {"id": 12302},
             },
-            "update": {"components": [{"set": [{"id": id} for id in components_data]}]},
+            "update": {"components": [{"set": [{"id": id} for id in components_ids]}]},
         }
     except Exception as e:
         return Response({"ack": f"Error creating jira payload: {e}"}, status=400)

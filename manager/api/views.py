@@ -50,7 +50,12 @@ from manager.settings import (
     AUTH_LDAP_2_SERVER_URI,
     AUTH_LDAP_3_SERVER_URI,
 )
-from manager.utils import CommandPermission, get_jira_title, get_jira_description, jira_ticket, jira_comment, upload_to_lfa
+from manager.utils import (
+    CommandPermission,
+    jira_ticket,
+    jira_comment,
+    upload_to_lfa,
+)
 
 valid_response = openapi.Response("Valid token", TokenSerializer)
 invalid_response = openapi.Response("Invalid token")
@@ -892,6 +897,7 @@ def tcs_main_command(request, *args, **kwargs):
     response = requests.post(url, json=request.data)
     return Response(response.json(), status=response.status_code)
 
+
 @api_view(["GET"])
 @permission_classes((IsAuthenticated,))
 def tcs_main_docstrings(request, *args, **kwargs):
@@ -1279,6 +1285,7 @@ class ExposurelogViewSet(viewsets.ViewSet):
 
         array_keys = {
             "tags",
+            "urls",
         }
         for key in array_keys:
             if key in json_data:
@@ -1422,6 +1429,7 @@ class NarrativelogViewSet(viewsets.ViewSet):
             "components",
             "primary_software_components",
             "primary_hardware_components",
+            "urls",
         }
         for key in array_keys:
             if key in json_data:
