@@ -1,3 +1,21 @@
+# This file is part of LOVE-manager.
+#
+# Copyright (c) 2023 Inria Chile.
+#
+# Developed for Inria Chile.
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or at your option any later version.
+#
+# This program is distributed in the hope that it will be useful,but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+# A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
+
+
 """Tests for the subscription of consumers to love_csc streams."""
 import datetime
 import pytest
@@ -23,7 +41,6 @@ class TestHeartbeat:
         self.user.user_permissions.add(Permission.objects.get(name="Execute Commands"))
         self.url = "manager/ws/subscription/?token={}".format(self.token)
 
-
     @pytest.mark.asyncio
     @pytest.mark.django_db(transaction=True)
     @override_settings(HEARTBEAT_QUERY_COMMANDER=True)
@@ -34,7 +51,7 @@ class TestHeartbeat:
         communicator = WebsocketCommunicator(application, self.url)
         connected, subprotocol = await communicator.connect()
 
-        assert connected == True
+        assert connected
 
         # Act 1 (Subscribe)
         msg = {
@@ -49,7 +66,7 @@ class TestHeartbeat:
 
         # Assert 1
         assert (
-            response["data"] == f"Successfully subscribed to heartbeat-manager-0-stream"
+            response["data"] == "Successfully subscribed to heartbeat-manager-0-stream"
         )
 
         response = await communicator.receive_json_from(timeout=10)
@@ -68,7 +85,7 @@ class TestHeartbeat:
         # Assert 2
         assert (
             response["data"]
-            == f"Successfully unsubscribed to heartbeat-manager-0-stream"
+            == "Successfully unsubscribed to heartbeat-manager-0-stream"
         )
 
         await communicator.disconnect()
@@ -76,7 +93,7 @@ class TestHeartbeat:
         communicator = WebsocketCommunicator(application, self.url)
         connected, subprotocol = await communicator.connect()
 
-        assert connected == True
+        assert connected
 
         # Act 1 (Subscribe)
         msg = {
@@ -91,7 +108,7 @@ class TestHeartbeat:
 
         # Assert 1
         assert (
-            response["data"] == f"Successfully subscribed to heartbeat-manager-0-stream"
+            response["data"] == "Successfully subscribed to heartbeat-manager-0-stream"
         )
 
         response = await communicator.receive_json_from(timeout=10)
@@ -110,7 +127,7 @@ class TestHeartbeat:
         # Assert 2
         assert (
             response["data"]
-            == f"Successfully unsubscribed to heartbeat-manager-0-stream"
+            == "Successfully unsubscribed to heartbeat-manager-0-stream"
         )
         await communicator.disconnect()
         await hb_manager.stop()
@@ -126,7 +143,7 @@ class TestHeartbeat:
         communicator = WebsocketCommunicator(application, self.url)
         connected, subprotocol = await communicator.connect()
 
-        assert connected == True
+        assert connected
 
         # Act 1 (Subscribe)
         msg = {
@@ -141,7 +158,7 @@ class TestHeartbeat:
 
         # Assert 1
         assert (
-            response["data"] == f"Successfully subscribed to heartbeat-manager-0-stream"
+            response["data"] == "Successfully subscribed to heartbeat-manager-0-stream"
         )
 
         response = await communicator.receive_json_from(timeout=10)
@@ -169,7 +186,7 @@ class TestHeartbeat:
         communicator = WebsocketCommunicator(application, self.url)
         connected, subprotocol = await communicator.connect()
 
-        assert connected == True
+        assert connected
 
         # Act 1 (Subscribe)
         msg = {
@@ -183,9 +200,7 @@ class TestHeartbeat:
         response = await communicator.receive_json_from()
 
         # Assert 1
-        assert (
-            response["data"] == f"Successfully subscribed to event-Heartbeat-0-stream"
-        )
+        assert response["data"] == "Successfully subscribed to event-Heartbeat-0-stream"
 
         # Act 2 (Send producer heartbeat through websocket)
         heartbeat = {
@@ -222,7 +237,7 @@ class TestHeartbeat:
         communicator = WebsocketCommunicator(application, self.url)
         connected, subprotocol = await communicator.connect()
 
-        assert connected == True
+        assert connected
 
         # Act 1 (Subscribe)
         msg = {
@@ -237,7 +252,7 @@ class TestHeartbeat:
 
         # Assert 1
         assert (
-            response["data"] == f"Successfully subscribed to heartbeat-manager-0-stream"
+            response["data"] == "Successfully subscribed to heartbeat-manager-0-stream"
         )
         response = await communicator.receive_json_from(timeout=5)
         assert response["data"][0]["data"]["timestamp"] is not None
@@ -270,7 +285,7 @@ class TestHeartbeat:
         communicator = WebsocketCommunicator(application, self.url)
         connected, subprotocol = await communicator.connect()
 
-        assert connected == True
+        assert connected
 
         # Act 1 (Subscribe)
         msg = {
@@ -285,7 +300,7 @@ class TestHeartbeat:
 
         # Assert 1
         assert (
-            response["data"] == f"Successfully subscribed to heartbeat-manager-0-stream"
+            response["data"] == "Successfully subscribed to heartbeat-manager-0-stream"
         )
 
         response = await communicator.receive_json_from(timeout=10)
@@ -313,7 +328,7 @@ class TestHeartbeat:
         communicator = WebsocketCommunicator(application, self.url)
         connected, subprotocol = await communicator.connect()
 
-        assert connected == True
+        assert connected
 
         # Act 1 (Subscribe)
         msg = {
@@ -328,12 +343,12 @@ class TestHeartbeat:
 
         # Assert 1
         assert (
-            response["data"] == f"Successfully subscribed to heartbeat-manager-0-stream"
+            response["data"] == "Successfully subscribed to heartbeat-manager-0-stream"
         )
 
         try:
             response = await communicator.receive_json_from(timeout=10)
-            #assert response["data"][0]["data"]["timestamp"] is not None
+            # assert response["data"][0]["data"]["timestamp"] is not None
 
             # Act 2 Set producer heartbeat
             timestamp = datetime.datetime.now().timestamp()

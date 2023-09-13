@@ -1,9 +1,26 @@
+# This file is part of LOVE-manager.
+#
+# Copyright (c) 2023 Inria Chile.
+#
+# Developed for Inria Chile.
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or at your option any later version.
+#
+# This program is distributed in the hope that it will be useful,but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+# A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
+
+
 from django.test import TestCase, override_settings
 from django.urls import reverse
 from api.models import Token
 from rest_framework.test import APIClient
 from django.contrib.auth.models import User, Permission
-import yaml
 
 
 @override_settings(DEBUG=True)
@@ -20,7 +37,8 @@ class SchemaValidationTestCase(TestCase):
             type: boolean
         fail_run:
             default: false
-            description: If true then raise an exception in the "run" method afer the "start" checkpoint but before waiting.
+            description: If true then raise an exception in the "run" method afer the
+                "start" checkpoint but before waiting.
             type: boolean
         wait_time:
             default: 0
