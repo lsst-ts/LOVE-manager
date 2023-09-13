@@ -347,7 +347,10 @@ def get_jira_description(request_data):
 def jira_ticket(request_data):
     """Connects to JIRA API to create a ticket on a specific project.
     For more information on issuetypes refer to:
-    ttps://jira.lsstcorp.org/rest/api/latest/issuetype/?projectId=JIRA_PROJECT_ID
+    https://jira.lsstcorp.org/rest/api/latest/issuetype/?projectId=JIRA_PROJECT_ID
+
+    For more information on the issue creation payload refer to:
+    https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issues/#api-rest-api-3-issue-post
 
     Params
     ------
@@ -359,10 +362,13 @@ def jira_ticket(request_data):
     Response
         The response and status code of the request to the JIRA API
 
-    Raises
-    ------
-    Exception
-        If there is an error reading the request data
+        For succesfull requests, the response will contain the following keys:
+        - ack: A message indicating the request was succesfull
+        - url: The url of the created ticket
+
+        For failed requests, the response will contain the following keys:
+        - ack: A message indicating the request failed
+        - error: The errors from the JIRA API
     """
     if "request_type" not in request_data:
         return Response({"ack": "Error reading request type"}, status=400)
@@ -401,14 +407,22 @@ def jira_ticket(request_data):
                 if int(request_data.get("level", 0)) >= 100
                 else "off",
                 "customfield_16702": float(request_data.get("time_lost", 0)),
-                "customfield_17204": primary_software_component_id,
-                "customfield_17205": primary_hardware_component_id,
+                "customfield_17204": {"id": str(primary_software_component_id)},
+                "customfield_17205": {"id": str(primary_hardware_component_id)},
                 "issuetype": {"id": 12302},
             },
-            "update": {"components": [{"set": [{"id": id} for id in components_ids]}]},
+            "update": {
+                "components": [{"set": [{"id": str(id)} for id in components_ids]}]
+            },
         }
     except Exception as e:
-        return Response({"ack": f"Error creating jira payload: {e}"}, status=400)
+        return Response(
+            {
+                "ack": "Error creating jira payload",
+                "error": str(e),
+            },
+            status=400,
+        )
 
     headers = {
         "Authorization": f"Basic {os.environ.get('JIRA_API_TOKEN')}",
