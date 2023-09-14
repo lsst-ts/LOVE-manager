@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v5.14.4
+-------
+
+* Adjust jira ticket creation payload for custom fields `<https://github.com/lsst-ts/LOVE-manager/pull/204>`_
+
 v5.14.3
 -------
 
