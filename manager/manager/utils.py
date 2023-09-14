@@ -362,8 +362,8 @@ def jira_ticket(request_data):
     Response
         The response and status code of the request to the JIRA API
 
-        For succesfull requests, the response will contain the following keys:
-        - ack: A message indicating the request was succesfull
+        For successful requests, the response will contain the following keys:
+        - ack: A message indicating the request was successful
         - url: The url of the created ticket
 
         For failed requests, the response will contain the following keys:
