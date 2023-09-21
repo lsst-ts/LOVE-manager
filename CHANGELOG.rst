@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v5.14.5
+-------
+
+* LOVE License `<https://github.com/lsst-ts/LOVE-manager/pull/206>`_
+
 v5.14.4
 -------
 
