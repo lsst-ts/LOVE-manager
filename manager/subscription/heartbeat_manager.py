@@ -1,3 +1,23 @@
+# This file is part of LOVE-manager.
+#
+# Copyright (c) 2023 Inria Chile.
+#
+# Developed by Inria Chile.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or at
+# your option any later version.
+#
+# This program is distributed in the hope that it will be useful,but
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+# or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
+# for more details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
+
+
 import asyncio
 import datetime
 import json
@@ -5,6 +25,7 @@ import requests
 import os
 from channels.layers import get_channel_layer
 from django.conf import settings
+
 
 class HeartbeatManager:
     """Manages the heartbeats of LOVE software components.
@@ -32,11 +53,9 @@ class HeartbeatManager:
             and the other to request the heartbeats from the LOVE-Commander periodically.
             """
             cls.heartbeat_data = {}
-            if settings.HEARTBEAT_QUERY_COMMANDER == True:
+            if settings.HEARTBEAT_QUERY_COMMANDER:
                 if not cls.heartbeat_task:
-                    cls.heartbeat_task = asyncio.create_task(
-                        cls.dispatch_heartbeats()
-                    )
+                    cls.heartbeat_task = asyncio.create_task(cls.dispatch_heartbeats())
                 if not cls.commander_heartbeat_task:
                     cls.commander_heartbeat_task = asyncio.create_task(
                         cls.query_commander()
