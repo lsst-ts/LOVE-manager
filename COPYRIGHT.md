@@ -8,6 +8,8 @@ This distribution includes the following code libraries/external tools.
 These are distributed according to the licensing terms governing each
 library:
 
+```
+
 | Name                   | Version    | License                                       |
 |:------------------------|:------------|:-----------------------------------------------|
 | Automat                | 20.2.0     | MIT                                           |
@@ -101,5 +103,3 @@ library:
 | wcwidth                | 0.1.8      | MIT                                           |
 | zipp                   | 3.1.0      | MIT                                           |
 | zope.interface         | 4.7.2      | ZPL 2.1                                       |
-
-```
