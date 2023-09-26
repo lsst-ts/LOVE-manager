@@ -5,6 +5,7 @@ Version History
 v5.14.5
 -------
 
+* Hotfix/v5.14.5 `<https://github.com/lsst-ts/LOVE-manager/pull/207>`_
 * LOVE License `<https://github.com/lsst-ts/LOVE-manager/pull/206>`_
 
 v5.14.4
