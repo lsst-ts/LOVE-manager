@@ -1,4 +1,4 @@
-# !/bin/bash
+#!/bin/bash
 
 echo -e "\nMaking migrations"
 while ! python manage.py makemigrations
