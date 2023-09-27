@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v5.14.6
+-------
+
+* Hotfix runserver.sh `<https://github.com/lsst-ts/LOVE-manager/pull/210>`_
+
 v5.14.5
 -------
 
