@@ -43,7 +43,7 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.autosectionlabel",
     "sphinx.ext.intersphinx",
-    "m2r",
+    "m2r2",
 ]
 source_suffix = [".rst", ".md"]
 
