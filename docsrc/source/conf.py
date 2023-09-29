@@ -16,11 +16,12 @@ documentation root, use os.path.abspath to make it absolute, like shown here.
 # sys.path.insert(0, os.path.abspath('.'))
 import os
 import sys
-import django
+
+# import django
 
 sys.path.insert(0, os.path.abspath("../../manager"))
-os.environ["DJANGO_SETTINGS_MODULE"] = "manager.settings"
-django.setup()
+# os.environ["DJANGO_SETTINGS_MODULE"] = "manager.settings"
+# django.setup()
 
 
 # -- Project information -----------------------------------------------------
