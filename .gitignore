@@ -11,3 +11,10 @@ webpack-stats.*
 **/db_data
 **/media/configs
 **/media/thumbnails
+.pre-commit-config.yaml
+.clang-format
+.flake8
+.isort.cfg
+.mypy.ini
+.ruff.toml
+towncrier.toml
