@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v5.14.7
+-------
+
+* Bump cryptography from 41.0.3 to 41.0.4 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/205>`_
+
 v5.14.6
 -------
 
