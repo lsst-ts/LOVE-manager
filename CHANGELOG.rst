@@ -5,6 +5,7 @@ Version History
 v5.14.7
 -------
 
+* Bump pillow from 9.3.0 to 10.0.1 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/214>`_
 * Bump urllib3 from 1.26.5 to 1.26.17 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/212>`_
 * Bump cryptography from 41.0.3 to 41.0.4 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/205>`_
 
