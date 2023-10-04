@@ -94,8 +94,10 @@ pipeline {
         }
       }
       when {
-        branch "main"
-        branch "develop"
+        anyOf {
+          branch "main"
+          branch "develop"
+        }
       }
       steps {
         script {
