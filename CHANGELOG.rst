@@ -5,6 +5,7 @@ Version History
 v5.14.7
 -------
 
+* Move docs creation to CI `<https://github.com/lsst-ts/LOVE-manager/pull/211>`_
 * Add ts_pre_commit_conf `<https://github.com/lsst-ts/LOVE-manager/pull/213>`_
 * Bump pillow from 9.3.0 to 10.0.1 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/214>`_
 * Bump urllib3 from 1.26.5 to 1.26.17 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/212>`_
