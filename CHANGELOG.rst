@@ -5,6 +5,7 @@ Version History
 v5.14.7
 -------
 
+* Hotfix to update docs reference `<https://github.com/lsst-ts/LOVE-manager/pull/215>`_
 * Move docs creation to CI `<https://github.com/lsst-ts/LOVE-manager/pull/211>`_
 * Add ts_pre_commit_conf `<https://github.com/lsst-ts/LOVE-manager/pull/213>`_
 * Bump pillow from 9.3.0 to 10.0.1 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/214>`_
