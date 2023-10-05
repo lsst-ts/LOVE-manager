@@ -2,6 +2,16 @@
 Version History
 ===============
 
+v5.14.7
+-------
+
+* Hotfix to update docs reference `<https://github.com/lsst-ts/LOVE-manager/pull/215>`_
+* Move docs creation to CI `<https://github.com/lsst-ts/LOVE-manager/pull/211>`_
+* Add ts_pre_commit_conf `<https://github.com/lsst-ts/LOVE-manager/pull/213>`_
+* Bump pillow from 9.3.0 to 10.0.1 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/214>`_
+* Bump urllib3 from 1.26.5 to 1.26.17 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/212>`_
+* Bump cryptography from 41.0.3 to 41.0.4 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/205>`_
+
 v5.14.6
 -------
 

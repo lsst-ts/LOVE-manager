@@ -1,6 +1,6 @@
 This repository contains the code of the Django Channels project that acts as middleware for the LOVE-frontend
 
-See the documentation here: https://lsst-ts.github.io/LOVE-manager/html/index.html
+See the documentation here: https://love-manager.lsst.io/
 
 # Use as part of the LOVE system
 
@@ -77,16 +77,11 @@ cd ../docsrc
 ```
 
 ### Linting & Formatting
-In order to maintaing code linting and formatting we use `pre-commit` that runs **Flake8** (https://flake8.pycqa.org/) and **Black** (https://github.com/psf/black) using Git Hooks. To enable this you have to:
+This code uses pre-commit to maintain `black` formatting, `ìsort` and `flake8` compliance. To enable this, run the following commands once (the first removes the previous pre-commit hook):
 
-1. Install `pre-commit` in your local development environment:
 ```
-pip install pre-commit
-```
-
-2. Set up the git hook scripts running:
-```
-pre-commit install
+git config --unset-all core.hooksPath
+generate_pre_commit_conf
 ```
 
-3. Start developing! Linter and Formatter will be executed on every commit you make
+For more details on how to use `generate_pre_commit_conf` please follow: https://tssw-developer.lsst.io/procedures/pre_commit.html#ts-pre-commit-conf.

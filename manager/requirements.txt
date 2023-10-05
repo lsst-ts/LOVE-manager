@@ -17,7 +17,7 @@ chardet==3.0.4
 constantly==15.1.0
 coreapi==2.3.3
 coreschema==0.0.4
-cryptography==41.0.3
+cryptography==41.0.4
 daphne==3.0.1
 Django==3.1.14
 django-auth-ldap==4.1.0
@@ -48,7 +48,7 @@ msgpack==1.0.0
 numpy==1.22.0
 packaging==20.3
 pip-licenses==2.1.1
-Pillow==9.3.0
+Pillow==10.0.1
 pluggy==0.13.1
 psycopg2==2.8.4
 pyasn1==0.4.8
@@ -85,7 +85,7 @@ sqlparse==0.4.4
 Twisted==22.10.0
 txaio==20.1.1
 uritemplate==3.0.1
-urllib3==1.26.5
+urllib3==1.26.17
 wcwidth==0.1.8
 zipp==3.1.0
 zope.interface==4.7.2
