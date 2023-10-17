@@ -1515,3 +1515,90 @@ class ScriptConfigurationViewSet(viewsets.ModelViewSet):
                 .order_by("-creation_timestamp")
             )
         return ScriptConfiguration.objects.order_by("-creation_timestamp")
+
+    def create(self, request, *args, **kwargs):
+        config_schema = request.data.get("config_schema", "")
+        get_schema = request.data.get("schema", "")
+
+        try:
+            config = yaml.safe_load(config_schema)
+        except yaml.YAMLError as e:
+            error = e.__dict__
+            error["problem_mark"] = e.problem_mark.__dict__
+            del error["context_mark"]
+            return Response({"title": "ERROR WHILE PARSING YAML STRING", "error": error}, status=status.HTTP_400_BAD_REQUEST)
+
+        schema = yaml.safe_load(get_schema)
+        validator = DefaultingValidator(schema)
+
+        try:
+            output = validator.validate(config)
+
+        except jsonschema.exceptions.ValidationError as e:
+            error = e.__dict__
+            for key in error:
+                if type(error[key]) == collections.deque:
+                    error[key] = list(error[key])
+            return Response(
+            {
+                "title": "INVALID CONFIG YAML",
+                "error": {
+                    "message": str(error["message"]),
+                    "path": [] if not error["path"] else list(error["path"]),
+                    "schema_path": []
+                    if not error["schema_path"]
+                    else list(error["schema_path"]),
+                },
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def partial_update(self, request, *args, **kwargs):
+        config_schema = request.data.get("config_schema", "")
+        get_schema = request.data.get("schema", "")
+
+        try:
+            config = yaml.safe_load(config_schema)
+        except yaml.YAMLError as e:
+            error = e.__dict__
+            error["problem_mark"] = e.problem_mark.__dict__
+            del error["context_mark"]
+            return Response({"title": "ERROR WHILE PARSING YAML STRING", "error": error}, status=status.HTTP_400_BAD_REQUEST)
+
+        schema = yaml.safe_load(get_schema)
+        validator = DefaultingValidator(schema)
+
+        try:
+            output = validator.validate(config)
+
+        except jsonschema.exceptions.ValidationError as e:
+            error = e.__dict__
+            for key in error:
+                if type(error[key]) == collections.deque:
+                    error[key] = list(error[key])
+            return Response(
+            {
+                "title": "INVALID CONFIG YAML",
+                "error": {
+                    "message": str(error["message"]),
+                    "path": [] if not error["path"] else list(error["path"]),
+                    "schema_path": []
+                    if not error["schema_path"]
+                    else list(error["schema_path"]),
+                },
+            },
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
