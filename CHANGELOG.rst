@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v5.14.8
+-------
+
+* Possibly malformed YAML in script dialog causes crash loop on subsequent use `<https://github.com/lsst-ts/LOVE-frontend/pull/536>`_
+
 v5.14.7
 -------
 
