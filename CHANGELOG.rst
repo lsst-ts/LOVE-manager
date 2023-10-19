@@ -5,6 +5,7 @@ Version History
 v5.14.8
 -------
 
+* Reduce miliseconds part of time of incident timestamps `<https://github.com/lsst-ts/LOVE-manager/pull/217>`_
 * Possibly malformed YAML in script dialog causes crash loop on subsequent use `<https://github.com/lsst-ts/LOVE-manager/pull/216>`_
 
 v5.14.7
