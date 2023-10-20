@@ -99,22 +99,39 @@ class JiraTestCase(TestCase):
 
         request_narrative = {
             "components": ",".join(
-                OLE_JIRA_OBS_COMPONENTS_FIELDS[
-                    : math.ceil(random.random() * len(OLE_JIRA_OBS_COMPONENTS_FIELDS))
+                list(
+                    OLE_JIRA_OBS_COMPONENTS_FIELDS[
+                        : math.ceil(
+                            random.random() * (len(OLE_JIRA_OBS_COMPONENTS_FIELDS) - 1)
+                        )
+                    ]
+                )
+            ),
+            "components_ids": ",".join(
+                [str(n) for n in range(1, math.ceil(random.random() * 100))]
+            ),
+            "primary_software_components": ",".join(
+                OLE_JIRA_OBS_PRIMARY_SOFTWARE_COMPONENT_FIELDS[
+                    math.ceil(
+                        random.random()
+                        * (len(OLE_JIRA_OBS_PRIMARY_SOFTWARE_COMPONENT_FIELDS) - 1)
+                    )
                 ]
             ),
-            "primary_software_components": OLE_JIRA_OBS_PRIMARY_SOFTWARE_COMPONENT_FIELDS[
-                math.ceil(
-                    random.random()
-                    * len(OLE_JIRA_OBS_PRIMARY_SOFTWARE_COMPONENT_FIELDS)
-                )
-            ],
-            "primary_hardware_components": OLE_JIRA_OBS_PRIMARY_HARDWARE_COMPONENT_FIELDS[
-                math.ceil(
-                    random.random()
-                    * len(OLE_JIRA_OBS_PRIMARY_HARDWARE_COMPONENT_FIELDS)
-                )
-            ],
+            "primary_software_components_ids": ",".join(
+                [str(math.ceil(random.random() * 100))]
+            ),
+            "primary_hardware_components": ",".join(
+                OLE_JIRA_OBS_PRIMARY_HARDWARE_COMPONENT_FIELDS[
+                    math.ceil(
+                        random.random()
+                        * (len(OLE_JIRA_OBS_PRIMARY_HARDWARE_COMPONENT_FIELDS) - 1)
+                    )
+                ]
+            ),
+            "primary_hardware_components_ids": ",".join(
+                [str(math.ceil(random.random() * 100))]
+            ),
             "date_begin": "2022-07-03T19:58:13.00000",
             "date_end": "2022-07-04T19:25:13.00000",
             "time_lost": 10,

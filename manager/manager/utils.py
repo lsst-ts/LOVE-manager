@@ -395,6 +395,7 @@ def jira_ticket(request_data):
         return Response({"ack": "Error reading request type"}, status=400)
 
     tags_data = request_data.get("tags").split(",") if request_data.get("tags") else []
+
     components_ids = (
         request_data.get("components_ids").split(",")
         if request_data.get("components_ids")
@@ -403,17 +404,18 @@ def jira_ticket(request_data):
     primary_software_components_ids = (
         request_data.get("primary_software_components_ids").split(",")
         if request_data.get("primary_software_components_ids")
-        else []
+        else None
     )
     primary_hardware_components_ids = (
         request_data.get("primary_hardware_components_ids").split(",")
         if request_data.get("primary_hardware_components_ids")
-        else []
+        else None
     )
 
     try:
         jira_payload = {
             "fields": {
+                "issuetype": {"id": 12302},
                 "project": {"id": os.environ.get("JIRA_PROJECT_ID")},
                 "labels": [
                     "LOVE",
@@ -425,9 +427,17 @@ def jira_ticket(request_data):
                 if int(request_data.get("level", 0)) >= 100
                 else "off",
                 "customfield_16702": float(request_data.get("time_lost", 0)),
-                "customfield_17204": {"id": str(primary_software_components_ids[0])},
-                "customfield_17205": {"id": str(primary_hardware_components_ids[0])},
-                "issuetype": {"id": 12302},
+                # Default values of the following fields are set to -1
+                "customfield_17204": {
+                    "id": str(primary_software_components_ids[0])
+                    if primary_software_components_ids
+                    else "-1"
+                },
+                "customfield_17205": {
+                    "id": str(primary_hardware_components_ids[0])
+                    if primary_hardware_components_ids
+                    else "-1"
+                },
             },
             "update": {
                 "components": [{"set": [{"id": str(id)} for id in components_ids]}]
