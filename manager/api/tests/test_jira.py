@@ -19,15 +19,16 @@
 
 
 import random
-import requests
-
-from api.views import jira_ticket, jira_comment
-from django.test import TestCase, override_settings
 from unittest.mock import patch
+
+import requests
+from api.views import jira_comment, jira_ticket
+from django.test import TestCase, override_settings
+
 from manager.utils import (
     OLE_JIRA_OBS_COMPONENTS_FIELDS,
-    OLE_JIRA_OBS_PRIMARY_SOFTWARE_COMPONENT_FIELDS,
     OLE_JIRA_OBS_PRIMARY_HARDWARE_COMPONENT_FIELDS,
+    OLE_JIRA_OBS_PRIMARY_SOFTWARE_COMPONENT_FIELDS,
 )
 
 
@@ -73,8 +74,8 @@ class JiraTestCase(TestCase):
             "primary_hardware_components": list(
                 OLE_JIRA_OBS_PRIMARY_HARDWARE_COMPONENT_FIELDS.keys()
             )[0],
-            "date_begin": "202200703-19:58:13",
-            "date_end": "20220704-19:25:13",
+            "date_begin": "2022-07-03T19:58:13.00000",
+            "date_end": "2022-07-04T19:25:13.00000",
             "time_lost": 10,
             "level": 0,
         }

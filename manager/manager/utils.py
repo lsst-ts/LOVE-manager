@@ -21,6 +21,8 @@
 import json
 import os
 import re
+from tempfile import TemporaryFile
+
 import requests
 from api.models import ControlLocation
 from astropy.time import Time
@@ -29,8 +31,6 @@ from django.conf import settings
 from django.core.files.storage import Storage
 from rest_framework.permissions import BasePermission
 from rest_framework.response import Response
-from tempfile import TemporaryFile
-
 
 # Constants
 JSON_RESPONSE_LOCAL_STORAGE_NOT_ALLOWED = {"error": "Local storage not allowed."}
@@ -80,7 +80,8 @@ class LocationPermission(BasePermission):
     message = {"ack": "Your location is not allowed to command the observatory."}
 
     def has_permission(self, request, view):
-        """Return True if the request comes from a location configured as command location."""
+        """Return True if the request comes from a location
+        configured as command location."""
         selected_location = ControlLocation.objects.filter(selected=True).first()
         location = (
             selected_location if selected_location else ControlLocation.objects.first()
@@ -103,7 +104,8 @@ class CommandPermission(BasePermission):
     """Permission class to check if the user has commanding permissions."""
 
     def __new__(cls) -> BasePermission:
-        """Return the correct permission class based on the configured permission type."""
+        """Return the correct permission class based on
+        the configured permission type."""
         configured_command_permission = settings.COMMANDING_PERMISSION_TYPE
         if configured_command_permission == "user":
             return UserBasedPermission()
@@ -128,7 +130,8 @@ class RemoteStorage(Storage):
     ]
 
     def __init__(self, location=None):
-        self.location = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/lfa"
+        self.location = f"http://{os.environ.get('COMMANDER_HOSTNAME')}\
+        :{os.environ.get('COMMANDER_PORT')}/lfa"
 
     def _validate_LFA_url(self, name):
         """Validate the name of the file is a valid LFA url."""
@@ -159,7 +162,8 @@ class RemoteStorage(Storage):
         ]:
             byte_encoded_response = response.content
             tf.write(byte_encoded_response)
-            # Before sending the file, we need to reset the file pointer to the beginning
+            # Before sending the file,
+            # we need to reset the file pointer to the beginning
             tf.seek(0)
             return tf
 
@@ -172,7 +176,8 @@ class RemoteStorage(Storage):
             json_response = response.json()
             byte_encoded_response = json.dumps(json_response).encode("ascii")
             tf.write(byte_encoded_response)
-            # Before sending the file, we need to reset the file pointer to the beginning
+            # Before sending the file,
+            # we need to reset the file pointer to the beginning
             tf.seek(0)
             return tf
 
@@ -186,14 +191,16 @@ class RemoteStorage(Storage):
 
         Notes
         -----
-        This methods connects to the LOVE-commander lfa endpoint to upload the file.
+        This methods connects to the
+        LOVE-commander lfa endpoint to upload the file.
         """
         if name.startswith(RemoteStorage.PREFIX_THUMBNAIL):
             url = f"{self.location}/upload-love-thumbnail"
         elif name.startswith(RemoteStorage.PREFIX_CONFIG):
             url = f"{self.location}/upload-love-config-file"
 
-        # Before sending the file, we need to reset the file pointer to the beginning
+        # Before sending the file,
+        # we need to reset the file pointer to the beginning
         content.seek(0)
         upload_file_response = requests.post(url, files={"uploaded_file": content})
         if upload_file_response.status_code != 200:
@@ -228,7 +235,8 @@ def upload_to_lfa(request, *args, **kwargs):
     Returns
     -------
     Response
-        The response and status code of the request to the LOVE-commander LFA API
+        The response and status code
+        of the request to the LOVE-commander LFA API
     """
 
     option = kwargs.get("option", None)
@@ -285,6 +293,36 @@ def get_jira_description(request_data):
     -----------
     request_data: dict
         Request data
+
+    Notes:
+    ------
+    The expected structure of the request_data dictionary is as follows:
+
+    If request_type is "exposure":
+        {
+            "request_type": "<exposure|narrative>",
+            "obs_id": "<observation id>",
+            "instrument": "<instrument>",
+            "exposure_flag": "<exposure flag>",
+        }
+
+    If request_type is "narrative":
+        {
+            "request_type": "<exposure|narrative>",
+            "date_begin": "<begin date>",
+            "date_end": "<end date>",
+        }
+
+    The format of date_begin and date_end is: "YYYY-MM-DDTHH:MM:SS.ssssss".
+
+    Also both shall contain:
+        {
+            "lfa_files_urls": "<list of urls of
+            the files uploaded to the LFA>",
+            "message_text": "<message text>",
+            "user_id": "<user id>",
+            "user_agent": "<user agent>",
+        }
 
     Returns:
     --------
@@ -350,9 +388,9 @@ def get_jira_description(request_data):
             + user_agent
             + "\n"
             + "*Time of incident:* "
-            + begin_date
+            + "".join(begin_date.split(".")[:-1])
             + " *-* "
-            + end_date
+            + "".join(end_date.split(".")[:-1])
             + "\n"
             + "*Files:* "
             + "\n"
@@ -471,7 +509,8 @@ def jira_ticket(request_data):
 
 
 def jira_comment(request_data):
-    """Connects to JIRA API to add a comment to a previously created ticket on a specific project.
+    """Connects to JIRA API to add a comment to
+    a previously created ticket on a specific project.
     For more information on issuetypes refer to:
     ttps://jira.lsstcorp.org/rest/api/latest/issuetype/?projectId=JIRA_PROJECT_ID
 
@@ -566,9 +605,12 @@ def get_times():
         - utc: current time in UTC scale as a unix timestamp (seconds)
         - tai: current time in UTC scale as a unix timestamp (seconds)
         - mjd: current time as a modified julian date
-        - sidereal_summit: current time as a sidereal_time w/respect to the summit location (hourangles)
-        - sidereal_greenwich: current time as a sidereal_time w/respect to Greenwich location (hourangles)
-        - tai_to_utc: The number of seconds of difference between TAI and UTC times (seconds)
+        - sidereal_summit: current time as a sidereal_time
+        w/respect to the summit location (hourangles)
+        - sidereal_greenwich: current time as a sidereal_time
+        w/respect to Greenwich location (hourangles)
+        - tai_to_utc: The number of seconds of difference
+        between TAI and UTC times (seconds)
     """
     t = Time.now()
     t_utc = t.datetime.timestamp()
@@ -596,20 +638,24 @@ def assert_time_data(time_data):
     .. code-block:: json
 
         {
-            "utc": "<current time in UTC scale as a unix timestamp (seconds), in float format>",
-            "tai": "<current time in UTC scale as a unix timestamp (seconds), in float format>",
+            "utc": "<current time in UTC scale as a unix timestamp (seconds),
+            in float format>",
+            "tai": "<current time in UTC scale as a unix timestamp (seconds),
+            in float format>",
             "mjd": "<current time as a modified julian date, in float format>",
             "sidereal_summit": "<current time as a sidereal_time w/respect
                 to the summit location (hourangles), in float format>",
             "sidereal_greenwich": "<current time as a sidereal_time w/respect
                 to Greenwich location (hourangles), in float format>",
-            "tai_to_utc": "<The number of seconds of difference between TAI and UTC times (seconds), in float format>",
+            "tai_to_utc": "<The number of seconds of difference between
+            TAI and UTC times (seconds), in float format>",
         }
 
     Parameters
     ----------
     time_data : dict
-        dictionary containing the time data in different formats, indexed by format
+        dictionary containing the time data
+        in different formats, indexed by format
 
     Returns
     -------
