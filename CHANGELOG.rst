@@ -2,7 +2,7 @@
 Version History
 ===============
 
-v5.14.8
+v5.14.9
 -------
 
 * Bump urllib3 from 1.26.17 to 1.26.18 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/218>`_
