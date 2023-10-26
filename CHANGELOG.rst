@@ -5,6 +5,11 @@ Version History
 v5.14.8
 -------
 
+* Bump urllib3 from 1.26.17 to 1.26.18 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/218>`_
+
+v5.14.8
+-------
+
 * Reduce miliseconds part of time of incident timestamps `<https://github.com/lsst-ts/LOVE-manager/pull/217>`_
 * Possibly malformed YAML in script dialog causes crash loop on subsequent use `<https://github.com/lsst-ts/LOVE-manager/pull/216>`_
 
