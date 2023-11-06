@@ -18,6 +18,7 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
 
+import math
 import random
 from unittest.mock import patch
 
@@ -25,11 +26,41 @@ import requests
 from api.views import jira_comment, jira_ticket
 from django.test import TestCase, override_settings
 
-from manager.utils import (
-    OLE_JIRA_OBS_COMPONENTS_FIELDS,
-    OLE_JIRA_OBS_PRIMARY_HARDWARE_COMPONENT_FIELDS,
-    OLE_JIRA_OBS_PRIMARY_SOFTWARE_COMPONENT_FIELDS,
-)
+OLE_JIRA_OBS_COMPONENTS_FIELDS = [
+    "AuxTel",
+    "Calibrations",
+    "Environmental Monitoring Systems",
+    "Facilities",
+    "IT Infrastricture",
+    "MainTel",
+    "Observer Remark",
+    "Other",
+    "Unknown",
+]
+
+OLE_JIRA_OBS_PRIMARY_SOFTWARE_COMPONENT_FIELDS = [
+    "None",
+    "CSC level",
+    "Component Level (EUI)",
+    "Visualization",
+    "Analysis",
+    "Other",
+    "Camera Control Software",
+]
+
+OLE_JIRA_OBS_PRIMARY_HARDWARE_COMPONENT_FIELDS = [
+    "None",
+    "Mount",
+    "Rotator",
+    "Hexapod",
+    "M2",
+    "Science Cameras",
+    "M1M3",
+    "Dome",
+    "Utilities",
+    "Calibration",
+    "Other",
+]
 
 
 @override_settings(DEBUG=True)
@@ -67,13 +98,40 @@ class JiraTestCase(TestCase):
         }
 
         request_narrative = {
-            "components": ",".join(list(OLE_JIRA_OBS_COMPONENTS_FIELDS.keys())[:2]),
-            "primary_software_components": list(
-                OLE_JIRA_OBS_PRIMARY_SOFTWARE_COMPONENT_FIELDS.keys()
-            )[0],
-            "primary_hardware_components": list(
-                OLE_JIRA_OBS_PRIMARY_HARDWARE_COMPONENT_FIELDS.keys()
-            )[0],
+            "components": ",".join(
+                list(
+                    OLE_JIRA_OBS_COMPONENTS_FIELDS[
+                        : math.ceil(
+                            random.random() * (len(OLE_JIRA_OBS_COMPONENTS_FIELDS) - 1)
+                        )
+                    ]
+                )
+            ),
+            "components_ids": ",".join(
+                [str(n) for n in range(1, math.ceil(random.random() * 100))]
+            ),
+            "primary_software_components": ",".join(
+                OLE_JIRA_OBS_PRIMARY_SOFTWARE_COMPONENT_FIELDS[
+                    math.ceil(
+                        random.random()
+                        * (len(OLE_JIRA_OBS_PRIMARY_SOFTWARE_COMPONENT_FIELDS) - 1)
+                    )
+                ]
+            ),
+            "primary_software_components_ids": ",".join(
+                [str(math.ceil(random.random() * 100))]
+            ),
+            "primary_hardware_components": ",".join(
+                OLE_JIRA_OBS_PRIMARY_HARDWARE_COMPONENT_FIELDS[
+                    math.ceil(
+                        random.random()
+                        * (len(OLE_JIRA_OBS_PRIMARY_HARDWARE_COMPONENT_FIELDS) - 1)
+                    )
+                ]
+            ),
+            "primary_hardware_components_ids": ",".join(
+                [str(math.ceil(random.random() * 100))]
+            ),
             "date_begin": "2022-07-03T19:58:13.00000",
             "date_end": "2022-07-04T19:25:13.00000",
             "time_lost": 10,
