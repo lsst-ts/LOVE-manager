@@ -172,9 +172,9 @@
               "link": "",
               "title": "Weather station component",
               "margin": true,
-              "salindex": 1,
+              "salindex": 301,
               "titleBar": true,
-              "hasRawMode": false
+              "hasRawMode": true
             },
             "content": "WeatherStation",
             "properties": {
