@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v5.14.10
+--------
+
+* Update WeatherStation component salindex on UI Framework fixtures `<https://github.com/lsst-ts/LOVE-manager/pull/223>`_
+
 v5.14.9
 -------
 
