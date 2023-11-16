@@ -2,9 +2,10 @@
 Version History
 ===============
 
-v5.14.11
---------
+v5.15.0
+-------
 
+* Manager performance improvements `<https://github.com/lsst-ts/LOVE-manager/pull/224>`_
 * Bump twisted from 22.10.0 to 23.10.0 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/222>`_
 
 v5.14.10

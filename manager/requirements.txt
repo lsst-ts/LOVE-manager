@@ -18,7 +18,6 @@ constantly==15.1.0
 coreapi==2.3.3
 coreschema==0.0.4
 cryptography==41.0.4
-daphne==3.0.1
 Django==3.1.14
 django-auth-ldap==4.1.0
 django-cors-headers==3.2.1
@@ -86,6 +85,7 @@ Twisted==23.10.0
 txaio==20.1.1
 uritemplate==3.0.1
 urllib3==1.26.18
+uvicorn[standard]==0.24.0.post1
 wcwidth==0.1.8
 zipp==3.1.0
 zope.interface==4.7.2
