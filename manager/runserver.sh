@@ -38,7 +38,7 @@ python manage.py loaddata ui_framework/fixtures/initial_data_${love_site}.json
 
 echo -e "\nStarting server"
 if [ -z ${URL_SUBPATH} ]; then
-  daphne -b 0.0.0.0 -p 8000 manager.asgi:application
+  python -m uvicorn --host 0.0.0.0 --port 8000 manager.asgi:application
 else
-  daphne --root-path=${URL_SUBPATH} -b 0.0.0.0 -p 8000 manager.asgi:application
+  python -m uvicorn --root-path=${URL_SUBPATH} --host 0.0.0.0 --port 8000 manager.asgi:application
 fi

@@ -31,6 +31,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+
 import ldap
 from django_auth_ldap.config import LDAPSearch
 
@@ -59,7 +60,8 @@ get from the `TESTING` environment variable (`string`)"""
 SECRET_KEY = os.getenv(
     "SECRET_KEY", "tbder3gzppu)kl%(u3awhhg^^zu#j&!ceh@$n&v0d38sjx43s8"
 )
-"""Secret Key for Django, read from the `SECRET_KEY` environment variable (`string`)"""
+"""Secret Key for Django, read from the `SECRET_KEY`
+environment variable (`string`)"""
 
 # SECURITY WARNING: don't run with debug turned on in production!
 if os.environ.get("NO_DEBUG"):
@@ -255,6 +257,11 @@ if REDIS_HOST and not TESTING:
                 ],
                 "expiry": REDIS_CONFIG_EXPIRY,
                 "capacity": REDIS_CONFIG_CAPACITY,
+                # Set group_expiry to 1 year to avoid group messages being
+                # dropped when the group is not used frequently.
+                # TODO: Solve this particular issue in a better way.
+                # See: DM-41728
+                "group_expiry": 31536000,
             },
         },
     }
@@ -274,7 +281,8 @@ AUTHENTICATION_BACKENDS = [
 AUTH_LDAP_1_SERVER_URI = os.environ.get("AUTH_LDAP_1_SERVER_URI")
 AUTH_LDAP_2_SERVER_URI = os.environ.get("AUTH_LDAP_2_SERVER_URI")
 AUTH_LDAP_3_SERVER_URI = os.environ.get("AUTH_LDAP_3_SERVER_URI")
-"""URL for the LDAP server. Read from `AUTH_LDAP_SERVER_URI` environment variable (`bool`)"""
+"""URL for the LDAP server. Read from `AUTH_LDAP_SERVER_URI`
+environment variable (`bool`)"""
 
 # Only use LDAP activation backend if there is an AUTH_LDAP_SERVER_URI
 AUTH_LDAP_BIND_DN = "uid=svc_love,cn=users,cn=accounts,dc=lsst,dc=cloud"
@@ -323,7 +331,8 @@ HEARTBEAT_QUERY_COMMANDER = (
 )
 
 # LOVE-PRODUCER-CONFIGURATION
-"""Defines wether or not ussing the legacy LOVE-producer version, i.e. not the LOVE CSC Producer"""
+"""Defines wether or not ussing the legacy LOVE-producer version,
+i.e. not the LOVE CSC Producer"""
 LOVE_PRODUCER_LEGACY = os.environ.get("LOVE_PRODUCER_LEGACY", False)
 
 
