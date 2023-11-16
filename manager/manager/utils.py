@@ -93,8 +93,10 @@ class RemoteStorage(Storage):
     ]
 
     def __init__(self, location=None):
-        self.location = f"http://{os.environ.get('COMMANDER_HOSTNAME')}\
-        :{os.environ.get('COMMANDER_PORT')}/lfa"
+        self.location = (
+            f"http://{os.environ.get('COMMANDER_HOSTNAME')}"
+            f":{os.environ.get('COMMANDER_PORT')}/lfa"
+        )
 
     def _validate_LFA_url(self, name):
         """Validate the name of the file is a valid LFA url."""
