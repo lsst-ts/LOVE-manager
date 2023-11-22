@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v5.15.1
+-------
+
+* Add missing base fixtures `<https://github.com/lsst-ts/LOVE-manager/pull/225>`_
+
 v5.15.0
 -------
 
