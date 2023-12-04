@@ -5,6 +5,7 @@ Version History
 v5.15.1
 -------
 
+* Increase users uploads max file size `<https://github.com/lsst-ts/LOVE-manager/pull/227>`_
 * Add missing base fixtures `<https://github.com/lsst-ts/LOVE-manager/pull/225>`_
 
 v5.15.0
