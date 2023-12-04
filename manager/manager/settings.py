@@ -38,6 +38,9 @@ from django_auth_ldap.config import LDAPSearch
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
+# Define the max file size for user uploads
+FILE_UPLOAD_MAX_MEMORY_SIZE = 5242880
+
 # Define the URL subpath for this application when deployed:
 FORCE_SCRIPT_NAME = os.environ.get("URL_SUBPATH")
 
