@@ -6,6 +6,7 @@ v5.15.1
 -------
 
 * Increase users uploads max file size `<https://github.com/lsst-ts/LOVE-manager/pull/227>`_
+* Bump cryptography from 41.0.4 to 41.0.6 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/226>`_
 * Add missing base fixtures `<https://github.com/lsst-ts/LOVE-manager/pull/225>`_
 
 v5.15.0
