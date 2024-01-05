@@ -39,8 +39,8 @@ from django.conf.urls import include
 from django.contrib import admin
 from django.urls import path, re_path
 from django.views.generic import TemplateView
-from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 
 schema_view = get_schema_view(
@@ -81,4 +81,5 @@ urlpatterns = [
         "manager/schema_validation/",
         TemplateView.as_view(template_name="test.html"),
     ),
+    path("manager/redirect/", include("redirect.urls")),
 ]

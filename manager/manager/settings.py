@@ -121,6 +121,7 @@ INSTALLED_APPS = [
     "api",
     "subscription",
     "ui_framework",
+    "redirect",
 ]
 
 
