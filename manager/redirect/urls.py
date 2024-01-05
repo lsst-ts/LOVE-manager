@@ -16,12 +16,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
-from redirect.views import m1m3_bump_tests_redirect
+from redirect.views import m1m3_force_actuators_tests_redirect
 
 urlpatterns = [
     path(
         "dashboards/<site>/M1M3_Actuator_Forces",
-        m1m3_bump_tests_redirect,
-        name="dashboards-m1m3-bump-tests",
+        m1m3_force_actuators_tests_redirect,
+        name="dashboards-m1m3-force-actuator-tests",
     ),
 ]

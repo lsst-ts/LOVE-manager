@@ -12,8 +12,8 @@ from rest_framework.response import Response
 
 @api_view(["GET"])
 @permission_classes([])
-def m1m3_bump_tests_redirect(request, site):
-    """Redirect to the m1m3 bump tests chronograph dashboard
+def m1m3_force_actuators_tests_redirect(request, site):
+    """Redirect to the m1m3 force actuators tests chronograph dashboard
 
     Parameters
     ----------

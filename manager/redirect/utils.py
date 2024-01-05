@@ -2826,9 +2826,6 @@ def force_actuator_from_id(actuator_id: int) -> ForceActuatorData:
     RuntimeError
         When actuator with given ID cannot be found.
     """
-    # for fa in FATable:
-    #     print(fa.actuator_id)
-
     try:
         return next(fa for fa in FATable if fa.actuator_id == actuator_id)
     except StopIteration:

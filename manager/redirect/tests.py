@@ -21,11 +21,11 @@ def get_random_force_actuator():
     return random.choice(FATable)
 
 
-class M1M3BumpTestsRedirectTestCase(TestCase):
+class M1M3ForceActuatorsRedirectTestCase(TestCase):
     def setUp(self):
         self.client = APIClient()
 
-    def test_m1m3_bump_tests_redirect_success(self):
+    def test_m1m3_force_actuators_tests_redirect_success(self):
         # Arrange
         site = CHRONOGRAF_SITES.SUMMIT
         params = {
@@ -33,7 +33,7 @@ class M1M3BumpTestsRedirectTestCase(TestCase):
             "lower": "2022-01-01T00:00:00",
             "upper": "2022-01-02T00:00:00",
         }
-        url = reverse("dashboards-m1m3-bump-tests", args=[site])
+        url = reverse("dashboards-m1m3-force-actuator-tests", args=[site])
 
         # Act
         response = self.client.get(url, params)
@@ -50,7 +50,7 @@ class M1M3BumpTestsRedirectTestCase(TestCase):
         self.assertIn("lower=2022-01-01T00:00:00Z", unquote(response.url))
         self.assertIn("upper=2022-01-02T00:00:00Z", unquote(response.url))
 
-    def test_m1m3_bump_tests_redirect_missing_parameters(self):
+    def test_m1m3_force_actuators_tests_redirect_missing_parameters(self):
         # Arrange
         site = CHRONOGRAF_SITES.SUMMIT
         params = {
@@ -58,7 +58,7 @@ class M1M3BumpTestsRedirectTestCase(TestCase):
             "lower": "2022-01-01T00:00:00",
             # Missing "upper" parameter
         }
-        url = reverse("dashboards-m1m3-bump-tests", args=[site])
+        url = reverse("dashboards-m1m3-force-actuator-tests", args=[site])
 
         # Act
         response = self.client.get(url, params)
@@ -69,7 +69,7 @@ class M1M3BumpTestsRedirectTestCase(TestCase):
             response.data, "Error: lower and upper parameters are required"
         )
 
-    def test_m1m3_bump_tests_redirect_exception(self):
+    def test_m1m3_force_actuators_tests_redirect_exception(self):
         # Arrange
         site = CHRONOGRAF_SITES.SUMMIT
         params = {
@@ -77,7 +77,7 @@ class M1M3BumpTestsRedirectTestCase(TestCase):
             "lower": "2022-01-01T00:00:00",
             "upper": "2022-01-02T00:00:00",
         }
-        url = reverse("dashboards-m1m3-bump-tests", args=[site])
+        url = reverse("dashboards-m1m3-force-actuator-tests", args=[site])
 
         # Mock the exception
         with patch("redirect.views.urlunparse") as mock_urlunparse:
