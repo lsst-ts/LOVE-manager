@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v5.16.1
+-------
+
+* Remove unused urls and templates `<https://github.com/lsst-ts/LOVE-manager/pull/229>`_
+
 v5.16.0
 -------
 
