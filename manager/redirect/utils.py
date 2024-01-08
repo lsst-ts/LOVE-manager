@@ -2860,6 +2860,9 @@ def actuator_id_to_index(
     return fa.get_index(index_type)
 
 
+# TODO: transform this class into an StrEnum
+# https://docs.python.org/3/library/enum.html#enum.StrEnum
+# See: DM-42393
 class CHRONOGRAF_SITES:
     """Enumeration of Chronograf sites
 
