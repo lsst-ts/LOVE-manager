@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v5.16.0
+-------
+
+* Add new `redirect` app to provide a url shortener feature `<https://github.com/lsst-ts/LOVE-manager/pull/228>`_
+
 v5.15.1
 -------
 
