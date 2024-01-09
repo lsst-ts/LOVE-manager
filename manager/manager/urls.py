@@ -38,7 +38,6 @@ Including another URLconf
 from django.conf.urls import include
 from django.contrib import admin
 from django.urls import path, re_path
-from django.views.generic import TemplateView
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
@@ -55,11 +54,6 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path("manager/admin/", admin.site.urls),
-    path("manager/test/", TemplateView.as_view(template_name="test.html")),
-    path(
-        "manager/login/",
-        TemplateView.as_view(template_name="registration/login.html"),
-    ),
     path("manager/api/", include("api.urls")),
     path("manager/ui_framework/", include("ui_framework.urls")),
     re_path(
@@ -76,10 +70,6 @@ urlpatterns = [
         "manager/apidoc/redoc/",
         schema_view.with_ui("redoc", cache_timeout=0),
         name="schema-redoc",
-    ),
-    path(
-        "manager/schema_validation/",
-        TemplateView.as_view(template_name="test.html"),
     ),
     path("manager/redirect/", include("redirect.urls")),
 ]
