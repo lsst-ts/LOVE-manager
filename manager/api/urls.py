@@ -35,9 +35,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.conf.urls import include
-from django.urls import path
-from rest_framework.routers import DefaultRouter
+import api.views
 from api.views import (
     ConfigFileViewSet,
     ControlLocationViewSet,
@@ -47,8 +45,9 @@ from api.views import (
     NarrativelogViewSet,
     ScriptConfigurationViewSet,
 )
-
-import api.views
+from django.conf.urls import include
+from django.urls import path
+from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 
@@ -83,6 +82,11 @@ urlpatterns = [
     path("efd/timeseries", api.views.query_efd_timeseries, name="EFD-timeseries"),
     path("efd/logmessages", api.views.query_efd_logs, name="EFD-logmessages"),
     path("efd/efd_clients", api.views.query_efd_clients, name="EFD-clients"),
+    path(
+        "reports/m1m3-bump-tests",
+        api.views.query_reports_m1m3_bump_tests,
+        name="Reports-m1m3-bump-tests",
+    ),
     path("tcs/aux", api.views.tcs_aux_command, name="TCS-aux"),
     path("tcs/aux/docstrings", api.views.tcs_aux_docstrings, name="TCS-aux-docstrings"),
     path("tcs/main", api.views.tcs_main_command, name="TCS-main"),

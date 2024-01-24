@@ -19,29 +19,15 @@
 
 
 """Defines the views exposed by the REST API exposed by this app."""
-import os
+import collections
 import json
+import os
+import urllib
+
+import jsonschema
+import ldap
 import requests
 import yaml
-import jsonschema
-import collections
-import ldap
-import urllib
-from django.core.exceptions import PermissionDenied
-from django.utils import timezone
-from django.db.models.query_utils import Q
-from django.contrib.auth.models import Group, User
-from django_auth_ldap.backend import LDAPBackend
-from drf_yasg import openapi
-from drf_yasg.utils import swagger_auto_schema
-from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.decorators import api_view
-from rest_framework.decorators import permission_classes
-from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.parsers import MultiPartParser
-from rest_framework.response import Response
-from rest_framework import viewsets, status, mixins
 from api.models import (
     ConfigFile,
     ControlLocation,
@@ -51,31 +37,42 @@ from api.models import (
     ScriptConfiguration,
     Token,
 )
-from api.serializers import TokenSerializer, ConfigSerializer
 from api.serializers import (
-    ConfigFileSerializer,
     ConfigFileContentSerializer,
+    ConfigFileSerializer,
+    ConfigSerializer,
     ControlLocationSerializer,
-    CSCAuthorizationRequestSerializer,
-    CSCAuthorizationRequestCreateSerializer,
     CSCAuthorizationRequestAuthorizeSerializer,
+    CSCAuthorizationRequestCreateSerializer,
     CSCAuthorizationRequestExecuteSerializer,
+    CSCAuthorizationRequestSerializer,
     EmergencyContactSerializer,
     ImageTagSerializer,
     ScriptConfigurationSerializer,
+    TokenSerializer,
 )
-from .schema_validator import DefaultingValidator
+from django.contrib.auth.models import Group, User
+from django.core.exceptions import PermissionDenied
+from django.db.models.query_utils import Q
+from django.utils import timezone
+from django_auth_ldap.backend import LDAPBackend
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import mixins, status, viewsets
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework.parsers import MultiPartParser
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
 from manager.settings import (
     AUTH_LDAP_1_SERVER_URI,
     AUTH_LDAP_2_SERVER_URI,
     AUTH_LDAP_3_SERVER_URI,
 )
-from manager.utils import (
-    CommandPermission,
-    jira_ticket,
-    jira_comment,
-    upload_to_lfa,
-)
+from manager.utils import CommandPermission, jira_comment, jira_ticket, upload_to_lfa
+
+from .schema_validator import DefaultingValidator
 
 valid_response = openapi.Response("Valid token", TokenSerializer)
 invalid_response = openapi.Response("Invalid token")
@@ -94,7 +91,8 @@ not_found_response = openapi.Response("Not found")
 def validate_token(request, *args, **kwargs):
     """Validate the token and return 200 code if valid.
 
-    If the token is invalid this function is not executed (the request fails before)
+    If the token is invalid this function is not executed
+    (the request fails before)
 
 
     Params
@@ -104,13 +102,15 @@ def validate_token(request, *args, **kwargs):
     args: list
         List of addittional arguments. Currenlty unused
     kwargs: dict
-        Dictionary with addittional keyword arguments (indexed by keys in the dict),
-        one optional parameter that could be expeted is `flags`
+        Dictionary with addittional keyword arguments
+        (indexed by keys in the dict), one optional parameter
+        that could be expeted is `flags`
 
     Returns
     -------
     Response
-        The response stating that the token is valid with a 200 status code.
+        The response stating that the token is valid
+        with a 200 status code.
     """
     flags = kwargs.get("flags", None)
     no_config = flags == "no_config" or flags == "no-config"
@@ -134,7 +134,8 @@ def validate_token(request, *args, **kwargs):
 def logout(request):
     """Logout and delete the token. And returns 204 code if valid.
 
-    If the token is invalid this function is not executed (the request fails before)
+    If the token is invalid this function is not executed
+    (the request fails before)
 
     Params
     ------
@@ -144,7 +145,8 @@ def logout(request):
     Returns
     -------
     Response
-        The response stating that the token has been deleted, with a 204 status code.
+        The response stating that the token has been deleted,
+        with a 204 status code.
     """
     token = request._auth
     token.delete()
@@ -191,11 +193,12 @@ class CustomObtainAuthToken(ObtainAuthToken):
     """API endpoint to obtain authorization tokens.
 
     This method will try first to authenticate the user againts LDAP servers.
-    If authentication fails againts LDAP servers, the authentication will be done
-    againts local database.
+    If authentication fails againts LDAP servers, the authentication
+    will be done againts local database.
 
     If trying to authenticate with a LDAP user for the first time, if login
-    succeeds and if user is part of love_ops group, then cmd permissions are added.
+    succeeds and if user is part of love_ops group,
+    then cmd permissions are added.
 
     """
 
@@ -206,7 +209,8 @@ class CustomObtainAuthToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
         """Handle the (post) request for token.
 
-        If the token is invalid this function is not executed (the request fails before)
+        If the token is invalid this function is not executed
+        (the request fails before)
 
         Params
         ------
@@ -215,7 +219,8 @@ class CustomObtainAuthToken(ObtainAuthToken):
         args: list
             List of addittional arguments. Currenlty unused
         kwargs: dict
-            Dictionary with addittional keyword arguments (indexed by keys in the dict). Currenlty unused
+            Dictionary with addittional keyword arguments
+            (indexed by keys in the dict). Currenlty unused
 
         Returns
         -------
@@ -273,11 +278,12 @@ class CustomSwapAuthToken(ObtainAuthToken):
     """API endpoint to swap authorization tokens.
 
     This method will try first to authenticate the user againts LDAP servers.
-    If authentication fails againts LDAP servers, the authentication will be done
-    againts local database.
+    If authentication fails againts LDAP servers, the authentication
+    will be done againts local database.
 
     If trying to authenticate with a LDAP user for the first time, if login
-    succeeds and if user is part of love_ops group, then cmd permissions are added.
+    succeeds and if user is part of love_ops group,
+    then cmd permissions are added.
     """
 
     login_response = openapi.Response("User swap succesful", TokenSerializer)
@@ -288,7 +294,8 @@ class CustomSwapAuthToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
         """Handle the (post) request for token.
 
-        If the token is invalid this function is not executed (the request fails before)
+        If the token is invalid this function is not executed
+        (the request fails before)
 
         Params
         ------
@@ -297,7 +304,8 @@ class CustomSwapAuthToken(ObtainAuthToken):
         args: list
             List of addittional arguments. Currently unused
         kwargs: dict
-            Dictionary with addittional keyword arguments (indexed by keys in the dict). Currenlty unused
+            Dictionary with addittional keyword arguments
+            (indexed by keys in the dict). Currenlty unused
 
         Returns
         -------
@@ -378,7 +386,8 @@ def validate_config_schema(request):
     -------
     Response
         Dictionary containing a 'title' and an 'error' key (if any)
-        or an 'output' with the output of the validator (config with defaults-autocomplete)
+        or an 'output' with the output of the validator
+        (config with defaults-autocomplete)
     """
     try:
         config = yaml.safe_load(request.data["config"])
@@ -396,7 +405,7 @@ def validate_config_schema(request):
     except jsonschema.exceptions.ValidationError as e:
         error = e.__dict__
         for key in error:
-            if type(error[key]) == collections.deque:
+            if isinstance(error[key], collections.deque):
                 error[key] = list(error[key])
 
         return Response(
@@ -424,7 +433,8 @@ def validate_config_schema(request):
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, CommandPermission))
 def commander(request):
-    """Sends a command to the LOVE-commander according to the received parameters
+    """Sends a command to the LOVE-commander
+    according to the received parameters
 
     Params
     ------
@@ -454,7 +464,8 @@ def commander(request):
 @api_view(["POST"])
 @permission_classes((IsAuthenticated, CommandPermission))
 def lovecsc_observinglog(request):
-    """Sends an observing log message to the LOVE-commander according to the received parameters
+    """Sends an observing log message to the LOVE-commander
+    according to the received parameters
 
     Params
     ------
@@ -466,7 +477,10 @@ def lovecsc_observinglog(request):
     Response
         The response and status code of the request to the LOVE-Commander
     """
-    url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/lovecsc/observinglog"
+    url = (
+        f"http://{os.environ.get('COMMANDER_HOSTNAME')}:"
+        f"{os.environ.get('COMMANDER_PORT')}/lovecsc/observinglog"
+    )
     response = requests.post(url, json=request.data)
 
     return Response(response.json(), status=response.status_code)
@@ -532,7 +546,8 @@ def salinfo_metadata(request):
 @permission_classes((IsAuthenticated,))
 def salinfo_topic_names(request):
     """Requests SalInfo.topic_names from the commander containing a dict
-    of <csc name>: { "command_names": [], "event_names": [], "telemetry_names": []}
+    of <csc name>:
+    { "command_names": [], "event_names": [], "telemetry_names": []}
 
     Params
     ------
@@ -547,7 +562,10 @@ def salinfo_topic_names(request):
     query = ""
     if "categories" in request.query_params:
         query = "?categories=" + request.query_params["categories"]
-    url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/salinfo/topic-names{query}"
+    url = (
+        f"http://{os.environ.get('COMMANDER_HOSTNAME')}:"
+        f"{os.environ.get('COMMANDER_PORT')}/salinfo/topic-names{query}"
+    )
     response = requests.get(url)
 
     return Response(response.json(), status=response.status_code)
@@ -577,7 +595,8 @@ def salinfo_topic_names(request):
 @permission_classes((IsAuthenticated,))
 def salinfo_topic_data(request):
     """Requests SalInfo.topic_data from the commander containing a dict
-     of <csc name>: { "command_data": [], "event_data": [], "telemetry_data": []}
+     of <csc name>:
+     { "command_data": [], "event_data": [], "telemetry_data": []}
 
     Params
     ------
@@ -592,7 +611,10 @@ def salinfo_topic_data(request):
     query = ""
     if "categories" in request.query_params:
         query = "?categories=" + request.query_params["categories"]
-    url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/salinfo/topic-data{query}"
+    url = (
+        f"http://{os.environ.get('COMMANDER_HOSTNAME')}:"
+        f"{os.environ.get('COMMANDER_PORT')}/salinfo/topic-data{query}"
+    )
     response = requests.get(url)
 
     return Response(response.json(), status=response.status_code)
@@ -641,7 +663,8 @@ def get_config(request):
 @api_view(["POST"])
 @permission_classes((IsAuthenticated,))
 def set_config_selected(request):
-    """Adds the current User to the selected_by_users of the specified Config file
+    """Adds the current User to the selected_by_users
+    of the specified Config file
 
     Params
     ------
@@ -760,15 +783,21 @@ def query_efd_clients(request):
 @api_view(["POST"])
 @permission_classes((IsAuthenticated,))
 def query_efd_timeseries(request, *args, **kwargs):
-    """Queries data from an EFD timeseries by redirecting the request to the Commander
+    """Queries data from an EFD timeseries
+    by redirecting the request to the Commander
 
     Params
     ------
     request: Request
         The Request object
-        Dictionary with request arguments. Request should contain the following:
-            start_date (required): String specifying the start of the query range. Default current date minus 10 minutes
-            timewindow (required): Int specifying the number of minutes to query starting from start_date. Default 10
+        Dictionary with request arguments.
+        Request should contain the following:
+            start_date (required): String specifying
+            the start of the query range.
+            Default current date minus 10 minutes
+            timewindow (required): Int specifying
+            the number of minutes to query starting from start_date.
+            Default 10
             topics (required): Dictionary of the form
                 {
                     CSC1: {
@@ -778,7 +807,8 @@ def query_efd_timeseries(request, *args, **kwargs):
                         index: [topic1, topic2...],
                     },
                 }
-            resample (optional): The offset string representing target resample conversion, e.g. '15min', '10S'
+            resample (optional): The offset string representing target
+                resample conversion, e.g. '15min', '10S'
             efd_instance (required): The specific EFD instance to query
     args: list
         List of addittional arguments. Currently unused
@@ -798,15 +828,19 @@ def query_efd_timeseries(request, *args, **kwargs):
 @api_view(["POST"])
 @permission_classes((IsAuthenticated,))
 def query_efd_logs(request, *args, **kwargs):
-    """Queries data from an EFD timeseries by redirecting the request to the Commander
+    """Queries data from an EFD timeseries by
+    redirecting the request to the Commander
 
     Params
     ------
     request: Request
         The Request object
-        Dictionary with request arguments. Request should contain the following:
-            start_date (required): String specifying the start of the query range.
-            end_date (required): String specifying the end of the query range.
+        Dictionary with request arguments.
+        Request should contain the following:
+            start_date (required): String specifying
+            the start of the query range.
+            end_date (required): String specifying
+            the end of the query range.
             cscs (required): Dictionary of the form
                 {
                     CSC1: {
@@ -833,6 +867,30 @@ def query_efd_logs(request, *args, **kwargs):
 
 
 @api_view(["POST"])
+@permission_classes((IsAuthenticated,))
+def query_reports_m1m3_bump_tests(request):
+    """Requests M1M3 bump tests reports
+
+    Params
+    ------
+    request: Request
+        The Request object
+
+    Returns
+    -------
+    Response
+        The response and status code of the request to the LOVE-Commander
+    """
+    url = (
+        f"http://{os.environ.get('COMMANDER_HOSTNAME')}:"
+        f"{os.environ.get('COMMANDER_PORT')}/reports/m1m3-bump-tests"
+    )
+    response = requests.post(url, json=request.data)
+
+    return Response(response.json(), status=response.status_code)
+
+
+@api_view(["POST"])
 @permission_classes((IsAuthenticated, CommandPermission))
 def tcs_aux_command(request, *args, **kwargs):
     """Sends command to the ATCS
@@ -844,10 +902,13 @@ def tcs_aux_command(request, *args, **kwargs):
     args: list
         List of addittional arguments. Currently unused
     kwargs: dict
-        Dictionary with request arguments. Request should contain the following:
+        Dictionary with request arguments.
+        Request should contain the following:
             command_name (required): The name of the command to be run.
-            It should be a field of the lsst.ts.observatory.control.auxtel.ATCS class
-            params (required): Parameters to be passed to the command method, e.g.
+            It should be a field of the
+            lsst.ts.observatory.control.auxtel.ATCS class
+            params (required): Parameters to be passed
+            to the command method, e.g.
                 {
                     ra: 80,
                     dec: 30,
@@ -882,7 +943,10 @@ def tcs_aux_docstrings(request, *args, **kwargs):
     Response
         The response and status code of the request to the LOVE-Commander
     """
-    url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/tcs/aux/docstrings"
+    url = (
+        f"http://{os.environ.get('COMMANDER_HOSTNAME')}"
+        f":{os.environ.get('COMMANDER_PORT')}/tcs/aux/docstrings"
+    )
     response = requests.get(url)
     return Response(response.json(), status=response.status_code)
 
@@ -899,10 +963,13 @@ def tcs_main_command(request, *args, **kwargs):
     args: list
         List of addittional arguments. Currently unused
     kwargs: dict
-        Dictionary with request arguments. Request should contain the following:
-            command_name (required): The name of the command to be run. It should be a field of the
+        Dictionary with request arguments.
+        Request should contain the following:
+            command_name (required): The name of the command to be run.
+            It should be a field of the
             lsst.ts.observatory.control.maintel.MTCS class
-            params (required): Parameters to be passed to the command method, e.g.
+            params (required): Parameters to be passed
+            to the command method, e.g.
                 {
                     ra: 80,
                     dec: 30,
@@ -937,7 +1004,10 @@ def tcs_main_docstrings(request, *args, **kwargs):
     Response
         The response and status code of the request to the LOVE-Commander
     """
-    url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/tcs/main/docstrings"
+    url = (
+        f"http://{os.environ.get('COMMANDER_HOSTNAME')}:"
+        f"{os.environ.get('COMMANDER_PORT')}/tcs/main/docstrings"
+    )
     response = requests.get(url)
     return Response(response.json(), status=response.status_code)
 
@@ -1147,7 +1217,8 @@ def ole_exposurelog_exposures(request, *args, **kwargs):
     Returns
     -------
     Response
-        The response and status code of the request to the Open API exposurelog service
+        The response and status code of the request
+        to the Open API exposurelog service
     """
 
     query_params_string = urllib.parse.urlencode(request.query_params)
@@ -1178,7 +1249,8 @@ def ole_exposurelog_instruments(request):
     Returns
     -------
     Response
-        The response and status code of the request to the Open API exposurelog service
+        The response and status code of the request
+        to the Open API exposurelog service
     """
 
     query_params_string = urllib.parse.urlencode(request.query_params)
@@ -1190,7 +1262,8 @@ def ole_exposurelog_instruments(request):
 
 class ExposurelogViewSet(viewsets.ViewSet):
     """
-    A viewset that provides `list`, `create`, `retrieve`, `update`, and `destroy` actions
+    A viewset that provides
+    `list`, `create`, `retrieve`, `update`, and `destroy` actions
     to be used to query the API Exposure Log Service
 
     Notes
@@ -1332,7 +1405,8 @@ class ExposurelogViewSet(viewsets.ViewSet):
 
 class NarrativelogViewSet(viewsets.ViewSet):
     """
-    A viewset that provides `list`, `create`, `retrieve`, `update`, and `destroy` actions
+    A viewset that provides
+    `list`, `create`, `retrieve`, `update`, and `destroy` actions
     to be used to query the API Narrative Log Service
 
     Notes
@@ -1500,7 +1574,8 @@ class ControlLocationViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class ScriptConfigurationViewSet(viewsets.ModelViewSet):
-    """GET, POST, PUT, PATCH or DELETE instances of the ScriptConfiguration model."""
+    """GET, POST, PUT, PATCH or DELETE
+    instances of the ScriptConfiguration model."""
 
     permission_classes = (IsAuthenticated,)
     serializer_class = ScriptConfigurationSerializer
@@ -1529,7 +1604,10 @@ class ScriptConfigurationViewSet(viewsets.ModelViewSet):
             error = e.__dict__
             error["problem_mark"] = e.problem_mark.__dict__
             del error["context_mark"]
-            return Response({"title": "ERROR WHILE PARSING YAML STRING", "error": error}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"title": "ERROR WHILE PARSING YAML STRING", "error": error},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         # Parse the 'schema' using YAML
         schema = yaml.safe_load(get_schema)
@@ -1537,27 +1615,26 @@ class ScriptConfigurationViewSet(viewsets.ModelViewSet):
 
         try:
             # Validate the 'config' against the 'schema' using jsonschema
-            output = validator.validate(config)
-
+            validator.validate(config)
         except jsonschema.exceptions.ValidationError as e:
             # Handle validation errors and provide detailed error information
             error = e.__dict__
             for key in error:
-                if type(error[key]) == collections.deque:
+                if isinstance(error[key], collections.deque):
                     error[key] = list(error[key])
             return Response(
-            {
-                "title": "INVALID CONFIG YAML",
-                "error": {
-                    "message": str(error["message"]),
-                    "path": [] if not error["path"] else list(error["path"]),
-                    "schema_path": []
-                    if not error["schema_path"]
-                    else list(error["schema_path"]),
+                {
+                    "title": "INVALID CONFIG YAML",
+                    "error": {
+                        "message": str(error["message"]),
+                        "path": [] if not error["path"] else list(error["path"]),
+                        "schema_path": []
+                        if not error["schema_path"]
+                        else list(error["schema_path"]),
+                    },
                 },
-            },
-            status=status.HTTP_400_BAD_REQUEST
-        )
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         # Use the serializer to create a new object if the data is valid
         serializer = self.get_serializer(data=request.data)
@@ -1579,7 +1656,10 @@ class ScriptConfigurationViewSet(viewsets.ModelViewSet):
             error = e.__dict__
             error["problem_mark"] = e.problem_mark.__dict__
             del error["context_mark"]
-            return Response({"title": "ERROR WHILE PARSING YAML STRING", "error": error}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"title": "ERROR WHILE PARSING YAML STRING", "error": error},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         # Parse the 'schema' using YAML
         schema = yaml.safe_load(get_schema)
@@ -1587,27 +1667,27 @@ class ScriptConfigurationViewSet(viewsets.ModelViewSet):
 
         try:
             # Validate the 'config' against the 'schema' using jsonschema
-            output = validator.validate(config)
+            validator.validate(config)
 
         except jsonschema.exceptions.ValidationError as e:
             # Handle validation errors and provide detailed error information
             error = e.__dict__
             for key in error:
-                if type(error[key]) == collections.deque:
+                if isinstance(error[key], collections.deque):
                     error[key] = list(error[key])
             return Response(
-            {
-                "title": "INVALID CONFIG YAML",
-                "error": {
-                    "message": str(error["message"]),
-                    "path": [] if not error["path"] else list(error["path"]),
-                    "schema_path": []
-                    if not error["schema_path"]
-                    else list(error["schema_path"]),
+                {
+                    "title": "INVALID CONFIG YAML",
+                    "error": {
+                        "message": str(error["message"]),
+                        "path": [] if not error["path"] else list(error["path"]),
+                        "schema_path": []
+                        if not error["schema_path"]
+                        else list(error["schema_path"]),
+                    },
                 },
-            },
-            status=status.HTTP_400_BAD_REQUEST
-        )
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         # Get the instance to update
         instance = self.get_object()
