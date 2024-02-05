@@ -2,6 +2,16 @@
 Version History
 ===============
 
+v5.17.0
+-------
+
+* Add M1M3 bump tests reports endpoint `<https://github.com/lsst-ts/LOVE-manager/pull/232>`_
+
+v5.16.1
+-------
+
+* Remove unused urls and templates `<https://github.com/lsst-ts/LOVE-manager/pull/229>`_
+
 v5.16.0
 -------
 
