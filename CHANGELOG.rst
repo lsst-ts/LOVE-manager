@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v5.17.1
+-------
+
+* Extend OLE update methods to allow JIRA ticket attachment `<https://github.com/lsst-ts/LOVE-manager/pull/235>`_
+
 v5.17.0
 -------
 
