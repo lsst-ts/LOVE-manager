@@ -23,8 +23,9 @@ import random
 from unittest.mock import patch
 
 import requests
-from api.views import jira_comment, jira_ticket
 from django.test import TestCase, override_settings
+
+from manager.utils import handle_jira_payload, jira_comment, jira_ticket
 
 OLE_JIRA_OBS_COMPONENTS_FIELDS = [
     "AuxTel",
@@ -150,18 +151,32 @@ class JiraTestCase(TestCase):
             "request_type": "narrative",
         }
 
+        request_full_exposure_jira_new = {
+            **request_full_exposure,
+            "jira": "true",
+            "jira_new": "true",
+            "jira_issue_title": "Issue title",
+        }
+
+        request_full_narrative_jira_new = {
+            **request_full_narrative,
+            "jira": "true",
+            "jira_new": "true",
+            "jira_issue_title": "Issue title",
+        }
+
         request_full_exposure_jira_comment = {
-            **request_shared,
-            **request_exposure,
-            "request_type": "exposure",
-            "jira_issue_id": "TEST-XX",
+            **request_full_exposure,
+            "jira": "true",
+            "jira_new": "false",
+            "jira_issue_id": "LOVE-XX",
         }
 
         request_full_narrative_jira_comment = {
-            **request_shared,
-            **request_narrative,
-            "request_type": "narrative",
-            "jira_issue_id": "TEST-XX",
+            **request_full_narrative,
+            "jira": "true",
+            "jira_new": "false",
+            "jira_issue_id": "LOVE-XX",
         }
 
         # exposure without request type
@@ -206,18 +221,38 @@ class JiraTestCase(TestCase):
             data=data_narrative_without_param
         )
 
+        # all parameters requests
         self.jira_request_exposure_full = requests.Request(data=request_full_exposure)
         self.jira_request_narrative_full = requests.Request(data=request_full_narrative)
 
+        # all parameters requests with jira new
+        self.jira_request_exposure_full_jira_new = requests.Request(
+            data=request_full_exposure_jira_new
+        )
+        self.jira_request_exposure_full_jira_new.user = "user"
+        self.jira_request_exposure_full_jira_new.get_host = lambda: "localhost"
+
+        self.jira_request_narrative_full_jira_new = requests.Request(
+            data=request_full_narrative_jira_new
+        )
+        self.jira_request_narrative_full_jira_new.user = "user"
+        self.jira_request_narrative_full_jira_new.get_host = lambda: "localhost"
+
+        # all parameters requests with jira comment
         self.jira_request_exposure_full_jira_comment = requests.Request(
             data=request_full_exposure_jira_comment
         )
+        self.jira_request_exposure_full_jira_comment.user = "user"
+        self.jira_request_exposure_full_jira_comment.get_host = lambda: "localhost"
+
         self.jira_request_narrative_full_jira_comment = requests.Request(
             data=request_full_narrative_jira_comment
         )
+        self.jira_request_narrative_full_jira_comment.user = "user"
+        self.jira_request_narrative_full_jira_comment.get_host = lambda: "localhost"
 
     def test_missing_parameters(self):
-        """Test call to function with missing parameters"""
+        """Test call to jira_ticket function with missing parameters"""
 
         # exposure
         jira_response = jira_ticket(
@@ -248,7 +283,7 @@ class JiraTestCase(TestCase):
         assert "Error creating jira payload" in jira_response.data["ack"]
 
     def test_needed_parameters(self):
-        """Test call to function with all needed parameters"""
+        """Test call to jira_ticket function with all needed parameters"""
         mock_jira_patcher = patch("requests.post")
         mock_jira_client = mock_jira_patcher.start()
         response = requests.Response()
@@ -269,7 +304,7 @@ class JiraTestCase(TestCase):
         mock_jira_patcher.stop()
 
     def test_add_comment(self):
-        """Test call to function with all needed parameters"""
+        """Test call to jira_comment function with all needed parameters"""
         mock_jira_patcher = patch("requests.post")
         mock_jira_client = mock_jira_patcher.start()
         response = requests.Response()
@@ -283,3 +318,53 @@ class JiraTestCase(TestCase):
         jira_response = jira_comment(self.jira_request_narrative_full_jira_comment.data)
         assert jira_response.status_code == 200
         assert jira_response.data["ack"] == "Jira comment created"
+
+    def test_handle_narrative_jira_payload(self):
+        """Test call to function handle_jira_payload with all needed parameters
+        for narrative request type
+        """
+        mock_jira_patcher = patch("requests.post")
+        mock_jira_client = mock_jira_patcher.start()
+        response = requests.Response()
+        response.status_code = 201
+        response.json = lambda: {"key": "LOVE-XX"}
+        mock_jira_client.return_value = response
+
+        jira_response = handle_jira_payload(self.jira_request_narrative_full_jira_new)
+        assert jira_response.status_code == 200
+        assert jira_response.data["ack"] == "Jira ticket created"
+        assert jira_response.data["url"] == "https://jira.lsstcorp.org/browse/LOVE-XX"
+
+        jira_response = handle_jira_payload(
+            self.jira_request_narrative_full_jira_comment
+        )
+        assert jira_response.status_code == 200
+        assert jira_response.data["ack"] == "Jira comment created"
+        assert jira_response.data["url"] == "https://jira.lsstcorp.org/browse/LOVE-XX"
+
+        mock_jira_patcher.stop()
+
+    def test_handle_exposure_jira_payload(self):
+        """Test call to function handle_jira_payload with all needed parameters
+        for exposure request type
+        """
+        mock_jira_patcher = patch("requests.post")
+        mock_jira_client = mock_jira_patcher.start()
+        response = requests.Response()
+        response.status_code = 201
+        response.json = lambda: {"key": "LOVE-XX"}
+        mock_jira_client.return_value = response
+
+        jira_response = handle_jira_payload(self.jira_request_exposure_full_jira_new)
+        assert jira_response.status_code == 200
+        assert jira_response.data["ack"] == "Jira ticket created"
+        assert jira_response.data["url"] == "https://jira.lsstcorp.org/browse/LOVE-XX"
+
+        jira_response = handle_jira_payload(
+            self.jira_request_exposure_full_jira_comment
+        )
+        assert jira_response.status_code == 200
+        assert jira_response.data["ack"] == "Jira comment created"
+        assert jira_response.data["url"] == "https://jira.lsstcorp.org/browse/LOVE-XX"
+
+        mock_jira_patcher.stop()

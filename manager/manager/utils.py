@@ -425,20 +425,24 @@ def jira_ticket(request_data):
                 ],
                 "summary": get_jira_title(request_data),
                 "description": get_jira_description(request_data),
-                "customfield_15602": "on"
-                if int(request_data.get("level", 0)) >= 100
-                else "off",
+                "customfield_15602": (
+                    "on" if int(request_data.get("level", 0)) >= 100 else "off"
+                ),
                 "customfield_16702": float(request_data.get("time_lost", 0)),
                 # Default values of the following fields are set to -1
                 "customfield_17204": {
-                    "id": str(primary_software_components_ids[0])
-                    if primary_software_components_ids
-                    else "-1"
+                    "id": (
+                        str(primary_software_components_ids[0])
+                        if primary_software_components_ids
+                        else "-1"
+                    )
                 },
                 "customfield_17205": {
-                    "id": str(primary_hardware_components_ids[0])
-                    if primary_hardware_components_ids
-                    else "-1"
+                    "id": (
+                        str(primary_hardware_components_ids[0])
+                        if primary_hardware_components_ids
+                        else "-1"
+                    )
                 },
             },
             "update": {
@@ -533,6 +537,32 @@ def jira_comment(request_data):
         },
         status=400,
     )
+
+
+def handle_jira_payload(request, lfa_urls=[]):
+    """Handle the JIRA payload and send it to the JIRA API
+
+    Parameters
+    ----------
+    request : Request
+        The request object
+    lfa_urls : list
+        List of urls of the files uploaded to the LFA
+        Which will be attached to the Jira ticket
+
+    Returns
+    -------
+    Response
+        The response and status code of the request to the JIRA API
+    """
+    payload_data = request.data.copy()
+    payload_data["user_agent"] = "LOVE"
+    payload_data["user_id"] = f"{request.user}@{request.get_host()}"
+    payload_data["lfa_files_urls"] = lfa_urls
+
+    if request.data.get("jira_new") == "true":
+        return jira_ticket(payload_data)
+    return jira_comment(payload_data)
 
 
 def get_client_ip(request):
