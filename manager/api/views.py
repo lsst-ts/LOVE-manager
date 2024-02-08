@@ -70,7 +70,7 @@ from manager.settings import (
     AUTH_LDAP_2_SERVER_URI,
     AUTH_LDAP_3_SERVER_URI,
 )
-from manager.utils import CommandPermission, jira_comment, jira_ticket, upload_to_lfa
+from manager.utils import CommandPermission, handle_jira_payload, upload_to_lfa
 
 from .schema_validator import DefaultingValidator
 
@@ -414,9 +414,9 @@ def validate_config_schema(request):
                 "error": {
                     "message": str(error["message"]),
                     "path": [] if not error["path"] else list(error["path"]),
-                    "schema_path": []
-                    if not error["schema_path"]
-                    else list(error["schema_path"]),
+                    "schema_path": (
+                        [] if not error["schema_path"] else list(error["schema_path"])
+                    ),
                 },
             }
         )
@@ -1303,18 +1303,7 @@ class ExposurelogViewSet(viewsets.ViewSet):
         # Manage JIRA tickets
         jira_url = None
         if request.data.get("jira") == "true":
-            request.data._mutable = True
-            request.data["user_agent"] = "LOVE"
-            request.data["user_id"] = f"{request.user}@{request.get_host()}"
-            request.data["lfa_files_urls"] = lfa_urls
-            request.data._mutable = False
-
-            jira_response = None
-            if request.data.get("jira_new") == "true":
-                jira_response = jira_ticket(request.data)
-            else:
-                jira_response = jira_comment(request.data)
-
+            jira_response = handle_jira_payload(request, lfa_urls=lfa_urls)
             if jira_response.status_code == 400:
                 return Response(
                     jira_response.data,
@@ -1360,7 +1349,7 @@ class ExposurelogViewSet(viewsets.ViewSet):
     def update(self, request, pk=None, *args, **kwargs):
         url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/exposurelog/messages/{pk}"
 
-        # Upload files to LFA
+        # Upload files to the LFA
         lfa_urls = []
         files_to_upload = request.FILES.getlist("file[]")
         if len(files_to_upload) > 0:
@@ -1368,6 +1357,17 @@ class ExposurelogViewSet(viewsets.ViewSet):
             if lfa_response.status_code != 200:
                 return lfa_response
             lfa_urls = lfa_response.data.get("urls")
+
+        # Manage JIRA tickets
+        jira_url = None
+        if request.data.get("jira") == "true":
+            jira_response = handle_jira_payload(request, lfa_urls=lfa_urls)
+            if jira_response.status_code == 400:
+                return Response(
+                    jira_response.data,
+                    400,
+                )
+            jira_url = jira_response.data.get("url")
 
         # Make a copy of the request data for payload cleaning
         # so it is json serializable
@@ -1384,11 +1384,13 @@ class ExposurelogViewSet(viewsets.ViewSet):
             if key in json_data:
                 json_data[key] = json_data[key].split(",")
 
-        # Add LFA urls to the payload
+        # Add LFA and JIRA urls urls to the payload
         json_data["urls"] = [
-            *(json_data["urls"] if "urls" in json_data else []),
+            jira_url,
+            *json_data.get("urls", []),
             *lfa_urls,
         ]
+        json_data["urls"] = list(filter(None, json_data["urls"]))
 
         # Send the request to the OLE API
         response = requests.patch(url, json=json_data)
@@ -1446,18 +1448,7 @@ class NarrativelogViewSet(viewsets.ViewSet):
         # Manage JIRA tickets
         jira_url = None
         if request.data.get("jira") == "true":
-            request.data._mutable = True
-            request.data["lfa_files_urls"] = lfa_urls
-            request.data["user_agent"] = "LOVE"
-            request.data["user_id"] = f"{request.user}@{request.get_host()}"
-            request.data._mutable = False
-
-            jira_response = None
-            if request.data.get("jira_new") == "true":
-                jira_response = jira_ticket(request.data)
-            else:
-                jira_response = jira_comment(request.data)
-
+            jira_response = handle_jira_payload(request, lfa_urls=lfa_urls)
             if jira_response.status_code == 400:
                 return Response(
                     jira_response.data,
@@ -1503,7 +1494,7 @@ class NarrativelogViewSet(viewsets.ViewSet):
     def update(self, request, pk=None, *args, **kwargs):
         url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/narrativelog/messages/{pk}"
 
-        # Upload files to LFA
+        # Upload files to the LFA
         lfa_urls = []
         files_to_upload = request.FILES.getlist("file[]")
         if len(files_to_upload) > 0:
@@ -1511,6 +1502,17 @@ class NarrativelogViewSet(viewsets.ViewSet):
             if lfa_response.status_code != 200:
                 return lfa_response
             lfa_urls = lfa_response.data.get("urls")
+
+        # Manage JIRA tickets
+        jira_url = None
+        if request.data.get("jira") == "true":
+            jira_response = handle_jira_payload(request, lfa_urls=lfa_urls)
+            if jira_response.status_code == 400:
+                return Response(
+                    jira_response.data,
+                    400,
+                )
+            jira_url = jira_response.data.get("url")
 
         # Make a copy of the request data for payload cleaning
         # so it is json serializable
@@ -1529,11 +1531,13 @@ class NarrativelogViewSet(viewsets.ViewSet):
             if key in json_data:
                 json_data[key] = json_data[key].split(",")
 
-        # Add LFA urls to the payload
+        # Add LFA and JIRA urls urls to the payload
         json_data["urls"] = [
-            *(json_data["urls"] if "urls" in json_data else []),
+            jira_url,
+            *json_data.get("urls", []),
             *lfa_urls,
         ]
+        json_data["urls"] = list(filter(None, json_data["urls"]))
 
         # Send the request to the OLE API
         response = requests.patch(url, json=json_data)
@@ -1628,9 +1632,11 @@ class ScriptConfigurationViewSet(viewsets.ModelViewSet):
                     "error": {
                         "message": str(error["message"]),
                         "path": [] if not error["path"] else list(error["path"]),
-                        "schema_path": []
-                        if not error["schema_path"]
-                        else list(error["schema_path"]),
+                        "schema_path": (
+                            []
+                            if not error["schema_path"]
+                            else list(error["schema_path"])
+                        ),
                     },
                 },
                 status=status.HTTP_400_BAD_REQUEST,
@@ -1681,9 +1687,11 @@ class ScriptConfigurationViewSet(viewsets.ModelViewSet):
                     "error": {
                         "message": str(error["message"]),
                         "path": [] if not error["path"] else list(error["path"]),
-                        "schema_path": []
-                        if not error["schema_path"]
-                        else list(error["schema_path"]),
+                        "schema_path": (
+                            []
+                            if not error["schema_path"]
+                            else list(error["schema_path"])
+                        ),
                     },
                 },
                 status=status.HTTP_400_BAD_REQUEST,
