@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v5.17.2
+-------
+
+* Update summary state fixture views with a new ESS CSC `<https://github.com/lsst-ts/LOVE-manager/pull/237>`_
+
 v5.17.1
 -------
 
