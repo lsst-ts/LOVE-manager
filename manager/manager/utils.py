@@ -476,7 +476,7 @@ def jira_ticket(request_data):
         return Response(
             {
                 "ack": "Jira ticket created",
-                "url": f"https://jira.lsstcorp.org/browse/{response_data['key']}",
+                "url": f"https://{os.environ.get('JIRA_API_HOSTNAME')}/browse/{response_data['key']}",
             },
             status=200,
         )
@@ -536,7 +536,7 @@ def jira_comment(request_data):
         return Response(
             {
                 "ack": "Jira comment created",
-                "url": f"https://jira.lsstcorp.org/browse/{jira_id}",
+                "url": f"https://{os.environ.get('JIRA_API_HOSTNAME')}/browse/{jira_id}",
             },
             status=200,
         )
