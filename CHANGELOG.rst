@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v5.17.3
+-------
+
+* Adjustments for new JIRA Cloud REST API interface `<https://github.com/lsst-ts/LOVE-manager/pull/239>`_
+
 v5.17.2
 -------
 
