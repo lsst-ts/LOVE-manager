@@ -368,12 +368,19 @@ def get_jira_description(request_data):
 
 
 def jira_ticket(request_data):
-    """Connects to JIRA API to create a ticket on a specific project.
-    For more information on issuetypes refer to:
-    https://jira.lsstcorp.org/rest/api/latest/issuetype/?projectId=JIRA_PROJECT_ID
+    """Connect to the Rubin Observatory JIRA Cloud REST API to
+    create a ticket on the OBS project.
 
-    For more information on the issue creation payload refer to:
-    https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issues/#api-rest-api-3-issue-post
+    For details on the fields available for the JIRA Cloud REST API see:
+    - https://rubinobs.atlassian.net/rest/api/latest/field
+
+    For details on the OBS project see:
+    - https://rubinobs.atlassian.net/rest/api/latest/project/OBS
+
+    For more information on the REST API endpoints refer to:
+    - https://developer.atlassian.com/cloud/jira/platform/rest/v3
+    - https://developer.atlassian.com/cloud/jira/platform/\
+        basic-auth-for-rest-apis/
 
     Params
     ------
@@ -417,27 +424,32 @@ def jira_ticket(request_data):
     try:
         jira_payload = {
             "fields": {
-                "issuetype": {"id": 12302},
-                "project": {"id": os.environ.get("JIRA_PROJECT_ID")},
+                "issuetype": {"id": "10065"},
+                "project": {"id": "10037"},
                 "labels": [
                     "LOVE",
                     *tags_data,
                 ],
                 "summary": get_jira_title(request_data),
                 "description": get_jira_description(request_data),
-                "customfield_15602": (
-                    "on" if int(request_data.get("level", 0)) >= 100 else "off"
-                ),
-                "customfield_16702": float(request_data.get("time_lost", 0)),
+                # customfield_15602 which represents the URGENT flag
+                # is not yet migrated to the new JIRA cloud OBS project.
+                # The following block is commented until the migration is done.
+                # TODO: DM-43066
+                # "customfield_15602": (
+                #     "on" if int(request_data.get("level", 0)) >= 100
+                #     else "off"
+                # ),
+                "customfield_10106": float(request_data.get("time_lost", 0)),
                 # Default values of the following fields are set to -1
-                "customfield_17204": {
+                "customfield_10107": {
                     "id": (
                         str(primary_software_components_ids[0])
                         if primary_software_components_ids
                         else "-1"
                     )
                 },
-                "customfield_17205": {
+                "customfield_10196": {
                     "id": (
                         str(primary_hardware_components_ids[0])
                         if primary_hardware_components_ids
@@ -470,7 +482,7 @@ def jira_ticket(request_data):
         return Response(
             {
                 "ack": "Jira ticket created",
-                "url": f"https://jira.lsstcorp.org/browse/{response_data['key']}",
+                "url": f"https://{os.environ.get('JIRA_API_HOSTNAME')}/browse/{response_data['key']}",
             },
             status=200,
         )
@@ -485,10 +497,13 @@ def jira_ticket(request_data):
 
 
 def jira_comment(request_data):
-    """Connects to JIRA API to add a comment to
-    a previously created ticket on a specific project.
-    For more information on issuetypes refer to:
-    ttps://jira.lsstcorp.org/rest/api/latest/issuetype/?projectId=JIRA_PROJECT_ID
+    """Connect to the Rubin Observatory JIRA Cloud REST API to
+    make a comment on a previously created ticket.
+
+    For more information on the REST API endpoints refer to:
+    - https://developer.atlassian.com/cloud/jira/platform/rest/v3
+    - https://developer.atlassian.com/cloud/jira/platform/\
+        basic-auth-for-rest-apis/
 
     Params
     ------
@@ -527,7 +542,7 @@ def jira_comment(request_data):
         return Response(
             {
                 "ack": "Jira comment created",
-                "url": f"https://jira.lsstcorp.org/browse/{jira_id}",
+                "url": f"https://{os.environ.get('JIRA_API_HOSTNAME')}/browse/{jira_id}",
             },
             status=200,
         )
