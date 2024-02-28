@@ -19,6 +19,7 @@
 
 
 import math
+import os
 import random
 from unittest.mock import patch
 
@@ -282,6 +283,7 @@ class JiraTestCase(TestCase):
         jira_response = jira_ticket(self.jira_request_narrative_without_param.data)
         assert "Error creating jira payload" in jira_response.data["ack"]
 
+    @patch.dict(os.environ, {"JIRA_API_HOSTNAME": "jira.lsstcorp.org"})
     def test_needed_parameters(self):
         """Test call to jira_ticket function with all needed parameters"""
         mock_jira_patcher = patch("requests.post")
@@ -294,12 +296,18 @@ class JiraTestCase(TestCase):
         jira_response = jira_ticket(self.jira_request_exposure_full.data)
         assert jira_response.status_code == 200
         assert jira_response.data["ack"] == "Jira ticket created"
-        assert jira_response.data["url"] == "https://jira.lsstcorp.org/browse/LOVE-XX"
+        assert (
+            jira_response.data["url"]
+            == f"https://{os.environ.get('JIRA_API_HOSTNAME')}/browse/LOVE-XX"
+        )
 
         jira_response = jira_ticket(self.jira_request_narrative_full.data)
         assert jira_response.status_code == 200
         assert jira_response.data["ack"] == "Jira ticket created"
-        assert jira_response.data["url"] == "https://jira.lsstcorp.org/browse/LOVE-XX"
+        assert (
+            jira_response.data["url"]
+            == f"https://{os.environ.get('JIRA_API_HOSTNAME')}/browse/LOVE-XX"
+        )
 
         mock_jira_patcher.stop()
 
@@ -319,6 +327,7 @@ class JiraTestCase(TestCase):
         assert jira_response.status_code == 200
         assert jira_response.data["ack"] == "Jira comment created"
 
+    @patch.dict(os.environ, {"JIRA_API_HOSTNAME": "jira.lsstcorp.org"})
     def test_handle_narrative_jira_payload(self):
         """Test call to function handle_jira_payload with all needed parameters
         for narrative request type
@@ -333,14 +342,20 @@ class JiraTestCase(TestCase):
         jira_response = handle_jira_payload(self.jira_request_narrative_full_jira_new)
         assert jira_response.status_code == 200
         assert jira_response.data["ack"] == "Jira ticket created"
-        assert jira_response.data["url"] == "https://jira.lsstcorp.org/browse/LOVE-XX"
+        assert (
+            jira_response.data["url"]
+            == f"https://{os.environ.get('JIRA_API_HOSTNAME')}/browse/LOVE-XX"
+        )
 
         jira_response = handle_jira_payload(
             self.jira_request_narrative_full_jira_comment
         )
         assert jira_response.status_code == 200
         assert jira_response.data["ack"] == "Jira comment created"
-        assert jira_response.data["url"] == "https://jira.lsstcorp.org/browse/LOVE-XX"
+        assert (
+            jira_response.data["url"]
+            == f"https://{os.environ.get('JIRA_API_HOSTNAME')}/browse/LOVE-XX"
+        )
 
         mock_jira_patcher.stop()
 
@@ -358,13 +373,19 @@ class JiraTestCase(TestCase):
         jira_response = handle_jira_payload(self.jira_request_exposure_full_jira_new)
         assert jira_response.status_code == 200
         assert jira_response.data["ack"] == "Jira ticket created"
-        assert jira_response.data["url"] == "https://jira.lsstcorp.org/browse/LOVE-XX"
+        assert (
+            jira_response.data["url"]
+            == f"https://{os.environ.get('JIRA_API_HOSTNAME')}/browse/LOVE-XX"
+        )
 
         jira_response = handle_jira_payload(
             self.jira_request_exposure_full_jira_comment
         )
         assert jira_response.status_code == 200
         assert jira_response.data["ack"] == "Jira comment created"
-        assert jira_response.data["url"] == "https://jira.lsstcorp.org/browse/LOVE-XX"
+        assert (
+            jira_response.data["url"]
+            == f"https://{os.environ.get('JIRA_API_HOSTNAME')}/browse/LOVE-XX"
+        )
 
         mock_jira_patcher.stop()
