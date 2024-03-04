@@ -425,7 +425,11 @@ def jira_ticket(request_data):
         jira_payload = {
             "fields": {
                 "issuetype": {"id": "10065"},
-                "project": {"id": "10037"},
+                # If the JIRA_PROJECT_ID environment variable is not set,
+                # the project id is set to the OBS project by default: 10063.
+                # Set it in case the OBS project id has changed for any reason
+                # and update the default value above and in the following line.
+                "project": {"id": os.environ.get("JIRA_PROJECT_ID", "10063")},
                 "labels": [
                     "LOVE",
                     *tags_data,
