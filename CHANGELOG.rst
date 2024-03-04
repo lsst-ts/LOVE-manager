@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v5.17.4
+-------
+
+* Update OBS jira project id and roll back way of setting it `<https://github.com/lsst-ts/LOVE-manager/pull/240>`_
+
 v5.17.3
 -------
 
