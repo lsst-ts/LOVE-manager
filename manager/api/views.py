@@ -50,6 +50,7 @@ from api.serializers import (
     ImageTagSerializer,
     ScriptConfigurationSerializer,
     TokenSerializer,
+    UserSerializer,
 )
 from django.contrib.auth.models import Group, User
 from django.core.exceptions import PermissionDenied
@@ -739,6 +740,24 @@ class ConfigFileViewSet(viewsets.ModelViewSet):
         return Response(serializer_data)
 
 
+class UserViewSet(viewsets.ModelViewSet):
+    """GET, POST, PUT, PATCH or DELETE instances of the User model."""
+
+    permission_classes = [
+        IsAuthenticated,
+    ]
+
+    # TODO: once the default users are removed,
+    # the following code must be adjusted.
+    # See: DM-43181.
+    excluded_usernames = ["admin", "cmd_user", "test", "user", "authlist_user"]
+    queryset = User.objects.exclude(username__in=excluded_usernames)
+    """Set of objects to be accessed by queries to this viewsets endpoints"""
+
+    serializer_class = UserSerializer
+    """Serializer used to serialize View objects"""
+
+
 class EmergencyContactViewSet(viewsets.ModelViewSet):
     """GET, POST, PUT, PATCH or DELETE instances the EmergencyContact model."""
 
@@ -750,7 +769,7 @@ class EmergencyContactViewSet(viewsets.ModelViewSet):
 
 
 class ImageTagViewSet(viewsets.ModelViewSet):
-    """GET, POST, PUT, PATCH or DELETE instances the EmergencyContact model."""
+    """GET, POST, PUT, PATCH or DELETE instances of the ImageTag model."""
 
     queryset = ImageTag.objects.order_by("label").all()
     """Set of objects to be accessed by queries to this viewsets endpoints"""

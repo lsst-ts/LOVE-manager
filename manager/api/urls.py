@@ -44,6 +44,7 @@ from api.views import (
     ImageTagViewSet,
     NarrativelogViewSet,
     ScriptConfigurationViewSet,
+    UserViewSet,
 )
 from django.conf.urls import include
 from django.urls import path
@@ -104,6 +105,7 @@ urlpatterns = [
         name="OLE-exposurelog-instruments",
     ),
 ]
+router.register("user", UserViewSet)
 router.register("configfile", ConfigFileViewSet)
 router.register("emergencycontact", EmergencyContactViewSet)
 router.register("imagetag", ImageTagViewSet)
