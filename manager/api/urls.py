@@ -43,6 +43,7 @@ from api.views import (
     ExposurelogViewSet,
     ImageTagViewSet,
     NarrativelogViewSet,
+    NightReportViewSet,
     ScriptConfigurationViewSet,
     UserViewSet,
 )
@@ -117,6 +118,9 @@ router.register(
 router.register("ole/exposurelog/messages", ExposurelogViewSet, basename="ExposureLogs")
 router.register(
     "ole/narrativelog/messages", NarrativelogViewSet, basename="NarrativeLogs"
+)
+router.register(
+    "ole/nightreport/reports", NightReportViewSet, basename="NightReportLogs"
 )
 router.register("controllocation", ControlLocationViewSet, basename="ControlLocation")
 router.register(

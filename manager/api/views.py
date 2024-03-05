@@ -1574,6 +1574,93 @@ class NarrativelogViewSet(viewsets.ViewSet):
         return Response(response.json(), status=response.status_code)
 
 
+class NightReportViewSet(viewsets.ViewSet):
+    """
+    A viewset that provides
+    `list`, `create`, `retrieve`, `update`, and `destroy` actions
+    to be used to query the API NightReport Log Service
+
+    Notes
+    -----
+    The API NightReport Log Service is a service that provides a REST API to
+    query the NightReport Log database.
+
+    The endpoint is read from the environment variable OLE_API_HOSTNAME.
+
+    The API is documented at https://summit-lsp.lsst.codes/nightreport/docs.
+    """
+
+    permission_classes = (IsAuthenticated,)
+    parser_classes = (MultiPartParser,)
+
+    @swagger_auto_schema(responses={200: "NightReport logs listed"})
+    def list(self, request, *args, **kwargs):
+        query_params_string = urllib.parse.urlencode(request.query_params)
+        url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/nightreport/reports?{query_params_string}"
+        response = requests.get(url, json=request.data)
+        return Response(response.json(), status=200)
+
+    @swagger_auto_schema(responses={201: "NightReport log added"})
+    def create(self, request, *args, **kwargs):
+        query_params_string = urllib.parse.urlencode(request.query_params)
+        url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/nightreport/reports?{query_params_string}"
+
+        # Make a copy of the request data for payload cleaning
+        # so it is json serializable
+        json_data = request.data.copy()
+
+        # Split lists of values separated by comma
+        array_keys = {
+            "users",
+        }
+        for key in array_keys:
+            if key in json_data:
+                json_data[key] = json_data[key].split(",")
+
+        # Add user agent and user id to the payload
+        json_data["user_agent"] = "LOVE"
+        json_data["user_id"] = f"{request.user}@{request.get_host()}"
+
+        response = requests.post(url, json=json_data)
+        return Response(response.json(), status=response.status_code)
+
+    @swagger_auto_schema(responses={200: "NightReport log retrieved"})
+    def retrieve(self, request, pk=None, *args, **kwargs):
+        url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/nightreport/reports/{pk}"
+        response = requests.get(url, json=request.data)
+        return Response(response.json(), status=response.status_code)
+
+    @swagger_auto_schema(responses={200: "NightReport log edited"})
+    def update(self, request, pk=None, *args, **kwargs):
+        url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/nightreport/reports/{pk}"
+
+        # Make a copy of the request data for payload cleaning
+        # so it is json serializable
+        json_data = request.data.copy()
+
+        array_keys = {
+            "users",
+        }
+        for key in array_keys:
+            if key in json_data:
+                json_data[key] = json_data[key].split(",")
+
+        # Send the request to the OLE API
+        response = requests.patch(url, json=json_data)
+        return Response(response.json(), status=response.status_code)
+
+    @swagger_auto_schema(responses={200: "NightReport log deleted"})
+    def destroy(self, request, pk=None, *args, **kwargs):
+        url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/nightreport/reports/{pk}"
+        response = requests.delete(url, json=request.data)
+        if response.status_code == 204:
+            return Response(
+                {"ack": "NightReport log deleted succesfully"},
+                status=200,
+            )
+        return Response(response.json(), status=response.status_code)
+
+
 class ControlLocationViewSet(viewsets.ReadOnlyModelViewSet):
     """
     API endpoint that allows Control Locations to be viewed.
