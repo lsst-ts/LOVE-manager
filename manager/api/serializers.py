@@ -20,10 +20,8 @@
 
 """Defines the serializer used by the REST API exposed by this app ('api')."""
 import json
-from drf_yasg.utils import swagger_serializer_method
-from rest_framework import serializers
-from django.contrib.auth.models import User
-from manager import utils
+from typing import Union
+
 from api.models import (
     ConfigFile,
     ControlLocation,
@@ -32,7 +30,11 @@ from api.models import (
     ImageTag,
     ScriptConfiguration,
 )
-from typing import Union
+from django.contrib.auth.models import User
+from drf_yasg.utils import swagger_serializer_method
+from rest_framework import serializers
+
+from manager import utils
 from manager.utils import CommandPermission
 
 
@@ -45,7 +47,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         """The model class to serialize"""
 
-        fields = ("username", "email")
+        fields = ("username", "email", "first_name", "last_name")
         """The fields of the model class to serialize"""
 
 
@@ -56,7 +58,8 @@ class UserPermissionsSerializer(serializers.Serializer):
     authlist_admin = serializers.SerializerMethodField("is_authlist_admin")
 
     def can_execute_commands(self, user) -> bool:
-        """Define wether or not the given user has permissions to execute commands.
+        """Define wether or not the given user
+        has permissions to execute commands.
 
         Params
         ------
@@ -72,7 +75,8 @@ class UserPermissionsSerializer(serializers.Serializer):
         return CommandPermission().has_permission(request, None)
 
     def is_authlist_admin(self, user) -> bool:
-        """Define wether or not the given user has permissions of authlist administration.
+        """Define wether or not the given user has
+        permissions of authlist administration.
 
         Params
         ------
@@ -124,7 +128,8 @@ class TokenSerializer(serializers.Serializer):
 
     @swagger_serializer_method(serializer_or_field=UserPermissionsSerializer)
     def get_permissions(self, token):
-        """Return user permissions serialized as a dictionary with permission names as keys and bools as values.
+        """Return user permissions serialized as a dictionary
+        with permission names as keys and bools as values.
 
         Params
         ------
@@ -170,17 +175,21 @@ class TokenSerializer(serializers.Serializer):
             - utc: current time in UTC scale as a unix timestamp (seconds)
             - tai: current time in UTC scale as a unix timestamp (seconds)
             - mjd: current time as a modified julian date
-            - sidereal_summit: current time as a sidereal_time w/respect to the summit location (hourangles)
-            - sidereal_summit: current time as a sidereal_time w/respect to Greenwich location (hourangles)
-            - tai_to_utc: The number of seconds of difference between TAI and UTC times (seconds)
+            - sidereal_summit: current time as a sidereal_time
+            w/respect to the summit location (hourangles)
+            - sidereal_summit: current time as a sidereal_time
+            w/respect to Greenwich location (hourangles)
+            - tai_to_utc: The number of seconds of difference
+            between TAI and UTC times (seconds)
         """
         return utils.get_times()
 
     @swagger_serializer_method(serializer_or_field=serializers.JSONField())
     def get_config(self, token) -> Union[dict, None]:
         """Return the config file.
-        If the 'no_config' flag is present in the url of the original request, then the file is not read
-        and the return value is None
+        If the 'no_config' flag is present in the url of the original request,
+        then the file is not read and the return value is None
+
         Params
         ------
         token: Token
@@ -190,7 +199,8 @@ class TokenSerializer(serializers.Serializer):
         -------
         Dict
             Dictionary containing the following keys:
-            - alarms_sounds: dictionary containing flags of sound ON/OF for each severity level. Eg:
+            - alarms_sounds: dictionary containing flags
+            of sound ON/OF for each severity level. Eg:
             alarms_sounds: {
                 critical: 1,
                 serious: 1,
@@ -408,12 +418,15 @@ class ScriptConfigurationSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         """Function that allows to handle the request of the method POST.
-        Also, returns the instance of the seriliazer with the data that comes as payload
+        Also, returns the instance of the seriliazer with the data
+        that comes as payload.
         """
         return ScriptConfiguration.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
-        """Function that allows the method PATCH to be properly executed, returns the new instance of the object"""
+        """Function that allows the method PATCH to be properly executed,
+        returns the new instance of the object.
+        """
         instance.config_schema = validated_data.get(
             "config_schema", instance.config_schema
         )
