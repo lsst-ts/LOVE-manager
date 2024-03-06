@@ -21,6 +21,7 @@
 import json
 import os
 import re
+from datetime import timedelta
 from tempfile import TemporaryFile
 
 import requests
@@ -601,6 +602,28 @@ def get_client_ip(request):
     if x_real_ip:
         return x_real_ip
     return request.META.get("REMOTE_ADDR")
+
+
+def get_obsday_from_tai(tai):
+    """Return the observing day from a TAI timestamp.
+
+    If the date is after 12:00 UTC, the day is the same day.
+    If the date is before 12:00 UTC, the day is the previous day.
+
+    Parameters
+    ----------
+    tai : `datetime.datetime`
+        TAI timestamp
+
+    Returns
+    -------
+    String
+        The observing day in the format "YYYYMMDD"
+    """
+    observing_day = tai.strftime("%Y%m%d")
+    if tai.hour < 12:
+        observing_day = (tai - timedelta(days=1)).strftime("%Y%m%d")
+    return observing_day
 
 
 def get_tai_to_utc() -> float:

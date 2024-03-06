@@ -24,6 +24,7 @@ import json
 import os
 import urllib
 
+import astropy.time
 import jsonschema
 import ldap
 import requests
@@ -71,7 +72,12 @@ from manager.settings import (
     AUTH_LDAP_2_SERVER_URI,
     AUTH_LDAP_3_SERVER_URI,
 )
-from manager.utils import CommandPermission, handle_jira_payload, upload_to_lfa
+from manager.utils import (
+    CommandPermission,
+    get_obsday_from_tai,
+    handle_jira_payload,
+    upload_to_lfa,
+)
 
 from .schema_validator import DefaultingValidator
 
@@ -1591,7 +1597,6 @@ class NightReportViewSet(viewsets.ViewSet):
     """
 
     permission_classes = (IsAuthenticated,)
-    parser_classes = (MultiPartParser,)
 
     @swagger_auto_schema(responses={200: "NightReport logs listed"})
     def list(self, request, *args, **kwargs):
@@ -1609,13 +1614,9 @@ class NightReportViewSet(viewsets.ViewSet):
         # so it is json serializable
         json_data = request.data.copy()
 
-        # Split lists of values separated by comma
-        array_keys = {
-            "users",
-        }
-        for key in array_keys:
-            if key in json_data:
-                json_data[key] = json_data[key].split(",")
+        # Set current obs day
+        curr_tai = astropy.time.Time.now().tai.datetime
+        json_data["day_obs"] = int(get_obsday_from_tai(curr_tai))
 
         # Add user agent and user id to the payload
         json_data["user_agent"] = "LOVE"
@@ -1637,13 +1638,6 @@ class NightReportViewSet(viewsets.ViewSet):
         # Make a copy of the request data for payload cleaning
         # so it is json serializable
         json_data = request.data.copy()
-
-        array_keys = {
-            "users",
-        }
-        for key in array_keys:
-            if key in json_data:
-                json_data[key] = json_data[key].split(",")
 
         # Send the request to the OLE API
         response = requests.patch(url, json=json_data)
