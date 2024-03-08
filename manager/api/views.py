@@ -1580,6 +1580,68 @@ class NarrativelogViewSet(viewsets.ViewSet):
         return Response(response.json(), status=response.status_code)
 
 
+@swagger_auto_schema(
+    method="post",
+    responses={
+        200: openapi.Response("Night report sent"),
+        400: openapi.Response("Night report already sent"),
+        401: openapi.Response("Unauthenticated"),
+        403: openapi.Response("Unauthorized"),
+    },
+)
+@api_view(["POST"])
+@permission_classes((IsAuthenticated,))
+def ole_send_night_report(request, *args, **kwargs):
+    """Confirm and mark a night report as sent
+
+    Params
+    ------
+    request: Request
+        The Request object
+
+    args : `list`
+        List of addittional arguments. Currently unused.
+
+    kwargs : `dict`
+        Dictionary with request arguments. Currently using the following keys:
+            pk (required): The primary key of the night report to be sent.
+
+    Returns
+    -------
+    Response
+        The response and status code of the request
+        to the Open API nightreport service
+    """
+
+    pk = kwargs.get("pk", None)
+
+    # Make a copy of the request data for payload cleaning
+    # so it is json serializable
+    json_data = request.data.copy()
+
+    # Get current report
+    url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/nightreport/reports/{pk}"
+    response = requests.get(url, json=request.data)
+    report = response.json()
+
+    if report["date_sent"] is not None:
+        return Response(
+            {"error": "Night report already sent"}, status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # TODO: add email sending feature
+    # See: DM-43410
+
+    # Set date_sent
+    curr_tai = astropy.time.Time.now().tai.datetime
+    json_data["date_sent"] = curr_tai.isoformat()
+
+    url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/nightreport/reports/{pk}"
+    response = requests.patch(url, json=json_data)
+
+    return Response(response.json(), status=response.status_code)
+
+
 class NightReportViewSet(viewsets.ViewSet):
     """
     A viewset that provides

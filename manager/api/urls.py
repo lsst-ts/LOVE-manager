@@ -105,6 +105,11 @@ urlpatterns = [
         api.views.ole_exposurelog_instruments,
         name="OLE-exposurelog-instruments",
     ),
+    path(
+        "ole/nightreport/send/<pk>/",
+        api.views.ole_send_night_report,
+        name="OLE-nightreport-send-report",
+    ),
 ]
 router.register("user", UserViewSet)
 router.register("configfile", ConfigFileViewSet)
