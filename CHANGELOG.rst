@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v5.18.0
+-------
+
+* Add Night Report implementation `<https://github.com/lsst-ts/LOVE-manager/pull/242>`_
+
 v5.17.4
 -------
 
