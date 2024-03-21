@@ -43,7 +43,9 @@ from api.views import (
     ExposurelogViewSet,
     ImageTagViewSet,
     NarrativelogViewSet,
+    NightReportViewSet,
     ScriptConfigurationViewSet,
+    UserViewSet,
 )
 from django.conf.urls import include
 from django.urls import path
@@ -103,7 +105,13 @@ urlpatterns = [
         api.views.ole_exposurelog_instruments,
         name="OLE-exposurelog-instruments",
     ),
+    path(
+        "ole/nightreport/send/<pk>/",
+        api.views.ole_send_night_report,
+        name="OLE-nightreport-send-report",
+    ),
 ]
+router.register("user", UserViewSet)
 router.register("configfile", ConfigFileViewSet)
 router.register("emergencycontact", EmergencyContactViewSet)
 router.register("imagetag", ImageTagViewSet)
@@ -115,6 +123,9 @@ router.register(
 router.register("ole/exposurelog/messages", ExposurelogViewSet, basename="ExposureLogs")
 router.register(
     "ole/narrativelog/messages", NarrativelogViewSet, basename="NarrativeLogs"
+)
+router.register(
+    "ole/nightreport/reports", NightReportViewSet, basename="NightReportLogs"
 )
 router.register("controllocation", ControlLocationViewSet, basename="ControlLocation")
 router.register(

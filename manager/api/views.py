@@ -24,6 +24,7 @@ import json
 import os
 import urllib
 
+import astropy.time
 import jsonschema
 import ldap
 import requests
@@ -50,6 +51,7 @@ from api.serializers import (
     ImageTagSerializer,
     ScriptConfigurationSerializer,
     TokenSerializer,
+    UserSerializer,
 )
 from django.contrib.auth.models import Group, User
 from django.core.exceptions import PermissionDenied
@@ -70,7 +72,12 @@ from manager.settings import (
     AUTH_LDAP_2_SERVER_URI,
     AUTH_LDAP_3_SERVER_URI,
 )
-from manager.utils import CommandPermission, handle_jira_payload, upload_to_lfa
+from manager.utils import (
+    CommandPermission,
+    get_obsday_from_tai,
+    handle_jira_payload,
+    upload_to_lfa,
+)
 
 from .schema_validator import DefaultingValidator
 
@@ -739,6 +746,24 @@ class ConfigFileViewSet(viewsets.ModelViewSet):
         return Response(serializer_data)
 
 
+class UserViewSet(viewsets.ModelViewSet):
+    """GET, POST, PUT, PATCH or DELETE instances of the User model."""
+
+    permission_classes = [
+        IsAuthenticated,
+    ]
+
+    # TODO: once the default users are removed,
+    # the following code must be adjusted.
+    # See: DM-43181.
+    excluded_usernames = ["admin", "cmd_user", "test", "user", "authlist_user"]
+    queryset = User.objects.exclude(username__in=excluded_usernames)
+    """Set of objects to be accessed by queries to this viewsets endpoints"""
+
+    serializer_class = UserSerializer
+    """Serializer used to serialize View objects"""
+
+
 class EmergencyContactViewSet(viewsets.ModelViewSet):
     """GET, POST, PUT, PATCH or DELETE instances the EmergencyContact model."""
 
@@ -750,7 +775,7 @@ class EmergencyContactViewSet(viewsets.ModelViewSet):
 
 
 class ImageTagViewSet(viewsets.ModelViewSet):
-    """GET, POST, PUT, PATCH or DELETE instances the EmergencyContact model."""
+    """GET, POST, PUT, PATCH or DELETE instances of the ImageTag model."""
 
     queryset = ImageTag.objects.order_by("label").all()
     """Set of objects to be accessed by queries to this viewsets endpoints"""
@@ -1550,6 +1575,143 @@ class NarrativelogViewSet(viewsets.ViewSet):
         if response.status_code == 204:
             return Response(
                 {"ack": "Narrative log deleted succesfully"},
+                status=200,
+            )
+        return Response(response.json(), status=response.status_code)
+
+
+@swagger_auto_schema(
+    method="post",
+    responses={
+        200: openapi.Response("Night report sent"),
+        400: openapi.Response("Night report already sent"),
+        401: openapi.Response("Unauthenticated"),
+        403: openapi.Response("Unauthorized"),
+    },
+)
+@api_view(["POST"])
+@permission_classes((IsAuthenticated,))
+def ole_send_night_report(request, *args, **kwargs):
+    """Confirm and mark a night report as sent
+
+    Params
+    ------
+    request: Request
+        The Request object
+
+    args : `list`
+        List of addittional arguments. Currently unused.
+
+    kwargs : `dict`
+        Dictionary with request arguments. Currently using the following keys:
+            pk (required): The primary key of the night report to be sent.
+
+    Returns
+    -------
+    Response
+        The response and status code of the request
+        to the Open API nightreport service
+    """
+
+    pk = kwargs.get("pk", None)
+
+    # Make a copy of the request data for payload cleaning
+    # so it is json serializable
+    json_data = request.data.copy()
+
+    # Get current report
+    url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/nightreport/reports/{pk}"
+    response = requests.get(url, json=request.data)
+    report = response.json()
+
+    if report["date_sent"] is not None:
+        return Response(
+            {"error": "Night report already sent"}, status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # TODO: add email sending feature
+    # See: DM-43410
+
+    # Set date_sent
+    curr_tai = astropy.time.Time.now().tai.datetime
+    json_data["date_sent"] = curr_tai.isoformat()
+
+    url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/nightreport/reports/{pk}"
+    response = requests.patch(url, json=json_data)
+
+    return Response(response.json(), status=response.status_code)
+
+
+class NightReportViewSet(viewsets.ViewSet):
+    """
+    A viewset that provides
+    `list`, `create`, `retrieve`, `update`, and `destroy` actions
+    to be used to query the API NightReport Log Service
+
+    Notes
+    -----
+    The API NightReport Log Service is a service that provides a REST API to
+    query the NightReport Log database.
+
+    The endpoint is read from the environment variable OLE_API_HOSTNAME.
+
+    The API is documented at https://summit-lsp.lsst.codes/nightreport/docs.
+    """
+
+    permission_classes = (IsAuthenticated,)
+
+    @swagger_auto_schema(responses={200: "NightReport logs listed"})
+    def list(self, request, *args, **kwargs):
+        query_params_string = urllib.parse.urlencode(request.query_params)
+        url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/nightreport/reports?{query_params_string}"
+        response = requests.get(url, json=request.data)
+        return Response(response.json(), status=200)
+
+    @swagger_auto_schema(responses={201: "NightReport log added"})
+    def create(self, request, *args, **kwargs):
+        query_params_string = urllib.parse.urlencode(request.query_params)
+        url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/nightreport/reports?{query_params_string}"
+
+        # Make a copy of the request data for payload cleaning
+        # so it is json serializable
+        json_data = request.data.copy()
+
+        # Set current obs day
+        curr_tai = astropy.time.Time.now().tai.datetime
+        json_data["day_obs"] = int(get_obsday_from_tai(curr_tai))
+
+        # Add user agent and user id to the payload
+        json_data["user_agent"] = "LOVE"
+        json_data["user_id"] = f"{request.user}@{request.get_host()}"
+
+        response = requests.post(url, json=json_data)
+        return Response(response.json(), status=response.status_code)
+
+    @swagger_auto_schema(responses={200: "NightReport log retrieved"})
+    def retrieve(self, request, pk=None, *args, **kwargs):
+        url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/nightreport/reports/{pk}"
+        response = requests.get(url, json=request.data)
+        return Response(response.json(), status=response.status_code)
+
+    @swagger_auto_schema(responses={200: "NightReport log edited"})
+    def update(self, request, pk=None, *args, **kwargs):
+        url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/nightreport/reports/{pk}"
+
+        # Make a copy of the request data for payload cleaning
+        # so it is json serializable
+        json_data = request.data.copy()
+
+        # Send the request to the OLE API
+        response = requests.patch(url, json=json_data)
+        return Response(response.json(), status=response.status_code)
+
+    @swagger_auto_schema(responses={200: "NightReport log deleted"})
+    def destroy(self, request, pk=None, *args, **kwargs):
+        url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/nightreport/reports/{pk}"
+        response = requests.delete(url, json=request.data)
+        if response.status_code == 204:
+            return Response(
+                {"ack": "NightReport log deleted succesfully"},
                 status=200,
             )
         return Response(response.json(), status=response.status_code)
