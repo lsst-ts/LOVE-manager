@@ -186,6 +186,10 @@ class TokenSerializer(serializers.Serializer):
 
     @swagger_serializer_method(serializer_or_field=serializers.JSONField())
     def get_config(self, token) -> Union[dict, None]:
+        # TODO: We are not using static typing yet. We will keep the
+        # return type as 'Union[dict, None]' until we do. Then it
+        # should be replaced by 'dict | None'.
+        # See: DM-43424.
         """Return the config file.
         If the 'no_config' flag is present in the url of the original request,
         then the file is not read and the return value is None
