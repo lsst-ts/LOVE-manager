@@ -414,3 +414,182 @@ class OLETestCase(TestCase):
         url = reverse("NarrativeLogs-detail", args=[1])
         response = self.client.put(url, self.payload_full_narrative_with_jira_comment)
         self.assertEqual(response.status_code, 200)
+
+
+@override_settings(DEBUG=True)
+class NightReportTestCase(TestCase):
+    def setUp(self):
+        """Define the test suite setup."""
+        # Arrange
+        self.client = APIClient()
+
+        user_normal_obj = {
+            "username": "user-normal",
+            "password": "password",
+            "email": "test@user.cl",
+            "first_name": "user-normal",
+            "last_name": "",
+        }
+        self.user_normal = User.objects.create_user(
+            username=user_normal_obj["username"],
+            password=user_normal_obj["password"],
+            email=user_normal_obj["email"],
+            first_name=user_normal_obj["first_name"],
+            last_name=user_normal_obj["last_name"],
+        )
+        self.token_user_normal = Token.objects.create(user=self.user_normal)
+
+        self.payload = {
+            "telescope": "AuxTel",
+            "suummary": "summary",
+            "telescope_status": "telescope_status",
+            "confluence_url": "https://localhost/confluence",
+            "observers_crew": ["User1", "User2"],
+        }
+
+        self.response_report = {
+            "id": "e75b07b6-a422-4cd7-99fc-95b0046645b0",
+            "site_id": "base",
+            "telescope": "Simonyi",
+            "day_obs": 0,
+            "summary": "string",
+            "telescope_status": "string",
+            "confluence_url": "string",
+            "user_id": "string",
+            "user_agent": "string",
+            "date_added": "2024-03-20T15:12:46.508840",
+            "date_sent": None,
+            "is_valid": True,
+            "date_invalidated": None,
+            "parent_id": None,
+            "observers_crew": [],
+        }
+
+    def test_nightreport_list(self):
+        """Test nightreport list."""
+        # Arrange:
+        mock_ole_patcher = patch("requests.get")
+        mock_ole_client = mock_ole_patcher.start()
+        response = requests.Response()
+        response.status_code = 200
+        response.json = lambda: [self.response_report]
+        mock_ole_client.return_value = response
+
+        self.client.credentials(
+            HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
+        )
+
+        # Act:
+        url = reverse("NightReportLogs-list")
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+
+    def test_simple_nightreport_create(self):
+        """Test nightreport create."""
+        # Arrange:
+        mock_ole_patcher = patch("requests.post")
+        mock_ole_client = mock_ole_patcher.start()
+        response = requests.Response()
+        response.status_code = 201
+        response.json = lambda: self.response_report
+        mock_ole_client.return_value = response
+
+        self.client.credentials(
+            HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
+        )
+
+        # Act:
+        url = reverse("NightReportLogs-list")
+        response = self.client.post(url, self.payload)
+        self.assertEqual(response.status_code, 201)
+
+    def test_nightreport_update(self):
+        """Test nightreport update."""
+        # Arrange:
+        mock_ole_patcher = patch("requests.patch")
+        mock_ole_client = mock_ole_patcher.start()
+        response = requests.Response()
+        response.status_code = 200
+        response.json = lambda: self.response_report
+        mock_ole_client.return_value = response
+
+        self.client.credentials(
+            HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
+        )
+
+        # Act:
+        url = reverse("NightReportLogs-detail", args=[1])
+        response = self.client.put(url, self.payload)
+        self.assertEqual(response.status_code, 200)
+
+    def test_nightreport_delete(self):
+        """Test nightreport delete."""
+        # Arrange:
+        mock_ole_patcher = patch("requests.delete")
+        mock_ole_client = mock_ole_patcher.start()
+        response = requests.Response()
+        response.status_code = 204
+        response.json = lambda: "ok"
+        mock_ole_client.return_value = response
+
+        self.client.credentials(
+            HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
+        )
+
+        # Act:
+        url = reverse("NightReportLogs-detail", args=[1])
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_nightreport_send(self):
+        """Test nightreport send."""
+        # Arrange:
+        response_get = requests.Response()
+        response_get.status_code = 200
+        response_get.json = lambda: self.response_report
+
+        response_patch = requests.Response()
+        response_patch.status_code = 200
+        response_patch.json = lambda: self.response_report
+
+        mock_ole_patcher_get = patch("requests.get")
+        mock_ole_client_get = mock_ole_patcher_get.start()
+        mock_ole_client_get.return_value = response_get
+
+        mock_ole_patcher_patch = patch("requests.patch")
+        mock_ole_client_patch = mock_ole_patcher_patch.start()
+        mock_ole_client_patch.return_value = response_patch
+
+        self.client.credentials(
+            HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
+        )
+
+        # Act:
+        url = reverse("OLE-nightreport-send-report", args=[1])
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_nightreport_already_sent(self):
+        """Test nightreport already sent."""
+        # Arrange:
+        response_get = requests.Response()
+        response_get.status_code = 200
+        response_get.json = lambda: {
+            **self.response_report,
+            "date_sent": "2024-03-20T15:12:46.508840",
+        }
+
+        mock_ole_patcher_get = patch("requests.get")
+        mock_ole_client_get = mock_ole_patcher_get.start()
+        mock_ole_client_get.return_value = response_get
+
+        self.client.credentials(
+            HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
+        )
+
+        # Act:
+        url = reverse("OLE-nightreport-send-report", args=[1])
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data, {"error": "Night report already sent"})

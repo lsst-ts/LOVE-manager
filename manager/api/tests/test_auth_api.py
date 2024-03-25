@@ -21,18 +21,20 @@
 """Test users' authentication through the API."""
 import datetime
 import json
-from django.test import TestCase
-from django.urls import reverse
-from django.contrib.auth.models import User, Permission, Group
-from freezegun import freeze_time
-from rest_framework.test import APIClient
-from rest_framework import status
+from unittest.mock import patch
+
+import ldap
 from api.models import ConfigFile, Token
 from django.conf import settings
+from django.contrib.auth.models import Group, Permission, User
 from django.core.files.base import ContentFile
-from unittest.mock import patch
+from django.test import TestCase
+from django.urls import reverse
+from freezegun import freeze_time
+from rest_framework import status
+from rest_framework.test import APIClient
+
 from manager import utils
-import ldap
 
 LDAP_USERNAME = "ldap_user"
 LDAP_USERNAME_NON_COMMANDS = "ldap_user_non_commands"
@@ -178,9 +180,15 @@ class AuthApiTestCase(TestCase):
             self.expected_permissions,
             "The permissions are not as expected",
         )
+
         self.assertEqual(
             response.data["user"],
-            {"username": self.user.username, "email": self.user.email},
+            {
+                "username": self.user.username,
+                "email": self.user.email,
+                "first_name": self.user.first_name,
+                "last_name": self.user.last_name,
+            },
             "The user is not as expected",
         )
         self.assertTrue(
@@ -284,7 +292,8 @@ class AuthApiTestCase(TestCase):
         self.assertEqual(user.groups.count(), 0)
 
     def test_user_login_failed(self):
-        """Test that a user cannot request a token if the credentials are invalid."""
+        """Test that a user cannot request a token
+        if the credentials are invalid."""
         # Arrange:
         data = {"username": self.username, "password": "wrong-password"}
         tokens_num_0 = Token.objects.filter(user__username=self.username).count()
@@ -298,7 +307,8 @@ class AuthApiTestCase(TestCase):
         self.assertEqual(tokens_num_0, tokens_num_1, "The user should have no token")
 
     def test_user_login_twice(self):
-        """Test that a user can request a token twie receiving different tokens each time."""
+        """Test that a user can request a token
+        twice receiving different tokens each time."""
         # Arrange:
         data = {"username": self.username, "password": self.password}
         tokens_num_0 = Token.objects.filter(user__username=self.username).count()
@@ -366,6 +376,8 @@ class AuthApiTestCase(TestCase):
             {
                 "username": self.user.username,
                 "email": self.user.email,
+                "first_name": self.user.first_name,
+                "last_name": self.user.last_name,
             },
             "The user is not as expected",
         )
@@ -380,7 +392,8 @@ class AuthApiTestCase(TestCase):
         )
 
     def test_user_validate_token_no_config(self):
-        """Test that a user can validate a token and not receive the config passing the no_config query param."""
+        """Test that a user can validate a token
+        and not receive the config passing the no_config query param."""
         # Arrange:
         data = {"username": self.username, "password": self.password}
         self.client.post(self.login_url, data, format="json")
@@ -408,6 +421,8 @@ class AuthApiTestCase(TestCase):
             {
                 "username": self.user.username,
                 "email": self.user.email,
+                "first_name": self.user.first_name,
+                "last_name": self.user.last_name,
             },
             "The user is not as expected",
         )
