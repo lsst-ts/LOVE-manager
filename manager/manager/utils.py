@@ -21,7 +21,10 @@
 import json
 import os
 import re
+import smtplib
 from datetime import timedelta
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from tempfile import TemporaryFile
 
 import requests
@@ -720,3 +723,167 @@ def assert_time_data(time_data):
     if not isinstance(time_data["tai_to_utc"], float):
         return False
     return True
+
+
+def send_smtp_email(to, subject, html_content, plain_content):
+    """Send an email using the SMTP protocol.
+
+    Parameters
+    ----------
+    to : `str`
+        The email address of the recipient
+    subject : `str`
+        The subject of the email
+    html_content : `str`
+        The content of the email in HTML format
+    plain_content : `str`
+        The content of the email in plain text format
+
+    Notes
+    -----
+    The following environment variables are required to send the email:
+    - SMTP_USER: The SMTP user name
+    - SMTP_PASSWORD: The SMTP user password
+
+    Returns
+    -------
+    bool
+        True if the email was sent successfully, False if not
+    """
+
+    try:
+        # Create message container - the correct MIME type
+        # is multipart/alternative.
+        msg = MIMEMultipart("alternative")
+        part1 = MIMEText(plain_content, "plain")
+        part2 = MIMEText(html_content, "html")
+
+        # Attach parts into message container.
+        # According to RFC 2046, the last part of
+        # a multipart message, in this case
+        # the HTML message, is best and preferred.
+        msg.attach(part1)
+        msg.attach(part2)
+
+        msg["Subject"] = subject
+        msg["From"] = f"{os.environ.get('SMTP_USER')}@lsst.org"
+        msg["To"] = to
+
+        s = smtplib.SMTP("mail.lsst.org", "587")
+        s.set_debuglevel(1)
+        s.starttls()
+        s.login(os.environ.get("SMTP_USER"), os.environ.get("SMTP_PASSWORD"))
+        s.sendmail(msg["From"], msg["To"], msg.as_string())
+        s.quit()
+        return True
+    except Exception:
+        return False
+
+
+def arrange_nightreport_email(report, plain=False):
+    """Arrange the night report email in HTML format
+    or plain text format if specified.
+
+    Parameters
+    ----------
+    report : `dict`
+        The night report data
+
+    Notes:
+    ------
+    The expected parameters of the report dictionary are the following:
+    - telescope: The telescope used during the observing night.
+    Either "AuxTel" or "Simonyi"
+    - day_obs: The observing day in the format "YYYYMMDD"
+    - telescope: The telescope used during the observing night.
+    Either "AuxTel" or "Simonyi"
+    - summary: The summary of the observing night
+    - telescope_status: The final telescope status at the end of the night
+    - confluence_url: The URL of the confluence page with the full report
+    - obs_issues: The list of OBS issues during the night
+    - observers_crew: The list of observers that participated during the night
+
+    Returns
+    -------
+    str
+        The night report email in HTML format or plain text format
+    """
+
+    url_jira_obs_tickets = (
+        "https://rubinobs.atlassian.net/jira/software/c/projects/OBS/boards/232"
+    )
+    day_added = report["date_added"].split("T")[0]
+
+    # TODO: Swap this hardcoded url by a dynamic one.
+    # The service is meant to be run in the summit,
+    # so this will work for the moment.
+    # See: DM-43637
+    url_rolex = f"https://summit-lsp.lsst.codes/rolex?log_date={day_added}"
+
+    if plain:
+        plain_content = f"""
+        Hello everyone!
+        Please find below a summary of the observing night and links for more detailed information.
+        Summary:
+        {report["summary"]}
+        Final telescope status:
+        {report["telescope_status"]}
+        Additional resources:
+        - OBS fault reports from last 24 hours: {url_jira_obs_tickets}
+        - Link to {report["telescope"]} Log Confluence Page: {report["confluence_url"]}
+        - Link to detailed night log entries (requires Summit VPN): {url_rolex}
+        Signed, your friendly neighborhood observers,
+        {report["observers_crew"]}
+        """
+        return plain_content
+
+    html_content = f"""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+        <p>
+            Hello everyone!
+            <br>
+            Please find below a summary of the observing night and links for more detailed information.
+        </p>
+        <p>
+            Summary:
+            <br>
+            {report["summary"]}
+        </p>
+        <p>
+            Final telescope status:
+            <br>
+            {report["telescope_status"]}
+        </p>
+        <p>
+            Additional resources:
+            <br>
+            <ul>
+                <li>
+                    OBS fault reports from last 24 hours:
+                    <a href="{url_jira_obs_tickets}">{url_jira_obs_tickets}</a>
+                </li>
+                <li>
+                    Link to {report["telescope"]} Log Confluence Page:
+                    <a href="{report["confluence_url"]}">{report["confluence_url"]}</a>
+                </li>
+                <li>
+                    Link to detailed night log entries (requires Summit VPN):
+                    <a href="{url_rolex}">{url_rolex}</a>
+                </li>
+            </ul>
+        </p>
+        <p>
+            Signed, your friendly neighborhood observers,
+            <br>
+            {", ".join(report["observers_crew"])}
+        </p>
+    </body>
+    </html>
+    """
+
+    return html_content
