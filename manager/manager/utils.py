@@ -837,6 +837,7 @@ def arrange_nightreport_email(report, plain=False):
         """
         return plain_content
 
+    new_line_character = "\n"
     html_content = f"""
     <!DOCTYPE html>
     <html lang="en">
@@ -852,12 +853,12 @@ def arrange_nightreport_email(report, plain=False):
         <p>
             Summary:
             <br>
-            {report["summary"]}
+            {report["summary"].replace(new_line_character, '<br>')}
         </p>
         <p>
             Final telescope status:
             <br>
-            {report["telescope_status"]}
+            {report["telescope_status"].replace(new_line_character, '<br>')}
         </p>
         <p>
             Additional resources:
