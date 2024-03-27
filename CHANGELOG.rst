@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v5.18.1
+-------
+
+* Add ScriptQueue:3 and Scheduler:3 to ASummary State View on Summit `<https://github.com/lsst-ts/LOVE-manager/pull/243>`_
+
 v5.18.0
 -------
 
