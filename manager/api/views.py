@@ -75,6 +75,7 @@ from manager.settings import (
 from manager.utils import (
     CommandPermission,
     arrange_nightreport_email,
+    get_jira_obs_report,
     get_obsday_from_tai,
     handle_jira_payload,
     send_smtp_email,
@@ -1631,13 +1632,16 @@ def ole_send_night_report(request, *args, **kwargs):
             {"error": "Night report already sent"}, status=status.HTTP_400_BAD_REQUEST
         )
 
+    obs_issues = get_jira_obs_report({"day_obs": report["day_obs"]})
+    report["obs_issues"] = obs_issues
+
     # Arrange HMTl email content
     html_content = arrange_nightreport_email(report)
     plain_content = arrange_nightreport_email(report, plain=True)
 
     # Handle email sending
     send_smtp_email(
-        "aranda.sebastian@gmail.com", "Night report sent", html_content, plain_content
+        "aranda.sebastian@gmail.com", "Rubin Night Log", html_content, plain_content
     )
 
     # Set date_sent

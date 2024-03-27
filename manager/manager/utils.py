@@ -26,6 +26,7 @@ from datetime import timedelta
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from tempfile import TemporaryFile
+from urllib.parse import quote
 
 import requests
 from api.models import ControlLocation
@@ -588,6 +589,61 @@ def handle_jira_payload(request, lfa_urls=[]):
     return jira_comment(payload_data)
 
 
+def get_jira_obs_report(request_data):
+    """Query all issues of the OBS project for a certain day.
+    Then get the total observation time loss from the time_lost param
+    """
+
+    initial_day_obs_string = (
+        str(request_data.get("day_obs"))[:4]
+        + "-"
+        + str(request_data.get("day_obs"))[4:6]
+        + "-"
+        + str(request_data.get("day_obs"))[6:8]
+    )
+    final_day_obs_string = (
+        str(request_data.get("day_obs") + 1)[:4]
+        + "-"
+        + str(request_data.get("day_obs") + 1)[4:6]
+        + "-"
+        + str(request_data.get("day_obs") + 1)[6:8]
+    )
+
+    # JQL query to find issues created on a specific date
+    # Format for dates in JQL is "yyyy/MM/dd"
+    jql_query = (
+        f"project = 'OBS' "
+        f"AND created >= '{initial_day_obs_string} 12:00' "
+        f"AND created <= '{final_day_obs_string} 12:00'"
+    )
+    # payload = {
+    #     "jql": jql_query,
+    # }
+
+    headers = {
+        "Authorization": f"Basic {os.environ.get('JIRA_API_TOKEN')}",
+        "content-type": "application/json",
+    }
+    url = f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/search?jql={quote(jql_query)}"
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        issues = response.json()["issues"]
+        return [
+            {
+                "key": issue["key"],
+                "summary": issue["fields"]["summary"],
+                "time_lost": (
+                    issue["fields"]["customfield_10106"]
+                    if issue["fields"]["customfield_10106"] is not None
+                    else 0.0
+                ),
+                "reporter": issue["fields"]["creator"]["displayName"],
+                "created": issue["fields"]["created"].split(".")[0],
+            }
+            for issue in issues
+        ]
+
+
 def get_client_ip(request):
     """Return the client IP address.
 
@@ -824,6 +880,8 @@ def arrange_nightreport_email(report, plain=False):
         - OBS fault reports from last 24 hours: {url_jira_obs_tickets}
         - Link to {report["telescope"]} Log Confluence Page: {report["confluence_url"]}
         - Link to detailed night log entries (requires Summit VPN): {url_rolex}
+        Detailed issue report:
+        {report["obs_issues"]}
         Signed, your friendly neighborhood observers,
         {report["observers_crew"]}
         """
@@ -871,6 +929,13 @@ def arrange_nightreport_email(report, plain=False):
             </ul>
         </p>
         <p>
+            Detailed issue report:
+            <br>
+            {parse_obs_issues_array_to_html_table(report["obs_issues"])}
+            <br>
+            Total obstime loss: {sum([issue['time_lost'] for issue in report["obs_issues"]])} hours
+        </p>
+        <p>
             Signed, your friendly neighborhood observers,
             <br>
             {", ".join(report["observers_crew"])}
@@ -880,3 +945,43 @@ def arrange_nightreport_email(report, plain=False):
     """
 
     return html_content
+
+
+def parse_obs_issues_array_to_html_table(obs_issues):
+    """Parse the OBS issues array to an HTML table.
+
+    Parameters
+    ----------
+    obs_issues : `list`
+        List of OBS issues
+
+    Returns
+    -------
+    str
+        The OBS issues in HTML table format
+    """
+
+    html_table = """
+    <table style="width:100%">
+        <tr>
+            <th>Key</th>
+            <th>Summary</th>
+            <th>Time Lost (hours)</th>
+            <th>Reporter</th>
+            <th>Created</th>
+        </tr>
+    """
+
+    for issue in obs_issues:
+        html_table += f"""
+        <tr>
+            <td>{issue['key']}</td>
+            <td>{issue['summary']}</td>
+            <td>{issue['time_lost']}</td>
+            <td>{issue['reporter']}</td>
+            <td>{issue['created']}</td>
+        </tr>
+        """
+
+    html_table += "</table>"
+    return html_table
