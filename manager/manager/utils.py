@@ -594,20 +594,8 @@ def get_jira_obs_report(request_data):
     Then get the total observation time loss from the time_lost param
     """
 
-    initial_day_obs_string = (
-        str(request_data.get("day_obs"))[:4]
-        + "-"
-        + str(request_data.get("day_obs"))[4:6]
-        + "-"
-        + str(request_data.get("day_obs"))[6:8]
-    )
-    final_day_obs_string = (
-        str(request_data.get("day_obs") + 1)[:4]
-        + "-"
-        + str(request_data.get("day_obs") + 1)[4:6]
-        + "-"
-        + str(request_data.get("day_obs") + 1)[6:8]
-    )
+    initial_day_obs_string = get_obsday_iso(request_data.get("day_obs"))
+    final_day_obs_string = get_obsday_iso(request_data.get("day_obs") + 1)
 
     # JQL query to find issues created on a specific date
     # Format for dates in JQL is "yyyy/MM/dd"
@@ -683,6 +671,22 @@ def get_obsday_from_tai(tai):
     if tai.hour < 12:
         observing_day = (tai - timedelta(days=1)).strftime("%Y%m%d")
     return observing_day
+
+
+def get_obsday_iso(obsday):
+    """Return the observing day in ISO format.
+
+    Parameters
+    ----------
+    obsday : `int`
+        The observing day in the format "YYYYMMDD" as an integer
+
+    Returns
+    -------
+    String
+        The observing day in ISO format
+    """
+    return f"{str(obsday)[:4]}-{str(obsday)[4:6]}-{str(obsday)[6:8]}"
 
 
 def get_tai_to_utc() -> float:
@@ -865,7 +869,7 @@ def arrange_nightreport_email(report, plain=False):
     url_jira_obs_tickets = (
         "https://rubinobs.atlassian.net/jira/software/c/projects/OBS/boards/232"
     )
-    day_added = report["date_added"].split("T")[0]
+    day_added = get_obsday_iso(report["day_obs"])
     url_rolex = f"https://summit-lsp.lsst.codes/rolex?log_date={day_added}"
 
     if plain:
@@ -893,6 +897,21 @@ def arrange_nightreport_email(report, plain=False):
     <html lang="en">
     <head>
         <meta charset="UTF-8">
+        <style>
+            table {{
+                font-family: Arial, sans-serif;
+                border-collapse: collapse;
+                width: 100%;
+            }}
+            th {{
+                background-color: #f2f2f2;
+            }}
+            th, td {{
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;
+            }}
+        </style>
     </head>
     <body>
         <p>
