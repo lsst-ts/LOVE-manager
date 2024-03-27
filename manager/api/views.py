@@ -77,6 +77,7 @@ from manager.utils import (
     arrange_nightreport_email,
     get_jira_obs_report,
     get_obsday_from_tai,
+    get_obsday_iso,
     handle_jira_payload,
     send_smtp_email,
     upload_to_lfa,
@@ -1640,9 +1641,8 @@ def ole_send_night_report(request, *args, **kwargs):
     plain_content = arrange_nightreport_email(report, plain=True)
 
     # Handle email sending
-    send_smtp_email(
-        "aranda.sebastian@gmail.com", "Rubin Night Log", html_content, plain_content
-    )
+    subject = f"{get_obsday_iso(report['day_obs'])} {report['telescope']} Night Log"
+    send_smtp_email("aranda.sebastian@gmail.com", subject, html_content, plain_content)
 
     # Set date_sent
     curr_tai = astropy.time.Time.now().tai.datetime
