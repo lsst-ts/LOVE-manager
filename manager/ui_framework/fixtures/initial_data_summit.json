@@ -1706,12 +1706,20 @@
                       "salindex": 2
                     },
                     {
+                      "name": "ScriptQueue",
+                      "salindex": 3
+                    },
+                    {
                       "name": "Scheduler",
                       "salindex": 1
                     },
                     {
                       "name": "Scheduler",
                       "salindex": 2
+                    },
+                    {
+                      "name": "Scheduler",
+                      "salindex": 3
                     },
                     {
                       "name": "Watcher",
