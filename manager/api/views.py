@@ -1633,8 +1633,14 @@ def ole_send_night_report(request, *args, **kwargs):
             {"error": "Night report already sent"}, status=status.HTTP_400_BAD_REQUEST
         )
 
-    obs_issues = get_jira_obs_report({"day_obs": report["day_obs"]})
-    report["obs_issues"] = obs_issues
+    # Get JIRA observation issues
+    try:
+        report["obs_issues"] = get_jira_obs_report({"day_obs": report["day_obs"]})
+    except Exception as e:
+        return Response(
+            {"error": str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
     # Arrange HMTl email content
     html_content = arrange_nightreport_email(report)
@@ -1642,7 +1648,14 @@ def ole_send_night_report(request, *args, **kwargs):
 
     # Handle email sending
     subject = f"{get_obsday_iso(report['day_obs'])} {report['telescope']} Night Log"
-    send_smtp_email("aranda.sebastian@gmail.com", subject, html_content, plain_content)
+    email_sent = send_smtp_email(
+        "aranda.sebastian@gmail.com", subject, html_content, plain_content
+    )
+    if not email_sent:
+        return Response(
+            {"error": "Error sending email"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
     # Set date_sent
     curr_tai = astropy.time.Time.now().tai.datetime

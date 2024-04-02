@@ -603,14 +603,12 @@ def get_jira_obs_report(request_data):
         f"AND created >= '{initial_day_obs_string} 12:00' "
         f"AND created <= '{final_day_obs_string} 12:00'"
     )
-    # payload = {
-    #     "jql": jql_query,
-    # }
 
     headers = {
         "Authorization": f"Basic {os.environ.get('JIRA_API_TOKEN')}",
         "content-type": "application/json",
     }
+
     url = f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/search?jql={quote(jql_query)}"
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
@@ -629,6 +627,7 @@ def get_jira_obs_report(request_data):
             }
             for issue in issues
         ]
+    raise Exception(f"Error getting issues from {os.environ.get('JIRA_API_HOSTNAME')}")
 
 
 def get_client_ip(request):
@@ -829,7 +828,6 @@ def send_smtp_email(to, subject, html_content, plain_content):
         msg["To"] = to
 
         s = smtplib.SMTP("mail.lsst.org", "587")
-        s.set_debuglevel(1)
         s.starttls()
         s.login(os.environ.get("SMTP_USER"), os.environ.get("SMTP_PASSWORD"))
         s.sendmail(msg["From"], msg["To"], msg.as_string())
@@ -956,13 +954,13 @@ def arrange_nightreport_email(report, plain=False):
                 </li>
             </ul>
         </p>
-        <p>
+        {f'''<p>
             Detailed issue report:
             <br>
             {parse_obs_issues_array_to_html_table(report["obs_issues"])}
             <br>
             Total obstime loss: {sum([issue['time_lost'] for issue in report["obs_issues"]])} hours
-        </p>
+        </p>''' if len(report["obs_issues"]) > 0 else ""}
         <p>
             Signed, your friendly neighborhood observers,
             <br>
