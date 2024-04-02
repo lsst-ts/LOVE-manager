@@ -827,7 +827,7 @@ def send_smtp_email(to, subject, html_content, plain_content):
         msg["From"] = f"{os.environ.get('SMTP_USER')}@lsst.org"
         msg["To"] = to
 
-        s = smtplib.SMTP("mail.lsst.org", "587")
+        s = smtplib.SMTP("exch-ls.lsst.org", "587")
         s.starttls()
         s.login(os.environ.get("SMTP_USER"), os.environ.get("SMTP_PASSWORD"))
         s.sendmail(msg["From"], msg["To"], msg.as_string())
