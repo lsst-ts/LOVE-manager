@@ -561,6 +561,14 @@ class NightReportTestCase(TestCase):
         mock_ole_client_patch = mock_ole_patcher_patch.start()
         mock_ole_client_patch.return_value = response_patch
 
+        mock_get_jira_obs_report = patch("api.views.get_jira_obs_report")
+        mock_get_jira_obs_report_client = mock_get_jira_obs_report.start()
+        mock_get_jira_obs_report_client.return_value = []
+
+        mock_send_smtp_email = patch("api.views.send_smtp_email")
+        mock_send_smtp_email_client = mock_send_smtp_email.start()
+        mock_send_smtp_email_client.return_value = True
+
         self.client.credentials(
             HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
         )
