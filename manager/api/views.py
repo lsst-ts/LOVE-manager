@@ -1649,7 +1649,10 @@ def ole_send_night_report(request, *args, **kwargs):
     # Handle email sending
     subject = f"{get_obsday_iso(report['day_obs'])} {report['telescope']} Night Log"
     email_sent = send_smtp_email(
-        "aranda.sebastian@gmail.com", subject, html_content, plain_content
+        os.environ.get("NIGHTREPORT_MAIL_ADDRESS", "rubin-night-log@lists.lsst.org"),
+        subject,
+        html_content,
+        plain_content,
     )
     if not email_sent:
         return Response(
