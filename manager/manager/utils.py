@@ -894,23 +894,40 @@ def arrange_nightreport_email(report, plain=False):
     # See: DM-43637
     url_rolex = f"https://summit-lsp.lsst.codes/rolex?log_date={day_added}"
 
+    WELCOME_MSG = "Hello everyone!"
+    INTRODUCTION_MSG = (
+        "Please find below a summary of the observing night"
+        " and links for more detailed information."
+    )
+    SUMMARY_TITLE = "Summary:"
+    FINAL_TELESCOPE_STATUS_TITLE = "Final telescope status:"
+    ADDITIONAL_RESOURCES_TITLE = "Additional resources:"
+    SIGNED_MSG = "Signed, your friendly neighborhood observers,"
+    LINK_MSG_OBS = "OBS fault reports from last 24 hours:"
+    LINK_MSG_CONFLUENCE = f"Link to {report['telescope']} Log Confluence Page:"
+    LINK_MSG_ROLEX = "Link to detailed night log entries (requires Summit VPN):"
+    DETAILED_ISSUE_REPORT_TITLE = "Detailed issue report:"
+    TOTAL_TIME_LOST_MSG = (
+        "Total obstime loss: "
+        f"{sum([issue['time_lost'] for issue in report['obs_issues']])} hours"
+    )
     if plain:
         plain_content = f"""
-        Hello everyone!
-        Please find below a summary of the observing night and links for more detailed information.
-        Summary:
+        {WELCOME_MSG}
+        {INTRODUCTION_MSG}
+        {SUMMARY_TITLE}
         {report["summary"]}
-        Final telescope status:
+        {FINAL_TELESCOPE_STATUS_TITLE}
         {report["telescope_status"]}
-        Additional resources:
-        - OBS fault reports from last 24 hours: {url_jira_obs_tickets}
-        - Link to {report["telescope"]} Log Confluence Page: {report["confluence_url"]}
-        - Link to detailed night log entries (requires Summit VPN): {url_rolex}
-        {f'''Detailed issue report:
+        {ADDITIONAL_RESOURCES_TITLE}
+        - {LINK_MSG_OBS} {url_jira_obs_tickets}
+        - {LINK_MSG_CONFLUENCE} {report["confluence_url"]}
+        - {LINK_MSG_ROLEX} {url_rolex}
+        {f'''{DETAILED_ISSUE_REPORT_TITLE}
         {report["obs_issues"]}
-        Total obstime loss: {sum([issue['time_lost'] for issue in report["obs_issues"]])} hours
+        {TOTAL_TIME_LOST_MSG}
         ''' if len(report["obs_issues"]) > 0 else ""}
-        Signed, your friendly neighborhood observers,
+        {SIGNED_MSG}
         {report["observers_crew"]}
         """
         return plain_content
@@ -939,47 +956,47 @@ def arrange_nightreport_email(report, plain=False):
     </head>
     <body>
         <p>
-            Hello everyone!
+            {WELCOME_MSG}
             <br>
-            Please find below a summary of the observing night and links for more detailed information.
+            {INTRODUCTION_MSG}
         </p>
         <p>
-            Summary:
+            {SUMMARY_TITLE}
             <br>
             {report["summary"].replace(new_line_character, '<br>')}
         </p>
         <p>
-            Final telescope status:
+            {FINAL_TELESCOPE_STATUS_TITLE}
             <br>
             {report["telescope_status"].replace(new_line_character, '<br>')}
         </p>
         <p>
-            Additional resources:
+            {ADDITIONAL_RESOURCES_TITLE}
             <br>
             <ul>
                 <li>
-                    OBS fault reports from last 24 hours:
+                    {LINK_MSG_OBS}
                     <a href="{url_jira_obs_tickets}">{url_jira_obs_tickets}</a>
                 </li>
                 <li>
-                    Link to {report["telescope"]} Log Confluence Page:
+                    {LINK_MSG_CONFLUENCE}
                     <a href="{report["confluence_url"]}">{report["confluence_url"]}</a>
                 </li>
                 <li>
-                    Link to detailed night log entries (requires Summit VPN):
+                    {LINK_MSG_ROLEX}
                     <a href="{url_rolex}">{url_rolex}</a>
                 </li>
             </ul>
         </p>
         {f'''<p>
-            Detailed issue report:
+            {DETAILED_ISSUE_REPORT_TITLE}
             <br>
             {parse_obs_issues_array_to_html_table(report["obs_issues"])}
             <br>
-            Total obstime loss: {sum([issue['time_lost'] for issue in report["obs_issues"]])} hours
+            {TOTAL_TIME_LOST_MSG}
         </p>''' if len(report["obs_issues"]) > 0 else ""}
         <p>
-            Signed, your friendly neighborhood observers,
+            {SIGNED_MSG}
             <br>
             {", ".join(report["observers_crew"])}
         </p>
