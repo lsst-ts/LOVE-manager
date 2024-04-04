@@ -803,11 +803,28 @@ def send_smtp_email(to, subject, html_content, plain_content):
     - SMTP_USER: The SMTP user name
     - SMTP_PASSWORD: The SMTP user password
 
+    If the SMTP_USER has the @lsst.org sufix, then it is stripped.
+
+    Raises
+    ------
+    ValueError
+        If the SMTP_USER or SMTP_PASSWORD environment variables are not set
+
     Returns
     -------
     bool
         True if the email was sent successfully, False if not
     """
+    smtp_user = os.environ.get("SMTP_USER")
+    if not smtp_user:
+        raise ValueError("SMTP_USER environment variable is not set")
+
+    smtp_password = os.environ.get("SMTP_PASSWORD")
+    if not smtp_password:
+        raise ValueError("SMTP_PASSWORD environment variable is not set")
+
+    if smtp_user.endswith("@lsst.org"):
+        smtp_user = smtp_user.replace("@lsst.org", "")
 
     try:
         # Create message container - the correct MIME type
@@ -824,12 +841,12 @@ def send_smtp_email(to, subject, html_content, plain_content):
         msg.attach(part2)
 
         msg["Subject"] = subject
-        msg["From"] = f"{os.environ.get('SMTP_USER')}@lsst.org"
+        msg["From"] = f"{smtp_user}@lsst.org"
         msg["To"] = to
 
         s = smtplib.SMTP("exch-ls.lsst.org", "587")
         s.starttls()
-        s.login(os.environ.get("SMTP_USER"), os.environ.get("SMTP_PASSWORD"))
+        s.login(smtp_user, smtp_password)
         s.sendmail(msg["From"], msg["To"], msg.as_string())
         s.quit()
         return True
