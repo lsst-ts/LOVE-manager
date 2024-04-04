@@ -1025,6 +1025,8 @@ def parse_obs_issues_array_to_html_table(obs_issues):
     - reporter: The reporter of the issue
     - created: The creation date of the issue
 
+    If a key is missing, it will be replaced by a dash "-".
+
     Returns
     -------
     str
@@ -1045,11 +1047,11 @@ def parse_obs_issues_array_to_html_table(obs_issues):
     for issue in obs_issues:
         html_table += f"""
         <tr>
-            <td>{issue['key']}</td>
-            <td>{issue['summary']}</td>
-            <td>{issue['time_lost']}</td>
-            <td>{issue['reporter']}</td>
-            <td>{issue['created']}</td>
+            <td>{issue.get('key', '-')}</td>
+            <td>{issue.get('summary', '-')}</td>
+            <td>{issue.get('time_lost', '-')}</td>
+            <td>{issue.get('reporter', '-')}</td>
+            <td>{issue.get('created', '-')}</td>
         </tr>
         """
 
