@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v5.19.0
+-------
+
+* Add mailing feature so it can be used by the Night Report `<https://github.com/lsst-ts/LOVE-manager/pull/245>`_
+
 v5.18.1
 -------
 

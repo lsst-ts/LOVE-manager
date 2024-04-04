@@ -21,8 +21,12 @@
 import json
 import os
 import re
+import smtplib
 from datetime import timedelta
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from tempfile import TemporaryFile
+from urllib.parse import quote
 
 import requests
 from api.models import ControlLocation
@@ -585,6 +589,47 @@ def handle_jira_payload(request, lfa_urls=[]):
     return jira_comment(payload_data)
 
 
+def get_jira_obs_report(request_data):
+    """Query all issues of the OBS project for a certain day.
+    Then get the total observation time loss from the time_lost param
+    """
+
+    initial_day_obs_string = get_obsday_iso(request_data.get("day_obs"))
+    final_day_obs_string = get_obsday_iso(request_data.get("day_obs") + 1)
+
+    # JQL query to find issues created on a specific date
+    jql_query = (
+        f"project = 'OBS' "
+        f"AND created >= '{initial_day_obs_string} 12:00' "
+        f"AND created <= '{final_day_obs_string} 12:00'"
+    )
+
+    headers = {
+        "Authorization": f"Basic {os.environ.get('JIRA_API_TOKEN')}",
+        "content-type": "application/json",
+    }
+
+    url = f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/search?jql={quote(jql_query)}"
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        issues = response.json()["issues"]
+        return [
+            {
+                "key": issue["key"],
+                "summary": issue["fields"]["summary"],
+                "time_lost": (
+                    issue["fields"]["customfield_10106"]
+                    if issue["fields"]["customfield_10106"] is not None
+                    else 0.0
+                ),
+                "reporter": issue["fields"]["creator"]["displayName"],
+                "created": issue["fields"]["created"].split(".")[0],
+            }
+            for issue in issues
+        ]
+    raise Exception(f"Error getting issues from {os.environ.get('JIRA_API_HOSTNAME')}")
+
+
 def get_client_ip(request):
     """Return the client IP address.
 
@@ -624,6 +669,22 @@ def get_obsday_from_tai(tai):
     if tai.hour < 12:
         observing_day = (tai - timedelta(days=1)).strftime("%Y%m%d")
     return observing_day
+
+
+def get_obsday_iso(obsday):
+    """Return the observing day in ISO format.
+
+    Parameters
+    ----------
+    obsday : `int`
+        The observing day in the format "YYYYMMDD" as an integer
+
+    Returns
+    -------
+    String
+        The observing day in ISO format
+    """
+    return f"{str(obsday)[:4]}-{str(obsday)[4:6]}-{str(obsday)[6:8]}"
 
 
 def get_tai_to_utc() -> float:
@@ -720,3 +781,292 @@ def assert_time_data(time_data):
     if not isinstance(time_data["tai_to_utc"], float):
         return False
     return True
+
+
+def send_smtp_email(to, subject, html_content, plain_content):
+    """Send an email using the SMTP protocol.
+
+    Parameters
+    ----------
+    to : `str`
+        The email address of the recipient
+    subject : `str`
+        The subject of the email
+    html_content : `str`
+        The content of the email in HTML format
+    plain_content : `str`
+        The content of the email in plain text format
+
+    Notes
+    -----
+    The following environment variables are required to send the email:
+    - SMTP_USER: The SMTP user name
+    - SMTP_PASSWORD: The SMTP user password
+
+    If the SMTP_USER has the @lsst.org sufix, then it is stripped.
+
+    Raises
+    ------
+    ValueError
+        If the SMTP_USER or SMTP_PASSWORD environment variables are not set
+
+    Returns
+    -------
+    bool
+        True if the email was sent successfully, False if not
+    """
+    smtp_user = os.environ.get("SMTP_USER")
+    if not smtp_user:
+        raise ValueError("SMTP_USER environment variable is not set")
+
+    smtp_password = os.environ.get("SMTP_PASSWORD")
+    if not smtp_password:
+        raise ValueError("SMTP_PASSWORD environment variable is not set")
+
+    if smtp_user.endswith("@lsst.org"):
+        smtp_user = smtp_user.replace("@lsst.org", "")
+
+    try:
+        # Create message container - the correct MIME type
+        # is multipart/alternative.
+        msg = MIMEMultipart("alternative")
+        part1 = MIMEText(plain_content, "plain")
+        part2 = MIMEText(html_content, "html")
+
+        # Attach parts into message container.
+        # According to RFC 2046, the last part of
+        # a multipart message, in this case
+        # the HTML message, is best and preferred.
+        msg.attach(part1)
+        msg.attach(part2)
+
+        msg["Subject"] = subject
+        msg["From"] = f"{smtp_user}@lsst.org"
+        msg["To"] = to
+
+        s = smtplib.SMTP("exch-ls.lsst.org", "587")
+        s.starttls()
+        s.login(smtp_user, smtp_password)
+        s.sendmail(msg["From"], msg["To"], msg.as_string())
+        s.quit()
+        return True
+    except Exception:
+        return False
+
+
+def arrange_nightreport_email(report, plain=False):
+    """Arrange the night report email in HTML format
+    or plain text format if specified.
+
+    Parameters
+    ----------
+    report : `dict`
+        The night report data
+
+    Notes:
+    ------
+    The expected parameters of the report dictionary are the following:
+    - telescope: The telescope used during the observing night.
+    Either "AuxTel" or "Simonyi"
+    - day_obs: The observing day in the format "YYYYMMDD"
+    - telescope: The telescope used during the observing night.
+    Either "AuxTel" or "Simonyi"
+    - summary: The summary of the observing night
+    - telescope_status: The final telescope status at the end of the night
+    - confluence_url: The URL of the confluence page with the full report
+    - obs_issues: The list of OBS issues during the night
+    - observers_crew: The list of observers that participated during the night
+
+    Returns
+    -------
+    str
+        The night report email in HTML format or plain text format
+    """
+
+    expected_keys = [
+        "telescope",
+        "day_obs",
+        "summary",
+        "telescope_status",
+        "confluence_url",
+        "obs_issues",
+        "observers_crew",
+    ]
+    missing_keys = [key for key in expected_keys if key not in report]
+    if missing_keys:
+        raise ValueError(f"Missing keys in report: {', '.join(missing_keys)}")
+
+    url_jira_obs_tickets = (
+        "https://rubinobs.atlassian.net/jira/software/c/projects/OBS/boards/232"
+    )
+    day_added = get_obsday_iso(report["day_obs"])
+
+    # TODO: Swap this hardcoded url by a dynamic one.
+    # The service is meant to be run in the summit,
+    # so this will work for the moment.
+    # See: DM-43637
+    url_rolex = f"https://summit-lsp.lsst.codes/rolex?log_date={day_added}"
+
+    WELCOME_MSG = "Hello everyone!"
+    INTRODUCTION_MSG = (
+        "Please find below a summary of the observing night"
+        " and links for more detailed information."
+    )
+    SUMMARY_TITLE = "Summary:"
+    FINAL_TELESCOPE_STATUS_TITLE = "Final telescope status:"
+    ADDITIONAL_RESOURCES_TITLE = "Additional resources:"
+    SIGNED_MSG = "Signed, your friendly neighborhood observers,"
+    LINK_MSG_OBS = "OBS fault reports from last 24 hours:"
+    LINK_MSG_CONFLUENCE = f"Link to {report['telescope']} Log Confluence Page:"
+    LINK_MSG_ROLEX = "Link to detailed night log entries (requires Summit VPN):"
+    DETAILED_ISSUE_REPORT_TITLE = "Detailed issue report:"
+    TOTAL_TIME_LOST_MSG = (
+        "Total obstime loss: "
+        f"{sum([issue['time_lost'] for issue in report['obs_issues']])} hours"
+    )
+    if plain:
+        plain_content = f"""
+        {WELCOME_MSG}
+        {INTRODUCTION_MSG}
+        {SUMMARY_TITLE}
+        {report["summary"]}
+        {FINAL_TELESCOPE_STATUS_TITLE}
+        {report["telescope_status"]}
+        {ADDITIONAL_RESOURCES_TITLE}
+        - {LINK_MSG_OBS} {url_jira_obs_tickets}
+        - {LINK_MSG_CONFLUENCE} {report["confluence_url"]}
+        - {LINK_MSG_ROLEX} {url_rolex}
+        {f'''{DETAILED_ISSUE_REPORT_TITLE}
+        {report["obs_issues"]}
+        {TOTAL_TIME_LOST_MSG}
+        ''' if len(report["obs_issues"]) > 0 else ""}
+        {SIGNED_MSG}
+        {report["observers_crew"]}
+        """
+        return plain_content
+
+    new_line_character = "\n"
+    html_content = f"""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <style>
+            table {{
+                font-family: Arial, sans-serif;
+                border-collapse: collapse;
+                width: 100%;
+            }}
+            th {{
+                background-color: #f2f2f2;
+            }}
+            th, td {{
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;
+            }}
+        </style>
+    </head>
+    <body>
+        <p>
+            {WELCOME_MSG}
+            <br>
+            {INTRODUCTION_MSG}
+        </p>
+        <p>
+            {SUMMARY_TITLE}
+            <br>
+            {report["summary"].replace(new_line_character, '<br>')}
+        </p>
+        <p>
+            {FINAL_TELESCOPE_STATUS_TITLE}
+            <br>
+            {report["telescope_status"].replace(new_line_character, '<br>')}
+        </p>
+        <p>
+            {ADDITIONAL_RESOURCES_TITLE}
+            <br>
+            <ul>
+                <li>
+                    {LINK_MSG_OBS}
+                    <a href="{url_jira_obs_tickets}">{url_jira_obs_tickets}</a>
+                </li>
+                <li>
+                    {LINK_MSG_CONFLUENCE}
+                    <a href="{report["confluence_url"]}">{report["confluence_url"]}</a>
+                </li>
+                <li>
+                    {LINK_MSG_ROLEX}
+                    <a href="{url_rolex}">{url_rolex}</a>
+                </li>
+            </ul>
+        </p>
+        {f'''<p>
+            {DETAILED_ISSUE_REPORT_TITLE}
+            <br>
+            {parse_obs_issues_array_to_html_table(report["obs_issues"])}
+            <br>
+            {TOTAL_TIME_LOST_MSG}
+        </p>''' if len(report["obs_issues"]) > 0 else ""}
+        <p>
+            {SIGNED_MSG}
+            <br>
+            {", ".join(report["observers_crew"])}
+        </p>
+    </body>
+    </html>
+    """
+
+    return html_content
+
+
+def parse_obs_issues_array_to_html_table(obs_issues):
+    """Parse the OBS issues array to an HTML table.
+
+    Parameters
+    ----------
+    obs_issues : `list`
+        List of OBS issues
+
+    Notes
+    -----
+    Each element of the obs_issues list must be dictionary
+    with the following keys:
+    - key: The key of the issue
+    - summary: The summary of the issue
+    - time_lost: The time lost in hours
+    - reporter: The reporter of the issue
+    - created: The creation date of the issue
+
+    If a key is missing, it will be replaced by a dash "-".
+
+    Returns
+    -------
+    str
+        The OBS issues in HTML table format
+    """
+
+    html_table = """
+    <table style="width:100%">
+        <tr>
+            <th>Key</th>
+            <th>Summary</th>
+            <th>Time Lost (hours)</th>
+            <th>Reporter</th>
+            <th>Created</th>
+        </tr>
+    """
+
+    for issue in obs_issues:
+        html_table += f"""
+        <tr>
+            <td>{issue.get('key', '-')}</td>
+            <td>{issue.get('summary', '-')}</td>
+            <td>{issue.get('time_lost', '-')}</td>
+            <td>{issue.get('reporter', '-')}</td>
+            <td>{issue.get('created', '-')}</td>
+        </tr>
+        """
+
+    html_table += "</table>"
+    return html_table
