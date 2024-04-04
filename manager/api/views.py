@@ -1643,8 +1643,14 @@ def ole_send_night_report(request, *args, **kwargs):
         )
 
     # Arrange HMTl email content
-    html_content = arrange_nightreport_email(report)
-    plain_content = arrange_nightreport_email(report, plain=True)
+    try:
+        html_content = arrange_nightreport_email(report)
+        plain_content = arrange_nightreport_email(report, plain=True)
+    except Exception as e:
+        return Response(
+            {"error": str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
     # Handle email sending
     subject = f"{get_obsday_iso(report['day_obs'])} {report['telescope']} Night Log"

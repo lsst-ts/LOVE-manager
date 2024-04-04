@@ -883,6 +883,19 @@ def arrange_nightreport_email(report, plain=False):
         The night report email in HTML format or plain text format
     """
 
+    expected_keys = [
+        "telescope",
+        "day_obs",
+        "summary",
+        "telescope_status",
+        "confluence_url",
+        "obs_issues",
+        "observers_crew",
+    ]
+    missing_keys = [key for key in expected_keys if key not in report]
+    if missing_keys:
+        raise ValueError(f"Missing keys in report: {', '.join(missing_keys)}")
+
     url_jira_obs_tickets = (
         "https://rubinobs.atlassian.net/jira/software/c/projects/OBS/boards/232"
     )
