@@ -6,6 +6,7 @@ v5.19.1
 -------
 
 * Bump cryptography from 41.0.6 to 42.0.4 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/238>`_
+* Add TunableLaser to summit summary state view `<https://github.com/lsst-ts/LOVE-manager/pull/248>`_
 
 v5.19.0
 -------
