@@ -1840,6 +1840,10 @@
                     {
                       "name": "Electrometer",
                       "salindex": 1
+                    },
+                    {
+                      "name": "TunableLaser",
+                      "salindex": 0
                     }
                   ]
                 },
