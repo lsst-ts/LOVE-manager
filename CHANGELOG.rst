@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v5.19.2
+-------
+
+* Fix API fixture to point to correct default LOVE configuration file `<https://github.com/lsst-ts/LOVE-manager/pull/250>`_
+
 v5.19.1
 -------
 

@@ -7,7 +7,7 @@
       "update_timestamp": "2020-12-29T14:21:31.040Z",
       "user": 1,
       "file_name": "default.json",
-      "config_file": "http://love01.cp.lsst.org/media/configs/default.json"
+      "config_file": "https://summit-lsp.lsst.codes/love/media/configs/default.json"
     }
   },
   {
