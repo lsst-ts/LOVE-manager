@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v5.19.3
+-------
+
+* Add ESS:107 and ESS:108 to BTS and Summit summary state view fixtures `<https://github.com/lsst-ts/LOVE-manager/pull/251>`_
+
 v5.19.2
 -------
 
