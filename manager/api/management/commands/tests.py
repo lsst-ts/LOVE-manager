@@ -19,15 +19,15 @@
 
 
 """Test users' authentication thorugh the API."""
-from django.test import TestCase
-from django.contrib.auth.models import User, Group
 from api.management.commands.createusers import (
     Command,
     admin_username,
-    user_username,
-    cmd_user_username,
     cmd_groupname,
+    cmd_user_username,
+    user_username,
 )
+from django.contrib.auth.models import Group, User
+from django.test import TestCase
 
 cmd_permission_codename = "api.command.execute_command"
 
@@ -36,7 +36,8 @@ class CreateusersTestCase(TestCase):
     """Test suite for the createusers command."""
 
     def test_command_creates_users(self):
-        """Test that the command creates the users and their permissions accordingly."""
+        """Test that the command creates the users
+        and their permissions accordingly."""
         # Arrange:
         old_users_num = User.objects.count()
         old_groups_num = Group.objects.count()
@@ -46,15 +47,14 @@ class CreateusersTestCase(TestCase):
             "adminpass": "admin_pass",
             "userpass": "user_pass",
             "cmduserpass": "cmd_pass",
-            "authlistuserpass": "authlist_pass",
         }
         command.handle(*[], **options)
         # Assert:
         self.assertEqual(
-            User.objects.count(), old_users_num + 5, "There are no new users"
+            User.objects.count(), old_users_num + 4, "There are no new users"
         )
         self.assertEqual(
-            Group.objects.count(), old_groups_num + 3, "There is no new group"
+            Group.objects.count(), old_groups_num + 2, "There is no new group"
         )
         admin = User.objects.filter(username=admin_username).first()
         user = User.objects.filter(username=user_username).first()
@@ -104,12 +104,11 @@ class CreateusersTestCase(TestCase):
             "adminpass": "admin_pass",
             "userpass": "user_pass",
             "cmduserpass": "cmd_pass",
-            "authlistuserpass": "authlist_pass",
         }
         command.handle(*[], **options)
         # Assert:
         self.assertEqual(
-            Group.objects.count(), old_groups_num + 3, "There is no new group"
+            Group.objects.count(), old_groups_num + 2, "There is no new group"
         )
         admin = User.objects.filter(username=admin_username).first()
         user = User.objects.filter(username=user_username).first()

@@ -139,7 +139,6 @@ class AuthApiTestCase(TestCase):
         self.swap_no_config_url = reverse("swap-user", kwargs={"flags": "no_config"})
         self.expected_permissions = {
             "execute_commands": True,
-            "authlist_admin": False,
         }
         self.expected_config = {"setting1": {"setting11": 1, "setting12": 2}}
 

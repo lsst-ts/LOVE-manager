@@ -26,16 +26,15 @@ Registers the models that will be available throgh the Djangpo Admin interface.
 For more information see:
 https://docs.djangoproject.com/en/2.2/ref/contrib/admin/
 """
-from django.contrib import admin
 from api.models import (
-    Token,
     ConfigFile,
+    ControlLocation,
     EmergencyContact,
     ImageTag,
-    CSCAuthorizationRequest,
-    ControlLocation,
     ScriptConfiguration,
+    Token,
 )
+from django.contrib import admin
 
 # from django.contrib.auth.models import Permission
 
@@ -52,7 +51,6 @@ admin.site.register(Token)
 admin.site.register(ConfigFile)
 admin.site.register(EmergencyContact)
 admin.site.register(ImageTag)
-admin.site.register(CSCAuthorizationRequest)
 admin.site.register(ControlLocation, ControlLocationAdmin)
 admin.site.register(ScriptConfiguration)
 # admin.site.register(Permission)
