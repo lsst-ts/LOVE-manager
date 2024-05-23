@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v6.0.0
+------
+
+* Remove Authorize CSC components and references `<https://github.com/lsst-ts/LOVE-manager/pull/253>`_
+
 v5.19.3
 -------
 
