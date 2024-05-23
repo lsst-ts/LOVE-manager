@@ -115,11 +115,6 @@ router.register("user", UserViewSet)
 router.register("configfile", ConfigFileViewSet)
 router.register("emergencycontact", EmergencyContactViewSet)
 router.register("imagetag", ImageTagViewSet)
-router.register(
-    "authlistrequest",
-    api.views.CSCAuthorizationRequestViewSet,
-    basename="authlistrequest",
-)
 router.register("ole/exposurelog/messages", ExposurelogViewSet, basename="ExposureLogs")
 router.register(
     "ole/narrativelog/messages", NarrativelogViewSet, basename="NarrativeLogs"
