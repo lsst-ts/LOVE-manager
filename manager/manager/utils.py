@@ -925,24 +925,22 @@ def arrange_nightreport_email(report, plain=False):
         f"{sum([issue['time_lost'] for issue in report['obs_issues']])} hours"
     )
     if plain:
-        plain_content = f"""
-        {WELCOME_MSG}
-        {INTRODUCTION_MSG}
-        {SUMMARY_TITLE}
-        {report["summary"]}
-        {FINAL_TELESCOPE_STATUS_TITLE}
-        {report["telescope_status"]}
-        {ADDITIONAL_RESOURCES_TITLE}
-        - {LINK_MSG_OBS} {url_jira_obs_tickets}
-        - {LINK_MSG_CONFLUENCE} {report["confluence_url"]}
-        - {LINK_MSG_ROLEX} {url_rolex}
-        {f'''{DETAILED_ISSUE_REPORT_TITLE}
-        {report["obs_issues"]}
-        {TOTAL_TIME_LOST_MSG}
-        ''' if len(report["obs_issues"]) > 0 else ""}
-        {SIGNED_MSG}
-        {report["observers_crew"]}
-        """
+        plain_content = f"""{WELCOME_MSG}
+{INTRODUCTION_MSG}
+{SUMMARY_TITLE}
+{report["summary"]}
+{FINAL_TELESCOPE_STATUS_TITLE}
+{report["telescope_status"]}
+{ADDITIONAL_RESOURCES_TITLE}
+- {LINK_MSG_OBS} {url_jira_obs_tickets}
+- {LINK_MSG_CONFLUENCE} {report["confluence_url"]}
+- {LINK_MSG_ROLEX} {url_rolex}
+{f'''{DETAILED_ISSUE_REPORT_TITLE}
+{report["obs_issues"]}
+{TOTAL_TIME_LOST_MSG}
+''' if len(report["obs_issues"]) > 0 else ""}
+{SIGNED_MSG}
+{report["observers_crew"]}"""
         return plain_content
 
     new_line_character = "\n"
