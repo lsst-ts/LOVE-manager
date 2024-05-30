@@ -929,11 +929,11 @@ def arrange_nightreport_email(report, plain=False):
 - {LINK_MSG_CONFLUENCE} {report["confluence_url"]}
 - {LINK_MSG_ROLEX} {url_rolex}
 {f'''{DETAILED_ISSUE_REPORT_TITLE}
-{report["obs_issues"]}
+{parse_obs_issues_array_to_plain_text(report["obs_issues"])}
 {TOTAL_TIME_LOST_MSG}
 ''' if len(report["obs_issues"]) > 0 else ""}
 {SIGNED_MSG}
-{report["observers_crew"]}"""
+{", ".join(report["observers_crew"])}"""
         return plain_content
 
     new_line_character = "\n"
@@ -1056,3 +1056,37 @@ def parse_obs_issues_array_to_html_table(obs_issues):
 
     html_table += "</table>"
     return html_table
+
+
+def parse_obs_issues_array_to_plain_text(obs_issues):
+    """Parse the OBS issues array to plain text.
+
+    Parameters
+    ----------
+    obs_issues : `list`
+        List of OBS issues
+
+    Notes
+    -----
+    Each element of the obs_issues list must be dictionary
+    with the following keys:
+    - key: The key of the issue
+    - summary: The summary of the issue
+    - time_lost: The time lost in hours
+    - reporter: The reporter of the issue
+    - created: The creation date of the issue
+
+    If a key is missing, it will be replaced by a "None".
+
+    Returns
+    -------
+    str
+        The OBS issues in plain text format
+    """
+
+    plain_text = ""
+    for issue in obs_issues:
+        plain_text += f"{issue.get('key')} - {issue.get('summary')}: "
+        plain_text += f"Created by {issue.get('reporter')} - Lost {issue.get('time_lost')} hours\n"
+
+    return plain_text
