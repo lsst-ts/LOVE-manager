@@ -907,11 +907,6 @@ def arrange_nightreport_email(report, plain=False):
     # See: DM-43637
     url_rolex = f"https://summit-lsp.lsst.codes/rolex?log_date={day_added}"
 
-    WELCOME_MSG = "Hello everyone!"
-    INTRODUCTION_MSG = (
-        "Please find below a summary of the observing night"
-        " and links for more detailed information."
-    )
     SUMMARY_TITLE = "Summary:"
     FINAL_TELESCOPE_STATUS_TITLE = "Final telescope status:"
     ADDITIONAL_RESOURCES_TITLE = "Additional resources:"
@@ -925,9 +920,7 @@ def arrange_nightreport_email(report, plain=False):
         f"{sum([issue['time_lost'] for issue in report['obs_issues']])} hours"
     )
     if plain:
-        plain_content = f"""{WELCOME_MSG}
-{INTRODUCTION_MSG}
-{SUMMARY_TITLE}
+        plain_content = f"""{SUMMARY_TITLE}
 {report["summary"]}
 {FINAL_TELESCOPE_STATUS_TITLE}
 {report["telescope_status"]}
@@ -966,11 +959,6 @@ def arrange_nightreport_email(report, plain=False):
         </style>
     </head>
     <body>
-        <p>
-            {WELCOME_MSG}
-            <br>
-            {INTRODUCTION_MSG}
-        </p>
         <p>
             {SUMMARY_TITLE}
             <br>
