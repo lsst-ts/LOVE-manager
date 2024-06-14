@@ -907,15 +907,10 @@ def arrange_nightreport_email(report, plain=False):
     # See: DM-43637
     url_rolex = f"https://summit-lsp.lsst.codes/rolex?log_date={day_added}"
 
-    WELCOME_MSG = "Hello everyone!"
-    INTRODUCTION_MSG = (
-        "Please find below a summary of the observing night"
-        " and links for more detailed information."
-    )
     SUMMARY_TITLE = "Summary:"
     FINAL_TELESCOPE_STATUS_TITLE = "Final telescope status:"
     ADDITIONAL_RESOURCES_TITLE = "Additional resources:"
-    SIGNED_MSG = "Signed, your friendly neighborhood observers,"
+    SIGNED_MSG = "Submitted by:"
     LINK_MSG_OBS = "OBS fault reports from last 24 hours:"
     LINK_MSG_CONFLUENCE = f"Link to {report['telescope']} Log Confluence Page:"
     LINK_MSG_ROLEX = "Link to detailed night log entries (requires Summit VPN):"
@@ -925,24 +920,20 @@ def arrange_nightreport_email(report, plain=False):
         f"{sum([issue['time_lost'] for issue in report['obs_issues']])} hours"
     )
     if plain:
-        plain_content = f"""
-        {WELCOME_MSG}
-        {INTRODUCTION_MSG}
-        {SUMMARY_TITLE}
-        {report["summary"]}
-        {FINAL_TELESCOPE_STATUS_TITLE}
-        {report["telescope_status"]}
-        {ADDITIONAL_RESOURCES_TITLE}
-        - {LINK_MSG_OBS} {url_jira_obs_tickets}
-        - {LINK_MSG_CONFLUENCE} {report["confluence_url"]}
-        - {LINK_MSG_ROLEX} {url_rolex}
-        {f'''{DETAILED_ISSUE_REPORT_TITLE}
-        {report["obs_issues"]}
-        {TOTAL_TIME_LOST_MSG}
-        ''' if len(report["obs_issues"]) > 0 else ""}
-        {SIGNED_MSG}
-        {report["observers_crew"]}
-        """
+        plain_content = f"""{SUMMARY_TITLE}
+{report["summary"]}
+{FINAL_TELESCOPE_STATUS_TITLE}
+{report["telescope_status"]}
+{ADDITIONAL_RESOURCES_TITLE}
+- {LINK_MSG_OBS} {url_jira_obs_tickets}
+- {LINK_MSG_CONFLUENCE} {report["confluence_url"]}
+- {LINK_MSG_ROLEX} {url_rolex}
+{f'''{DETAILED_ISSUE_REPORT_TITLE}
+{parse_obs_issues_array_to_plain_text(report["obs_issues"])}
+{TOTAL_TIME_LOST_MSG}
+''' if len(report["obs_issues"]) > 0 else ""}
+{SIGNED_MSG}
+{", ".join(report["observers_crew"])}"""
         return plain_content
 
     new_line_character = "\n"
@@ -968,11 +959,6 @@ def arrange_nightreport_email(report, plain=False):
         </style>
     </head>
     <body>
-        <p>
-            {WELCOME_MSG}
-            <br>
-            {INTRODUCTION_MSG}
-        </p>
         <p>
             {SUMMARY_TITLE}
             <br>
@@ -1070,3 +1056,37 @@ def parse_obs_issues_array_to_html_table(obs_issues):
 
     html_table += "</table>"
     return html_table
+
+
+def parse_obs_issues_array_to_plain_text(obs_issues):
+    """Parse the OBS issues array to plain text.
+
+    Parameters
+    ----------
+    obs_issues : `list`
+        List of OBS issues
+
+    Notes
+    -----
+    Each element of the obs_issues list must be dictionary
+    with the following keys:
+    - key: The key of the issue
+    - summary: The summary of the issue
+    - time_lost: The time lost in hours
+    - reporter: The reporter of the issue
+    - created: The creation date of the issue
+
+    If a key is missing, it will be replaced by a "None".
+
+    Returns
+    -------
+    str
+        The OBS issues in plain text format
+    """
+
+    plain_text = ""
+    for issue in obs_issues:
+        plain_text += f"{issue.get('key')} - {issue.get('summary')}: "
+        plain_text += f"Created by {issue.get('reporter')} - Lost {issue.get('time_lost')} hours\n"
+
+    return plain_text
