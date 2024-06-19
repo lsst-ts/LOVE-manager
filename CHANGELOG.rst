@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v6.0.2
+------
+
+* Bump django from 3.1.14 to 3.2.25 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/257>`_
+
 v6.0.1
 ------
 
