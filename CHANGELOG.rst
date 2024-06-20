@@ -5,6 +5,7 @@ Version History
 v6.0.2
 ------
 
+* Add OCPS:101 to ASummary State View on Summit `<https://github.com/lsst-ts/LOVE-manager/pull/258>`_
 * Bump django from 3.1.14 to 3.2.25 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/257>`_
 
 v6.0.1
