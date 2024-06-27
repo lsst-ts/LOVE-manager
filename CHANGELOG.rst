@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v6.0.3
+------
+
+* Add EPM:1 to ASummary State View on BTS and EPM:301 to summit `<https://github.com/lsst-ts/LOVE-manager/pull/260>`_
+
 v6.0.2
 ------
 
