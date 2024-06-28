@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v6.0.4
+------
+
+* Remove unused dependencies `<https://github.com/lsst-ts/LOVE-manager/pull/261>`_
+
 v6.0.3
 ------
 
