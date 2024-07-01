@@ -915,10 +915,7 @@ def arrange_nightreport_email(report, plain=False):
     LINK_MSG_CONFLUENCE = f"Link to {report['telescope']} Log Confluence Page:"
     LINK_MSG_ROLEX = "Link to detailed night log entries (requires Summit VPN):"
     DETAILED_ISSUE_REPORT_TITLE = "Detailed issue report:"
-    TOTAL_TIME_LOST_MSG = (
-        "Total obstime loss: "
-        f"{sum([issue['time_lost'] for issue in report['obs_issues']])} hours"
-    )
+
     if plain:
         plain_content = f"""{SUMMARY_TITLE}
 {report["summary"]}
@@ -930,7 +927,6 @@ def arrange_nightreport_email(report, plain=False):
 - {LINK_MSG_ROLEX} {url_rolex}
 {f'''{DETAILED_ISSUE_REPORT_TITLE}
 {parse_obs_issues_array_to_plain_text(report["obs_issues"])}
-{TOTAL_TIME_LOST_MSG}
 ''' if len(report["obs_issues"]) > 0 else ""}
 {SIGNED_MSG}
 {", ".join(report["observers_crew"])}"""
@@ -991,8 +987,6 @@ def arrange_nightreport_email(report, plain=False):
             {DETAILED_ISSUE_REPORT_TITLE}
             <br>
             {parse_obs_issues_array_to_html_table(report["obs_issues"])}
-            <br>
-            {TOTAL_TIME_LOST_MSG}
         </p>''' if len(report["obs_issues"]) > 0 else ""}
         <p>
             {SIGNED_MSG}
