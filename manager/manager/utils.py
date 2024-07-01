@@ -915,23 +915,23 @@ def arrange_nightreport_email(report, plain=False):
     LINK_MSG_CONFLUENCE = f"Link to {report['telescope']} Log Confluence Page:"
     LINK_MSG_ROLEX = "Link to detailed night log entries (requires Summit VPN):"
     DETAILED_ISSUE_REPORT_TITLE = "Detailed issue report:"
-    TOTAL_TIME_LOST_MSG = (
-        "Total obstime loss: "
-        f"{sum([issue['time_lost'] for issue in report['obs_issues']])} hours"
-    )
+
     if plain:
         plain_content = f"""{SUMMARY_TITLE}
 {report["summary"]}
+
 {FINAL_TELESCOPE_STATUS_TITLE}
 {report["telescope_status"]}
+
 {ADDITIONAL_RESOURCES_TITLE}
 - {LINK_MSG_OBS} {url_jira_obs_tickets}
 - {LINK_MSG_CONFLUENCE} {report["confluence_url"]}
 - {LINK_MSG_ROLEX} {url_rolex}
-{f'''{DETAILED_ISSUE_REPORT_TITLE}
+{f'''
+{DETAILED_ISSUE_REPORT_TITLE}
 {parse_obs_issues_array_to_plain_text(report["obs_issues"])}
-{TOTAL_TIME_LOST_MSG}
 ''' if len(report["obs_issues"]) > 0 else ""}
+
 {SIGNED_MSG}
 {", ".join(report["observers_crew"])}"""
         return plain_content
@@ -991,8 +991,6 @@ def arrange_nightreport_email(report, plain=False):
             {DETAILED_ISSUE_REPORT_TITLE}
             <br>
             {parse_obs_issues_array_to_html_table(report["obs_issues"])}
-            <br>
-            {TOTAL_TIME_LOST_MSG}
         </p>''' if len(report["obs_issues"]) > 0 else ""}
         <p>
             {SIGNED_MSG}
@@ -1037,7 +1035,6 @@ def parse_obs_issues_array_to_html_table(obs_issues):
         <tr>
             <th>Key</th>
             <th>Summary</th>
-            <th>Time Lost (hours)</th>
             <th>Reporter</th>
             <th>Created</th>
         </tr>
@@ -1048,7 +1045,6 @@ def parse_obs_issues_array_to_html_table(obs_issues):
         <tr>
             <td>{issue.get('key', '-')}</td>
             <td>{issue.get('summary', '-')}</td>
-            <td>{issue.get('time_lost', '-')}</td>
             <td>{issue.get('reporter', '-')}</td>
             <td>{issue.get('created', '-')}</td>
         </tr>
@@ -1087,6 +1083,6 @@ def parse_obs_issues_array_to_plain_text(obs_issues):
     plain_text = ""
     for issue in obs_issues:
         plain_text += f"{issue.get('key')} - {issue.get('summary')}: "
-        plain_text += f"Created by {issue.get('reporter')} - Lost {issue.get('time_lost')} hours\n"
+        plain_text += f"Created by {issue.get('reporter')}\n"
 
     return plain_text
