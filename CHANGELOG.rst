@@ -2,6 +2,12 @@
 Version History
 ===============
 
+v6.0.4
+------
+
+* Remove time loss calculation from nightreport mailing `<https://github.com/lsst-ts/LOVE-manager/pull/262>`_
+* Remove unused dependencies `<https://github.com/lsst-ts/LOVE-manager/pull/261>`_
+
 v6.0.3
 ------
 
