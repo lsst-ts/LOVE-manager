@@ -919,15 +919,19 @@ def arrange_nightreport_email(report, plain=False):
     if plain:
         plain_content = f"""{SUMMARY_TITLE}
 {report["summary"]}
+
 {FINAL_TELESCOPE_STATUS_TITLE}
 {report["telescope_status"]}
+
 {ADDITIONAL_RESOURCES_TITLE}
 - {LINK_MSG_OBS} {url_jira_obs_tickets}
 - {LINK_MSG_CONFLUENCE} {report["confluence_url"]}
 - {LINK_MSG_ROLEX} {url_rolex}
-{f'''{DETAILED_ISSUE_REPORT_TITLE}
+{f'''
+{DETAILED_ISSUE_REPORT_TITLE}
 {parse_obs_issues_array_to_plain_text(report["obs_issues"])}
 ''' if len(report["obs_issues"]) > 0 else ""}
+
 {SIGNED_MSG}
 {", ".join(report["observers_crew"])}"""
         return plain_content
