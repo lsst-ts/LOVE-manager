@@ -1031,7 +1031,6 @@ def parse_obs_issues_array_to_html_table(obs_issues):
         <tr>
             <th>Key</th>
             <th>Summary</th>
-            <th>Time Lost (hours)</th>
             <th>Reporter</th>
             <th>Created</th>
         </tr>
@@ -1042,7 +1041,6 @@ def parse_obs_issues_array_to_html_table(obs_issues):
         <tr>
             <td>{issue.get('key', '-')}</td>
             <td>{issue.get('summary', '-')}</td>
-            <td>{issue.get('time_lost', '-')}</td>
             <td>{issue.get('reporter', '-')}</td>
             <td>{issue.get('created', '-')}</td>
         </tr>
@@ -1081,6 +1079,6 @@ def parse_obs_issues_array_to_plain_text(obs_issues):
     plain_text = ""
     for issue in obs_issues:
         plain_text += f"{issue.get('key')} - {issue.get('summary')}: "
-        plain_text += f"Created by {issue.get('reporter')} - Lost {issue.get('time_lost')} hours\n"
+        plain_text += f"Created by {issue.get('reporter')}\n"
 
     return plain_text
