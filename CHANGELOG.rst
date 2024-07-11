@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v6.0.5
+------
+
+* Strip white spaces from human written fields in the ole_send_night_report function `<https://github.com/lsst-ts/LOVE-manager/pull/265>`_
+
 v6.0.4
 ------
 
