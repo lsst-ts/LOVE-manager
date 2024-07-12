@@ -1441,6 +1441,10 @@ def ole_send_night_report(request, *args, **kwargs):
             {"error": "Night report already sent"}, status=status.HTTP_400_BAD_REQUEST
         )
 
+    # Trim white spaces from human written fields from the report
+    for key in ["summary", "telescope_status", "confluence_url"]:
+        report[key] = report[key].strip()
+
     # Get JIRA observation issues
     try:
         report["obs_issues"] = get_jira_obs_report({"day_obs": report["day_obs"]})
