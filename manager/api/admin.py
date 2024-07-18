@@ -33,7 +33,9 @@ from api.models import (
     ImageTag,
     ScriptConfiguration,
     Token,
+    ZephyrScaleCredential,
 )
+from django import forms
 from django.contrib import admin
 
 # from django.contrib.auth.models import Permission
@@ -47,10 +49,38 @@ class ControlLocationAdmin(admin.ModelAdmin):
         obj.save(request=request)
 
 
+class ZephyrScaleCredentialForm(forms.ModelForm):
+    """Customize the ZephyrScaleCredential form."""
+
+    class Meta:
+        """Define the attributes of the Meta class."""
+
+        model = ZephyrScaleCredential
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        """Override the __init__ method to pass the request"""
+        super(ZephyrScaleCredentialForm, self).__init__(*args, **kwargs)
+        if self.instance and self.instance.pk:
+            self.fields["jira_api_token"].widget = forms.PasswordInput(
+                render_value=True
+            )
+            self.fields["zephyr_api_token"].widget = forms.PasswordInput(
+                render_value=True
+            )
+
+
+class ZephyrScaleCredentialAdmin(admin.ModelAdmin):
+    """Customize the ZephyrScaleCredential admin page."""
+
+    form = ZephyrScaleCredentialForm
+
+
 admin.site.register(Token)
 admin.site.register(ConfigFile)
 admin.site.register(EmergencyContact)
 admin.site.register(ImageTag)
 admin.site.register(ControlLocation, ControlLocationAdmin)
 admin.site.register(ScriptConfiguration)
+admin.site.register(ZephyrScaleCredential, ZephyrScaleCredentialAdmin)
 # admin.site.register(Permission)
