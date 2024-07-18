@@ -239,3 +239,30 @@ class ScriptConfiguration(models.Model):
         return (
             f"[{self.id}] {self.script_type} - {self.script_path} - {self.config_name}"
         )
+
+
+class ZephyrScaleCredential(BaseModel):
+    """Model to store Zephyr Scale credentials"""
+
+    class Meta:
+        """The Meta class of this class."""
+
+        verbose_name = "Zephyr Scale Credentials"
+        verbose_name_plural = "Zephyr Scale Credentials"
+
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        related_name="zephyr_scale_credentials",
+        on_delete=models.CASCADE,
+        verbose_name="User",
+    )
+    """User who created the Zephyr Scale credentials"""
+
+    jira_username = models.CharField(max_length=100)
+    """Jira username"""
+
+    jira_api_token = models.CharField(max_length=500)
+    """Jira API token"""
+
+    zephyr_api_token = models.CharField(max_length=500)
+    """Zephyr API token"""
