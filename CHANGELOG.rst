@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v6.0.6
+------
+
+* Add Electrometer:101 and Electrometer:102 to Summit ASummary State View `<https://github.com/lsst-ts/LOVE-manager/pull/266>`_
+
 v6.0.5
 ------
 
