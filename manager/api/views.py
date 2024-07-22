@@ -231,8 +231,6 @@ class CustomObtainAuthToken(ObtainAuthToken):
             The response containing the token and other user data.
         """
         username = request.data["username"]
-        user_aux = User.objects.filter(username=username).first()
-
         serializer = self.serializer_class(
             data=request.data, context={"request": request}
         )
@@ -240,13 +238,12 @@ class CustomObtainAuthToken(ObtainAuthToken):
         user_obj = serializer.validated_data["user"]
 
         ldap_result = None
-        if user_aux is None:
-            if IPABackend1.successful_login:
-                ldap_result = ldap.initialize(AUTH_LDAP_1_SERVER_URI)
-            elif IPABackend2.successful_login:
-                ldap_result = ldap.initialize(AUTH_LDAP_2_SERVER_URI)
-            elif IPABackend3.successful_login:
-                ldap_result = ldap.initialize(AUTH_LDAP_3_SERVER_URI)
+        if IPABackend1.successful_login:
+            ldap_result = ldap.initialize(AUTH_LDAP_1_SERVER_URI)
+        elif IPABackend2.successful_login:
+            ldap_result = ldap.initialize(AUTH_LDAP_2_SERVER_URI)
+        elif IPABackend3.successful_login:
+            ldap_result = ldap.initialize(AUTH_LDAP_3_SERVER_URI)
 
         baseDN = "cn=love_ops,cn=groups,cn=compat,dc=lsst,dc=cloud"
         searchScope = ldap.SCOPE_SUBTREE
@@ -316,8 +313,6 @@ class CustomSwapAuthToken(ObtainAuthToken):
             The response containing the token and other user data.
         """
         username = request.data["username"]
-        user_aux = User.objects.filter(username=username).first()
-
         if not request.user.is_authenticated or not request._auth:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         serializer = self.serializer_class(
@@ -327,13 +322,12 @@ class CustomSwapAuthToken(ObtainAuthToken):
         user_obj = serializer.validated_data["user"]
 
         ldap_result = None
-        if user_aux is None:
-            if IPABackend1.successful_login:
-                ldap_result = ldap.initialize(AUTH_LDAP_1_SERVER_URI)
-            elif IPABackend2.successful_login:
-                ldap_result = ldap.initialize(AUTH_LDAP_2_SERVER_URI)
-            elif IPABackend3.successful_login:
-                ldap_result = ldap.initialize(AUTH_LDAP_3_SERVER_URI)
+        if IPABackend1.successful_login:
+            ldap_result = ldap.initialize(AUTH_LDAP_1_SERVER_URI)
+        elif IPABackend2.successful_login:
+            ldap_result = ldap.initialize(AUTH_LDAP_2_SERVER_URI)
+        elif IPABackend3.successful_login:
+            ldap_result = ldap.initialize(AUTH_LDAP_3_SERVER_URI)
 
         baseDN = "cn=love_ops,cn=groups,cn=compat,dc=lsst,dc=cloud"
         searchScope = ldap.SCOPE_SUBTREE
