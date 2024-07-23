@@ -167,6 +167,8 @@ class IPABackend1(LDAPBackend):
         user = ldap_user.authenticate(password)
         if user:
             IPABackend1.successful_login = True
+        else:
+            IPABackend1.successful_login = False
         return user
 
 
@@ -178,6 +180,8 @@ class IPABackend2(LDAPBackend):
         user = ldap_user.authenticate(password)
         if user:
             IPABackend2.successful_login = True
+        else:
+            IPABackend2.successful_login = False
         return user
 
 
@@ -189,6 +193,8 @@ class IPABackend3(LDAPBackend):
         user = ldap_user.authenticate(password)
         if user:
             IPABackend3.successful_login = True
+        else:
+            IPABackend3.successful_login = False
         return user
 
 
@@ -238,11 +244,11 @@ class CustomObtainAuthToken(ObtainAuthToken):
         user_obj = serializer.validated_data["user"]
 
         ldap_result = None
-        if IPABackend1.successful_login:
+        if AUTH_LDAP_1_SERVER_URI and IPABackend1.successful_login:
             ldap_result = ldap.initialize(AUTH_LDAP_1_SERVER_URI)
-        elif IPABackend2.successful_login:
+        elif AUTH_LDAP_2_SERVER_URI and IPABackend2.successful_login:
             ldap_result = ldap.initialize(AUTH_LDAP_2_SERVER_URI)
-        elif IPABackend3.successful_login:
+        elif AUTH_LDAP_3_SERVER_URI and IPABackend3.successful_login:
             ldap_result = ldap.initialize(AUTH_LDAP_3_SERVER_URI)
 
         baseDN = "cn=love_ops,cn=groups,cn=compat,dc=lsst,dc=cloud"
@@ -322,11 +328,11 @@ class CustomSwapAuthToken(ObtainAuthToken):
         user_obj = serializer.validated_data["user"]
 
         ldap_result = None
-        if IPABackend1.successful_login:
+        if AUTH_LDAP_1_SERVER_URI and IPABackend1.successful_login:
             ldap_result = ldap.initialize(AUTH_LDAP_1_SERVER_URI)
-        elif IPABackend2.successful_login:
+        elif AUTH_LDAP_2_SERVER_URI and IPABackend2.successful_login:
             ldap_result = ldap.initialize(AUTH_LDAP_2_SERVER_URI)
-        elif IPABackend3.successful_login:
+        elif AUTH_LDAP_3_SERVER_URI and IPABackend3.successful_login:
             ldap_result = ldap.initialize(AUTH_LDAP_3_SERVER_URI)
 
         baseDN = "cn=love_ops,cn=groups,cn=compat,dc=lsst,dc=cloud"
