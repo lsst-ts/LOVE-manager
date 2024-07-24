@@ -322,7 +322,7 @@ class CustomSwapAuthToken(ObtainAuthToken):
         """
         username = request.data["username"]
         if not request.user.is_authenticated or not request._auth:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
+            return Response(status=status.HTTP_403_FORBIDDEN)
         serializer = self.serializer_class(
             data=request.data, context={"request": request}
         )
@@ -1738,3 +1738,172 @@ class ScriptConfigurationViewSet(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET"])
+@permission_classes((IsAuthenticated,))
+def planning_tool_test_cycles(request, *args, **kwargs):
+    """Requests Planning Tool test cycles.
+
+    Params
+    ------
+    request : `Request`
+        The Request object
+    args : `list`
+        List of addittional arguments. Currently unused
+    kwargs : `dict`
+        Dictionary with request arguments. Currently unused
+
+    Returns
+    -------
+    Response
+        The response and status code of the request to the LOVE-Commander
+    """
+    url = (
+        f"http://{os.environ.get('COMMANDER_HOSTNAME')}"
+        f":{os.environ.get('COMMANDER_PORT')}/planningtool/test-cycles/"
+    )
+
+    zephyr_scale_credentials = request.user.zephyr_scale_credentials
+    if zephyr_scale_credentials is None:
+        return Response(
+            {"error": "Zephyr Scale credentials not found"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    modified_payload = request.data.copy()
+    modified_payload["zephyr_api_token"] = zephyr_scale_credentials.zephyr_api_token
+    modified_payload["jira_api_token"] = zephyr_scale_credentials.jira_api_token
+    modified_payload["jira_username"] = zephyr_scale_credentials.jira_username
+
+    response = requests.post(url, json=modified_payload)
+    return Response(response.json(), status=response.status_code)
+
+
+@api_view(["GET"])
+@permission_classes((IsAuthenticated,))
+def planning_tool_test_cycle(request, *args, **kwargs):
+    """Requests Planning Tool test cycle.
+
+    Params
+    ------
+    request : `Request`
+        The Request object
+    args : `list`
+        List of addittional arguments. Currently unused
+    kwargs : `dict`
+        Dictionary with request arguments. Currently unused
+
+    Returns
+    -------
+    Response
+        The response and status code of the request to the LOVE-Commander
+    """
+    test_cycle_key = kwargs.get("pk_cycle", None)
+
+    url = (
+        f"http://{os.environ.get('COMMANDER_HOSTNAME')}"
+        f":{os.environ.get('COMMANDER_PORT')}/planningtool/test-cycle/"
+    )
+
+    zephyr_scale_credentials = request.user.zephyr_scale_credentials
+    if zephyr_scale_credentials is None:
+        return Response(
+            {"error": "Zephyr Scale credentials not found"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    modified_payload = request.data.copy()
+    modified_payload["zephyr_api_token"] = zephyr_scale_credentials.zephyr_api_token
+    modified_payload["jira_api_token"] = zephyr_scale_credentials.jira_api_token
+    modified_payload["jira_username"] = zephyr_scale_credentials.jira_username
+    modified_payload["test_cycle_key"] = test_cycle_key
+
+    response = requests.post(url, json=modified_payload)
+    return Response(response.json(), status=response.status_code)
+
+
+@api_view(["GET"])
+@permission_classes((IsAuthenticated,))
+def planning_tool_test_cases(request, *args, **kwargs):
+    """Requests Planning Tool test cases.
+
+    Params
+    ------
+    request : `Request`
+        The Request object
+    args : `list`
+        List of addittional arguments. Currently unused
+    kwargs : `dict`
+        Dictionary with request arguments. Currently unused
+
+    Returns
+    -------
+    Response
+        The response and status code of the request to the LOVE-Commander
+    """
+    test_cycle_key = kwargs.get("pk_cycle", None)
+
+    url = (
+        f"http://{os.environ.get('COMMANDER_HOSTNAME')}"
+        f":{os.environ.get('COMMANDER_PORT')}/planningtool/test-cases/"
+    )
+
+    zephyr_scale_credentials = request.user.zephyr_scale_credentials
+    if zephyr_scale_credentials is None:
+        return Response(
+            {"error": "Zephyr Scale credentials not found"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    modified_payload = request.data.copy()
+    modified_payload["zephyr_api_token"] = zephyr_scale_credentials.zephyr_api_token
+    modified_payload["jira_api_token"] = zephyr_scale_credentials.jira_api_token
+    modified_payload["jira_username"] = zephyr_scale_credentials.jira_username
+    modified_payload["test_cycle_key"] = test_cycle_key
+
+    response = requests.post(url, json=modified_payload)
+    return Response(response.json(), status=response.status_code)
+
+
+@api_view(["GET"])
+@permission_classes((IsAuthenticated,))
+def planning_tool_test_execution(request, *args, **kwargs):
+    """Requests Planning Tool test case execution.
+
+    Params
+    ------
+    request : `Request`
+        The Request object
+    args : `list`
+        List of addittional arguments. Currently unused
+    kwargs : `dict`
+        Dictionary with request arguments. Currently unused
+
+    Returns
+    -------
+    Response
+        The response and status code of the request to the LOVE-Commander
+    """
+    test_execution_key = kwargs.get("pk_execution", None)
+
+    url = (
+        f"http://{os.environ.get('COMMANDER_HOSTNAME')}"
+        f":{os.environ.get('COMMANDER_PORT')}/planningtool/test-execution/"
+    )
+
+    zephyr_scale_credentials = request.user.zephyr_scale_credentials
+    if zephyr_scale_credentials is None:
+        return Response(
+            {"error": "Zephyr Scale credentials not found"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    modified_payload = request.data.copy()
+    modified_payload["zephyr_api_token"] = zephyr_scale_credentials.zephyr_api_token
+    modified_payload["jira_api_token"] = zephyr_scale_credentials.jira_api_token
+    modified_payload["jira_username"] = zephyr_scale_credentials.jira_username
+    modified_payload["test_execution_key"] = test_execution_key
+
+    response = requests.post(url, json=modified_payload)
+    return Response(response.json(), status=response.status_code)

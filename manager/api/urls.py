@@ -110,6 +110,26 @@ urlpatterns = [
         api.views.ole_send_night_report,
         name="OLE-nightreport-send-report",
     ),
+    path(
+        "planning-tool/test-cycles",
+        api.views.planning_tool_test_cycles,
+        name="Planning-tool-test-cycles",
+    ),
+    path(
+        "planning-tool/test-cycles/<pk_cycle>/",
+        api.views.planning_tool_test_cycle,
+        name="Planning-tool-test-cycle",
+    ),
+    path(
+        "planning-tool/test-cycles/<pk_cycle>/test-cases/",
+        api.views.planning_tool_test_cases,
+        name="Planning-tool-test-cycle-test-cases",
+    ),
+    path(
+        "planning-tool/test-executions/<pk_execution>/",
+        api.views.planning_tool_test_execution,
+        name="Planning-tool-test-case-execution",
+    ),
 ]
 router.register("user", UserViewSet)
 router.register("configfile", ConfigFileViewSet)
