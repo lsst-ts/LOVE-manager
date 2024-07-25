@@ -5,6 +5,7 @@ Version History
 v6.0.7
 ------
 
+* Remove unused ui_framework fixture views `<https://github.com/lsst-ts/LOVE-manager/pull/269>`_
 * Remove conditional on authentication views that prevented commanding permissions to be overwritten `<https://github.com/lsst-ts/LOVE-manager/pull/268>`_
 
 v6.0.6
