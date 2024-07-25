@@ -49,6 +49,7 @@ from api.serializers import (
     UserSerializer,
 )
 from django.contrib.auth.models import Group, User
+from django.core.exceptions import ObjectDoesNotExist
 from django_auth_ldap.backend import LDAPBackend
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -1764,11 +1765,12 @@ def planning_tool_test_cycles(request, *args, **kwargs):
         f":{os.environ.get('COMMANDER_PORT')}/planningtool/test-cycles/"
     )
 
-    zephyr_scale_credentials = request.user.zephyr_scale_credentials
-    if zephyr_scale_credentials is None:
+    try:
+        zephyr_scale_credentials = request.user.zephyr_scale_credentials
+    except ObjectDoesNotExist:
         return Response(
             {"error": "Zephyr Scale credentials not found"},
-            status=status.HTTP_400_BAD_REQUEST,
+            status=status.HTTP_403_FORBIDDEN,
         )
 
     modified_payload = request.data.copy()
@@ -1806,11 +1808,12 @@ def planning_tool_test_cycle(request, *args, **kwargs):
         f":{os.environ.get('COMMANDER_PORT')}/planningtool/test-cycle/"
     )
 
-    zephyr_scale_credentials = request.user.zephyr_scale_credentials
-    if zephyr_scale_credentials is None:
+    try:
+        zephyr_scale_credentials = request.user.zephyr_scale_credentials
+    except ObjectDoesNotExist:
         return Response(
             {"error": "Zephyr Scale credentials not found"},
-            status=status.HTTP_400_BAD_REQUEST,
+            status=status.HTTP_403_FORBIDDEN,
         )
 
     modified_payload = request.data.copy()
@@ -1849,11 +1852,12 @@ def planning_tool_test_cases(request, *args, **kwargs):
         f":{os.environ.get('COMMANDER_PORT')}/planningtool/test-cases/"
     )
 
-    zephyr_scale_credentials = request.user.zephyr_scale_credentials
-    if zephyr_scale_credentials is None:
+    try:
+        zephyr_scale_credentials = request.user.zephyr_scale_credentials
+    except ObjectDoesNotExist:
         return Response(
             {"error": "Zephyr Scale credentials not found"},
-            status=status.HTTP_400_BAD_REQUEST,
+            status=status.HTTP_403_FORBIDDEN,
         )
 
     modified_payload = request.data.copy()
@@ -1892,11 +1896,12 @@ def planning_tool_test_execution(request, *args, **kwargs):
         f":{os.environ.get('COMMANDER_PORT')}/planningtool/test-execution/"
     )
 
-    zephyr_scale_credentials = request.user.zephyr_scale_credentials
-    if zephyr_scale_credentials is None:
+    try:
+        zephyr_scale_credentials = request.user.zephyr_scale_credentials
+    except ObjectDoesNotExist:
         return Response(
             {"error": "Zephyr Scale credentials not found"},
-            status=status.HTTP_400_BAD_REQUEST,
+            status=status.HTTP_403_FORBIDDEN,
         )
 
     modified_payload = request.data.copy()
