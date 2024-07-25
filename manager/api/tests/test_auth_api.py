@@ -200,11 +200,12 @@ class AuthApiTestCase(TestCase):
             "The config was not requested",
         )
 
+    @patch("api.views.AUTH_LDAP_1_SERVER_URI", return_value="ldap://test/")
     @patch("django_auth_ldap.backend._LDAPUser", return_value=MockLDAPUserCommands())
     @patch("ldap.initialize", return_value=ldap.ldapobject.LDAPObject("ldap://test/"))
     @patch("ldap.ldapobject.LDAPObject.search_s", return_value=LDAP_SEARCH_RESPONSE)
     def test_ldap_nonexistent_cmd_user_login(
-        self, mockLDAPObject, mockLDAPInitialize, mockLDAPUser
+        self, mockLDAPObject, mockLDAPInitialize, mockLDAPUser, mockLDAPServerUri
     ):
         # Arrange:
         data = {"username": LDAP_USERNAME, "password": "password"}
@@ -230,11 +231,12 @@ class AuthApiTestCase(TestCase):
         self.assertEqual(user_group_cmd.name, "cmd")
         self.assertEqual(user_group_ui_framework.name, "ui_framework")
 
+    @patch("api.views.AUTH_LDAP_1_SERVER_URI", return_value="ldap://test/")
     @patch("django_auth_ldap.backend._LDAPUser", return_value=MockLDAPUserExistent())
     @patch("ldap.initialize", return_value=ldap.ldapobject.LDAPObject("ldap://test/"))
     @patch("ldap.ldapobject.LDAPObject.search_s", return_value=LDAP_SEARCH_RESPONSE)
     def test_ldap_existent_cmd_user_login(
-        self, mockLDAPObject, mockLDAPInitialize, mockLDAPUser
+        self, mockLDAPObject, mockLDAPInitialize, mockLDAPUser, mockLDAPServerUri
     ):
         # Arrange:
         data = {"username": LDAP_USERNAME_EXISTENT, "password": "password"}
@@ -260,6 +262,7 @@ class AuthApiTestCase(TestCase):
         self.assertEqual(user_group_cmd.name, "cmd")
         self.assertEqual(user_group_ui_framework.name, "ui_framework")
 
+    @patch("api.views.AUTH_LDAP_1_SERVER_URI", return_value="ldap://test/")
     @patch("django_auth_ldap.backend._LDAPUser", return_value=MockLDAPUserNonCommands())
     @patch("ldap.initialize", return_value=ldap.ldapobject.LDAPObject("ldap://test/"))
     @patch(
@@ -267,7 +270,7 @@ class AuthApiTestCase(TestCase):
         return_value=LDAP_SEARCH_RESPONSE,
     )
     def test_ldap_nonexistent_non_cmd_user_login(
-        self, mockLDAPObject, mockLDAPInitialize, mockLDAPUserNonCmd
+        self, mockLDAPObject, mockLDAPInitialize, mockLDAPUserNonCmd, mockLDAPServerUri
     ):
         # Arrange:
         data = {"username": LDAP_USERNAME_NON_COMMANDS, "password": "password"}
