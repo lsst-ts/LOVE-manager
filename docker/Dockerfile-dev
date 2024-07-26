@@ -12,6 +12,7 @@ RUN apt-get update && \
 WORKDIR /usr/src/love/manager
 COPY manager/requirements.txt .
 RUN pip install -r requirements.txt
+RUN pip install daphne
 
 # Expose static files and port
 EXPOSE 8000
