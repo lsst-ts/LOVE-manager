@@ -18,17 +18,17 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
 
-"""Contains the Django Channels Consumers that handle the reception/sending of channels messages."""
+"""Contains the Django Channels Consumers
+that handle the reception/sending of channels messages."""
+import asyncio
 import json
 
-import asyncio
 from astropy.time import Time
-
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from django.conf import settings
+from subscription.heartbeat_manager import HeartbeatManager
 
 from manager import utils
-from subscription.heartbeat_manager import HeartbeatManager
 
 
 class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
@@ -43,6 +43,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
         """Handle connection, rejects connection if no authenticated user."""
         self.stream_group_names = []
+
         # Reject connection if no authenticated user:
         if self.scope["user"].is_anonymous:
             if (
@@ -69,7 +70,8 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
     async def receive_json(self, message):
         """Handle a received message.
 
-        Calls handle_subscription_message() if the message is intended to join or leave a group.
+        Calls handle_subscription_message() if the message
+        is intended to join or leave a group.
         Otherwise handle_data_message() is called
 
         Parameters
@@ -90,12 +92,14 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
     async def handle_subscription_message(self, message):
         """Handle a subscription/unsubscription message.
 
-        Makes the consumer join or leave a group based on the data from the message
+        Makes the consumer join or leave a group
+        based on the data from the message
 
         Parameters
         ----------
         message: `dict`
-            dictionary containing the message parsed as json. The expected format of the message is as follows:
+            dictionary containing the message parsed as json.
+            The expected format of the message is as follows:
 
             .. code-block:: json
 
@@ -140,17 +144,20 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
     async def handle_action_message(self, message):
         """Handle an action message.
 
-        Receives an action message and reacts according to each different action.
+        Receives an action message and reacts
+        according to each different action.
 
         Currently supported actions:
-        - get_time_data: sends a message with the time_data and passes though a request_time received with the message.
+        - get_time_data: sends a message with the time_data
+        and passes though a request_time received with the message.
 
             - Expected input message:
             .. code-block:: json
 
                 {
                     "action": "get_time_data",
-                    "request_time": "<timestamp with the request time, e.g. 123243423.123>"
+                    "request_time": "<timestamp with the request time,
+                    e.g. 123243423.123>"
                 }
 
             - Message sent (output):
@@ -158,22 +165,28 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
 
                 {
                     "time_data": {
-                        "utc": "<current time in UTC scale as a unix timestamp (seconds)>",
-                        "tai": "<current time in UTC scale as a unix timestamp (seconds)>",
+                        "utc": "<current time in UTC scale
+                        as a unix timestamp (seconds)>",
+                        "tai": "<current time in UTC scale
+                        as a unix timestamp (seconds)>",
                         "mjd": "<current time as a modified julian date>",
-                        "sidereal_summit": "<current time as a sidereal_time w/respect
-                                            to the summit location (hourangles)>",
-                        "sidereal_summit": "<current time as a sidereal_time w/respect
-                                            to Greenwich location (hourangles)>",
-                        "tai_to_utc": "<The number of seconds of difference between TAI and UTC times (seconds)>",
+                        "sidereal_summit": "<current time
+                        as a sidereal_time w/respect to
+                        the summit location (hourangles)>",
+                        "sidereal_summit": "<current time as a sidereal_time
+                        w/respect to Greenwich location (hourangles)>",
+                        "tai_to_utc": "<The number of seconds of difference
+                        between TAI and UTC times (seconds)>",
                     },
-                    "request_time": "<timestamp with the request time, e.g. 123243423.123>"
+                    "request_time": "<timestamp with
+                    the request time, e.g. 123243423.123>"
                 }
 
         Parameters
         ----------
         message: `dict`
-            dictionary containing the message parsed as json. The expected format of the message is as follows:
+            dictionary containing the message parsed as json.
+            The expected format of the message is as follows:
 
             .. code-block:: json
 
@@ -190,13 +203,15 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
     async def handle_data_message(self, message, manager_rcv):
         """Handle a data message.
 
-        Sends the message to the corresponding groups based on the data of the message.
+        Sends the message to the corresponding groups
+        based on the data of the message.
 
         Parameters
         ----------
         message: `dict`
             dictionary containing the message parsed as json.
-            The expected format of the message for a telemetry or an event is as follows:
+            The expected format of the message
+            for a telemetry or an event is as follows:
 
             .. code-block:: json
 
@@ -296,7 +311,8 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         csc : `string`
             CSC associated to the message. E.g. 'ScriptQueue'
         salindex : `string`
-            SAL index of the instance of the CSC associated to the message. E.g. '1'
+            SAL index of the instance of the
+            CSC associated to the message. E.g. '1'
         stream : `string`
             Stream to subscribe to. E.g. 'stream_1'
         """
@@ -316,9 +332,9 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                     "data": [
                         {
                             "csc": csc,
-                            "salindex": int(salindex)
-                            if salindex != "all"
-                            else salindex,
+                            "salindex": (
+                                int(salindex) if salindex != "all" else salindex
+                            ),
                             "data": {"event_name": stream},
                         }
                     ],
@@ -326,7 +342,6 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             )
 
     async def _leave_group(self, category, csc, salindex, stream):
-
         """Leave a group in order to receive messages from it.
 
         Parameters
@@ -336,7 +351,8 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         csc : `string`
             CSC associated to the message. E.g. 'ScriptQueue'
         salindex : `string`
-            SAL index of the instance of the CSC associated to the message. E.g. '1'
+            SAL index of the instance of the
+            CSC associated to the message. E.g. '1'
         stream : `string`
             Stream to subscribe to. E.g. 'stream_1'
         """
@@ -347,9 +363,11 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
 
     async def subscription_data(self, message):
         """
-        Send a message to all the instances of a consumer that have joined the group.
+        Send a message to all the instances
+        of a consumer that have joined the group.
 
-        It is used to send messages associated to subscriptions to all the groups of a particular category
+        It is used to send messages associated
+        to subscriptions to all the groups of a particular category
 
         Parameters
         ----------
@@ -381,9 +399,11 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
 
     async def subscription_all_data(self, message):
         """
-        Send a message to all the instances of a consumer that have joined the group.
+        Send a message to all the instances
+        of a consumer that have joined the group.
 
-        It is used to send messages associated to subscriptions to all the groups of a particular category
+        It is used to send messages associated
+        to subscriptions to all the groups of a particular category
 
         Parameters
         ----------
@@ -412,9 +432,11 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
 
     async def send_heartbeat(self, message):
         """
-        Send a heartbeat to all the instances of a consumer that have joined the heartbeat-manager-0-stream.
+        Send a heartbeat to all the instances
+        of a consumer that have joined the heartbeat-manager-0-stream.
 
-        It is used to send messages associated to subscriptions to all the groups of a particular category
+        It is used to send messages associated
+        to subscriptions to all the groups of a particular category
 
         Parameters
         ----------
@@ -430,7 +452,8 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         Parameters
         ----------
         message: `string`
-            message received, it is part of the API (as this function is called by a message reception)
+            message received, it is part of the API
+            (as this function is called by a message reception)
             but it is not used
         """
         await self.close()
