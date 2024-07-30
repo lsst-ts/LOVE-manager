@@ -927,6 +927,20 @@
                       "salindex": 0
                     }
                   ],
+                  "LSSTCam": [
+                    {
+                      "name": "MTCamera",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "MTOODS",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "MTHeaderService",
+                      "salindex": 0
+                    }
+                  ],
                   "Star Tracker": [
                     {
                       "name": "GenericCamera",
