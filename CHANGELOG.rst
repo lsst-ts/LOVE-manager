@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v6.0.8
+------
+
+* Add more CSCs to summit summary state view `<https://github.com/lsst-ts/LOVE-manager/pull/255>`_
+
 v6.0.7
 ------
 
@@ -40,7 +45,6 @@ v6.0.1
 ------
 
 * Improve LOVE night report email plain text format `<https://github.com/lsst-ts/LOVE-manager/pull/254>`_
-* Add more CSCs to summit summary state view `<https://github.com/lsst-ts/LOVE-manager/pull/255>`_
 
 v6.0.0
 ------
