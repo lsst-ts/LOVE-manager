@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v6.0.8
+------
+
+* Add more CSCs to summit summary state view `<https://github.com/lsst-ts/LOVE-manager/pull/255>`_
+
 v6.0.7
 ------
 
