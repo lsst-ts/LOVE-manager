@@ -46,7 +46,7 @@ msgpack==1.0.0
 numpy==1.22.0
 packaging==24.1
 pip-licenses==2.1.1
-Pillow==10.0.1
+Pillow==10.3.0
 pluggy==0.13.1
 psycopg2==2.9.9
 pyasn1==0.4.8
