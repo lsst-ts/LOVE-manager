@@ -5,6 +5,7 @@ Version History
 v7.0.0
 ------
 
+* Bump jinja2 from 2.11.3 to 3.1.4 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/249>`_
 * Bump MarkupSafe from 1.1.1 to 2.1.5 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/271>`_
 * Bump sqlparse from 0.4.4 to 0.5.0 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/247>`_
 * Bump idna from 2.9 to 3.7 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/246>`_
