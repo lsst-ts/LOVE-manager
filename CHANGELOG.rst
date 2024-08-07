@@ -5,6 +5,7 @@ Version History
 v7.0.0
 ------
 
+* Bump sqlparse from 0.4.4 to 0.5.0 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/247>`_
 * Bump idna from 2.9 to 3.7 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/246>`_
 * Bump pillow from 10.0.1 to 10.3.0 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/244>`_
 * Update core dependencies and remove final traces of the Authlist feature `<https://github.com/lsst-ts/LOVE-manager/pull/270>`_
