@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.0.0
+------
+
+* Update core dependencies and remove final traces of the Authlist feature `<https://github.com/lsst-ts/LOVE-manager/pull/270>`_
+
 v6.0.8
 ------
 
