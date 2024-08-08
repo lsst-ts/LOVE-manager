@@ -5,6 +5,7 @@ Version History
 v7.0.0
 ------
 
+* Bump requests from 2.31.0 to 2.32.2 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/273>`_
 * Bump django from 5.0.7 to 5.0.8 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/272>`_
 * Bump zipp from 3.1.0 to 3.19.1 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/264>`_
 * Bump certifi from 2023.7.22 to 2024.7.4 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/263>`_
