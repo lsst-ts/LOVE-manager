@@ -115,22 +115,5 @@ pipeline {
         }
       }
     }
-
-    stage("Trigger develop deployment") {
-      when {
-        branch "develop"
-      }
-      steps {
-        build(job: '../LOVE-integration-tools/develop', wait: false)
-      }
-    }
-    stage("Trigger main deployment") {
-      when {
-        branch "main"
-      }
-      steps {
-        build(job: '../LOVE-integration-tools/main', wait: false)
-      }
-    }
   }
 }
