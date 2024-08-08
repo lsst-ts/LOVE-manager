@@ -18,10 +18,23 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
 
-"""Defines the rules for routing of channels messages (websockets) in the whole project."""
-from channels.routing import ProtocolTypeRouter, URLRouter
+"""Defines the rules for routing of
+channels messages (websockets) in the whole project."""
 import subscription.routing
+from channels.routing import ProtocolTypeRouter, URLRouter
+from django.core.asgi import get_asgi_application
+from subscription.auth import TokenAuthMiddleware
+
+# Initialize Django ASGI application early to ensure the AppRegistry
+# is populated before importing code that may import ORM models.
+django_asgi_app = get_asgi_application()
 
 application = ProtocolTypeRouter(
-    {"websocket": URLRouter(subscription.routing.websocket_urlpatterns)}
+    {
+        # Django's ASGI application to handle traditional HTTP requests
+        "http": django_asgi_app,
+        "websocket": TokenAuthMiddleware(
+            URLRouter(subscription.routing.websocket_urlpatterns)
+        ),
+    }
 )

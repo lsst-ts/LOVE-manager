@@ -51,6 +51,9 @@ DEFAULT_FILE_STORAGE = (
     else "django.core.files.storage.FileSystemStorage"
 )
 
+# Define the default auto field for Django models
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -106,6 +109,7 @@ ALLOWED_HOSTS = [
 
 # Application definition
 INSTALLED_APPS = [
+    "daphne",
     "django.contrib.auth",
     "django.contrib.admin",
     "django.contrib.contenttypes",

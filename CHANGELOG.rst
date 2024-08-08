@@ -2,6 +2,22 @@
 Version History
 ===============
 
+v7.0.0
+------
+
+* Remove deprecated deployment stages from the Jenkinsfile `<https://github.com/lsst-ts/LOVE-manager/pull/274>`_
+* Bump requests from 2.31.0 to 2.32.2 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/273>`_
+* Bump django from 5.0.7 to 5.0.8 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/272>`_
+* Bump zipp from 3.1.0 to 3.19.1 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/264>`_
+* Bump certifi from 2023.7.22 to 2024.7.4 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/263>`_
+* Bump urllib3 from 1.26.18 to 1.26.19 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/256>`_
+* Bump jinja2 from 2.11.3 to 3.1.4 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/249>`_
+* Bump MarkupSafe from 1.1.1 to 2.1.5 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/271>`_
+* Bump sqlparse from 0.4.4 to 0.5.0 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/247>`_
+* Bump idna from 2.9 to 3.7 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/246>`_
+* Bump pillow from 10.0.1 to 10.3.0 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/244>`_
+* Update core dependencies and remove final traces of the Authlist feature `<https://github.com/lsst-ts/LOVE-manager/pull/270>`_
+
 v6.0.8
 ------
 

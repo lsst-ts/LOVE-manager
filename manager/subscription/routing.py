@@ -18,19 +18,20 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
 
-"""Define the rules for routing of channels messages (websockets) in the subscirption application."""
-from django.conf.urls import url
-from subscription.auth import TokenAuthMiddleware
-from .consumers import SubscriptionConsumer
+"""Define the rules for routing
+of channels messages (websockets) in the subscription application."""
 from django.conf import settings
+from django.urls import re_path
 
+from .consumers import SubscriptionConsumer
 
 URL_PREFIX = settings.FORCE_SCRIPT_NAME[1:] + "/" if settings.FORCE_SCRIPT_NAME else ""
 
 websocket_urlpatterns = [
-    url(
+    re_path(
         rf"^{URL_PREFIX}manager(.*?)/ws/subscription/?$",
-        TokenAuthMiddleware(SubscriptionConsumer.as_asgi()),
+        SubscriptionConsumer.as_asgi(),
     ),
 ]
-"""List of url patterns that match a URL to a Consumer (in this case only 1)."""
+"""List of url patterns that match
+a URL to a Consumer (in this case only 1)."""
