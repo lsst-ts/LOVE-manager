@@ -75,7 +75,7 @@ sqlparse==0.5.0
 Twisted==23.10.0
 txaio==23.1.1
 uritemplate==3.0.1
-urllib3==1.26.18
+urllib3==1.26.19
 uvicorn[standard]==0.24.0.post1
 wcwidth==0.1.8
 zipp==3.1.0
