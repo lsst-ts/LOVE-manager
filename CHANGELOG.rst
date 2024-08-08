@@ -5,6 +5,7 @@ Version History
 v7.0.0
 ------
 
+* Bump zipp from 3.1.0 to 3.19.1 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/264>`_
 * Bump certifi from 2023.7.22 to 2024.7.4 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/263>`_
 * Bump urllib3 from 1.26.18 to 1.26.19 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/256>`_
 * Bump jinja2 from 2.11.3 to 3.1.4 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/249>`_
