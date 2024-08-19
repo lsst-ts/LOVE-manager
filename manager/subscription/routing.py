@@ -20,16 +20,13 @@
 
 """Define the rules for routing
 of channels messages (websockets) in the subscription application."""
-from django.conf import settings
 from django.urls import re_path
 
 from .consumers import SubscriptionConsumer
 
-URL_PREFIX = settings.FORCE_SCRIPT_NAME[1:] + "/" if settings.FORCE_SCRIPT_NAME else ""
-
 websocket_urlpatterns = [
     re_path(
-        rf"^{URL_PREFIX}manager(.*?)/ws/subscription/?$",
+        r"^manager(.*?)/ws/subscription/?$",
         SubscriptionConsumer.as_asgi(),
     ),
 ]

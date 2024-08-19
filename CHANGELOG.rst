@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.0.1
+------
+
+* Adjust websockets routing as prefix is not needed anymore `<https://github.com/lsst-ts/LOVE-manager/pull/276>`_
+
 v7.0.0
 ------
 
