@@ -26,7 +26,12 @@ from unittest.mock import patch
 import requests
 from django.test import TestCase, override_settings
 
-from manager.utils import handle_jira_payload, jira_comment, jira_ticket
+from manager.utils import (
+    handle_jira_payload,
+    jira_comment,
+    jira_ticket,
+    update_time_loss,
+)
 
 OLE_JIRA_OBS_COMPONENTS_FIELDS = [
     "AuxTel",
@@ -311,6 +316,31 @@ class JiraTestCase(TestCase):
 
         mock_jira_patcher.stop()
 
+    def test_update_time_loss(self):
+        """Test call to update_time_loss and verify field was updated"""
+        # patch both requests.get, requests.put
+        mock_jira_patcher = patch("requests.get")
+        mock_jira_client = mock_jira_patcher.start()
+        response = requests.Response()
+        response.status_code = 200
+        response.json = lambda: {"customfield_10106": 13.6}
+        mock_jira_client.return_value = response
+
+        mock_jira_patcher = patch("requests.put")
+        mock_jira_client = mock_jira_patcher.start()
+        response = requests.Response()
+        response.status_code = 200
+        mock_jira_client.return_value = response
+
+        # call update time lost
+        jira_response = update_time_loss(1, 3.4)
+        assert jira_response.status_code == 200
+        assert jira_response.data["ack"] == "Jira field updated"
+
+        jira_response = update_time_loss(93827, 1.23)
+        assert jira_response.status_code == 200
+        assert jira_response.data["ack"] == "Jira field updated"
+
     def test_add_comment(self):
         """Test call to jira_comment function with all needed parameters"""
         mock_jira_patcher = patch("requests.post")
@@ -318,6 +348,10 @@ class JiraTestCase(TestCase):
         response = requests.Response()
         response.status_code = 201
         mock_jira_client.return_value = response
+
+        mock_timeloss_patcher = patch("manager.utils.update_time_loss")
+        mock_timeloss_client = mock_timeloss_patcher.start()
+        mock_timeloss_client.return_value = response
 
         jira_response = jira_comment(self.jira_request_exposure_full_jira_comment.data)
         assert jira_response.status_code == 200
