@@ -316,21 +316,17 @@ class JiraTestCase(TestCase):
 
         mock_jira_patcher.stop()
 
-    def test_update_time_loss(self):
+    @patch("requests.get")
+    @patch("requests.put")
+    def test_update_time_loss(self, mock_get, mock_put):
         """Test call to update_time_loss and verify field was updated"""
         # patch both requests.get, requests.put
-        mock_jira_patcher = patch("requests.get")
-        mock_jira_client = mock_jira_patcher.start()
         response = requests.Response()
         response.status_code = 200
-        response.json = lambda: {"customfield_10106": 13.6}
-        mock_jira_client.return_value = response
+        mock_put.return_value = response
 
-        mock_jira_patcher = patch("requests.put")
-        mock_jira_client = mock_jira_patcher.start()
-        response = requests.Response()
-        response.status_code = 200
-        mock_jira_client.return_value = response
+        response.json = lambda: {"customfield_10106": 13.6}
+        mock_get.return_value = response
 
         # call update time lost
         jira_response = update_time_loss(1, 3.4)
