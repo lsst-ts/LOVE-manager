@@ -505,6 +505,57 @@ def jira_ticket(request_data):
     )
 
 
+def update_time_loss(jira_id: int, add_time_loss: float = 0.0) -> Response:
+    """Connect to the Rubin Observatory JIRA Cloud REST API to
+    update a jira ticket's specific field
+
+    Params
+    ------
+    jira_id: int
+        Jira ID
+
+    Returns
+    -------
+    Response
+        define response here
+    """
+    headers = {
+        "Authorization": f"Basic {os.environ.get('JIRA_API_TOKEN')}",
+        "content-type": "application/json",
+    }
+    get_url = (
+        f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/issue/{jira_id}"
+    )
+    response = requests.get(get_url, headers=headers)
+    existent_time_loss = (
+        response.json().get("customfield_10106", 0.0)
+        if response.status_code == 200
+        else 0.0
+    )
+    jira_payload = {
+        "fields": {
+            "customfield_10106": float(existent_time_loss + add_time_loss),
+        },
+    }
+    put_url = f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/issue/{jira_id}/"
+    response = requests.put(put_url, json=jira_payload, headers=headers)
+
+    if response.status_code == 200 or response.status_code == 204:
+        return Response(
+            {
+                "ack": "Jira field updated",
+                "url": f"https://{os.environ.get('JIRA_API_HOSTNAME')}/browse/{jira_id}",
+            },
+            status=200,
+        )
+    return Response(
+        {
+            "ack": "Jira field could not be updated",
+        },
+        status=400,
+    )
+
+
 def jira_comment(request_data):
     """Connect to the Rubin Observatory JIRA Cloud REST API to
     make a comment on a previously created ticket.
@@ -547,6 +598,12 @@ def jira_comment(request_data):
     }
     url = f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/issue/{jira_id}/comment"
     response = requests.post(url, json=jira_payload, headers=headers)
+
+    if "time_lost" in request_data:
+        update_time_loss(
+            jira_id=jira_id, add_time_loss=request_data.get("time_lost", 0.0)
+        )
+
     if response.status_code == 201:
         return Response(
             {
