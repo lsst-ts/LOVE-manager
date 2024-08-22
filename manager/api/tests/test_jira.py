@@ -366,6 +366,22 @@ class JiraTestCase(TestCase):
         assert jira_response.status_code == 200
         assert jira_response.data["ack"] == "Jira comment created"
 
+    def test_add_comment_fail(self):
+        mock_jira_patcher = patch("requests.post")
+        mock_jira_client = mock_jira_patcher.start()
+        response = requests.Response()
+        response.status_code = 201
+        mock_jira_client.return_value = response
+
+        mock_time_lost_patcher = patch("manager.utils.update_time_lost")
+        mock_time_lost_client = mock_time_lost_patcher.start()
+        time_response = requests.Response()
+        time_response.status_code = 400
+        mock_time_lost_client.return_value = time_response
+
+        resp = jira_comment(self.jira_request_narrative_full_jira_comment.data)
+        assert resp.status_code == 400
+
     @patch.dict(os.environ, {"JIRA_API_HOSTNAME": "jira.lsstcorp.org"})
     def test_handle_narrative_jira_payload(self):
         """Test call to function handle_jira_payload with all needed parameters
@@ -377,6 +393,12 @@ class JiraTestCase(TestCase):
         response.status_code = 201
         response.json = lambda: {"key": "LOVE-XX"}
         mock_jira_client.return_value = response
+
+        mock_time_lost_patcher = patch("manager.utils.update_time_lost")
+        mock_time_lost_client = mock_time_lost_patcher.start()
+        time_response = requests.Response()
+        time_response.status_code = 200
+        mock_time_lost_client.return_value = time_response
 
         jira_response = handle_jira_payload(self.jira_request_narrative_full_jira_new)
         assert jira_response.status_code == 200

@@ -601,7 +601,6 @@ def jira_comment(request_data):
     }
     url = f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/issue/{jira_id}/comment"
     response = requests.post(url, json=jira_payload, headers=headers)
-
     if "time_lost" in request_data:
         timelost_response = update_time_lost(
             jira_id=jira_id, add_time_lost=request_data.get("time_lost", 0.0)
