@@ -40,6 +40,9 @@ from rest_framework.response import Response
 # Constants
 JSON_RESPONSE_LOCAL_STORAGE_NOT_ALLOWED = {"error": "Local storage not allowed."}
 JSON_RESPONSE_ERROR_NOT_VALID_JSON = {"error": "Not a valid JSON response."}
+TIME_LOST_FIELD = "customfield_10106"
+PRIMARY_SOFTWARE_COMPONENTS_IDS = "customfield_10107"
+PRIMARY_HARDWARE_COMPONENTS_IDS = "customfield_10196"
 
 
 class LocationPermission(BasePermission):
@@ -449,16 +452,16 @@ def jira_ticket(request_data):
                 #     "on" if int(request_data.get("level", 0)) >= 100
                 #     else "off"
                 # ),
-                "customfield_10106": float(request_data.get("time_lost", 0)),
+                TIME_LOST_FIELD: float(request_data.get("time_lost", 0)),
                 # Default values of the following fields are set to -1
-                "customfield_10107": {
+                PRIMARY_SOFTWARE_COMPONENTS_IDS: {
                     "id": (
                         str(primary_software_components_ids[0])
                         if primary_software_components_ids
                         else "-1"
                     )
                 },
-                "customfield_10196": {
+                PRIMARY_HARDWARE_COMPONENTS_IDS: {
                     "id": (
                         str(primary_hardware_components_ids[0])
                         if primary_hardware_components_ids
@@ -505,45 +508,45 @@ def jira_ticket(request_data):
     )
 
 
-def update_time_loss(jira_id: int, add_time_loss: float = 0.0) -> Response:
+def update_time_lost(jira_id: int, add_time_lost: float = 0.0) -> Response:
     """Connect to the Rubin Observatory JIRA Cloud REST API to
-    update a jira ticket's specific field
+    update time_lost field in a given jira ticket
 
     Params
     ------
     jira_id: int
         Jira ID
+    add_time_lost: float
+        time value given from comment
 
     Returns
     -------
     Response
         The response and status code of the request to the JIRA API
+        200 if the time_lost field was successfully updated
+        400 if the time_lost field was not updated
     """
     headers = {
         "Authorization": f"Basic {os.environ.get('JIRA_API_TOKEN')}",
         "content-type": "application/json",
     }
-    get_url = (
-        f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/issue/{jira_id}"
-    )
-    response = requests.get(get_url, headers=headers)
-    existent_time_loss = (
-        response.json().get("customfield_10106", 0.0)
+    url = f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/issue/{jira_id}/"
+    response = requests.get(url, headers=headers)
+    existent_time_lost = (
+        response.json().get(TIME_LOST_FIELD, 0.0)
         if response.status_code == 200
         else 0.0
     )
     jira_payload = {
         "fields": {
-            "customfield_10106": float(existent_time_loss + add_time_loss),
+            TIME_LOST_FIELD: float(existent_time_lost + add_time_lost),
         },
     }
-    put_url = f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/issue/{jira_id}/"
-    response = requests.put(put_url, json=jira_payload, headers=headers)
-
-    if response.status_code == 200 or response.status_code == 204:
+    response = requests.put(url, json=jira_payload, headers=headers)
+    if response.status_code == 204:
         return Response(
             {
-                "ack": "Jira field updated",
+                "ack": "Jira time_lost field updated",
                 "url": f"https://{os.environ.get('JIRA_API_HOSTNAME')}/browse/{jira_id}",
             },
             status=200,
@@ -600,8 +603,8 @@ def jira_comment(request_data):
     response = requests.post(url, json=jira_payload, headers=headers)
 
     if "time_lost" in request_data:
-        response = update_time_loss(
-            jira_id=jira_id, add_time_loss=request_data.get("time_lost", 0.0)
+        response = update_time_lost(
+            jira_id=jira_id, add_time_lost=request_data.get("time_lost", 0.0)
         )
         if response.status_code == 400:
             return response
@@ -677,8 +680,8 @@ def get_jira_obs_report(request_data):
                 "key": issue["key"],
                 "summary": issue["fields"]["summary"],
                 "time_lost": (
-                    issue["fields"]["customfield_10106"]
-                    if issue["fields"]["customfield_10106"] is not None
+                    issue["fields"][TIME_LOST_FIELD]
+                    if issue["fields"][TIME_LOST_FIELD] is not None
                     else 0.0
                 ),
                 "reporter": issue["fields"]["creator"]["displayName"],

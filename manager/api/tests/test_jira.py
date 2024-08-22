@@ -27,10 +27,11 @@ import requests
 from django.test import TestCase, override_settings
 
 from manager.utils import (
+    TIME_LOST_FIELD,
     handle_jira_payload,
     jira_comment,
     jira_ticket,
-    update_time_loss,
+    update_time_lost,
 )
 
 OLE_JIRA_OBS_COMPONENTS_FIELDS = [
@@ -318,24 +319,25 @@ class JiraTestCase(TestCase):
 
     @patch("requests.get")
     @patch("requests.put")
-    def test_update_time_loss(self, mock_get, mock_put):
-        """Test call to update_time_loss and verify field was updated"""
+    def test_update_time_lost(self, mock_get, mock_put):
+        """Test call to update_time_lost and verify field was updated"""
         # patch both requests.get, requests.put
         response = requests.Response()
         response.status_code = 200
-        mock_put.return_value = response
-
-        response.json = lambda: {"customfield_10106": 13.6}
+        response.json = lambda: {TIME_LOST_FIELD: 13.6}
         mock_get.return_value = response
 
-        # call update time lost
-        jira_response = update_time_loss(1, 3.4)
-        assert jira_response.status_code == 200
-        assert jira_response.data["ack"] == "Jira field updated"
+        response.status_code = 204
+        mock_put.return_value = response
 
-        jira_response = update_time_loss(93827, 1.23)
+        # call update time lost
+        jira_response = update_time_lost(1, 3.4)
         assert jira_response.status_code == 200
-        assert jira_response.data["ack"] == "Jira field updated"
+        assert jira_response.data["ack"] == "Jira time_lost field updated"
+
+        jira_response = update_time_lost(93827, 1.23)
+        assert jira_response.status_code == 200
+        assert jira_response.data["ack"] == "Jira time_lost field updated"
 
     def test_add_comment(self):
         """Test call to jira_comment function with all needed parameters"""
@@ -345,7 +347,7 @@ class JiraTestCase(TestCase):
         response.status_code = 201
         mock_jira_client.return_value = response
 
-        mock_timeloss_patcher = patch("manager.utils.update_time_loss")
+        mock_timeloss_patcher = patch("manager.utils.update_time_lost")
         mock_timeloss_client = mock_timeloss_patcher.start()
         mock_timeloss_client.return_value = response
 
