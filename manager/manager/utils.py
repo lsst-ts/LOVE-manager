@@ -517,7 +517,7 @@ def update_time_loss(jira_id: int, add_time_loss: float = 0.0) -> Response:
     Returns
     -------
     Response
-        define response here
+        The response and status code of the request to the JIRA API
     """
     headers = {
         "Authorization": f"Basic {os.environ.get('JIRA_API_TOKEN')}",
