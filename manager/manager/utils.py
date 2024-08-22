@@ -550,7 +550,7 @@ def update_time_loss(jira_id: int, add_time_loss: float = 0.0) -> Response:
         )
     return Response(
         {
-            "ack": "Jira field could not be updated",
+            "ack": "Jira time_lost field could not be updated",
         },
         status=400,
     )
