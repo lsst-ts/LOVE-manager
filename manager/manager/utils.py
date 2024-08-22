@@ -600,9 +600,11 @@ def jira_comment(request_data):
     response = requests.post(url, json=jira_payload, headers=headers)
 
     if "time_lost" in request_data:
-        update_time_loss(
+        response = update_time_loss(
             jira_id=jira_id, add_time_loss=request_data.get("time_lost", 0.0)
         )
+        if response.status_code == 400:
+            return response
 
     if response.status_code == 201:
         return Response(
