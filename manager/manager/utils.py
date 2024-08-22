@@ -603,11 +603,11 @@ def jira_comment(request_data):
     response = requests.post(url, json=jira_payload, headers=headers)
 
     if "time_lost" in request_data:
-        response = update_time_lost(
+        timelost_response = update_time_lost(
             jira_id=jira_id, add_time_lost=request_data.get("time_lost", 0.0)
         )
-        if response.status_code == 400:
-            return response
+        if timelost_response.status_code == 400:
+            return timelost_response
 
     if response.status_code == 201:
         return Response(
