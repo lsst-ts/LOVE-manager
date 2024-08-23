@@ -605,7 +605,7 @@ def jira_comment(request_data):
         timelost_response = update_time_lost(
             jira_id=jira_id, add_time_lost=request_data.get("time_lost", 0.0)
         )
-        if timelost_response.status_code == 400:
+        if timelost_response.status_code != 200:
             return timelost_response
 
     if response.status_code == 201:
