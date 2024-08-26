@@ -24,9 +24,16 @@ import random
 from unittest.mock import patch
 
 import requests
+import rest_framework
 from django.test import TestCase, override_settings
 
-from manager.utils import handle_jira_payload, jira_comment, jira_ticket
+from manager.utils import (
+    TIME_LOST_FIELD,
+    handle_jira_payload,
+    jira_comment,
+    jira_ticket,
+    update_time_lost,
+)
 
 OLE_JIRA_OBS_COMPONENTS_FIELDS = [
     "AuxTel",
@@ -311,6 +318,36 @@ class JiraTestCase(TestCase):
 
         mock_jira_patcher.stop()
 
+    def test_update_time_lost(self):
+        """Test call to update_time_lost and verify field was updated"""
+        mock_jira_patcher = patch("requests.get")
+        mock_jira_get = mock_jira_patcher.start()
+        response = requests.Response()
+        response.status_code = 200
+        response.json = lambda: {TIME_LOST_FIELD: 13.6}
+        mock_jira_get.return_value = response
+
+        put_patcher = patch("requests.put")
+        mock_jira_put = put_patcher.start()
+        response.status_code = 204
+        mock_jira_put.return_value = response
+
+        # call update time lost
+        jira_response = update_time_lost(1, 3.4)
+        assert jira_response.status_code == 200
+        assert jira_response.data["ack"] == "Jira time_lost field updated"
+
+        jira_response = update_time_lost(93827, 1.23)
+        assert jira_response.status_code == 200
+        assert jira_response.data["ack"] == "Jira time_lost field updated"
+
+        response.status_code = 400
+        mock_jira_put.return_value = response
+
+        jira_response = update_time_lost(12, 97.01)
+        assert jira_response.status_code == 400
+        assert jira_response.data["ack"] == "Jira time_lost field could not be updated"
+
     def test_add_comment(self):
         """Test call to jira_comment function with all needed parameters"""
         mock_jira_patcher = patch("requests.post")
@@ -323,9 +360,40 @@ class JiraTestCase(TestCase):
         assert jira_response.status_code == 200
         assert jira_response.data["ack"] == "Jira comment created"
 
+        mock_time_lost_patcher = patch("manager.utils.update_time_lost")
+        mock_time_lost_client = mock_time_lost_patcher.start()
+        time_lost_response = rest_framework.response.Response()
+        time_lost_response.status_code = 200
+        time_lost_response.data = {
+            "ack": "Jira time_lost field updated",
+        }
+        mock_time_lost_client.return_value = time_lost_response
+
         jira_response = jira_comment(self.jira_request_narrative_full_jira_comment.data)
         assert jira_response.status_code == 200
         assert jira_response.data["ack"] == "Jira comment created"
+
+    def test_add_comment_fail(self):
+        """Test jira_comment() return value when update_time_lost()
+        fails during jira_comment()"""
+        mock_jira_patcher = patch("requests.post")
+        mock_jira_client = mock_jira_patcher.start()
+        response = requests.Response()
+        response.status_code = 201
+        mock_jira_client.return_value = response
+
+        mock_time_lost_patcher = patch("manager.utils.update_time_lost")
+        mock_time_lost_client = mock_time_lost_patcher.start()
+        time_lost_response = rest_framework.response.Response()
+        time_lost_response.status_code = 400
+        time_lost_response.data = {
+            "ack": "Jira time_lost field could not be updated",
+        }
+        mock_time_lost_client.return_value = time_lost_response
+
+        resp = jira_comment(self.jira_request_narrative_full_jira_comment.data)
+        assert resp.status_code == 400
+        assert resp.data["ack"] == "Jira time_lost field could not be updated"
 
     @patch.dict(os.environ, {"JIRA_API_HOSTNAME": "jira.lsstcorp.org"})
     def test_handle_narrative_jira_payload(self):
@@ -338,6 +406,12 @@ class JiraTestCase(TestCase):
         response.status_code = 201
         response.json = lambda: {"key": "LOVE-XX"}
         mock_jira_client.return_value = response
+
+        mock_time_lost_patcher = patch("manager.utils.update_time_lost")
+        mock_time_lost_client = mock_time_lost_patcher.start()
+        time_response = requests.Response()
+        time_response.status_code = 200
+        mock_time_lost_client.return_value = time_response
 
         jira_response = handle_jira_payload(self.jira_request_narrative_full_jira_new)
         assert jira_response.status_code == 200

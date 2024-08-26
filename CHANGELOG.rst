@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.0.2
+------
+
+* Add accumulation of time lost in Jira comments
+
 v7.0.1
 ------
 
