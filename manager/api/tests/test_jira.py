@@ -23,6 +23,7 @@ import os
 import random
 from unittest.mock import patch
 
+import pytest
 import requests
 import rest_framework
 from django.test import TestCase, override_settings
@@ -322,15 +323,16 @@ class JiraTestCase(TestCase):
         """Test call to update_time_lost and verify field was updated"""
         mock_jira_patcher = patch("requests.get")
         mock_jira_get = mock_jira_patcher.start()
-        response = requests.Response()
-        response.status_code = 200
-        response.json = lambda: {TIME_LOST_FIELD: 13.6}
-        mock_jira_get.return_value = response
+        response_get = requests.Response()
+        response_get.status_code = 200
+        response_get.json = lambda: {"fields": {TIME_LOST_FIELD: 13.6}}
+        mock_jira_get.return_value = response_get
 
         put_patcher = patch("requests.put")
         mock_jira_put = put_patcher.start()
-        response.status_code = 204
-        mock_jira_put.return_value = response
+        response_put = requests.Response()
+        response_put.status_code = 204
+        mock_jira_put.return_value = response_put
 
         # call update time lost
         jira_response = update_time_lost(1, 3.4)
@@ -341,9 +343,12 @@ class JiraTestCase(TestCase):
         assert jira_response.status_code == 200
         assert jira_response.data["ack"] == "Jira time_lost field updated"
 
-        response.status_code = 400
-        mock_jira_put.return_value = response
+        # call update time lost with invalid time_lost
+        with pytest.raises(TypeError):
+            update_time_lost(93827, "5.25")
 
+        # call update time lost with fail put response
+        response_put.status_code = 400
         jira_response = update_time_lost(12, 97.01)
         assert jira_response.status_code == 400
         assert jira_response.data["ack"] == "Jira time_lost field could not be updated"
