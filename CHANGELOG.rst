@@ -2,10 +2,15 @@
 Version History
 ===============
 
+v7.0.3
+------
+
+* Fix issue with update_time_lost method `<https://github.com/lsst-ts/LOVE-manager/pull/277>`_
+
 v7.0.2
 ------
 
-* Add accumulation of time lost in Jira comments
+* Add accumulation of time lost in Jira comments `<https://github.com/lsst-ts/LOVE-manager/pull/275>`_
 
 v7.0.1
 ------
