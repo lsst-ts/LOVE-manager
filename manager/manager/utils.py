@@ -532,25 +532,24 @@ def update_time_lost(jira_id: int, add_time_lost: float = 0.0) -> Response:
     }
     url = f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/issue/{jira_id}/"
     response = requests.get(url, headers=headers)
-    existent_time_lost = (
-        response.json().get(TIME_LOST_FIELD, 0.0)
-        if response.status_code == 200
-        else 0.0
-    )
-    jira_payload = {
-        "fields": {
-            TIME_LOST_FIELD: float(existent_time_lost + add_time_lost),
-        },
-    }
-    response = requests.put(url, json=jira_payload, headers=headers)
-    if response.status_code == 204:
-        return Response(
-            {
-                "ack": "Jira time_lost field updated",
-                "url": f"https://{os.environ.get('JIRA_API_HOSTNAME')}/browse/{jira_id}",
+
+    if response.status_code == 200:
+        jira_ticket_fields = response.json().get("fields", {})
+        existent_time_lost = float(jira_ticket_fields.get(TIME_LOST_FIELD, 0.0))
+        jira_payload = {
+            "fields": {
+                TIME_LOST_FIELD: existent_time_lost + add_time_lost,
             },
-            status=200,
-        )
+        }
+        response = requests.put(url, json=jira_payload, headers=headers)
+        if response.status_code == 204:
+            return Response(
+                {
+                    "ack": "Jira time_lost field updated",
+                    "url": f"https://{os.environ.get('JIRA_API_HOSTNAME')}/browse/{jira_id}",
+                },
+                status=200,
+            )
     return Response(
         {
             "ack": "Jira time_lost field could not be updated",
@@ -595,18 +594,19 @@ def jira_comment(request_data):
     except Exception as e:
         return Response({"ack": f"Error creating jira payload: {e}"}, status=400)
 
+    if "time_lost" in request_data:
+        timelost_response = update_time_lost(
+            jira_id=jira_id, add_time_lost=float(request_data.get("time_lost", 0.0))
+        )
+        if timelost_response.status_code != 200:
+            return timelost_response
+
     headers = {
         "Authorization": f"Basic {os.environ.get('JIRA_API_TOKEN')}",
         "content-type": "application/json",
     }
     url = f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/issue/{jira_id}/comment"
     response = requests.post(url, json=jira_payload, headers=headers)
-    if "time_lost" in request_data:
-        timelost_response = update_time_lost(
-            jira_id=jira_id, add_time_lost=request_data.get("time_lost", 0.0)
-        )
-        if timelost_response.status_code != 200:
-            return timelost_response
 
     if response.status_code == 201:
         return Response(
