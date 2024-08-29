@@ -22,6 +22,7 @@
 import collections
 import json
 import os
+import socket
 import urllib
 
 import astropy.time
@@ -437,7 +438,9 @@ def validate_config_schema(request):
 @permission_classes((IsAuthenticated, CommandPermission))
 def commander(request):
     """Sends a command to the LOVE-commander
-    according to the received parameters
+    according to the received parameters.
+
+    Command identity is arranged here.
 
     Params
     ------
@@ -449,8 +452,13 @@ def commander(request):
     Response
         The response and status code of the request to the LOVE-Commander
     """
+    # Arrange command indentity
+    request_data = request.data.copy()
+    host_fqdn = socket.getfqdn()
+    request_data["identity"] = f"{request.user.username}@{host_fqdn}"
+
     url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/cmd"
-    response = requests.post(url, json=request.data)
+    response = requests.post(url, json=request_data)
 
     return Response(response.json(), status=response.status_code)
 
