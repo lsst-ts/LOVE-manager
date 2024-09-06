@@ -26,7 +26,6 @@ from django.contrib.auth.models import Group, Permission, User
 from django.core.management.base import BaseCommand
 
 user_username = "user"
-test_username = "test"
 cmd_user_username = "cmd_user"
 admin_username = "admin"
 cmd_groupname = "cmd"
@@ -39,17 +38,17 @@ class Command(BaseCommand):
     It creates 4 users with the following characteristics and permissions:
 
     - "admin": has all the permissions, it is a Django superuser
-    - "user": basic user with no permissions)
+    - "user": basic user with no commands execution permissions
+    but with permissions to add, edit and delete views
     - "cmd_user": basic user with commands execution permissions
-    - "test": basic user with commands execution permissions
 
     It also creates 2 Groups:
     "cmd_group", which defines the commands execution permissions.
-    "ui_framework_group", which defines the permissions to add,
-    edit and delete views.
+    "ui_framework_group", which defines the permissions
+    to add, edit and delete views.
 
-    "cmd_user" and "test" users belong to "cmd_group".
-    "cmd_user" and "test" users belong to "ui_framework_group".
+    "cmd_user" user belongs to "cmd_group".
+    "cmd_user" and "user" user belong to "ui_framework_group".
 
     The command receives arguments to set the passwords of the users,
     run `python manage.py createusers --help` for help.
@@ -60,16 +59,16 @@ class Command(BaseCommand):
     It creates 4 users with the following characteristics and permissions:
 
     - "admin": has all the permissions, it is a Django superuser
-    - "user": basic user with no permissions)
+    - "user": basic user with no commands execution permissions,
+    but with permissions to add, edit and delete views
     - "cmd_user": basic user with commands execution permissions
-    - "test": basic user with commands execution permissions
 
     It also creates 2 Groups:
     "cmd_group", which defines the commands execution permissions.
     "ui_framework_group", which defines the permissions to add, edit and delete views.
 
-    "cmd_user" and "test" users belong to "cmd_group".
-    "cmd_user" and "test" users belong to "ui_framework_group"."""
+    "cmd_user" user belongs to "cmd_group".
+    "cmd_user" and "user" user belong to "ui_framework_group"."""
 
     requires_migrations_checks = True
     stealth_options = ("stdin",)
@@ -111,7 +110,7 @@ class Command(BaseCommand):
         )
         parser.add_argument(
             "--cmduserpass",
-            help='Specifies password for the users with cmd permissions ("cmd_user" and "test").',
+            help='Specifies password for the users with cmd permissions ("cmd_user").',
         )
 
     def handle(self, *args, **options):
@@ -129,30 +128,29 @@ class Command(BaseCommand):
         user_password = options["userpass"]
         cmd_password = options["cmduserpass"]
 
-        # Create users
-        admin = self._create_user(admin_username, admin_password)
-        self._create_user(user_username, user_password)
-        cmd_user = self._create_user(cmd_user_username, cmd_password)
-        test_user = self._create_user(test_username, cmd_password)
-
-        # Make admin superuser and staff
-        admin.is_superuser = True
-        admin.is_staff = True
-        admin.save()
-
-        # Create cmd_group
+        # Create groups
+        ui_framework_group = self._create_ui_framework_group()
         cmd_group = self._create_cmd_group()
 
-        # Add cmd_user and test users to cmd_group
-        cmd_group.user_set.add(cmd_user)
-        cmd_group.user_set.add(test_user)
+        # Create admin user
+        if admin_password is not None:
+            admin = self._create_user(admin_username, admin_password)
 
-        # Create ui_framework group
-        ui_framework_group = self._create_ui_framework_group()
+            # Make admin superuser and staff
+            admin.is_superuser = True
+            admin.is_staff = True
+            admin.save()
 
-        # Add cmd_user and test users to ui_framework_group
-        ui_framework_group.user_set.add(cmd_user)
-        ui_framework_group.user_set.add(test_user)
+        # Create user user
+        if user_password is not None:
+            user_user = self._create_user(user_username, user_password)
+            ui_framework_group.user_set.add(user_user)
+
+        # Create cmd_user user
+        if cmd_password is not None:
+            cmd_user = self._create_user(cmd_user_username, cmd_password)
+            ui_framework_group.user_set.add(cmd_user)
+            cmd_group.user_set.add(cmd_user)
 
     def _create_user(self, username, password):
         """Create a given user, if it does not exist. Return it anyway.
