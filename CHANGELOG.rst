@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.0.4
+------
+
+* Remove cmd user creation for production deployments `<https://github.com/lsst-ts/LOVE-manager/pull/280>`_
+
 v7.0.3
 ------
 
