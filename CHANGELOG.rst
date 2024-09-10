@@ -2,6 +2,12 @@
 Version History
 ===============
 
+v7.1.0
+------
+
+* Add identity to issued commands through the commander view `<https://github.com/lsst-ts/LOVE-manager/pull/278>`_
+* Remove cmd user creation for production deployments `<https://github.com/lsst-ts/LOVE-manager/pull/280>`_
+
 v7.0.3
 ------
 
