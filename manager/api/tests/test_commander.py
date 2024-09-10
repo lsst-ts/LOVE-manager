@@ -19,12 +19,14 @@
 
 
 import os
+from unittest.mock import call, patch
+
+from api.models import Token
+from django.contrib.auth.models import Permission, User
 from django.test import TestCase, override_settings
 from django.urls import reverse
-from api.models import Token
 from rest_framework.test import APIClient
-from django.contrib.auth.models import User, Permission
-from unittest.mock import patch, call
+
 from manager.utils import UserBasedPermission
 
 # python manage.py test api.tests.test_commander.CommanderTestCase
@@ -60,6 +62,7 @@ class CommanderTestCase(TestCase):
         os.environ["COMMANDER_PORT"] = "bar"
 
     @patch("requests.post")
+    @patch.dict(os.environ, {"SERVER_URL": "localhost"})
     def test_authorized_commander_data(self, mock_requests):
         """Test authorized user commander data is sent to love-commander"""
         # Arrange:
@@ -73,11 +76,15 @@ class CommanderTestCase(TestCase):
             "cmd": "cmd_setScalars",
             "params": {"a": 1, "b": 2},
         }
+        data_with_identity = data.copy()
+        data_with_identity["identity"] = f"{self.user.username}@localhost"
 
         with self.assertRaises(ValueError):
             self.client.post(url, data, format="json")
         expected_url = "http://foo:bar/cmd"
-        self.assertEqual(mock_requests.call_args, call(expected_url, json=data))
+        self.assertEqual(
+            mock_requests.call_args, call(expected_url, json=data_with_identity)
+        )
 
     @patch("requests.post")
     def test_unauthorized_commander(self, mock_requests):
