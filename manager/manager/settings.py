@@ -97,13 +97,17 @@ else:
         }
     }
 
+SERVER_URL = os.environ.get("SERVER_URL", None)
 ALLOWED_HOSTS = [
     "localhost",
     "0.0.0.0",
     "127.0.0.1",
     "love-nginx-mount",
     "love-nginx",
-    os.environ.get("SERVER_URL", None),
+    SERVER_URL,
+]
+CSRF_TRUSTED_ORIGINS = [f"https://{host}" for host in ALLOWED_HOSTS] + [
+    f"http://{host}" for host in ALLOWED_HOSTS
 ]
 """List of Django allowed hosts (`list` of `string`)"""
 
