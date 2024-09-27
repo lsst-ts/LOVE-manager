@@ -106,9 +106,10 @@ ALLOWED_HOSTS = [
     "love-nginx",
     SERVER_URL,
 ]
-CSRF_TRUSTED_ORIGINS = [f"https://{host}" for host in ALLOWED_HOSTS] + [
-    f"http://{host}" for host in ALLOWED_HOSTS
-]
+# CSRF_TRUSTED_ORIGINS = [f"https://{host}" for host in ALLOWED_HOSTS] + [
+#     f"http://{host}" for host in ALLOWED_HOSTS
+# ]
+CSRF_TRUSTED_ORIGINS = []
 """List of Django allowed hosts (`list` of `string`)"""
 
 # Application definition
