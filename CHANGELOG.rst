@@ -2,6 +2,13 @@
 Version History
 ===============
 
+v7.1.1
+------
+
+* Fix issue with django admin panel not accessible `<https://github.com/lsst-ts/LOVE-manager/pull/283>`_
+* Add ESS:109 to the summit initial dataset. `<https://github.com/lsst-ts/LOVE-manager/pull/281>`_
+* Fix issue with update_time_lost being called on jira tickets that doesn't have a time lost defined `<https://github.com/lsst-ts/LOVE-manager/pull/282>`_
+
 v7.1.0
 ------
 

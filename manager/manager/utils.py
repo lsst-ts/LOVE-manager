@@ -535,7 +535,8 @@ def update_time_lost(jira_id: int, add_time_lost: float = 0.0) -> Response:
 
     if response.status_code == 200:
         jira_ticket_fields = response.json().get("fields", {})
-        existent_time_lost = float(jira_ticket_fields.get(TIME_LOST_FIELD, 0.0))
+        time_lost_value = jira_ticket_fields.get(TIME_LOST_FIELD, 0.0)
+        existent_time_lost = float(time_lost_value) if time_lost_value else 0.0
         jira_payload = {
             "fields": {
                 TIME_LOST_FIELD: existent_time_lost + add_time_lost,
