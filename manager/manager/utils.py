@@ -656,8 +656,11 @@ def get_jira_obs_report(request_data):
     Then get the total observation time loss from the time_lost param
     """
 
-    initial_day_obs_string = get_obsday_iso(request_data.get("day_obs"))
-    final_day_obs_string = get_obsday_iso(request_data.get("day_obs") + 1)
+    intitial_day_obs_tai = get_obsday_to_tai(request_data.get("day_obs"))
+    final_day_obs_tai = intitial_day_obs_tai + timedelta(days=1)
+
+    initial_day_obs_string = intitial_day_obs_tai.strftime("%Y-%m-%d")
+    final_day_obs_string = final_day_obs_tai.strftime("%Y-%m-%d")
 
     # JQL query to find issues created on a specific date
     jql_query = (
@@ -731,6 +734,25 @@ def get_obsday_from_tai(tai):
     if tai.hour < 12:
         observing_day = (tai - timedelta(days=1)).strftime("%Y%m%d")
     return observing_day
+
+
+def get_obsday_to_tai(obsday):
+    """Return the TAI timestamp from an observing day.
+
+    The TAI timestamp is set to 12:00 UTC of the observing day.
+
+    Parameters
+    ----------
+    obsday : `int`
+        The observing day in the format "YYYYMMDD" as an integer
+
+    Returns
+    -------
+    `datetime.datetime`
+        The TAI timestamp
+    """
+    obsday_iso = get_obsday_iso(obsday)
+    return Time(f"{obsday_iso}T12:00:00", scale="tai").datetime
 
 
 def get_obsday_iso(obsday):
