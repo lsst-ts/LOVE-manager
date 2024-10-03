@@ -30,6 +30,7 @@ from django.test import TestCase, override_settings
 
 from manager.utils import (
     TIME_LOST_FIELD,
+    get_jira_obs_report,
     handle_jira_payload,
     jira_comment,
     jira_ticket,
@@ -488,3 +489,61 @@ class JiraTestCase(TestCase):
         )
 
         mock_jira_patcher.stop()
+
+    def test_get_jira_obs_report(self):
+        """Test call to get_jira_obs_report
+        function with all needed parameters"""
+        mock_jira_patcher = patch("requests.get")
+        mock_jira_client = mock_jira_patcher.start()
+        response = requests.Response()
+        response.status_code = 200
+        response.json = lambda: {
+            "issues": [
+                {
+                    "key": "LOVE-XX",
+                    "fields": {
+                        "summary": "Issue title",
+                        TIME_LOST_FIELD: 13.6,
+                        "creator": {"displayName": "user"},
+                        "created": "2022-07-03T19:58:13.00000",
+                    },
+                }
+            ]
+        }
+        mock_jira_client.return_value = response
+
+        request_data = {
+            "day_obs": 20240902,
+        }
+        jira_response = get_jira_obs_report(request_data)
+        assert jira_response[0]["key"] == "LOVE-XX"
+        assert jira_response[0]["summary"] == "Issue title"
+        assert jira_response[0]["time_lost"] == 13.6
+        assert jira_response[0]["reporter"] == "user"
+        assert jira_response[0]["created"] == "2022-07-03T19:58:13"
+
+        mock_jira_patcher.stop()
+
+    def test_get_jira_obs_report_fail(self):
+        """Test call to get_jira_obs_report function with fail response"""
+        mock_jira_patcher = patch("requests.get")
+        mock_jira_client = mock_jira_patcher.start()
+        response = requests.Response()
+        response.status_code = 400
+        mock_jira_client.return_value = response
+
+        request_data = {
+            "day_obs": 20240902,
+        }
+        with pytest.raises(Exception):
+            get_jira_obs_report(request_data)
+
+        mock_jira_patcher.stop()
+
+    def test_get_jira_obs_report_bad_date(self):
+        """Test call to get_jira_obs_report function with bad date"""
+        request_data = {
+            "day_obs": 20240931,
+        }
+        with pytest.raises(ValueError):
+            get_jira_obs_report(request_data)
