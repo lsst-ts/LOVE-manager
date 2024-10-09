@@ -6,6 +6,7 @@ v7.1.2
 ------
 
 * Fix date conversion for the get_jira_obs_report method `<https://github.com/lsst-ts/LOVE-manager/pull/284>`_
+* Make sure that all ESS CSC indices are up to date in the base, tucson and summit initial datasets. `<https://github.com/lsst-ts/LOVE-manager/pull/286>`_
 
 v7.1.1
 ------
