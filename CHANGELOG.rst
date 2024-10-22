@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.1.3
+------
+
+* Add ESS earthquake sensor CSC index for summit. `<https://github.com/lsst-ts/LOVE-manager/pull/287>`_
+
 v7.1.2
 ------
 
