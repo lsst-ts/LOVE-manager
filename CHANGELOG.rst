@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.1.4
+------
+
+* Standardize SummaryState view on TTS and BTS. `<https://github.com/lsst-ts/LOVE-manager/pull/288>`_
+
 v7.1.3
 ------
 

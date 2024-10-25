@@ -477,7 +477,7 @@
     "fields": {
       "creation_timestamp": "2021-02-11T07:26:03.945541Z",
       "update_timestamp": "2022-04-13T21:22:24.863664Z",
-      "name": "Summary State",
+      "name": "SummaryState2",
       "data": {
         "content": {
           "newPanel-1": {
@@ -485,7 +485,7 @@
               "link": "",
               "title": "CSC summary",
               "margin": true,
-              "titleBar": true,
+              "titleBar": false,
               "hierarchy": {
                 "Observatory": {
                   "Environment": [
@@ -508,6 +508,10 @@
                     {
                       "name": "DSM",
                       "salindex": 2
+                    },
+                    {
+                      "name": "EPM",
+                      "salindex": 1
                     },
                     {
                       "name": "ESS",
@@ -584,12 +588,20 @@
                       "salindex": 2
                     },
                     {
+                      "name": "ScriptQueue",
+                      "salindex": 3
+                    },
+                    {
                       "name": "Scheduler",
                       "salindex": 1
                     },
                     {
                       "name": "Scheduler",
                       "salindex": 2
+                    },
+                    {
+                      "name": "Scheduler",
+                      "salindex": 3
                     },
                     {
                       "name": "OCPS",
@@ -602,13 +614,29 @@
                     {
                       "name": "Watcher",
                       "salindex": 0
-                    },
-                    {
-                      "name": "Authorize",
-                      "salindex": 0
                     }
                   ]
-                },
+                }
+              },
+              "hasRawMode": true
+            },
+            "content": "CSCSummary",
+            "properties": {
+              "h": 47,
+              "i": 1,
+              "w": 33,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          },
+          "newPanel-2": {
+            "config": {
+              "link": "",
+              "title": "CSC summary",
+              "margin": true,
+              "titleBar": false,
+              "hierarchy": {
                 "Simonyi Survey Telescope": {
                   "MTCS": [
                     {
@@ -680,7 +708,27 @@
                       "salindex": 0
                     }
                   ]
-                },
+                }
+              },
+              "hasRawMode": true
+            },
+            "content": "CSCSummary",
+            "properties": {
+              "h": 40,
+              "i": 2,
+              "w": 33,
+              "x": 33,
+              "y": 0,
+              "type": "component"
+            }
+          },
+          "newPanel-3": {
+            "config": {
+              "link": "",
+              "title": "CSC summary",
+              "margin": true,
+              "titleBar": false,
+              "hierarchy": {
                 "Auxiliary Telescope": {
                   "ATCS": [
                     {
@@ -730,7 +778,27 @@
                       "salindex": 0
                     }
                   ]
-                },
+                }
+              },
+              "hasRawMode": true
+            },
+            "content": "CSCSummary",
+            "properties": {
+              "h": 28,
+              "i": 3,
+              "w": 31,
+              "x": 66,
+              "y": 0,
+              "type": "component"
+            }
+          },
+          "newPanel-4": {
+            "config": {
+              "link": "",
+              "title": "CSC summary",
+              "margin": true,
+              "titleBar": false,
+              "hierarchy": {
                 "Calibration Systems": {
                   "Miscellaneous": [
                     {
@@ -748,11 +816,11 @@
             },
             "content": "CSCSummary",
             "properties": {
-              "h": 51,
-              "i": 1,
-              "w": 97,
-              "x": 0,
-              "y": 0,
+              "h": 12,
+              "i": 4,
+              "w": 31,
+              "x": 66,
+              "y": 28,
               "type": "component"
             }
           }
