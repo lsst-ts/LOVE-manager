@@ -2,6 +2,12 @@
 Version History
 ===============
 
+v7.1.4
+------
+
+* Add MTM1M3TS to ASummaryState view fixture on Summit. `<https://github.com/lsst-ts/LOVE-manager/pull/289>`_
+* Standardize SummaryState view on TTS and BTS. `<https://github.com/lsst-ts/LOVE-manager/pull/288>`_
+
 v7.1.3
 ------
 
