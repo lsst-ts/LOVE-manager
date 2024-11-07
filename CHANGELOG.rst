@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.1.5
+------
+
+* Make channels_redis group expiry configuration configurable through an environmental variable. `<https://github.com/lsst-ts/LOVE-manager/pull/290>`_
+
 v7.1.4
 ------
 
