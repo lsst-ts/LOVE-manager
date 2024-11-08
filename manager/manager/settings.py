@@ -106,10 +106,7 @@ ALLOWED_HOSTS = [
     "love-nginx",
     SERVER_URL,
 ]
-CSRF_TRUSTED_ORIGINS = [
-    f"https://{SERVER_URL}",
-    f"http://{SERVER_URL}"
-]
+CSRF_TRUSTED_ORIGINS = [f"https://{SERVER_URL}", f"http://{SERVER_URL}"]
 """List of Django allowed hosts (`list` of `string`)"""
 
 # Application definition
@@ -252,12 +249,10 @@ ASGI_APPLICATION = "manager.routing.application"
 REDIS_HOST = os.environ.get("REDIS_HOST", False)
 REDIS_PORT = os.environ.get("REDIS_PORT", "6379")
 REDIS_PASS = os.environ.get("REDIS_PASS", False)
-REDIS_CONFIG_EXPIRY = int(os.environ.get("REDIS_CONFIG_EXPIRY", 60))
-REDIS_CONFIG_CAPACITY = int(os.environ.get("REDIS_CONFIG_CAPACITY", 100))
 if REDIS_HOST and not TESTING:
     CHANNEL_LAYERS = {
         "default": {
-            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "BACKEND": "channels_redis.pubsub.RedisPubSubChannelLayer",
             "CONFIG": {
                 "hosts": [
                     "redis://:"
@@ -268,13 +263,6 @@ if REDIS_HOST and not TESTING:
                     + REDIS_PORT
                     + "/0"
                 ],
-                "expiry": REDIS_CONFIG_EXPIRY,
-                "capacity": REDIS_CONFIG_CAPACITY,
-                # Set group_expiry to 1 year to avoid group messages being
-                # dropped when the group is not used frequently.
-                # TODO: Solve this particular issue in a better way.
-                # See: DM-41728
-                "group_expiry": 31536000,
             },
         },
     }

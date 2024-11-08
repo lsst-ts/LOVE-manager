@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v8.0.0
+------
+
+* Change channels_redis to use pubsub.RedisPubSubChannelLayer implementation. `<https://github.com/lsst-ts/LOVE-manager/pull/290>`_
+
 v7.1.4
 ------
 
