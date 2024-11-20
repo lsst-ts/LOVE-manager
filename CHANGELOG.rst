@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.1.5
+------
+
+* Add LedProjector and LinearStage CSCs to ASummaryState view fixture on Summit. `<https://github.com/lsst-ts/LOVE-manager/pull/291>`_
+
 v7.1.4
 ------
 
