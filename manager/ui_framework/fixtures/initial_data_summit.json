@@ -995,6 +995,26 @@
                     {
                       "name": "TunableLaser",
                       "salindex": 0
+                    },
+                    {
+                      "name": "LEDProjector",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "LinearStage",
+                      "salindex": 101
+                    },
+                    {
+                      "name": "LinearStage",
+                      "salindex": 102
+                    },
+                    {
+                      "name": "LinearStage",
+                      "salindex": 103
+                    },
+                    {
+                      "name": "LinearStage",
+                      "salindex": 104
                     }
                   ]
                 },
