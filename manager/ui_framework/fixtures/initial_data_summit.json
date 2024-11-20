@@ -1069,14 +1069,6 @@
                     {
                       "name": "Electrometer",
                       "salindex": 201
-                    },
-                    {
-                      "name": "LinearStage",
-                      "salindex": 1
-                    },
-                    {
-                      "name": "LinearStage",
-                      "salindex": 2
                     }
                   ]
                 }
