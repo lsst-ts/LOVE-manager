@@ -22,6 +22,7 @@ import math
 import os
 import random
 from unittest.mock import patch
+from urllib.parse import quote
 
 import pytest
 import requests
@@ -78,7 +79,6 @@ OLE_JIRA_OBS_PRIMARY_HARDWARE_COMPONENT_FIELDS = [
 class JiraTestCase(TestCase):
     def setUp(self):
         """Define the test suite setup."""
-        # Arrange
         shared_params = [
             "lfa_files_urls",
             "message_text",
@@ -260,6 +260,12 @@ class JiraTestCase(TestCase):
         )
         self.jira_request_narrative_full_jira_comment.user = "user"
         self.jira_request_narrative_full_jira_comment.get_host = lambda: "localhost"
+
+        # headers for jira requests
+        self.headers = {
+            "Authorization": f"Basic {os.environ.get('JIRA_API_TOKEN')}",
+            "content-type": "application/json",
+        }
 
     def test_missing_parameters(self):
         """Test call to jira_ticket function with missing parameters"""
@@ -493,11 +499,36 @@ class JiraTestCase(TestCase):
     def test_get_jira_obs_report(self):
         """Test call to get_jira_obs_report
         function with all needed parameters"""
+
+        # Arrange
         mock_jira_patcher = patch("requests.get")
         mock_jira_client = mock_jira_patcher.start()
-        response = requests.Response()
-        response.status_code = 200
-        response.json = lambda: {
+
+        url_call_1 = (
+            f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/myself"
+        )
+
+        response_1 = requests.Response()
+        response_1.status_code = 200
+        response_1.json = lambda: {
+            "timeZone": "America/Phoenix",
+        }
+
+        # American/Phoenix timezone is UTC-7
+        day_obs = "20241127"
+        jql_query = (
+            "project = 'OBS' "
+            "AND created >= '2024-11-27 05:00' "
+            "AND created <= '2024-11-28 05:00'"
+        )
+        url_call_2 = (
+            f"https://{os.environ.get('JIRA_API_HOSTNAME')}"
+            f"/rest/api/latest/search?jql={quote(jql_query)}"
+        )
+
+        response_2 = requests.Response()
+        response_2.status_code = 200
+        response_2.json = lambda: {
             "issues": [
                 {
                     "key": "LOVE-XX",
@@ -505,38 +536,75 @@ class JiraTestCase(TestCase):
                         "summary": "Issue title",
                         TIME_LOST_FIELD: 13.6,
                         "creator": {"displayName": "user"},
-                        "created": "2022-07-03T19:58:13.00000",
+                        "created": "2024-11-27T12:00:00.00000",
                     },
                 }
             ]
         }
-        mock_jira_client.return_value = response
 
+        mock_jira_client.side_effect = [response_1, response_2]
+
+        # Act
         request_data = {
-            "day_obs": 20240902,
+            "day_obs": day_obs,
         }
         jira_response = get_jira_obs_report(request_data)
+
+        # Assert
+        mock_jira_client.assert_any_call(url_call_1, headers=self.headers)
+        mock_jira_client.assert_any_call(url_call_2, headers=self.headers)
+
         assert jira_response[0]["key"] == "LOVE-XX"
         assert jira_response[0]["summary"] == "Issue title"
         assert jira_response[0]["time_lost"] == 13.6
         assert jira_response[0]["reporter"] == "user"
-        assert jira_response[0]["created"] == "2022-07-03T19:58:13"
+        assert jira_response[0]["created"] == "2024-11-27T12:00:00"
 
         mock_jira_patcher.stop()
 
     def test_get_jira_obs_report_fail(self):
         """Test call to get_jira_obs_report function with fail response"""
+
+        # Arrange
+        request_data = {
+            "day_obs": 20241127,
+        }
+
         mock_jira_patcher = patch("requests.get")
         mock_jira_client = mock_jira_patcher.start()
-        response = requests.Response()
-        response.status_code = 400
-        mock_jira_client.return_value = response
 
-        request_data = {
-            "day_obs": 20240902,
+        success_response_1 = requests.Response()
+        success_response_1.status_code = 200
+        success_response_1.json = lambda: {
+            "timeZone": "America/Phoenix",
         }
-        with pytest.raises(Exception):
+
+        failed_response = requests.Response()
+        failed_response.status_code = 400
+
+        # Act
+        # Incomplete request data
+        incomplete_request_data = {}
+        with self.assertRaises(ValueError):
+            get_jira_obs_report(incomplete_request_data)
+
+        # Fail response from Jira to get user data
+        mock_jira_client.return_value = failed_response
+        with pytest.raises(Exception) as e:
             get_jira_obs_report(request_data)
+        assert (
+            str(e.value)
+            == f"Error getting user timezone from {os.environ.get('JIRA_API_HOSTNAME')}"
+        )
+
+        # Fail response from Jira to get issues
+        mock_jira_client.side_effect = [success_response_1, failed_response]
+        with pytest.raises(Exception) as e:
+            get_jira_obs_report(request_data)
+        assert (
+            str(e.value)
+            == f"Error getting issues from {os.environ.get('JIRA_API_HOSTNAME')}"
+        )
 
         mock_jira_patcher.stop()
 
