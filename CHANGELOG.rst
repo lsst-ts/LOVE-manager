@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.1.6
+------
+
+* Refactor get_jira_obs_report method to account for JIRA REST API user timezone. `<https://github.com/lsst-ts/LOVE-manager/pull/292>`_
+
 v7.1.5
 ------
 

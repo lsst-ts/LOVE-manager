@@ -34,6 +34,7 @@ from astropy.time import Time
 from astropy.units import hour
 from django.conf import settings
 from django.core.files.storage import Storage
+from pytz import timezone
 from rest_framework.permissions import BasePermission
 from rest_framework.response import Response
 
@@ -652,27 +653,71 @@ def handle_jira_payload(request, lfa_urls=[]):
 
 
 def get_jira_obs_report(request_data):
-    """Query all issues of the OBS project for a certain day.
-    Then get the total observation time loss from the time_lost param
-    """
+    """Connect to the Rubin Observatory JIRA Cloud REST API to
+    query all issues of the OBS project for a certain obs day.
 
+    For more information on the REST API endpoints refer to:
+    - https://developer.atlassian.com/cloud/jira/platform/rest/v3
+    - https://developer.atlassian.com/cloud/jira/platform/\
+        basic-auth-for-rest-apis/
+
+    Parameters
+    ----------
+    request_data : `dict`
+        The request data
+
+    Notes
+    -----
+    The JIRA REST API query is based on the user timezone so
+    we need to account for the timezone difference between the user and the
+    server. The user timezone is obtained from the JIRA API.
+
+    Returns
+    -------
+    List
+        List of dictionaries containing the following keys:
+        - key: The issue key
+        - summary: The issue summary
+        - time_lost: The time lost in the issue
+        - reporter: The issue reporter
+        - created: The issue creation date
+    """
     intitial_day_obs_tai = get_obsday_to_tai(request_data.get("day_obs"))
     final_day_obs_tai = intitial_day_obs_tai + timedelta(days=1)
-
-    initial_day_obs_string = intitial_day_obs_tai.strftime("%Y-%m-%d")
-    final_day_obs_string = final_day_obs_tai.strftime("%Y-%m-%d")
-
-    # JQL query to find issues created on a specific date
-    jql_query = (
-        f"project = 'OBS' "
-        f"AND created >= '{initial_day_obs_string} 12:00' "
-        f"AND created <= '{final_day_obs_string} 12:00'"
-    )
 
     headers = {
         "Authorization": f"Basic {os.environ.get('JIRA_API_TOKEN')}",
         "content-type": "application/json",
     }
+
+    # Get user timezone
+    url = f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/myself"
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        user_timezone = timezone(response.json()["timeZone"])
+    else:
+        raise Exception(
+            f"Error getting user timezone from {os.environ.get('JIRA_API_HOSTNAME')}"
+        )
+
+    start_date_user_datetime = intitial_day_obs_tai.replace(
+        tzinfo=timezone("UTC")
+    ).astimezone(user_timezone)
+    end_date_user_datetime = final_day_obs_tai.replace(
+        tzinfo=timezone("UTC")
+    ).astimezone(user_timezone)
+
+    initial_day_obs_string = start_date_user_datetime.strftime("%Y-%m-%d")
+    final_day_obs_string = end_date_user_datetime.strftime("%Y-%m-%d")
+    start_date_user_time_string = start_date_user_datetime.time().strftime("%H:%M")
+    end_date_user_time_string = end_date_user_datetime.time().strftime("%H:%M")
+
+    # JQL query to find issues created on a specific date
+    jql_query = (
+        f"project = 'OBS' "
+        f"AND created >= '{initial_day_obs_string} {start_date_user_time_string}' "
+        f"AND created <= '{final_day_obs_string} {end_date_user_time_string}'"
+    )
 
     url = f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/search?jql={quote(jql_query)}"
     response = requests.get(url, headers=headers)
