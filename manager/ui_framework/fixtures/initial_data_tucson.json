@@ -494,6 +494,10 @@
                       "salindex": 0
                     },
                     {
+                      "name": "DREAM",
+                      "salindex": 0
+                    },
+                    {
                       "name": "DIMM",
                       "salindex": 1
                     },
@@ -512,6 +516,10 @@
                     {
                       "name": "EPM",
                       "salindex": 1
+                    },
+                    {
+                      "name": "EAS",
+                      "salindex": 0
                     },
                     {
                       "name": "ESS",
@@ -612,6 +620,10 @@
                       "salindex": 2
                     },
                     {
+                      "name": "OCPS",
+                      "salindex": 101
+                    },
+                    {
                       "name": "Watcher",
                       "salindex": 0
                     }
@@ -707,6 +719,40 @@
                       "name": "CCHeaderService",
                       "salindex": 0
                     }
+                  ],
+                  "Calibration Systems": [
+                    {
+                      "name": "CBP",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "LEDProjector",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "LinearStage",
+                      "salindex": 101
+                    },
+                    {
+                      "name": "LinearStage",
+                      "salindex": 102
+                    },
+                    {
+                      "name": "LinearStage",
+                      "salindex": 103
+                    },
+                    {
+                      "name": "LinearStage",
+                      "salindex": 104
+                    },
+                    {
+                      "name": "Electrometer",
+                      "salindex": 101
+                    },
+                    {
+                      "name": "Electrometer",
+                      "salindex": 102
+                    }
                   ]
                 }
               },
@@ -777,6 +823,18 @@
                       "name": "ATSpectrograph",
                       "salindex": 0
                     }
+                  ],
+                  "Calibration Systems": [
+                    {
+                      "name": "Electrometer",
+                      "salindex": 201
+                    }
+                  ],
+                  "Support & Monitoring": [
+                    {
+                      "name": "ATBuilding",
+                      "salindex": 0
+                    }
                   ]
                 }
               },
@@ -784,7 +842,7 @@
             },
             "content": "CSCSummary",
             "properties": {
-              "h": 28,
+              "h": 35,
               "i": 3,
               "w": 31,
               "x": 66,
