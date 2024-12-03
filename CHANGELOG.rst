@@ -2,6 +2,14 @@
 Version History
 ===============
 
+v7.1.6
+------
+
+* Add EAS:0 CSC to summit ASummary State view on Summit. `<https://github.com/lsst-ts/LOVE-manager/pull/295>`_
+* Show error details from queries to the JIRA REST API. `<https://github.com/lsst-ts/LOVE-manager/pull/294>`_
+* Make the SummaryState view as the official one for TTS and BTS. `<https://github.com/lsst-ts/LOVE-manager/pull/293>`_
+* Refactor get_jira_obs_report method to account for JIRA REST API user timezone. `<https://github.com/lsst-ts/LOVE-manager/pull/292>`_
+
 v7.1.5
 ------
 

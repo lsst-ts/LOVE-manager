@@ -749,6 +749,10 @@
                       "salindex": 301
                     },
                     {
+                      "name": "EAS",
+                      "salindex": 0
+                    },
+                    {
                       "name": "ESS",
                       "salindex": 1
                     },
