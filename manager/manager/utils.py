@@ -503,7 +503,11 @@ def jira_ticket(request_data):
     return Response(
         {
             "ack": "Jira ticket could not be created",
-            "error": response_data,
+            "error": (
+                str(response_data["errors"])
+                if "errors" in response_data
+                else str(response_data)
+            ),
         },
         status=400,
     )
