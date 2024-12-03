@@ -477,7 +477,7 @@
     "fields": {
       "creation_timestamp": "2021-02-11T07:26:03.945541Z",
       "update_timestamp": "2022-04-13T21:22:24.863664Z",
-      "name": "SummaryState3",
+      "name": "SummaryState",
       "data": {
         "content": {
           "newPanel-1": {
