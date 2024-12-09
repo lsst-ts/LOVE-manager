@@ -1329,6 +1329,10 @@ class NarrativelogViewSet(viewsets.ViewSet):
             if key in json_data:
                 json_data[key] = json_data[key].split(",")
 
+        # Transform components_json to a dict
+        if "components_json" in json_data:
+            json_data["components_json"] = json.loads(json_data["components_json"])
+
         # Add LFA and JIRA urls to the payload
         json_data["urls"] = [jira_url, *lfa_urls]
         json_data["urls"] = list(filter(None, json_data["urls"]))
@@ -1396,6 +1400,10 @@ class NarrativelogViewSet(viewsets.ViewSet):
         for key in array_keys:
             if key in json_data:
                 json_data[key] = json_data[key].split(",")
+
+        # Transform components_json to a dict
+        if "components_json" in json_data:
+            json_data["components_json"] = json.loads(json_data["components_json"])
 
         # Add LFA and JIRA urls urls to the payload
         json_data["urls"] = [
