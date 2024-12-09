@@ -30,7 +30,7 @@ import rest_framework
 from django.test import TestCase, override_settings
 
 from manager.utils import (
-    TIME_LOST_FIELD,
+    OBS_TIME_LOST_FIELD,
     get_jira_obs_report,
     handle_jira_payload,
     jira_comment,
@@ -332,7 +332,7 @@ class JiraTestCase(TestCase):
         mock_jira_get = mock_jira_patcher.start()
         response_get = requests.Response()
         response_get.status_code = 200
-        response_get.json = lambda: {"fields": {TIME_LOST_FIELD: 13.6}}
+        response_get.json = lambda: {"fields": {OBS_TIME_LOST_FIELD: 13.6}}
         mock_jira_get.return_value = response_get
 
         put_patcher = patch("requests.put")
@@ -366,7 +366,7 @@ class JiraTestCase(TestCase):
         mock_jira_get = mock_jira_patcher.start()
         response_get = requests.Response()
         response_get.status_code = 200
-        response_get.json = lambda: {"fields": {TIME_LOST_FIELD: None}}
+        response_get.json = lambda: {"fields": {OBS_TIME_LOST_FIELD: None}}
         mock_jira_get.return_value = response_get
 
         put_patcher = patch("requests.put")
@@ -534,7 +534,7 @@ class JiraTestCase(TestCase):
                     "key": "LOVE-XX",
                     "fields": {
                         "summary": "Issue title",
-                        TIME_LOST_FIELD: 13.6,
+                        OBS_TIME_LOST_FIELD: 13.6,
                         "creator": {"displayName": "user"},
                         "created": "2024-11-27T12:00:00.00000",
                     },
