@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.1.7
+------
+
+* Make channels layer group expiry parameter configurable through an environment variable. `<https://github.com/lsst-ts/LOVE-manager/pull/296>`_
+
 v7.1.6
 ------
 
