@@ -46,11 +46,6 @@ OBS_ISSUE_TYPE_ID = "10065"
 OBS_TIME_LOST_FIELD = "customfield_10106"
 OBS_SYSTEMS_FIELD = "customfield_10476"
 
-# Using Unknown component for now
-# For a full list check:
-# https://rubinobs.atlassian.net/rest/api/latest/project/OBS/components
-OBS_DEFAULT_COMPONENT_ID = "11614"
-
 DATETIME_ISO_FORMAT = "%Y-%m-%dT%H:%M:%S.%f"
 
 
@@ -422,11 +417,7 @@ def jira_ticket(request_data):
 
     tags_data = request_data.get("tags").split(",") if request_data.get("tags") else []
 
-    obs_system_selection = (
-        request_data.get("jira_obs_selection")
-        if request_data.get("jira_obs_selection")
-        else '{"selection": []}'
-    )
+    obs_system_selection = request_data.get("jira_obs_selection")
 
     try:
         jira_payload = {
@@ -452,10 +443,10 @@ def jira_ticket(request_data):
                 #     else "off"
                 # ),
                 OBS_TIME_LOST_FIELD: float(request_data.get("time_lost", 0)),
-                OBS_SYSTEMS_FIELD: json.loads(obs_system_selection),
             },
-            "update": {"components": [{"set": [{"id": OBS_DEFAULT_COMPONENT_ID}]}]},
         }
+        if obs_system_selection:
+            jira_payload["fields"][OBS_SYSTEMS_FIELD] = json.loads(obs_system_selection)
     except Exception as e:
         return Response(
             {
