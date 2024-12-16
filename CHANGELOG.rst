@@ -5,6 +5,7 @@ Version History
 v7.1.7
 ------
 
+* Add details about Channels Layer configurations to README. `<https://github.com/lsst-ts/LOVE-manager/pull/298>`_
 * Add recently added CSCs to SummaryState view on BTS. `<https://github.com/lsst-ts/LOVE-manager/pull/297>`_
 * Make channels layer group expiry parameter configurable through an environment variable. `<https://github.com/lsst-ts/LOVE-manager/pull/296>`_
 
