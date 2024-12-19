@@ -70,6 +70,7 @@ from manager.utils import (
     get_jira_obs_report,
     get_obsday_from_tai,
     get_obsday_iso,
+    get_tai_from_utc,
     handle_jira_payload,
     send_smtp_email,
     upload_to_lfa,
@@ -1307,6 +1308,16 @@ class NarrativelogViewSet(viewsets.ViewSet):
         if "file[]" in json_data:
             del json_data["file[]"]
 
+        # Convert date_begin and date_end to TAI format
+        date_keys = {
+            "date_begin",
+            "date_end",
+        }
+        for key in date_keys:
+            if key in json_data:
+                tai_datetime = get_tai_from_utc(json_data[key])
+                json_data[key] = tai_datetime.strftime("%Y-%m-%dT%H:%M:%S.%f")
+
         # Split lists of values separated by comma
         array_keys = {
             "components",
@@ -1364,6 +1375,16 @@ class NarrativelogViewSet(viewsets.ViewSet):
 
         if "file[]" in json_data:
             del json_data["file[]"]
+
+        # Convert date_begin and date_end to TAI format
+        date_keys = {
+            "date_begin",
+            "date_end",
+        }
+        for key in date_keys:
+            if key in json_data:
+                tai_datetime = get_tai_from_utc(json_data[key])
+                json_data[key] = tai_datetime.strftime("%Y-%m-%dT%H:%M:%S.%f")
 
         array_keys = {
             "components",

@@ -833,6 +833,22 @@ def get_tai_to_utc() -> float:
     return dt
 
 
+def get_tai_from_utc(utc):
+    """Return the TAI timestamp from an UTC timestamp.
+
+    Parameters
+    ----------
+    utc : `datetime.datetime`
+        UTC timestamp
+
+    Returns
+    -------
+    `datetime.datetime`
+        The TAI timestamp
+    """
+    return Time(utc, scale="utc").tai.datetime
+
+
 def get_times():
     """Return relevant time measures.
 

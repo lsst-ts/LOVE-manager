@@ -71,8 +71,8 @@ class OLETestCase(TestCase):
             "components": "MainTel",
             "primary_software_components": "None",
             "primary_hardware_components": "None",
-            "date_begin": "202200703-19:58:13",
-            "date_end": "20220704-19:25:13",
+            "date_begin": "2020-07-03T19:58:13.000000",
+            "date_end": "2022-07-04T19:25:13.000000",
             "time_lost": 10,
             "level": 0,
         }
