@@ -65,6 +65,7 @@ from manager.settings import (
     AUTH_LDAP_3_SERVER_URI,
 )
 from manager.utils import (
+    DATETIME_ISO_FORMAT,
     CommandPermission,
     arrange_nightreport_email,
     get_jira_obs_report,
@@ -1316,7 +1317,7 @@ class NarrativelogViewSet(viewsets.ViewSet):
         for key in date_keys:
             if key in json_data:
                 tai_datetime = get_tai_from_utc(json_data[key])
-                json_data[key] = tai_datetime.strftime("%Y-%m-%dT%H:%M:%S.%f")
+                json_data[key] = tai_datetime.strftime(DATETIME_ISO_FORMAT)
 
         # Split lists of values separated by comma
         array_keys = {
@@ -1384,7 +1385,7 @@ class NarrativelogViewSet(viewsets.ViewSet):
         for key in date_keys:
             if key in json_data:
                 tai_datetime = get_tai_from_utc(json_data[key])
-                json_data[key] = tai_datetime.strftime("%Y-%m-%dT%H:%M:%S.%f")
+                json_data[key] = tai_datetime.strftime(DATETIME_ISO_FORMAT)
 
         array_keys = {
             "components",

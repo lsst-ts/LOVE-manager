@@ -28,6 +28,8 @@ from django.test import TestCase, override_settings
 from django.urls import reverse
 from rest_framework.test import APIClient
 
+from manager.utils import DATETIME_ISO_FORMAT, get_tai_from_utc
+
 
 @override_settings(DEBUG=True)
 class OLETestCase(TestCase):
@@ -71,9 +73,9 @@ class OLETestCase(TestCase):
             "components": "MainTel",
             "primary_software_components": "None",
             "primary_hardware_components": "None",
-            "date_begin": "2020-07-03T19:58:13.000000",
-            "date_end": "2022-07-04T19:25:13.000000",
-            "time_lost": 10,
+            "date_begin": "2024-01-01T00:00:00.000000",
+            "date_end": "2024-01-01T00:10:00.000000",
+            "time_lost": 1,
             "level": 0,
         }
 
@@ -318,7 +320,23 @@ class OLETestCase(TestCase):
         # Act:
         url = reverse("NarrativeLogs-list")
         response = self.client.post(url, self.payload_full_narrative)
+
+        # Assert:
         self.assertEqual(response.status_code, 201)
+
+        # Check the date_begin and date_end arguments
+        # are transformed to TAI scale.
+        mock_ole_client_json_arg = mock_ole_client.call_args.kwargs["json"].dict()
+        date_begin_arg = mock_ole_client_json_arg["date_begin"]
+        date_end_arg = mock_ole_client_json_arg["date_end"]
+        payload_date_begin_formatted = get_tai_from_utc(
+            self.payload_full_narrative["date_begin"]
+        ).strftime("%Y-%m-%dT%H:%M:%S.%f")
+        payload_date_end_formatted = get_tai_from_utc(
+            self.payload_full_narrative["date_end"]
+        ).strftime("%Y-%m-%dT%H:%M:%S.%f")
+        assert date_begin_arg == payload_date_begin_formatted
+        assert date_end_arg == payload_date_end_formatted
 
         mock_ole_client.stop()
 
@@ -339,7 +357,23 @@ class OLETestCase(TestCase):
         # Act:
         url = reverse("NarrativeLogs-detail", args=[1])
         response = self.client.put(url, self.payload_full_narrative)
+
+        # Assert
         self.assertEqual(response.status_code, 200)
+
+        # Check the date_begin and date_end arguments
+        # are transformed to TAI scale.
+        mock_ole_client_json_arg = mock_ole_client.call_args.kwargs["json"].dict()
+        date_begin_arg = mock_ole_client_json_arg["date_begin"]
+        date_end_arg = mock_ole_client_json_arg["date_end"]
+        payload_date_begin_formatted = get_tai_from_utc(
+            self.payload_full_narrative["date_begin"]
+        ).strftime(DATETIME_ISO_FORMAT)
+        payload_date_end_formatted = get_tai_from_utc(
+            self.payload_full_narrative["date_end"]
+        ).strftime(DATETIME_ISO_FORMAT)
+        assert date_begin_arg == payload_date_begin_formatted
+        assert date_end_arg == payload_date_end_formatted
 
         mock_ole_client.stop()
 
