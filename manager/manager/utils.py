@@ -45,6 +45,8 @@ TIME_LOST_FIELD = "customfield_10106"
 PRIMARY_SOFTWARE_COMPONENTS_IDS = "customfield_10107"
 PRIMARY_HARDWARE_COMPONENTS_IDS = "customfield_10196"
 
+DATETIME_ISO_FORMAT = "%Y-%m-%dT%H:%M:%S.%f"
+
 
 class LocationPermission(BasePermission):
     """Permission class to check if the user is in the location whitelist."""
@@ -831,6 +833,22 @@ def get_tai_to_utc() -> float:
     t = Time.now()
     dt = t.datetime.timestamp() - t.tai.datetime.timestamp()
     return dt
+
+
+def get_tai_from_utc(utc):
+    """Return the TAI timestamp from an UTC timestamp.
+
+    Parameters
+    ----------
+    utc : `datetime.datetime`
+        UTC timestamp
+
+    Returns
+    -------
+    `datetime.datetime`
+        The TAI timestamp
+    """
+    return Time(utc, scale="utc").tai.datetime
 
 
 def get_times():
