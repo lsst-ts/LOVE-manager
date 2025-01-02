@@ -444,6 +444,9 @@ def jira_ticket(request_data):
                 # ),
                 OBS_TIME_LOST_FIELD: float(request_data.get("time_lost", 0)),
             },
+            "update": {
+                "components": [{"set": [{"id": "11614"}]}]
+            },  # Temporal setting for testing. TODO: remove.
         }
         if obs_system_selection:
             jira_payload["fields"][OBS_SYSTEMS_FIELD] = json.loads(obs_system_selection)
