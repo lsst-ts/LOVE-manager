@@ -18,6 +18,7 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
 
+import json
 from unittest.mock import patch
 
 import requests
@@ -29,6 +30,22 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 
 from manager.utils import DATETIME_ISO_FORMAT, get_tai_from_utc
+
+OBS_SYSTEMS_HIERARCHY = """
+{
+  "name": "AuxTel",
+  "children": [
+    {
+      "name": "OCS",
+      "children": [
+        {
+          "name": "ATScheduler CSC"
+        }
+      ]
+    }
+  ]
+}
+"""
 
 
 @override_settings(DEBUG=True)
@@ -70,9 +87,7 @@ class OLETestCase(TestCase):
 
         payload_narrative = {
             "request_type": "narrative",
-            "components": "MainTel",
-            "primary_software_components": "None",
-            "primary_hardware_components": "None",
+            "components_json": OBS_SYSTEMS_HIERARCHY,
             "date_begin": "2024-01-01T00:00:00.000000",
             "date_end": "2024-01-01T00:10:00.000000",
             "time_lost": 1,
@@ -141,7 +156,7 @@ class OLETestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 0)
 
-        mock_ole_client.stop()
+        mock_ole_patcher.stop()
 
     def test_simple_exposurelog_create(self):
         """Test exposurelog create."""
@@ -162,7 +177,7 @@ class OLETestCase(TestCase):
         response = self.client.post(url, self.payload_full_exposure)
         self.assertEqual(response.status_code, 201)
 
-        mock_ole_client.stop()
+        mock_ole_patcher.stop()
 
     def test_exposurelog_update(self):
         """Test exposurelog update."""
@@ -183,7 +198,7 @@ class OLETestCase(TestCase):
         response = self.client.put(url, self.payload_full_exposure)
         self.assertEqual(response.status_code, 200)
 
-        mock_ole_client.stop()
+        mock_ole_patcher.stop()
 
     def test_exposurelog_create_with_jira(self):
         """Test exposurelog create with jira."""
@@ -230,8 +245,9 @@ class OLETestCase(TestCase):
         response = self.client.post(url, self.payload_full_exposure_with_jira_comment)
         self.assertEqual(response.status_code, 201)
 
-        mock_jira_ticket_client.stop()
-        mock_ole_client.stop()
+        mock_jira_ticket_patcher.stop()
+        mock_jira_comment_patcher.stop()
+        mock_ole_patcher.stop()
 
     def test_exposurelog_update_with_jira(self):
         """Test exposurelog update with jira."""
@@ -278,8 +294,9 @@ class OLETestCase(TestCase):
         response = self.client.put(url, self.payload_full_exposure_with_jira_comment)
         self.assertEqual(response.status_code, 200)
 
-        mock_jira_ticket_client.stop()
-        mock_ole_client.stop()
+        mock_jira_ticket_patcher.stop()
+        mock_jira_comment_patcher.stop()
+        mock_ole_patcher.stop()
 
     def test_narrativelog_list(self):
         """Test narrativelog list."""
@@ -301,7 +318,7 @@ class OLETestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 0)
 
-        mock_ole_client.stop()
+        mock_ole_patcher.stop()
 
     def test_simple_narrativelog_create(self):
         """Test narrativelog create."""
@@ -338,7 +355,7 @@ class OLETestCase(TestCase):
         assert date_begin_arg == payload_date_begin_formatted
         assert date_end_arg == payload_date_end_formatted
 
-        mock_ole_client.stop()
+        mock_ole_patcher.stop()
 
     def test_narrativelog_update(self):
         """Test narrativelog update."""
@@ -375,7 +392,7 @@ class OLETestCase(TestCase):
         assert date_begin_arg == payload_date_begin_formatted
         assert date_end_arg == payload_date_end_formatted
 
-        mock_ole_client.stop()
+        mock_ole_patcher.stop()
 
     def test_narrative_log_create_with_jira(self):
         """Test narrativelog create with jira."""
@@ -422,8 +439,9 @@ class OLETestCase(TestCase):
         response = self.client.post(url, self.payload_full_narrative_with_jira_comment)
         self.assertEqual(response.status_code, 201)
 
-        mock_jira_ticket_client.stop()
-        mock_ole_client.stop()
+        mock_jira_ticket_patcher.stop()
+        mock_jira_comment_patcher.stop()
+        mock_ole_patcher.stop()
 
     def test_narrative_log_update_with_jira(self):
         """Test narrativelog update with jira."""
@@ -470,8 +488,23 @@ class OLETestCase(TestCase):
         response = self.client.put(url, self.payload_full_narrative_with_jira_comment)
         self.assertEqual(response.status_code, 200)
 
-        mock_jira_ticket_client.stop()
-        mock_ole_client.stop()
+        mock_jira_ticket_patcher.stop()
+        mock_jira_comment_patcher.stop()
+        mock_ole_patcher.stop()
+
+    def test_narrativelog_create_with_not_valid_obs_systems_hierarchy(self):
+        """Test narrativelog create with not valid OBS systems hierarchy."""
+        # Arrange:
+        self.client.credentials(
+            HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
+        )
+
+        # Act:
+        url = reverse("NarrativeLogs-list")
+        with self.assertRaises(json.decoder.JSONDecodeError):
+            self.client.post(
+                url, {**self.payload_full_narrative, "components_json": "invalid"}
+            )
 
 
 @override_settings(DEBUG=True)
@@ -543,7 +576,7 @@ class NightReportTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
 
-        mock_ole_client.stop()
+        mock_ole_patcher.stop()
 
     def test_simple_nightreport_create(self):
         """Test nightreport create."""
@@ -564,7 +597,7 @@ class NightReportTestCase(TestCase):
         response = self.client.post(url, self.payload)
         self.assertEqual(response.status_code, 201)
 
-        mock_ole_client.stop()
+        mock_ole_patcher.stop()
 
     def test_nightreport_update(self):
         """Test nightreport update."""
@@ -585,7 +618,7 @@ class NightReportTestCase(TestCase):
         response = self.client.put(url, self.payload)
         self.assertEqual(response.status_code, 200)
 
-        mock_ole_client.stop()
+        mock_ole_patcher.stop()
 
     def test_nightreport_delete(self):
         """Test nightreport delete."""
@@ -606,7 +639,7 @@ class NightReportTestCase(TestCase):
         response = self.client.delete(url)
         self.assertEqual(response.status_code, 200)
 
-        mock_ole_client.stop()
+        mock_ole_patcher.stop()
 
     def test_nightreport_send(self):
         """Test nightreport send."""
@@ -644,10 +677,10 @@ class NightReportTestCase(TestCase):
         response = self.client.post(url)
         self.assertEqual(response.status_code, 200)
 
-        mock_ole_client_get.stop()
-        mock_ole_client_patch.stop()
-        mock_get_jira_obs_report_client.stop()
-        mock_send_smtp_email_client.stop()
+        mock_ole_patcher_get.stop()
+        mock_ole_patcher_patch.stop()
+        mock_get_jira_obs_report.stop()
+        mock_send_smtp_email.stop()
 
     def test_nightreport_already_sent(self):
         """Test nightreport already sent."""
@@ -673,4 +706,4 @@ class NightReportTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data, {"error": "Night report already sent"})
 
-        mock_ole_client_get.stop()
+        mock_ole_patcher_get.stop()
