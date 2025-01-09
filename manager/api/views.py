@@ -1319,16 +1319,6 @@ class NarrativelogViewSet(viewsets.ViewSet):
                 tai_datetime = get_tai_from_utc(json_data[key])
                 json_data[key] = tai_datetime.strftime(DATETIME_ISO_FORMAT)
 
-        # Split lists of values separated by comma
-        array_keys = {
-            "components",
-            "primary_software_components",
-            "primary_hardware_components",
-        }
-        for key in array_keys:
-            if key in json_data:
-                json_data[key] = json_data[key].split(",")
-
         # Transform components_json to a dict
         if "components_json" in json_data:
             json_data["components_json"] = json.loads(json_data["components_json"])
@@ -1391,10 +1381,8 @@ class NarrativelogViewSet(viewsets.ViewSet):
                 tai_datetime = get_tai_from_utc(json_data[key])
                 json_data[key] = tai_datetime.strftime(DATETIME_ISO_FORMAT)
 
+        # Split lists of values separated by comma
         array_keys = {
-            "components",
-            "primary_software_components",
-            "primary_hardware_components",
             "urls",
         }
         for key in array_keys:
