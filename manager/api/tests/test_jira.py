@@ -18,7 +18,6 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
 
-import math
 import os
 import random
 from unittest.mock import patch
@@ -38,41 +37,48 @@ from manager.utils import (
     update_time_lost,
 )
 
-OLE_JIRA_OBS_COMPONENTS_FIELDS = [
-    "AuxTel",
-    "Calibrations",
-    "Environmental Monitoring Systems",
-    "Facilities",
-    "IT Infrastricture",
-    "MainTel",
-    "Observer Remark",
-    "Other",
-    "Unknown",
-]
-
-OLE_JIRA_OBS_PRIMARY_SOFTWARE_COMPONENT_FIELDS = [
-    "None",
-    "CSC level",
-    "Component Level (EUI)",
-    "Visualization",
-    "Analysis",
-    "Other",
-    "Camera Control Software",
-]
-
-OLE_JIRA_OBS_PRIMARY_HARDWARE_COMPONENT_FIELDS = [
-    "None",
-    "Mount",
-    "Rotator",
-    "Hexapod",
-    "M2",
-    "Science Cameras",
-    "M1M3",
-    "Dome",
-    "Utilities",
-    "Calibration",
-    "Other",
-]
+JIRA_OBS_SYSTEMS_SELECTION_EXAMPLE = """
+{
+  "selection": [
+    [
+      {
+        "name": "AuxTel",
+        "id": "1",
+        "children": [
+          "60",
+          "61",
+          "62",
+          "63",
+          "64",
+          "430",
+          "128"
+        ]
+      }
+    ],
+    [
+      {
+        "name": "AT: OCS",
+        "id": "430",
+        "children": [
+          "432",
+          "433",
+          "434",
+          "435",
+          "436",
+          "437",
+          "438"
+        ]
+      }
+    ],
+    [
+      {
+        "name": "ATScheduler CSC",
+        "id": "437"
+      }
+    ]
+  ]
+}
+"""
 
 
 @override_settings(DEBUG=True)
@@ -109,40 +115,7 @@ class JiraTestCase(TestCase):
         }
 
         request_narrative = {
-            "components": ",".join(
-                list(
-                    OLE_JIRA_OBS_COMPONENTS_FIELDS[
-                        : math.ceil(
-                            random.random() * (len(OLE_JIRA_OBS_COMPONENTS_FIELDS) - 1)
-                        )
-                    ]
-                )
-            ),
-            "components_ids": ",".join(
-                [str(n) for n in range(1, math.ceil(random.random() * 100))]
-            ),
-            "primary_software_components": ",".join(
-                OLE_JIRA_OBS_PRIMARY_SOFTWARE_COMPONENT_FIELDS[
-                    math.ceil(
-                        random.random()
-                        * (len(OLE_JIRA_OBS_PRIMARY_SOFTWARE_COMPONENT_FIELDS) - 1)
-                    )
-                ]
-            ),
-            "primary_software_components_ids": ",".join(
-                [str(math.ceil(random.random() * 100))]
-            ),
-            "primary_hardware_components": ",".join(
-                OLE_JIRA_OBS_PRIMARY_HARDWARE_COMPONENT_FIELDS[
-                    math.ceil(
-                        random.random()
-                        * (len(OLE_JIRA_OBS_PRIMARY_HARDWARE_COMPONENT_FIELDS) - 1)
-                    )
-                ]
-            ),
-            "primary_hardware_components_ids": ",".join(
-                [str(math.ceil(random.random() * 100))]
-            ),
+            "jira_obs_selection": JIRA_OBS_SYSTEMS_SELECTION_EXAMPLE,
             "date_begin": "2022-07-03T19:58:13.00000",
             "date_end": "2022-07-04T19:25:13.00000",
             "time_lost": 10,
@@ -231,6 +204,13 @@ class JiraTestCase(TestCase):
             data=data_narrative_without_param
         )
 
+        # narrative with not valid jira_obs_selection json
+        data_narrative_invalid_jira_obs_selection = {**request_full_narrative}
+        data_narrative_invalid_jira_obs_selection["jira_obs_selection"] = "invalid_json"
+        self.jira_request_narrative_invalid_jira_obs_selection = requests.Request(
+            data=data_narrative_invalid_jira_obs_selection
+        )
+
         # all parameters requests
         self.jira_request_exposure_full = requests.Request(data=request_full_exposure)
         self.jira_request_narrative_full = requests.Request(data=request_full_narrative)
@@ -298,6 +278,13 @@ class JiraTestCase(TestCase):
         jira_response = jira_ticket(self.jira_request_narrative_without_param.data)
         assert "Error creating jira payload" in jira_response.data["ack"]
 
+    def test_not_valid_obs_systems_json(self):
+        """Test call to jira_ticket function with invalid jira_obs_selection"""
+        jira_response = jira_ticket(
+            self.jira_request_narrative_invalid_jira_obs_selection.data
+        )
+        assert "Error creating jira payload" in jira_response.data["ack"]
+
     @patch.dict(os.environ, {"JIRA_API_HOSTNAME": "jira.lsstcorp.org"})
     def test_needed_parameters(self):
         """Test call to jira_ticket function with all needed parameters"""
@@ -360,6 +347,9 @@ class JiraTestCase(TestCase):
         assert jira_response.status_code == 400
         assert jira_response.data["ack"] == "Jira time_lost field could not be updated"
 
+        mock_jira_patcher.stop()
+        put_patcher.stop()
+
     def test_update_current_time_lost_none(self):
         """Test call to update_time_lost with None as current time_lost"""
         mock_jira_patcher = patch("requests.get")
@@ -379,6 +369,9 @@ class JiraTestCase(TestCase):
         jira_response = update_time_lost(1, 3.4)
         assert jira_response.status_code == 200
         assert jira_response.data["ack"] == "Jira time_lost field updated"
+
+        mock_jira_patcher.stop()
+        put_patcher.stop()
 
     def test_add_comment(self):
         """Test call to jira_comment function with all needed parameters"""
@@ -405,6 +398,9 @@ class JiraTestCase(TestCase):
         assert jira_response.status_code == 200
         assert jira_response.data["ack"] == "Jira comment created"
 
+        mock_jira_patcher.stop()
+        mock_time_lost_patcher.stop()
+
     def test_add_comment_fail(self):
         """Test jira_comment() return value when update_time_lost()
         fails during jira_comment()"""
@@ -426,6 +422,9 @@ class JiraTestCase(TestCase):
         resp = jira_comment(self.jira_request_narrative_full_jira_comment.data)
         assert resp.status_code == 400
         assert resp.data["ack"] == "Jira time_lost field could not be updated"
+
+        mock_jira_patcher.stop()
+        mock_time_lost_patcher.stop()
 
     @patch.dict(os.environ, {"JIRA_API_HOSTNAME": "jira.lsstcorp.org"})
     def test_handle_narrative_jira_payload(self):
@@ -464,6 +463,7 @@ class JiraTestCase(TestCase):
         )
 
         mock_jira_patcher.stop()
+        mock_time_lost_patcher.stop()
 
     def test_handle_exposure_jira_payload(self):
         """Test call to function handle_jira_payload with all needed parameters
