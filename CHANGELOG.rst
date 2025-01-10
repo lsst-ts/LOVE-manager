@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.2.0
+------
+
+* Refactor jira_ticket method to comply with new OBS systems hierarchy. `<https://github.com/lsst-ts/LOVE-manager/pull/300>`_
+
 v7.1.7
 ------
 

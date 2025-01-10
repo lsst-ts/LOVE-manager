@@ -41,9 +41,10 @@ from rest_framework.response import Response
 # Constants
 JSON_RESPONSE_LOCAL_STORAGE_NOT_ALLOWED = {"error": "Local storage not allowed."}
 JSON_RESPONSE_ERROR_NOT_VALID_JSON = {"error": "Not a valid JSON response."}
-TIME_LOST_FIELD = "customfield_10106"
-PRIMARY_SOFTWARE_COMPONENTS_IDS = "customfield_10107"
-PRIMARY_HARDWARE_COMPONENTS_IDS = "customfield_10196"
+
+OBS_ISSUE_TYPE_ID = "10065"
+OBS_TIME_LOST_FIELD = "customfield_10106"
+OBS_SYSTEMS_FIELD = "customfield_10476"
 
 DATETIME_ISO_FORMAT = "%Y-%m-%dT%H:%M:%S.%f"
 
@@ -416,26 +417,12 @@ def jira_ticket(request_data):
 
     tags_data = request_data.get("tags").split(",") if request_data.get("tags") else []
 
-    components_ids = (
-        request_data.get("components_ids").split(",")
-        if request_data.get("components_ids")
-        else []
-    )
-    primary_software_components_ids = (
-        request_data.get("primary_software_components_ids").split(",")
-        if request_data.get("primary_software_components_ids")
-        else None
-    )
-    primary_hardware_components_ids = (
-        request_data.get("primary_hardware_components_ids").split(",")
-        if request_data.get("primary_hardware_components_ids")
-        else None
-    )
+    obs_system_selection = request_data.get("jira_obs_selection")
 
     try:
         jira_payload = {
             "fields": {
-                "issuetype": {"id": "10065"},
+                "issuetype": {"id": OBS_ISSUE_TYPE_ID},
                 # If the JIRA_PROJECT_ID environment variable is not set,
                 # the project id is set to the OBS project by default: 10063.
                 # Set it in case the OBS project id has changed for any reason
@@ -455,27 +442,11 @@ def jira_ticket(request_data):
                 #     "on" if int(request_data.get("level", 0)) >= 100
                 #     else "off"
                 # ),
-                TIME_LOST_FIELD: float(request_data.get("time_lost", 0)),
-                # Default values of the following fields are set to -1
-                PRIMARY_SOFTWARE_COMPONENTS_IDS: {
-                    "id": (
-                        str(primary_software_components_ids[0])
-                        if primary_software_components_ids
-                        else "-1"
-                    )
-                },
-                PRIMARY_HARDWARE_COMPONENTS_IDS: {
-                    "id": (
-                        str(primary_hardware_components_ids[0])
-                        if primary_hardware_components_ids
-                        else "-1"
-                    )
-                },
-            },
-            "update": {
-                "components": [{"set": [{"id": str(id)} for id in components_ids]}]
+                OBS_TIME_LOST_FIELD: float(request_data.get("time_lost", 0)),
             },
         }
+        if obs_system_selection:
+            jira_payload["fields"][OBS_SYSTEMS_FIELD] = json.loads(obs_system_selection)
     except Exception as e:
         return Response(
             {
@@ -490,7 +461,6 @@ def jira_ticket(request_data):
         "content-type": "application/json",
     }
     url = f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/issue/"
-
     response = requests.post(url, json=jira_payload, headers=headers)
     response_data = response.json()
     if response.status_code == 201:
@@ -542,11 +512,11 @@ def update_time_lost(jira_id: int, add_time_lost: float = 0.0) -> Response:
 
     if response.status_code == 200:
         jira_ticket_fields = response.json().get("fields", {})
-        time_lost_value = jira_ticket_fields.get(TIME_LOST_FIELD, 0.0)
+        time_lost_value = jira_ticket_fields.get(OBS_TIME_LOST_FIELD, 0.0)
         existent_time_lost = float(time_lost_value) if time_lost_value else 0.0
         jira_payload = {
             "fields": {
-                TIME_LOST_FIELD: existent_time_lost + add_time_lost,
+                OBS_TIME_LOST_FIELD: existent_time_lost + add_time_lost,
             },
         }
         response = requests.put(url, json=jira_payload, headers=headers)
@@ -734,8 +704,8 @@ def get_jira_obs_report(request_data):
                 "key": issue["key"],
                 "summary": issue["fields"]["summary"],
                 "time_lost": (
-                    issue["fields"][TIME_LOST_FIELD]
-                    if issue["fields"][TIME_LOST_FIELD] is not None
+                    issue["fields"][OBS_TIME_LOST_FIELD]
+                    if issue["fields"][OBS_TIME_LOST_FIELD] is not None
                     else 0.0
                 ),
                 "reporter": issue["fields"]["creator"]["displayName"],
