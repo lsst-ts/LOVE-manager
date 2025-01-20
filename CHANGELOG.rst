@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.2.1
+------
+
+* Remove labels param from payload on jira_ticket method. `<https://github.com/lsst-ts/LOVE-manager/pull/301>`_
+
 v7.2.0
 ------
 
