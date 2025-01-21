@@ -415,8 +415,6 @@ def jira_ticket(request_data):
     if "request_type" not in request_data:
         return Response({"ack": "Error reading request type"}, status=400)
 
-    tags_data = request_data.get("tags").split(",") if request_data.get("tags") else []
-
     obs_system_selection = request_data.get("jira_obs_selection")
 
     try:
@@ -428,10 +426,6 @@ def jira_ticket(request_data):
                 # Set it in case the OBS project id has changed for any reason
                 # and update the default value above and in the following line.
                 "project": {"id": os.environ.get("JIRA_PROJECT_ID", "10063")},
-                "labels": [
-                    "LOVE",
-                    *tags_data,
-                ],
                 "summary": get_jira_title(request_data),
                 "description": get_jira_description(request_data),
                 # customfield_15602 which represents the URGENT flag
@@ -445,6 +439,7 @@ def jira_ticket(request_data):
                 OBS_TIME_LOST_FIELD: float(request_data.get("time_lost", 0)),
             },
         }
+
         if obs_system_selection:
             jira_payload["fields"][OBS_SYSTEMS_FIELD] = json.loads(obs_system_selection)
     except Exception as e:
