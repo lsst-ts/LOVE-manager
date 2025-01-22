@@ -16,7 +16,11 @@ All these variables are initialized with default variables defined in :code:`.en
 - `CMD_USER_PASS`: password for the default `cmd` user, which has readonly permissions but can execute commands.
 - `SECRET_KEY`: overrides Django's SECRET_KEY, if not defined the default value (public in this repo) will be used.
 - `REDIS_HOST`: the location of the redis host that implements the `Channels Layer`.
+- `REDIS_PORT`: the port that the `redis` server is listening to.
 - `REDIS_PASS`: the password that the LOVE-manager needs to use to connect with `redis`.
+- `REDIS_CONFIG_EXPIRY`: the time in seconds for messages expiration implemented by the `Channels Layer`. Defaults to 60 seconds.
+- `REDIS_CONFIG_CAPACITY`: the maximum number of messages to store in the queues implemented by the `Channels Layer`. Defaults to 100 messages.
+- `REDIS_CONFIG_GROUP_EXPIRY`: the time in seconds for group expiration implemented by the `Channels Layer`. Defaults to 43200 seconds (half day).
 - `PROCESS_CONNECTION_PASS`: the password that the LOVE-producer will use to establish a websocket connection with the LOVE-manager.
 - `DB_ENGINE`: describe which database engine should be used. If its value is `postgresql` Postgres will be used, otherwise it will use Sqlite3.
 - `DB_NAME`: defines the name of the Database. Only used if `DB_ENGINE=postgresql`.

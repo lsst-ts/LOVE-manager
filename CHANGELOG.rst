@@ -2,6 +2,12 @@
 Version History
 ===============
 
+v7.2.1
+------
+
+* Add details about Channels Layer configurations to README. `<https://github.com/lsst-ts/LOVE-manager/pull/298>`_
+* Remove labels param from payload on jira_ticket method. `<https://github.com/lsst-ts/LOVE-manager/pull/301>`_
+
 v7.2.0
 ------
 
