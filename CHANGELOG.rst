@@ -5,6 +5,7 @@ Version History
 v7.2.1
 ------
 
+* Add MTM1M3TS and MTVMS:0 to SummaryState view on BTS and TTS. `<https://github.com/lsst-ts/LOVE-manager/pull/302>`_
 * Add details about Channels Layer configurations to README. `<https://github.com/lsst-ts/LOVE-manager/pull/298>`_
 * Remove labels param from payload on jira_ticket method. `<https://github.com/lsst-ts/LOVE-manager/pull/301>`_
 
