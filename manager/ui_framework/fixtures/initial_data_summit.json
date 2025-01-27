@@ -1165,5 +1165,107 @@
       },
       "thumbnail": ""
     }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 208,
+    "fields": {
+      "creation_timestamp": "2024-01-27T00:00:00.000000Z",
+      "update_timestamp": "2021-12-10T18:00:52.000000Z",
+      "name": "Simonyi Monitor",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "EUI": "https://confluence.lsstcorp.org/pages/viewpage.action?pageId=214147380",
+              "link": "",
+              "title": "Simonyi Telescope Mount Assembly",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "TMA",
+            "properties": {
+              "h": 49,
+              "i": 1,
+              "w": 41,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          },
+          "newPanel-2": {
+            "config": {
+              "link": "",
+              "title": "Simonyi Telescope Dome",
+              "margin": true,
+              "controls": true,
+              "titleBar": true,
+              "hasRawMode": true,
+              "raDecHourFormat": false
+            },
+            "content": "SimonyiDome",
+            "properties": {
+              "h": 57,
+              "i": 2,
+              "w": 43,
+              "x": 41,
+              "y": 0,
+              "type": "component"
+            }
+          },
+          "newPanel-3": {
+            "config": {
+              "link": "",
+              "title": "Simonyi Lightpath",
+              "margin": true,
+              "titleBar": true,
+              "lightPath": true,
+              "hasRawMode": true
+            },
+            "content": "SimonyiLightPath",
+            "properties": {
+              "h": 23,
+              "i": 3,
+              "w": 16,
+              "x": 84,
+              "y": 0,
+              "type": "component",
+              "allowOverflow": true
+            }
+          },
+          "newPanel-4": {
+            "config": {
+              "EUI": "https://ls.st/hexrot-vm01",
+              "link": "",
+              "title": "CableWraps",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "CableWraps",
+            "properties": {
+              "h": 22,
+              "i": 4,
+              "w": 16,
+              "x": 84,
+              "y": 23,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": ""
+    }
   }
 ]
