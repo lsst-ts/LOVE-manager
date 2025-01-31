@@ -261,8 +261,8 @@ class ZephyrScaleCredential(BaseModel):
     jira_username = models.CharField(max_length=100)
     """Jira username"""
 
-    jira_api_token = models.CharField(max_length=100)
+    jira_api_token = models.CharField(max_length=500)
     """Jira API token"""
 
-    zephyr_api_token = models.CharField(max_length=100)
+    zephyr_api_token = models.CharField(max_length=500)
     """Zephyr API token"""

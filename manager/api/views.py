@@ -323,7 +323,7 @@ class CustomSwapAuthToken(ObtainAuthToken):
         """
         username = request.data["username"]
         if not request.user.is_authenticated or not request._auth:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
+            return Response(status=status.HTTP_403_FORBIDDEN)
         serializer = self.serializer_class(
             data=request.data, context={"request": request}
         )
@@ -1778,7 +1778,7 @@ def planning_tool_test_cycles(request, *args, **kwargs):
     modified_payload["jira_api_token"] = zephyr_scale_credentials.jira_api_token
     modified_payload["jira_username"] = zephyr_scale_credentials.jira_username
 
-    response = requests.post(url)
+    response = requests.post(url, json=modified_payload)
     return Response(response.json(), status=response.status_code)
 
 
@@ -1872,8 +1872,8 @@ def planning_tool_test_cases(request, *args, **kwargs):
 
 @api_view(["GET"])
 @permission_classes((IsAuthenticated,))
-def planning_tool_test_last_execution(request, *args, **kwargs):
-    """Requests Planning Tool last test case execution.
+def planning_tool_test_execution(request, *args, **kwargs):
+    """Requests Planning Tool test case execution.
 
     Params
     ------
@@ -1889,12 +1889,11 @@ def planning_tool_test_last_execution(request, *args, **kwargs):
     Response
         The response and status code of the request to the LOVE-Commander
     """
-    test_cycle_key = kwargs.get("pk_cycle", None)
-    test_case_key = kwargs.get("pk_case", None)
+    test_execution_key = kwargs.get("pk_execution", None)
 
     url = (
         f"http://{os.environ.get('COMMANDER_HOSTNAME')}"
-        f":{os.environ.get('COMMANDER_PORT')}/planningtool/test-last-execution/"
+        f":{os.environ.get('COMMANDER_PORT')}/planningtool/test-execution/"
     )
 
     try:
@@ -1909,8 +1908,7 @@ def planning_tool_test_last_execution(request, *args, **kwargs):
     modified_payload["zephyr_api_token"] = zephyr_scale_credentials.zephyr_api_token
     modified_payload["jira_api_token"] = zephyr_scale_credentials.jira_api_token
     modified_payload["jira_username"] = zephyr_scale_credentials.jira_username
-    modified_payload["test_cycle_key"] = test_cycle_key
-    modified_payload["test_case_key"] = test_case_key
+    modified_payload["test_execution_key"] = test_execution_key
 
     response = requests.post(url, json=modified_payload)
     return Response(response.json(), status=response.status_code)

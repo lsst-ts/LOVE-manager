@@ -35,9 +35,9 @@ class Migration(migrations.Migration):
                     "update_timestamp",
                     models.DateTimeField(auto_now=True, verbose_name="Last Updated"),
                 ),
-                ("jira_api_token", models.CharField(max_length=100)),
+                ("jira_api_token", models.CharField(max_length=500)),
                 ("jira_username", models.CharField(max_length=100)),
-                ("zephyr_api_token", models.CharField(max_length=100)),
+                ("zephyr_api_token", models.CharField(max_length=500)),
                 (
                     "user",
                     models.OneToOneField(
