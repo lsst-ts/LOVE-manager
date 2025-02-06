@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.2.2
+------
+
+* Add Simonyi Monitor view to ui-framework summit fixtures. `<https://github.com/lsst-ts/LOVE-manager/pull/303>`_
+
 v7.2.1
 ------
 
