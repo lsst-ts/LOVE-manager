@@ -5,6 +5,7 @@ Version History
 v7.2.2
 ------
 
+* Replace EPM:1 CSC per ESS:303 in the SummaryState view on BTS. `<https://github.com/lsst-ts/LOVE-manager/pull/304>`_
 * Add Simonyi Monitor view to ui-framework summit fixtures. `<https://github.com/lsst-ts/LOVE-manager/pull/303>`_
 
 v7.2.1
