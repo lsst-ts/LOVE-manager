@@ -19,7 +19,7 @@ coreapi==2.3.3
 coreschema==0.0.4
 cryptography==44.0.1
 daphne==4.1.2
-Django==5.0.9
+Django==5.0.11
 django-auth-ldap==4.8.0
 django-cors-headers==4.4.0
 django-webpack-loader==0.7.0

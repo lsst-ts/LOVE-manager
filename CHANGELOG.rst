@@ -5,6 +5,7 @@ Version History
 v7.2.3
 ------
 
+* Bump django from 5.0.9 to 5.0.11 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/308>`_
 * Bump twisted from 23.10.0 to 24.7.0 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/307>`_
 * Bump jinja2 from 3.1.4 to 3.1.5 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/306>`_
 * Bump cryptography from 42.0.4 to 44.0.1 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/305>`_
