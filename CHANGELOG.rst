@@ -5,6 +5,7 @@ Version History
 v7.2.3
 ------
 
+* Bump django from 5.0.11 to 5.0.13 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/312>`_
 * Bump jinja2 from 3.1.5 to 3.1.6 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/310>`_
 * Updates for the ASummary State view on Summit. `<https://github.com/lsst-ts/LOVE-manager/pull/309>`_
 * Bump django from 5.0.9 to 5.0.11 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/308>`_
