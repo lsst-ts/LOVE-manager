@@ -997,12 +997,24 @@
                       "salindex": 0
                     },
                     {
+                      "name": "FiberSpectrograph",
+                      "salindex": 101
+                    },
+                    {
+                      "name": "FiberSpectrograph",
+                      "salindex": 102
+                    },
+                    {
                       "name": "Electrometer",
                       "salindex": 101
                     },
                     {
                       "name": "Electrometer",
                       "salindex": 102
+                    },
+                    {
+                      "name": "Electrometer",
+                      "salindex": 103
                     },
                     {
                       "name": "TunableLaser",

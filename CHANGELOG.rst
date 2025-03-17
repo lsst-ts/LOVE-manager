@@ -5,6 +5,7 @@ Version History
 v7.2.3
 ------
 
+* Add new CSCs to the ASummary State view on summit. `<https://github.com/lsst-ts/LOVE-manager/pull/311>`_
 * Bump django from 5.0.11 to 5.0.13 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/312>`_
 * Bump jinja2 from 3.1.5 to 3.1.6 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/310>`_
 * Updates for the ASummary State view on Summit. `<https://github.com/lsst-ts/LOVE-manager/pull/309>`_
