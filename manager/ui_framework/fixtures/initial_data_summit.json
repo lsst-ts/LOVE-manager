@@ -745,10 +745,6 @@
                       "salindex": 0
                     },
                     {
-                      "name": "EPM",
-                      "salindex": 301
-                    },
-                    {
                       "name": "EAS",
                       "salindex": 0
                     },
@@ -819,6 +815,10 @@
                     {
                       "name": "ESS",
                       "salindex": 302
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 303
                     }
                   ],
                   "HigherLevel": [
@@ -887,10 +887,6 @@
                       "salindex": 0
                     },
                     {
-                      "name": "MTM1M3TS",
-                      "salindex": 0
-                    },
-                    {
                       "name": "MTM2",
                       "salindex": 0
                     },
@@ -916,6 +912,18 @@
                     }
                   ],
                   "Support & Monitoring": [
+                    {
+                      "name": "MTM1M3TS",
+                      "salindex": 0
+                    },
+                    {
+                      "name": "MTVMS",
+                      "salindex": 1
+                    },
+                    {
+                      "name": "MTVMS",
+                      "salindex": 2
+                    },
                     {
                       "name": "MTAirCompressor",
                       "salindex": 1
@@ -989,12 +997,24 @@
                       "salindex": 0
                     },
                     {
+                      "name": "FiberSpectrograph",
+                      "salindex": 101
+                    },
+                    {
+                      "name": "FiberSpectrograph",
+                      "salindex": 102
+                    },
+                    {
                       "name": "Electrometer",
                       "salindex": 101
                     },
                     {
                       "name": "Electrometer",
                       "salindex": 102
+                    },
+                    {
+                      "name": "Electrometer",
+                      "salindex": 103
                     },
                     {
                       "name": "TunableLaser",
