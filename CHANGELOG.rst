@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.2.4
+------
+
+* Add DREAM and ATBuilding CSCs to ASummary State view on summit. `<https://github.com/lsst-ts/LOVE-manager/pull/313>`_
+
 v7.2.3
 ------
 
