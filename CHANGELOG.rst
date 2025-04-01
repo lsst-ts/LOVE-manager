@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.2.5
+------
+
+* Add new CSCs to summary state views: ess-ringss, ess-electric-generators and lsstcam-ocps. `<https://github.com/lsst-ts/LOVE-manager/pull/314>`_
+
 v7.2.4
 ------
 
