@@ -3,11 +3,33 @@
     "model": "api.configfile",
     "pk": 1,
     "fields": {
-      "creation_timestamp": "2020-12-29T14:21:31.040Z",
-      "update_timestamp": "2020-12-29T14:21:31.040Z",
+      "creation_timestamp": "2025-03-26T00:00:00.000Z",
+      "update_timestamp": "2025-03-26T00:00:00.000Z",
       "user": 1,
       "file_name": "default.json",
       "config_file": "https://base-lsp.lsst.codes/love/manager/media/configs/default.json"
+    }
+  },
+  {
+    "model": "api.configfile",
+    "pk": 2,
+    "fields": {
+      "creation_timestamp": "2025-03-26T00:00:00.000Z",
+      "update_timestamp": "2025-03-26T00:00:00.000Z",
+      "user": 1,
+      "file_name": "all_alarms.json",
+      "config_file": "https://base-lsp.lsst.codes/love/manager/media/configs/all-alarms.json"
+    }
+  },
+  {
+    "model": "api.configfile",
+    "pk": 3,
+    "fields": {
+      "creation_timestamp": "2025-03-26T00:00:00.000Z",
+      "update_timestamp": "2025-03-26T00:00:00.000Z",
+      "user": 1,
+      "file_name": "no_alarms.json",
+      "config_file": "https://base-lsp.lsst.codes/love/manager/media/configs/no-alarms.json"
     }
   },
   {
