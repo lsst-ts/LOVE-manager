@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.2.6
+------
+
+* Add LOVE config files references to ui-framework remote fixtures for summit, base and tucson. `<https://github.com/lsst-ts/LOVE-manager/pull/315>`_
+
 v7.2.5
 ------
 
