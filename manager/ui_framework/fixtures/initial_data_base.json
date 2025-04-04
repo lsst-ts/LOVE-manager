@@ -754,6 +754,10 @@
                     {
                       "name": "Electrometer",
                       "salindex": 102
+                    },
+                    {
+                      "name": "Electrometer",
+                      "salindex": 103
                     }
                   ],
                   "Support & Monitoring": [
