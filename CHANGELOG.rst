@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.2.7
+------
+
+* Add Electrometer:103 to SummaryState view on BTS. `<https://github.com/lsst-ts/LOVE-manager/pull/316>`_
+
 v7.2.6
 ------
 
