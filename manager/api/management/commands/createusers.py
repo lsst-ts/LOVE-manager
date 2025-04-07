@@ -48,7 +48,8 @@ class Command(BaseCommand):
     - "admin": has all the permissions, it is a Django superuser.
     - "user": basic user with no commands execution permissions
     but with permissions to add, edit and delete views.
-    - "cmd_user": basic user with commands execution permissions.
+    - "cmd_user": basic user with commands execution permissions
+    and with permissions to add, edit and delete views.
 
     It also creates 3 users for remote monitoring support
     with no commands execution permissions
