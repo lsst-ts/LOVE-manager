@@ -13,7 +13,7 @@ All these variables are initialized with default variables defined in :code:`.en
 
 - `ADMIN_USER_PASS`: password for the default `admin` user, which has every permission.
 - `USER_USER_PASS`: password for the default `user` user, which has readonly permissions and cannot execute commands.
-- `CMD_USER_PASS`: password for the default `cmd` user, which can execute commands.
+- `CMD_USER_PASS`: password for the default `cmd_user` user, which can execute commands.
 - `REMOTE_BASE_USER_PASS`: password for the default `base_control_room` user, which has readonly permissions but can create views.
 - `REMOTE_TUCSON_USER_PASS`: password for the default `tucson_control_room` user, which has readonly permissions but can create views.
 - `REMOTE_SLAC_USER_PASS`: password for the default `slac_control_room` user, which has readonly permissions but can create views.
