@@ -214,3 +214,22 @@ class CreateusersTestCase(TestCase):
 
         cmd_group = Group.objects.filter(name=cmd_groupname).first()
         self.assertTrue(cmd_group, "The {} group was not created".format(cmd_groupname))
+
+    def test_command_doesnt_create_users_if_not_specified(self):
+        """Test that the command does not create users if not specified."""
+        # Arrange:
+        old_users_num = User.objects.count()
+        old_groups_num = Group.objects.count()
+        command = Command()
+        # Act:
+        options = {}
+        command.handle(*[], **options)
+        # Assert:
+        self.assertEqual(
+            User.objects.count(),
+            old_users_num,
+            "There are new users even when not specified",
+        )
+        self.assertEqual(
+            Group.objects.count(), old_groups_num + 2, "There is no new group"
+        )
