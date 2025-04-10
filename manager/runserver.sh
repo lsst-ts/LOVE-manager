@@ -12,7 +12,7 @@ echo -e "\nApplying migrations"
 python manage.py migrate
 
 echo -e "\nCreating default users"
-if [ "${LOVE_SITE}" == "summit" ]; then
+if [ "${LOVE_SITE}" == "base" ]; then
   python manage.py createusers --adminpass ${ADMIN_USER_PASS} --userpass ${USER_USER_PASS} \
   --remotebaseuserpass ${REMOTE_BASE_USER_PASS} \
   --remotetucsonuserpass ${REMOTE_TUCSON_USER_PASS} \
