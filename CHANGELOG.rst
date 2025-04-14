@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.3.0
+------
+
+* Add remote control rooms read-only users for LOVE summit monitoring `<https://github.com/lsst-ts/LOVE-manager/pull/317>`_
+
 v7.2.7
 ------
 
