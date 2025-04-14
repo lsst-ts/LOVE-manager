@@ -25,9 +25,17 @@ from argparse import RawTextHelpFormatter
 from django.contrib.auth.models import Group, Permission, User
 from django.core.management.base import BaseCommand
 
+# Default users names
 user_username = "user"
 cmd_user_username = "cmd_user"
 admin_username = "admin"
+
+# Remote control users names
+remote_base_username = "base_control_room"
+remote_tucson_username = "tucson_control_room"
+remote_slac_username = "slac_control_room"
+
+# Default groups names
 cmd_groupname = "cmd"
 ui_framework_groupname = "ui_framework"
 
@@ -35,20 +43,32 @@ ui_framework_groupname = "ui_framework"
 class Command(BaseCommand):
     """Django command to create the initial users with their permissions.
 
-    It creates 4 users with the following characteristics and permissions:
+    It creates 3 users with the following characteristics and permissions:
 
-    - "admin": has all the permissions, it is a Django superuser
+    - "admin": has all the permissions, it is a Django superuser.
     - "user": basic user with no commands execution permissions
-    but with permissions to add, edit and delete views
+    but with permissions to add, edit and delete views.
     - "cmd_user": basic user with commands execution permissions
+    and with permissions to add, edit and delete views.
 
-    It also creates 2 Groups:
-    "cmd_group", which defines the commands execution permissions.
-    "ui_framework_group", which defines the permissions
-    to add, edit and delete views.
+    It also creates 3 users for remote monitoring support
+    with no commands execution permissions
+    but with permissions to add, edit and delete views:
+
+    - "base_control_room": user for the Base control room.
+    - "tucson_control_room": user for the Tucson control room.
+    - "slac_control_room": user for the SLAC control room.
+
+    It also creates 2 groups:
+
+    - "cmd_group": defines the commands execution permissions.
+    - "ui_framework_group": defines the permissions to add,
+    edit and delete views.
 
     "cmd_user" user belongs to "cmd_group".
-    "cmd_user" and "user" user belong to "ui_framework_group".
+    "cmd_user", "user", "base_control_room",
+    "tucson_control_room" and "slac_control_room"
+    users belong to "ui_framework_group".
 
     The command receives arguments to set the passwords of the users,
     run `python manage.py createusers --help` for help.
@@ -56,19 +76,32 @@ class Command(BaseCommand):
 
     help = """Django command to create the initial users with their permissions.\n
 
-    It creates 4 users with the following characteristics and permissions:
+    It creates 3 users with the following characteristics and permissions:
 
-    - "admin": has all the permissions, it is a Django superuser
+    - "admin": has all the permissions, it is a Django superuser.
     - "user": basic user with no commands execution permissions,
-    but with permissions to add, edit and delete views
+    but with permissions to add, edit and delete views.
     - "cmd_user": basic user with commands execution permissions
+    and with permissions to add, edit and delete views.
 
-    It also creates 2 Groups:
-    "cmd_group", which defines the commands execution permissions.
-    "ui_framework_group", which defines the permissions to add, edit and delete views.
+    It also creates 3 users for remote monitoring support
+    with no commands execution permissions
+    but with permissions to add, edit and delete views:
+
+    - "base_control_room": user for the Base control room.
+    - "tucson_control_room": user for the Tucson control room.
+    - "slac_control_room": user for the SLAC control room.
+
+    It also creates 2 groups:
+
+    - "cmd_group": defines the commands execution permissions.
+    - "ui_framework_group": defines the permissions to add,
+    edit and delete views.
 
     "cmd_user" user belongs to "cmd_group".
-    "cmd_user" and "user" user belong to "ui_framework_group"."""
+    "cmd_user", "user", "base_control_room",
+    "tucson_control_room" and "slac_control_room"
+    users belong to "ui_framework_group"."""
 
     requires_migrations_checks = True
     stealth_options = ("stdin",)
@@ -112,6 +145,18 @@ class Command(BaseCommand):
             "--cmduserpass",
             help='Specifies password for the users with cmd permissions ("cmd_user").',
         )
+        parser.add_argument(
+            "--remotebaseuserpass",
+            help='Specifies password for the user for remote monitoring at Base ("base_control_room").',
+        )
+        parser.add_argument(
+            "--remotetucsonuserpass",
+            help='Specifies password for the user for remote monitoring at Tucson ("tucson_control_room").',
+        )
+        parser.add_argument(
+            "--remoteslacuserpass",
+            help='Specifies password for the user for remote monitoring at SLAC ("slac_control_room").',
+        )
 
     def handle(self, *args, **options):
         """Execute the command, which creates the users.
@@ -124,9 +169,12 @@ class Command(BaseCommand):
             Dictionary with addittional
             keyword arguments (indexed by keys in the dict)
         """
-        admin_password = options["adminpass"]
-        user_password = options["userpass"]
-        cmd_password = options["cmduserpass"]
+        admin_password = options.get("adminpass")
+        user_password = options.get("userpass")
+        cmd_password = options.get("cmduserpass")
+        remote_base_password = options.get("remotebaseuserpass")
+        remote_tucson_password = options.get("remotetucsonuserpass")
+        remote_slac_password = options.get("remoteslacuserpass")
 
         # Create groups
         ui_framework_group = self._create_ui_framework_group()
@@ -151,6 +199,25 @@ class Command(BaseCommand):
             cmd_user = self._create_user(cmd_user_username, cmd_password)
             ui_framework_group.user_set.add(cmd_user)
             cmd_group.user_set.add(cmd_user)
+
+        # Create remote users
+        if remote_base_password is not None:
+            remote_base_user = self._create_user(
+                remote_base_username, remote_base_password
+            )
+            ui_framework_group.user_set.add(remote_base_user)
+
+        if remote_tucson_password is not None:
+            remote_tucson_user = self._create_user(
+                remote_tucson_username, remote_tucson_password
+            )
+            ui_framework_group.user_set.add(remote_tucson_user)
+
+        if remote_slac_password is not None:
+            remote_slac_user = self._create_user(
+                remote_slac_username, remote_slac_password
+            )
+            ui_framework_group.user_set.add(remote_slac_user)
 
     def _create_user(self, username, password):
         """Create a given user, if it does not exist. Return it anyway.

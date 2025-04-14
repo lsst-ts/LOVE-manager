@@ -24,6 +24,9 @@ from api.management.commands.createusers import (
     admin_username,
     cmd_groupname,
     cmd_user_username,
+    remote_base_username,
+    remote_slac_username,
+    remote_tucson_username,
     user_username,
 )
 from django.contrib.auth.models import Group, User
@@ -47,11 +50,14 @@ class CreateusersTestCase(TestCase):
             "adminpass": "admin_pass",
             "userpass": "user_pass",
             "cmduserpass": "cmd_pass",
+            "remotebaseuserpass": "remote_base_pass",
+            "remotetucsonuserpass": "remote_tucson_pass",
+            "remoteslacuserpass": "remote_slac_pass",
         }
         command.handle(*[], **options)
         # Assert:
         self.assertEqual(
-            User.objects.count(), old_users_num + 3, "There are no new users"
+            User.objects.count(), old_users_num + 6, "There are no new users"
         )
         self.assertEqual(
             Group.objects.count(), old_groups_num + 2, "There is no new group"
@@ -59,13 +65,30 @@ class CreateusersTestCase(TestCase):
         admin = User.objects.filter(username=admin_username).first()
         user = User.objects.filter(username=user_username).first()
         cmd_user = User.objects.filter(username=cmd_user_username).first()
-        cmd_group = Group.objects.filter(name=cmd_groupname).first()
+
+        base_control_room = User.objects.filter(username=remote_base_username).first()
+        tucson_control_room = User.objects.filter(
+            username=remote_tucson_username
+        ).first()
+        slac_control_room = User.objects.filter(username=remote_slac_username).first()
+
         self.assertTrue(admin, "The {} user was not created".format(admin_username))
         self.assertTrue(user, "The {} user was not created".format(user_username))
         self.assertTrue(
             cmd_user, "The {} user was not created".format(cmd_user_username)
         )
-        self.assertTrue(cmd_group, "The {} group was not created".format(cmd_groupname))
+        self.assertTrue(
+            base_control_room,
+            "The {} user was not created".format(remote_base_username),
+        )
+        self.assertTrue(
+            tucson_control_room,
+            "The {} user was not created".format(remote_tucson_username),
+        )
+        self.assertTrue(
+            slac_control_room,
+            "The {} user was not created".format(remote_slac_username),
+        )
         self.assertTrue(
             admin.has_perm(cmd_permission_codename),
             "{} user should have cmd_execute permissions".format(admin_username),
@@ -78,6 +101,27 @@ class CreateusersTestCase(TestCase):
             cmd_user.has_perm(cmd_permission_codename),
             "{} user should have cmd_execute permissions".format(cmd_user_username),
         )
+        self.assertFalse(
+            base_control_room.has_perm(cmd_permission_codename),
+            "{} user should not have cmd_execute permissions".format(
+                remote_base_username
+            ),
+        )
+        self.assertFalse(
+            tucson_control_room.has_perm(cmd_permission_codename),
+            "{} user should not have cmd_execute permissions".format(
+                remote_tucson_username
+            ),
+        )
+        self.assertFalse(
+            slac_control_room.has_perm(cmd_permission_codename),
+            "{} user should not have cmd_execute permissions".format(
+                remote_slac_username
+            ),
+        )
+
+        cmd_group = Group.objects.filter(name=cmd_groupname).first()
+        self.assertTrue(cmd_group, "The {} group was not created".format(cmd_groupname))
 
     def test_command_sets_permissions_even_if_users_already_existed(self):
         """Test that the command does not fail if the users already existed."""
@@ -99,11 +143,29 @@ class CreateusersTestCase(TestCase):
             email="{}@fake.com".format(cmd_user_username),
             password="dummy-pass",
         )
+        User.objects.create_user(
+            username=remote_base_username,
+            email="{}@fake.com".format(remote_base_username),
+            password="dummy-pass",
+        )
+        User.objects.create_user(
+            username=remote_tucson_username,
+            email="{}@fake.com".format(remote_tucson_username),
+            password="dummy-pass",
+        )
+        User.objects.create_user(
+            username=remote_slac_username,
+            email="{}@fake.com".format(remote_slac_username),
+            password="dummy-pass",
+        )
         # Act:
         options = {
             "adminpass": "admin_pass",
             "userpass": "user_pass",
             "cmduserpass": "cmd_pass",
+            "remotebaseuserpass": "remote_base_pass",
+            "remotetucsonuserpass": "remote_tucson_pass",
+            "remoteslacuserpass": "remote_slac_pass",
         }
         command.handle(*[], **options)
         # Assert:
@@ -113,8 +175,12 @@ class CreateusersTestCase(TestCase):
         admin = User.objects.filter(username=admin_username).first()
         user = User.objects.filter(username=user_username).first()
         cmd_user = User.objects.filter(username=cmd_user_username).first()
-        cmd_group = Group.objects.filter(name=cmd_groupname).first()
-        self.assertTrue(cmd_group, "The {} group was not created".format(cmd_groupname))
+        base_control_room = User.objects.filter(username=remote_base_username).first()
+        tucson_control_room = User.objects.filter(
+            username=remote_tucson_username
+        ).first()
+        slac_control_room = User.objects.filter(username=remote_slac_username).first()
+
         self.assertTrue(
             admin.has_perm(cmd_permission_codename),
             "{} user should have cmd_execute permissions".format(admin_username),
@@ -126,4 +192,44 @@ class CreateusersTestCase(TestCase):
         self.assertTrue(
             cmd_user.has_perm(cmd_permission_codename),
             "{} user should have cmd_execute permissions".format(cmd_user_username),
+        )
+        self.assertFalse(
+            base_control_room.has_perm(cmd_permission_codename),
+            "{} user should not have cmd_execute permissions".format(
+                remote_base_username
+            ),
+        )
+        self.assertFalse(
+            tucson_control_room.has_perm(cmd_permission_codename),
+            "{} user should not have cmd_execute permissions".format(
+                remote_tucson_username
+            ),
+        )
+        self.assertFalse(
+            slac_control_room.has_perm(cmd_permission_codename),
+            "{} user should not have cmd_execute permissions".format(
+                remote_slac_username
+            ),
+        )
+
+        cmd_group = Group.objects.filter(name=cmd_groupname).first()
+        self.assertTrue(cmd_group, "The {} group was not created".format(cmd_groupname))
+
+    def test_command_doesnt_create_users_if_not_specified(self):
+        """Test that the command does not create users if not specified."""
+        # Arrange:
+        old_users_num = User.objects.count()
+        old_groups_num = Group.objects.count()
+        command = Command()
+        # Act:
+        options = {}
+        command.handle(*[], **options)
+        # Assert:
+        self.assertEqual(
+            User.objects.count(),
+            old_users_num,
+            "There are new users even when not specified",
+        )
+        self.assertEqual(
+            Group.objects.count(), old_groups_num + 2, "There is no new group"
         )
