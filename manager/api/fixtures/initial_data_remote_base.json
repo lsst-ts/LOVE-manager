@@ -17,8 +17,8 @@
       "creation_timestamp": "2025-03-26T00:00:00.000Z",
       "update_timestamp": "2025-03-26T00:00:00.000Z",
       "user": 1,
-      "file_name": "all_alarms.json",
-      "config_file": "https://base-lsp.lsst.codes/love/manager/media/configs/all-alarms.json"
+      "file_name": "serious-alarms.json",
+      "config_file": "https://base-lsp.lsst.codes/love/manager/media/configs/serious-alarms.json"
     }
   },
   {
@@ -28,7 +28,7 @@
       "creation_timestamp": "2025-03-26T00:00:00.000Z",
       "update_timestamp": "2025-03-26T00:00:00.000Z",
       "user": 1,
-      "file_name": "no_alarms.json",
+      "file_name": "no-alarms.json",
       "config_file": "https://base-lsp.lsst.codes/love/manager/media/configs/no-alarms.json"
     }
   },
