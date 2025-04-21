@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.3.1
+------
+
+* Add serious alarms config file reference to ui-framework remote fixtures for summit, base and tucson. `<https://github.com/lsst-ts/LOVE-manager/pull/318>`_
+
 v7.3.0
 ------
 
