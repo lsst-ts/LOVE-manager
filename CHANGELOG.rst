@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.3.2
+------
+
+* Add new ESS 114, 115, 116 and 116 for M1M3 thermal scanners to Summit and BTS. `<https://github.com/lsst-ts/LOVE-manager/pull/319>`_
+
 v7.3.1
 ------
 
