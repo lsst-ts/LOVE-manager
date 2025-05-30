@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.3.3
+------
+
+* Add ESS:2 and MTReflector to sumary state views on BTS and Summit. `<https://github.com/lsst-ts/LOVE-manager/pull/320>`_
+
 v7.3.2
 ------
 

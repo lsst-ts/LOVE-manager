@@ -523,6 +523,10 @@
                     },
                     {
                       "name": "ESS",
+                      "salindex": 2
+                    },
+                    {
+                      "name": "ESS",
                       "salindex": 104
                     },
                     {
@@ -774,6 +778,10 @@
                     {
                       "name": "Electrometer",
                       "salindex": 103
+                    },
+                    {
+                      "name": "MTReflector",
+                      "salindex": 0
                     }
                   ],
                   "Support & Monitoring": [
