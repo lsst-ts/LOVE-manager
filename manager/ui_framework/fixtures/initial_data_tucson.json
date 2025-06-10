@@ -514,10 +514,6 @@
                       "salindex": 2
                     },
                     {
-                      "name": "EPM",
-                      "salindex": 1
-                    },
-                    {
                       "name": "EAS",
                       "salindex": 0
                     },
@@ -618,10 +614,6 @@
                     {
                       "name": "OCPS",
                       "salindex": 2
-                    },
-                    {
-                      "name": "OCPS",
-                      "salindex": 101
                     },
                     {
                       "name": "Watcher",
