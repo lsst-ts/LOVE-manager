@@ -514,16 +514,16 @@
                       "salindex": 2
                     },
                     {
-                      "name": "EPM",
-                      "salindex": 1
-                    },
-                    {
                       "name": "EAS",
                       "salindex": 0
                     },
                     {
                       "name": "ESS",
                       "salindex": 1
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 2
                     },
                     {
                       "name": "ESS",
@@ -567,6 +567,22 @@
                     },
                     {
                       "name": "ESS",
+                      "salindex": 114
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 115
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 116
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 117
+                    },
+                    {
+                      "name": "ESS",
                       "salindex": 201
                     },
                     {
@@ -584,6 +600,22 @@
                     {
                       "name": "ESS",
                       "salindex": 301
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 303
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 304
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 305
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 306
                     }
                   ],
                   "HigherLevel": [
@@ -618,10 +650,6 @@
                     {
                       "name": "OCPS",
                       "salindex": 2
-                    },
-                    {
-                      "name": "OCPS",
-                      "salindex": 101
                     },
                     {
                       "name": "Watcher",
@@ -738,6 +766,10 @@
                       "salindex": 0
                     },
                     {
+                      "name": "TunableLaser",
+                      "salindex": 0
+                    },
+                    {
                       "name": "LinearStage",
                       "salindex": 101
                     },
@@ -760,6 +792,14 @@
                     {
                       "name": "Electrometer",
                       "salindex": 102
+                    },
+                    {
+                      "name": "Electrometer",
+                      "salindex": 103
+                    },
+                    {
+                      "name": "MTReflector",
+                      "salindex": 0
                     }
                   ]
                 }

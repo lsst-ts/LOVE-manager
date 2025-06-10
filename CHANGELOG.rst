@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.3.4
+------
+
+* Update list of CSCs for the SummaryState view on the tucson ui-framework fixture. `<https://github.com/lsst-ts/LOVE-manager/pull/322>`_
+
 v7.3.3
 ------
 
