@@ -523,6 +523,10 @@
                     },
                     {
                       "name": "ESS",
+                      "salindex": 2
+                    },
+                    {
+                      "name": "ESS",
                       "salindex": 104
                     },
                     {
@@ -563,6 +567,22 @@
                     },
                     {
                       "name": "ESS",
+                      "salindex": 114
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 115
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 116
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 117
+                    },
+                    {
+                      "name": "ESS",
                       "salindex": 201
                     },
                     {
@@ -580,6 +600,22 @@
                     {
                       "name": "ESS",
                       "salindex": 301
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 303
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 304
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 305
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 306
                     }
                   ],
                   "HigherLevel": [
@@ -730,6 +766,10 @@
                       "salindex": 0
                     },
                     {
+                      "name": "TunableLaser",
+                      "salindex": 0
+                    },
+                    {
                       "name": "LinearStage",
                       "salindex": 101
                     },
@@ -752,6 +792,14 @@
                     {
                       "name": "Electrometer",
                       "salindex": 102
+                    },
+                    {
+                      "name": "Electrometer",
+                      "salindex": 103
+                    },
+                    {
+                      "name": "MTReflector",
+                      "salindex": 0
                     }
                   ]
                 }
