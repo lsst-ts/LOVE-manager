@@ -1513,6 +1513,57 @@ def ole_send_night_report(request, *args, **kwargs):
     return Response(response.json(), status=response.status_code)
 
 
+@api_view(["GET"])
+@permission_classes((IsAuthenticated,))
+def get_jira_tickets_report(request, *args, **kwargs):
+    """Get JIRA observation issues for a given obs day
+
+    Params
+    ------
+    request: `Request`
+        The Request object.
+
+    args : `list`
+        List of addittional arguments. Currently unused.
+
+    kwargs : `dict`
+        Dictionary with request arguments. Currently using the following keys:
+            project (required): The project for which to get the JIRA issues.
+
+    Returns
+    -------
+    list
+        List of JIRA observation issues for the given obs day.
+    """
+    project = kwargs.get("project", None)
+    if not project:
+        return Response(
+            {"error": "project parameter is required"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    obs_day = request.query_params.get("day_obs", None)
+    if not obs_day:
+        obs_day = get_obsday_from_tai(astropy.time.Time.now().tai.datetime)
+
+    if project == "OBS":
+        try:
+            issues = get_jira_obs_report({"day_obs": obs_day, "project": project})
+            return Response(
+                issues,
+                status=status.HTTP_200_OK,
+            )
+        except Exception as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+    return Response(
+        {"error": "Invalid project"},
+        status=status.HTTP_400_BAD_REQUEST,
+    )
+
+
 class NightReportViewSet(viewsets.ViewSet):
     """
     A viewset that provides

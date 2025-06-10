@@ -110,6 +110,11 @@ urlpatterns = [
         api.views.ole_send_night_report,
         name="OLE-nightreport-send-report",
     ),
+    path(
+        "jira/report/<project>/",
+        api.views.get_jira_tickets_report,
+        name="Jira-tickets-report",
+    ),
 ]
 router.register("user", UserViewSet)
 router.register("configfile", ConfigFileViewSet)
