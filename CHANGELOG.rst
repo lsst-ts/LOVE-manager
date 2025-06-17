@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.3.5
+------
+
+* Add new ESS 118, 119 and 120 to ui-framework fixtures on summit, base and tucson. `<https://github.com/lsst-ts/LOVE-manager/pull/323>`_
+
 v7.3.4
 ------
 
