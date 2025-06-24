@@ -983,16 +983,16 @@ def arrange_nightreport_email(report, plain=False):
     Notes:
     ------
     The expected parameters of the report dictionary are the following:
-    - telescope: The telescope used during the observing night.
-    Either "AuxTel" or "Simonyi"
     - day_obs: The observing day in the format "YYYYMMDD"
-    - telescope: The telescope used during the observing night.
-    Either "AuxTel" or "Simonyi"
     - summary: The summary of the observing night
-    - telescope_status: The final telescope status at the end of the night
+    - weather: The weather summary of the observing night
+    - maintel_summary: The Simonyi telescope summary of the observing night
+    - auxtel_summary: The AuxTel telescope summary of the observing night
     - confluence_url: The URL of the confluence page with the full report
     - obs_issues: The list of OBS issues during the night
     - observers_crew: The list of observers that participated during the night
+    - observatory_status: The status of the observatory during the night
+    - cscs_status: The status of the CSCs during the night
 
     Returns
     -------
@@ -1001,13 +1001,16 @@ def arrange_nightreport_email(report, plain=False):
     """
 
     expected_keys = [
-        "telescope",
         "day_obs",
         "summary",
-        "telescope_status",
+        "weather",
+        "maintel_summary",
+        "auxtel_summary",
         "confluence_url",
         "obs_issues",
         "observers_crew",
+        "observatory_status",
+        "cscs_status",
     ]
     missing_keys = [key for key in expected_keys if key not in report]
     if missing_keys:
@@ -1025,20 +1028,36 @@ def arrange_nightreport_email(report, plain=False):
     url_rolex = f"https://summit-lsp.lsst.codes/rolex?log_date={day_added}"
 
     SUMMARY_TITLE = "Summary:"
-    FINAL_TELESCOPE_STATUS_TITLE = "Final telescope status:"
+    WEATHER_TITLE = "Weather summary:"
+    MAINTEL_SUMMARY_TITLE = "Simonyi summary:"
+    AUXTEL_SUMMARY_TITLE = "AuxTel summary:"
     ADDITIONAL_RESOURCES_TITLE = "Additional resources:"
     SIGNED_MSG = "Submitted by:"
     LINK_MSG_OBS = "OBS fault reports from last 24 hours:"
-    LINK_MSG_CONFLUENCE = f"Link to {report['telescope']} Log Confluence Page:"
+    LINK_MSG_CONFLUENCE = "Link to night plan page:"
     LINK_MSG_ROLEX = "Link to detailed night log entries (requires Summit VPN):"
     DETAILED_ISSUE_REPORT_TITLE = "Detailed issue report:"
+    OBSERVATORY_STATUS_TITLE = "Observatory status:"
+    CSCS_STATUS_TITLE = "CSCs status:"
 
     if plain:
         plain_content = f"""{SUMMARY_TITLE}
 {report["summary"]}
 
-{FINAL_TELESCOPE_STATUS_TITLE}
-{report["telescope_status"]}
+{WEATHER_TITLE}
+{report["weather"]}
+
+{MAINTEL_SUMMARY_TITLE}
+{report["maintel_summary"]}
+
+{AUXTEL_SUMMARY_TITLE}
+{report["auxtel_summary"]}
+
+{OBSERVATORY_STATUS_TITLE}
+{parse_observatory_status_to_plain_text(report["observatory_status"])}
+
+{CSCS_STATUS_TITLE}
+{parse_cscs_status_to_plain_text(report["cscs_status"])}
 
 {ADDITIONAL_RESOURCES_TITLE}
 - {LINK_MSG_OBS} {url_jira_obs_tickets}
@@ -1082,9 +1101,29 @@ def arrange_nightreport_email(report, plain=False):
             {report["summary"].replace(new_line_character, '<br>')}
         </p>
         <p>
-            {FINAL_TELESCOPE_STATUS_TITLE}
+            {WEATHER_TITLE}
             <br>
-            {report["telescope_status"].replace(new_line_character, '<br>')}
+            {report["weather"].replace(new_line_character, '<br>')}
+        </p>
+        <p>
+            {MAINTEL_SUMMARY_TITLE}
+            <br>
+            {report["maintel_summary"].replace(new_line_character, '<br>')}
+        </p>
+        <p>
+            {AUXTEL_SUMMARY_TITLE}
+            <br>
+            {report["auxtel_summary"].replace(new_line_character, '<br>')}
+        </p>
+        <p>
+            {OBSERVATORY_STATUS_TITLE}
+            <br>
+            {parse_observatory_status_to_html_table(report["observatory_status"])}
+        </p>
+        <p>
+            {CSCS_STATUS_TITLE}
+            <br>
+            {parse_cscs_status_to_html_table(report["cscs_status"])}
         </p>
         <p>
             {ADDITIONAL_RESOURCES_TITLE}
@@ -1222,3 +1261,188 @@ def parse_obs_issue_systems(issue):
     systemsPayload = issue["fields"][OBS_SYSTEMS_FIELD]["selection"][0]
     systems = [system["name"] for system in systemsPayload]
     return systems
+
+
+def parse_observatory_status_to_html_table(observatory_status):
+    """Parse the observatory status to an HTML table.
+
+    Parameters
+    ----------
+    observatory_status : `dict`
+        Dict with observatory status with the following keys:
+        - simonyiAzimuth
+        - simonyiElevation
+        - simonyiDomeAzimuth
+        - simonyiRotator
+        - simonyiMirrorCoversState
+        - simonyiOilSupplySystemState
+        - simonyiPowerSupplySystemState
+        - simonyiLockingPinsSystemState
+        - auxtelAzimuth
+        - auxtelElevation
+        - auxtelDomeAzimuth
+        - auxtelMirrorCoversState
+
+    Returns
+    -------
+    str
+        The observatory status in HTML table format
+    """
+    maintel_params = [
+        "simonyiAzimuth",
+        "simonyiElevation",
+        "simonyiDomeAzimuth",
+        "simonyiRotator",
+        "simonyiMirrorCoversState",
+        "simonyiOilSupplySystemState",
+        "simonyiPowerSupplySystemState",
+        "simonyiLockingPinsSystemState",
+    ]
+    auxtel_params = [
+        "auxtelAzimuth",
+        "auxtelElevation",
+        "auxtelDomeAzimuth",
+        "auxtelMirrorCoversState",
+    ]
+
+    html_table = """
+    <table style="width:100%">
+        <tr>
+            <th>Param</th>
+            <th>State</th>
+        </tr>
+    """
+
+    for param in maintel_params + auxtel_params:
+        html_table += f"""
+        <tr>
+            <td>{param}</td>
+            <td>{observatory_status[param]}</td>
+        </tr>
+        """
+
+    html_table += "</table>"
+    return html_table
+
+
+def parse_observatory_status_to_plain_text(observatory_status):
+    """Parse the observatory status to plain text.
+
+    Parameters
+    ----------
+    observatory_status : `dict`
+        Dict with observatory status with the following keys:
+        - simonyiAzimuth
+        - simonyiElevation
+        - simonyiDomeAzimuth
+        - simonyiRotator
+        - simonyiMirrorCoversState
+        - simonyiOilSupplySystemState
+        - simonyiPowerSupplySystemState
+        - simonyiLockingPinsSystemState
+        - auxtelAzimuth
+        - auxtelElevation
+        - auxtelDomeAzimuth
+        - auxtelMirrorCoversState
+
+    Returns
+    -------
+    str
+        The observatory status in plain text format
+    """
+    maintel_params_units = {
+        "simonyiAzimuth": "°",
+        "simonyiElevation": "°",
+        "simonyiDomeAzimuth": "°",
+        "simonyiRotator": "°",
+    }
+    auxtel_params_units = {
+        "auxtelAzimuth": "°",
+        "auxtelElevation": "°",
+        "auxtelDomeAzimuth": "°",
+    }
+
+    plain_text = ""
+    plain_text += "Simonyi Telescope: "
+    plain_text += f"el = {observatory_status['simonyiElevation']}{maintel_params_units['simonyiElevation']}, "
+    plain_text += f"az = {observatory_status['simonyiAzimuth']}{maintel_params_units['simonyiAzimuth']}, "
+    plain_text += (
+        f"dome az = {observatory_status['simonyiDomeAzimuth']}"
+        f"{maintel_params_units['simonyiDomeAzimuth']}, "
+    )
+    plain_text += f"rotator = {observatory_status['simonyiRotator']}{maintel_params_units['simonyiRotator']}."
+    plain_text += "\n"
+    plain_text += f"Mirror covers: {observatory_status['simonyiMirrorCoversState']}, "
+    plain_text += (
+        f"Oil supply system: {observatory_status['simonyiOilSupplySystemState']}, "
+    )
+    plain_text += (
+        f"Power supply system: {observatory_status['simonyiPowerSupplySystemState']}, "
+    )
+    plain_text += (
+        f"Locking pins system: {observatory_status['simonyiLockingPinsSystemState']}.\n"
+    )
+    plain_text += "AuxTel Telescope: "
+    plain_text += f"el = {observatory_status['auxtelElevation']}{auxtel_params_units['auxtelElevation']}, "
+    plain_text += f"az = {observatory_status['auxtelAzimuth']}{auxtel_params_units['auxtelAzimuth']}, "
+    plain_text += (
+        f"dome az = {observatory_status['auxtelDomeAzimuth']}"
+        f"{auxtel_params_units['auxtelDomeAzimuth']}."
+    )
+    plain_text += "\n"
+    plain_text += f"Mirror covers: {observatory_status['auxtelMirrorCoversState']}.\n"
+
+    return plain_text.strip()
+
+
+def parse_cscs_status_to_html_table(cscs_status):
+    """Parse the CSCS status to an HTML table.
+
+    Parameters
+    ----------
+    cscs_status : `dict`
+        Dict with CSCs status.
+
+    Returns
+    -------
+    str
+        The CSCs status in HTML table format
+    """
+    html_table = """
+    <table style="width:100%">
+        <tr>
+            <th>CSC</th>
+            <th>SummaryState</th>
+        </tr>
+    """
+
+    for status in cscs_status:
+        html_table += f"""
+        <tr>
+            <td>{status}</td>
+            <td>{cscs_status[status]}</td>
+        </tr>
+        """
+
+    html_table += "</table>"
+    return html_table
+
+
+def parse_cscs_status_to_plain_text(cscs_status):
+    """Parse the CSCS status to plain text.
+
+    Parameters
+    ----------
+    cscs_status : `dict`
+        Dict of CSCs status
+
+    Returns
+    -------
+    str
+        The CSCs status in plain text format
+    """
+    plain_text = ""
+    for status in cscs_status:
+        plain_text += f"{status}: {cscs_status[status]}\n"
+
+    return plain_text.strip()
