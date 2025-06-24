@@ -705,6 +705,7 @@ def get_jira_obs_report(request_data):
                 ),
                 "reporter": issue["fields"]["creator"]["displayName"],
                 "created": issue["fields"]["created"].split(".")[0],
+                "systems": parse_obs_issue_systems(issue),
             }
             for issue in issues
         ]
@@ -1202,3 +1203,22 @@ def parse_obs_issues_array_to_plain_text(obs_issues):
         plain_text += f"Created by {issue.get('reporter')}\n"
 
     return plain_text
+
+
+def parse_obs_issue_systems(issue):
+    """Parse the OBS issue systems selection to a list of strings
+    containing the selected systems.
+
+    Parameters
+    ----------
+    issue : `dict`
+        The OBS issue got from the Jira API response.
+
+    Returns
+    -------
+    list
+        List of strings with the selected systems.
+    """
+    systemsPayload = issue["fields"][OBS_SYSTEMS_FIELD]["selection"][0]
+    systems = [system["name"] for system in systemsPayload]
+    return systems
