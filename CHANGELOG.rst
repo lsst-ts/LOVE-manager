@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.4.0
+------
+
+* Add Jira tickets and EFD most recent timeseries query endpoints. `<https://github.com/lsst-ts/LOVE-manager/pull/325>`_
+
 v7.3.5
 ------
 
