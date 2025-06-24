@@ -1501,7 +1501,13 @@ def ole_send_night_report(request, *args, **kwargs):
         )
 
     # Trim white spaces from human written fields from the report
-    for key in ["summary", "telescope_status", "confluence_url"]:
+    for key in [
+        "summary",
+        "weather",
+        "maintel_summary",
+        "auxtel_summary",
+        "confluence_url",
+    ]:
         report[key] = report[key].strip()
 
     # Get JIRA observation issues
@@ -1515,8 +1521,21 @@ def ole_send_night_report(request, *args, **kwargs):
 
     # Arrange HMTl email content
     try:
-        html_content = arrange_nightreport_email(report)
-        plain_content = arrange_nightreport_email(report, plain=True)
+        html_content = arrange_nightreport_email(
+            {
+                **report,
+                "observatory_status": json_data["observatory_status"],
+                "cscs_status": json_data["cscs_status"],
+            }
+        )
+        plain_content = arrange_nightreport_email(
+            {
+                **report,
+                "observatory_status": json_data["observatory_status"],
+                "cscs_status": json_data["cscs_status"],
+            },
+            plain=True,
+        )
     except Exception as e:
         return Response(
             {"error": str(e)},
@@ -1524,7 +1543,7 @@ def ole_send_night_report(request, *args, **kwargs):
         )
 
     # Handle email sending
-    subject = f"{get_obsday_iso(report['day_obs'])} {report['telescope']} Night Log"
+    subject = f"Rubin Observatory Night Report {get_obsday_iso(report['day_obs'])}"
     email_sent = send_smtp_email(
         os.environ.get("NIGHTREPORT_MAIL_ADDRESS", "rubin-night-log@lists.lsst.org"),
         subject,
