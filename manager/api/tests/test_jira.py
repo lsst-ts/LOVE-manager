@@ -17,18 +17,24 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-
+import json
 import os
 import random
+from datetime import datetime, timedelta, timezone
 from unittest.mock import patch
-from urllib.parse import quote
+from urllib.parse import quote, urlencode
 
 import pytest
 import requests
 import rest_framework
+from api.models import Token
+from django.contrib.auth.models import User
 from django.test import TestCase, override_settings
+from django.urls import reverse
+from rest_framework.test import APIClient
 
 from manager.utils import (
+    OBS_SYSTEMS_FIELD,
     OBS_TIME_LOST_FIELD,
     get_jira_obs_report,
     handle_jira_payload,
@@ -535,6 +541,9 @@ class JiraTestCase(TestCase):
                     "fields": {
                         "summary": "Issue title",
                         OBS_TIME_LOST_FIELD: 13.6,
+                        OBS_SYSTEMS_FIELD: json.loads(
+                            JIRA_OBS_SYSTEMS_SELECTION_EXAMPLE
+                        ),
                         "creator": {"displayName": "user"},
                         "created": "2024-11-27T12:00:00.00000",
                     },
@@ -615,3 +624,281 @@ class JiraTestCase(TestCase):
         }
         with pytest.raises(ValueError):
             get_jira_obs_report(request_data)
+
+
+class JiraAPITestCase(TestCase):
+    def setUp(self):
+        """Define the test suite setup."""
+        # Arrange
+        self.client = APIClient()
+
+        user_normal_obj = {
+            "username": "user-normal",
+            "password": "password",
+            "email": "test@user.cl",
+            "first_name": "user-normal",
+            "last_name": "",
+        }
+
+        self.user_normal = User.objects.create_user(
+            username=user_normal_obj["username"],
+            password=user_normal_obj["password"],
+            email=user_normal_obj["email"],
+            first_name=user_normal_obj["first_name"],
+            last_name=user_normal_obj["last_name"],
+        )
+        self.token_user_normal = Token.objects.create(user=self.user_normal)
+
+        self.headers = {
+            "Authorization": f"Basic {os.environ.get('JIRA_API_TOKEN')}",
+            "content-type": "application/json",
+        }
+
+    def test_jira_tickets_report(self):
+        """Test jira tickets report endpoint."""
+        # Arrange:
+        mock_jira_patcher = patch("requests.get")
+        mock_jira_client = mock_jira_patcher.start()
+
+        jira_project = "OBS"
+
+        url_call_1 = (
+            f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/myself"
+        )
+        response_1 = requests.Response()
+        response_1.status_code = 200
+        response_1.json = lambda: {
+            "timeZone": "America/Phoenix",
+        }
+
+        # American/Phoenix timezone is UTC-7
+        day_obs = "20241127"
+        jql_query = (
+            f"project = '{jira_project}' "
+            "AND created >= '2024-11-27 05:00' "
+            "AND created <= '2024-11-28 05:00'"
+        )
+        url_call_2 = (
+            f"https://{os.environ.get('JIRA_API_HOSTNAME')}"
+            f"/rest/api/latest/search?jql={quote(jql_query)}"
+        )
+        response_2 = requests.Response()
+        response_2.status_code = 200
+        response_2.json = lambda: {
+            "issues": [
+                {
+                    "key": "LOVE-XX",
+                    "fields": {
+                        "summary": "Issue title",
+                        OBS_TIME_LOST_FIELD: 13.6,
+                        OBS_SYSTEMS_FIELD: json.loads(
+                            JIRA_OBS_SYSTEMS_SELECTION_EXAMPLE
+                        ),
+                        "creator": {"displayName": "user"},
+                        "created": "2024-11-27T12:00:00.00000",
+                    },
+                }
+            ]
+        }
+
+        mock_jira_client.side_effect = [response_1, response_2]
+
+        self.client.credentials(
+            HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
+        )
+
+        # Act:
+        base_url = reverse("Jira-tickets-report", kwargs={"project": jira_project})
+        query_params = {"day_obs": day_obs}
+        url = f"{base_url}?{urlencode(query_params)}"
+        response = self.client.get(url, format="json")
+
+        mock_jira_client.assert_any_call(url_call_1, headers=self.headers)
+        mock_jira_client.assert_any_call(url_call_2, headers=self.headers)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+
+        mock_jira_patcher.stop()
+
+    def test_jira_tickets_report_without_day_obs(self):
+        """Test jira tickets report endpoint
+        wihout passing a day_obs query param. This means the current
+        day_obs will be used."""
+        # Arrange:
+        mock_jira_patcher = patch("requests.get")
+        mock_jira_client = mock_jira_patcher.start()
+
+        jira_project = "OBS"
+
+        url_call_1 = (
+            f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/myself"
+        )
+        response_1 = requests.Response()
+        response_1.status_code = 200
+        response_1.json = lambda: {
+            "timeZone": "America/Phoenix",
+        }
+
+        # Create a datetime object for the current date at 12:00 UTC
+        twelve_utc = datetime.now(timezone.utc).replace(
+            hour=12, minute=0, second=0, microsecond=0
+        )
+        next_day = twelve_utc + timedelta(days=1)
+        twelve_utc_day = twelve_utc.strftime("%Y-%m-%d")
+        next_day_day = next_day.strftime("%Y-%m-%d")
+
+        # American/Phoenix timezone is UTC-7
+        jql_query = (
+            f"project = '{jira_project}' "
+            f"AND created >= '{twelve_utc_day} 05:00' "
+            f"AND created <= '{next_day_day} 05:00'"
+        )
+        url_call_2 = (
+            f"https://{os.environ.get('JIRA_API_HOSTNAME')}"
+            f"/rest/api/latest/search?jql={quote(jql_query)}"
+        )
+        response_2 = requests.Response()
+        response_2.status_code = 200
+        response_2.json = lambda: {
+            "issues": [
+                {
+                    "key": "LOVE-XX",
+                    "fields": {
+                        "summary": "Issue title",
+                        OBS_TIME_LOST_FIELD: 13.6,
+                        OBS_SYSTEMS_FIELD: json.loads(
+                            JIRA_OBS_SYSTEMS_SELECTION_EXAMPLE
+                        ),
+                        "creator": {"displayName": "user"},
+                        "created": f"{twelve_utc_day}T12:00:00.00000",
+                    },
+                }
+            ]
+        }
+
+        mock_jira_client.side_effect = [response_1, response_2]
+
+        self.client.credentials(
+            HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
+        )
+
+        # Act:
+        url = reverse("Jira-tickets-report", kwargs={"project": jira_project})
+        response = self.client.get(url, format="json")
+
+        mock_jira_client.assert_any_call(url_call_1, headers=self.headers)
+        mock_jira_client.assert_any_call(url_call_2, headers=self.headers)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+
+        mock_jira_patcher.stop()
+
+    def test_jira_tickets_report_jira_fail(self):
+        """Test jira tickets report endpoint with fail response from Jira."""
+        # Arrange:
+        mock_jira_patcher = patch("requests.get")
+        mock_jira_client = mock_jira_patcher.start()
+
+        jira_project = "OBS"
+
+        url_call_1 = (
+            f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/myself"
+        )
+
+        # American/Phoenix timezone is UTC-7
+        day_obs = "20241127"
+        jql_query = (
+            f"project = '{jira_project}' "
+            "AND created >= '2024-11-27 05:00' "
+            "AND created <= '2024-11-28 05:00'"
+        )
+        url_call_2 = (
+            f"https://{os.environ.get('JIRA_API_HOSTNAME')}"
+            f"/rest/api/latest/search?jql={quote(jql_query)}"
+        )
+
+        failed_response = requests.Response()
+        failed_response.status_code = 500
+
+        response_1_good = requests.Response()
+        response_1_good.status_code = 200
+        response_1_good.json = lambda: {
+            "timeZone": "America/Phoenix",
+        }
+
+        response_2_good = requests.Response()
+        response_2_good.status_code = 200
+        response_2_good.json = lambda: {
+            "issues": [
+                {
+                    "key": "LOVE-XX",
+                    "fields": {
+                        "summary": "Issue title",
+                        OBS_TIME_LOST_FIELD: 13.6,
+                        OBS_SYSTEMS_FIELD: json.loads(
+                            JIRA_OBS_SYSTEMS_SELECTION_EXAMPLE
+                        ),
+                        "creator": {"displayName": "user"},
+                        "created": "2024-11-27T12:00:00.00000",
+                    },
+                }
+            ]
+        }
+
+        self.client.credentials(
+            HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
+        )
+        base_url = reverse("Jira-tickets-report", kwargs={"project": jira_project})
+        query_params = {"day_obs": day_obs}
+        url = f"{base_url}?{urlencode(query_params)}"
+
+        # First response is bad and second is good
+        mock_jira_client.side_effect = [failed_response, response_2_good]
+
+        # Act:
+        response = self.client.get(url, format="json")
+
+        mock_jira_client.assert_any_call(url_call_1, headers=self.headers)
+
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(
+            response.data["error"],
+            f"Error getting user timezone from {os.environ.get('JIRA_API_HOSTNAME')}",
+        )
+
+        # First response is good and second is bad
+        mock_jira_client.side_effect = [response_1_good, failed_response]
+
+        # Act:
+        response = self.client.get(url, format="json")
+
+        mock_jira_client.assert_any_call(url_call_1, headers=self.headers)
+        mock_jira_client.assert_any_call(url_call_2, headers=self.headers)
+
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(
+            response.data["error"],
+            f"Error getting issues from {os.environ.get('JIRA_API_HOSTNAME')}",
+        )
+
+        mock_jira_patcher.stop()
+
+    def test_jira_tickets_report_invalid_project(self):
+        """Test jira tickets report endpoint with invalid project."""
+        # Arrange:
+        self.client.credentials(
+            HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
+        )
+        base_url = reverse("Jira-tickets-report", kwargs={"project": "INVALID"})
+
+        # Act:
+        response = self.client.get(base_url, format="json")
+
+        # Assert:
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data["error"],
+            "Invalid project",
+        )
