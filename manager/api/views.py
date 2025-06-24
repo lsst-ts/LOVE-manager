@@ -857,6 +857,40 @@ def query_efd_timeseries(request, *args, **kwargs):
 
 @api_view(["POST"])
 @permission_classes((IsAuthenticated,))
+def query_efd_most_recent_timeseries(request, *args, **kwargs):
+    """Queries most recent data from an EFD timeseries
+    by redirecting the request to the Commander
+
+    Params
+    ------
+    request: Request
+        The Request object
+        Dictionary with request arguments.
+        Request should contain the following:
+            topic_name (required): String specifying the topic name.
+            fields (required): Array[String] specifying the topic fields.
+            num: Int specifying the number of most recent records to retrieve.
+            efd_instance (required): The specific EFD instance to query
+    args: list
+        List of addittional arguments. Currently unused
+    kwargs: dict
+        Dict of additional arguments. Currently unused
+
+    Returns
+    -------
+    Response
+        The response and status code of the request to the LOVE-Commander
+    """
+    url = (
+        f"http://{os.environ.get('COMMANDER_HOSTNAME')}"
+        f":{os.environ.get('COMMANDER_PORT')}/efd/top_timeseries"
+    )
+    response = requests.post(url, json=request.data)
+    return Response(response.json(), status=response.status_code)
+
+
+@api_view(["POST"])
+@permission_classes((IsAuthenticated,))
 def query_efd_logs(request, *args, **kwargs):
     """Queries data from an EFD timeseries by
     redirecting the request to the Commander
