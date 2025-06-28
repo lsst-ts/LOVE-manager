@@ -105,9 +105,9 @@ def validate_token(request, *args, **kwargs):
     request: Request
         The Request object
     args: list
-        List of addittional arguments. Currenlty unused
+        List of additional arguments. Currenlty unused
     kwargs: dict
-        Dictionary with addittional keyword arguments
+        Dictionary with additional keyword arguments
         (indexed by keys in the dict), one optional parameter
         that could be expeted is `flags`
 
@@ -228,9 +228,9 @@ class CustomObtainAuthToken(ObtainAuthToken):
         request: Request
             The Request object
         args: list
-            List of addittional arguments. Currenlty unused
+            List of additional arguments. Currenlty unused
         kwargs: dict
-            Dictionary with addittional keyword arguments
+            Dictionary with additional keyword arguments
             (indexed by keys in the dict). Currenlty unused
 
         Returns
@@ -310,9 +310,9 @@ class CustomSwapAuthToken(ObtainAuthToken):
         request: Request
             The Request object
         args: list
-            List of addittional arguments. Currently unused
+            List of additional arguments. Currently unused
         kwargs: dict
-            Dictionary with addittional keyword arguments
+            Dictionary with additional keyword arguments
             (indexed by keys in the dict). Currenlty unused
 
         Returns
@@ -841,7 +841,7 @@ def query_efd_timeseries(request, *args, **kwargs):
                 resample conversion, e.g. '15min', '10S'
             efd_instance (required): The specific EFD instance to query
     args: list
-        List of addittional arguments. Currently unused
+        List of additional arguments. Currently unused
     kwargs: dict
         Dict of additional arguments. Currently unused
 
@@ -872,7 +872,7 @@ def query_efd_most_recent_timeseries(request, *args, **kwargs):
             num: Int specifying the number of most recent records to retrieve.
             efd_instance (required): The specific EFD instance to query
     args: list
-        List of addittional arguments. Currently unused
+        List of additional arguments. Currently unused
     kwargs: dict
         Dict of additional arguments. Currently unused
 
@@ -916,7 +916,7 @@ def query_efd_logs(request, *args, **kwargs):
                 }
             efd_instance (required): The specific EFD instance to query
     args: list
-        List of addittional arguments. Currently unused
+        List of additional arguments. Currently unused
     kwargs: dict
         Dict of additional arguments. Currently unused
 
@@ -964,7 +964,7 @@ def tcs_aux_command(request, *args, **kwargs):
     request: Request
         The Request object
     args: list
-        List of addittional arguments. Currently unused
+        List of additional arguments. Currently unused
     kwargs: dict
         Dictionary with request arguments.
         Request should contain the following:
@@ -998,7 +998,7 @@ def tcs_aux_docstrings(request, *args, **kwargs):
     request: Request
         The Request object
     args: list
-        List of addittional arguments. Currently unused
+        List of additional arguments. Currently unused
     kwargs: dict
         Dictionary with request arguments. Currently unused
 
@@ -1025,7 +1025,7 @@ def tcs_main_command(request, *args, **kwargs):
     request: Request
         The Request object
     args: list
-        List of addittional arguments. Currently unused
+        List of additional arguments. Currently unused
     kwargs: dict
         Dictionary with request arguments.
         Request should contain the following:
@@ -1059,7 +1059,7 @@ def tcs_main_docstrings(request, *args, **kwargs):
     request: Request
         The Request object
     args: list
-        List of addittional arguments. Currently unused
+        List of additional arguments. Currently unused
     kwargs: dict
         Dictionary with request arguments. Currently unused
 
@@ -1471,7 +1471,7 @@ def ole_send_night_report(request, *args, **kwargs):
         The Request object
 
     args : `list`
-        List of addittional arguments. Currently unused.
+        List of additional arguments. Currently unused.
 
     kwargs : `dict`
         Dictionary with request arguments. Currently using the following keys:
@@ -1577,7 +1577,7 @@ def get_jira_tickets_report(request, *args, **kwargs):
         The Request object.
 
     args : `list`
-        List of addittional arguments. Currently unused.
+        List of additional arguments. Currently unused.
 
     kwargs : `dict`
         Dictionary with request arguments. Currently using the following keys:

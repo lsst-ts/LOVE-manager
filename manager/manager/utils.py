@@ -205,7 +205,7 @@ def upload_to_lfa(request, *args, **kwargs):
     request: Request
         The Request object
     args: list
-        List of addittional arguments. Currently unused
+        List of additional arguments. Currently unused
     kwargs: dict
         Dictionary with request arguments. Currently unused
 
