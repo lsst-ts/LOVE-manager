@@ -531,9 +531,10 @@ class NightReportTestCase(TestCase):
         self.token_user_normal = Token.objects.create(user=self.user_normal)
 
         self.payload = {
-            "telescope": "AuxTel",
-            "suummary": "summary",
-            "telescope_status": "telescope_status",
+            "summary": "summary",
+            "weather": "weather summary",
+            "maintel_summary": "maintel summary",
+            "auxtel_summary": "auxtel summary",
             "confluence_url": "https://localhost/confluence",
             "observers_crew": ["User1", "User2"],
         }
@@ -541,10 +542,11 @@ class NightReportTestCase(TestCase):
         self.response_report = {
             "id": "e75b07b6-a422-4cd7-99fc-95b0046645b0",
             "site_id": "base",
-            "telescope": "Simonyi",
             "day_obs": 0,
             "summary": "string",
-            "telescope_status": "string",
+            "weather": "string",
+            "maintel_summary": "string",
+            "auxtel_summary": "string",
             "confluence_url": "string",
             "user_id": "string",
             "user_agent": "string",
@@ -554,6 +556,29 @@ class NightReportTestCase(TestCase):
             "date_invalidated": None,
             "parent_id": None,
             "observers_crew": [],
+        }
+
+        self.send_report_payload = {
+            "observatory_status": {
+                "simonyiAzimuth": "0.00°",
+                "simonyiElevation": "0.00°",
+                "simonyiDomeAzimuth": "0.00°",
+                "simonyiRotator": "0.00°",
+                "simonyiMirrorCoversState": "UNKNOWN",
+                "simonyiOilSupplySystemState": "UNKNOWN",
+                "simonyiPowerSupplySystemState": "UNKNOWN",
+                "simonyiLockingPinsSystemState": "UNKNOWN",
+                "auxtelAzimuth": "0.00°",
+                "auxtelElevation": "0.00°",
+                "auxtelDomeAzimuth": "0.00°",
+                "auxtelMirrorCoversState": "UNKNOWN",
+            },
+            "cscs_status": {
+                "CSC:0": "UNKNOWN",
+                "CSC:1": "UNKNOWN",
+                "CSC:2": "UNKNOWN",
+                "CSC:3": "UNKNOWN",
+            },
         }
 
     def test_nightreport_list(self):
@@ -673,8 +698,8 @@ class NightReportTestCase(TestCase):
         )
 
         # Act:
-        url = reverse("OLE-nightreport-send-report", args=[1])
-        response = self.client.post(url)
+        url = reverse("OLE-nightreport-send-report", args=[self.response_report["id"]])
+        response = self.client.post(url, data=self.send_report_payload, format="json")
         self.assertEqual(response.status_code, 200)
 
         mock_ole_patcher_get.stop()
@@ -701,7 +726,7 @@ class NightReportTestCase(TestCase):
         )
 
         # Act:
-        url = reverse("OLE-nightreport-send-report", args=[1])
+        url = reverse("OLE-nightreport-send-report", args=[self.response_report["id"]])
         response = self.client.post(url)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data, {"error": "Night report already sent"})

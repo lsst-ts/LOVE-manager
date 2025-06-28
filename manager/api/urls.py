@@ -82,6 +82,11 @@ urlpatterns = [
     path("config", api.views.get_config, name="config"),
     path("config-set", api.views.set_config_selected, name="config-set"),
     path("efd/timeseries", api.views.query_efd_timeseries, name="EFD-timeseries"),
+    path(
+        "efd/top_timeseries",
+        api.views.query_efd_most_recent_timeseries,
+        name="EFD-top-timeseries",
+    ),
     path("efd/logmessages", api.views.query_efd_logs, name="EFD-logmessages"),
     path("efd/efd_clients", api.views.query_efd_clients, name="EFD-clients"),
     path(
@@ -109,6 +114,11 @@ urlpatterns = [
         "ole/nightreport/send/<pk>/",
         api.views.ole_send_night_report,
         name="OLE-nightreport-send-report",
+    ),
+    path(
+        "jira/report/<project>/",
+        api.views.get_jira_tickets_report,
+        name="Jira-tickets-report",
     ),
 ]
 router.register("user", UserViewSet)

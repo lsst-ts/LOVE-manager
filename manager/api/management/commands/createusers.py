@@ -120,7 +120,7 @@ class Command(BaseCommand):
         args: list
             List of arguments
         kwargs: dict
-            Dictionary with addittional
+            Dictionary with additional
             keyword arguments (indexed by keys in the dict)
         """
         parser = super(Command, self).create_parser(*args, **kwargs)
@@ -166,7 +166,7 @@ class Command(BaseCommand):
         args: list
             List of arguments
         kwargs: dict
-            Dictionary with addittional
+            Dictionary with additional
             keyword arguments (indexed by keys in the dict)
         """
         admin_password = options.get("adminpass")
