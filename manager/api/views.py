@@ -105,9 +105,9 @@ def validate_token(request, *args, **kwargs):
     request: Request
         The Request object
     args: list
-        List of addittional arguments. Currenlty unused
+        List of additional arguments. Currenlty unused
     kwargs: dict
-        Dictionary with addittional keyword arguments
+        Dictionary with additional keyword arguments
         (indexed by keys in the dict), one optional parameter
         that could be expeted is `flags`
 
@@ -228,9 +228,9 @@ class CustomObtainAuthToken(ObtainAuthToken):
         request: Request
             The Request object
         args: list
-            List of addittional arguments. Currenlty unused
+            List of additional arguments. Currenlty unused
         kwargs: dict
-            Dictionary with addittional keyword arguments
+            Dictionary with additional keyword arguments
             (indexed by keys in the dict). Currenlty unused
 
         Returns
@@ -310,9 +310,9 @@ class CustomSwapAuthToken(ObtainAuthToken):
         request: Request
             The Request object
         args: list
-            List of addittional arguments. Currently unused
+            List of additional arguments. Currently unused
         kwargs: dict
-            Dictionary with addittional keyword arguments
+            Dictionary with additional keyword arguments
             (indexed by keys in the dict). Currenlty unused
 
         Returns
@@ -841,7 +841,7 @@ def query_efd_timeseries(request, *args, **kwargs):
                 resample conversion, e.g. '15min', '10S'
             efd_instance (required): The specific EFD instance to query
     args: list
-        List of addittional arguments. Currently unused
+        List of additional arguments. Currently unused
     kwargs: dict
         Dict of additional arguments. Currently unused
 
@@ -851,6 +851,40 @@ def query_efd_timeseries(request, *args, **kwargs):
         The response and status code of the request to the LOVE-Commander
     """
     url = f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/efd/timeseries"
+    response = requests.post(url, json=request.data)
+    return Response(response.json(), status=response.status_code)
+
+
+@api_view(["POST"])
+@permission_classes((IsAuthenticated,))
+def query_efd_most_recent_timeseries(request, *args, **kwargs):
+    """Queries most recent data from an EFD timeseries
+    by redirecting the request to the Commander
+
+    Params
+    ------
+    request: Request
+        The Request object
+        Dictionary with request arguments.
+        Request should contain the following:
+            topic_name (required): String specifying the topic name.
+            fields (required): Array[String] specifying the topic fields.
+            num: Int specifying the number of most recent records to retrieve.
+            efd_instance (required): The specific EFD instance to query
+    args: list
+        List of additional arguments. Currently unused
+    kwargs: dict
+        Dict of additional arguments. Currently unused
+
+    Returns
+    -------
+    Response
+        The response and status code of the request to the LOVE-Commander
+    """
+    url = (
+        f"http://{os.environ.get('COMMANDER_HOSTNAME')}"
+        f":{os.environ.get('COMMANDER_PORT')}/efd/top_timeseries"
+    )
     response = requests.post(url, json=request.data)
     return Response(response.json(), status=response.status_code)
 
@@ -882,7 +916,7 @@ def query_efd_logs(request, *args, **kwargs):
                 }
             efd_instance (required): The specific EFD instance to query
     args: list
-        List of addittional arguments. Currently unused
+        List of additional arguments. Currently unused
     kwargs: dict
         Dict of additional arguments. Currently unused
 
@@ -930,7 +964,7 @@ def tcs_aux_command(request, *args, **kwargs):
     request: Request
         The Request object
     args: list
-        List of addittional arguments. Currently unused
+        List of additional arguments. Currently unused
     kwargs: dict
         Dictionary with request arguments.
         Request should contain the following:
@@ -964,7 +998,7 @@ def tcs_aux_docstrings(request, *args, **kwargs):
     request: Request
         The Request object
     args: list
-        List of addittional arguments. Currently unused
+        List of additional arguments. Currently unused
     kwargs: dict
         Dictionary with request arguments. Currently unused
 
@@ -991,7 +1025,7 @@ def tcs_main_command(request, *args, **kwargs):
     request: Request
         The Request object
     args: list
-        List of addittional arguments. Currently unused
+        List of additional arguments. Currently unused
     kwargs: dict
         Dictionary with request arguments.
         Request should contain the following:
@@ -1025,7 +1059,7 @@ def tcs_main_docstrings(request, *args, **kwargs):
     request: Request
         The Request object
     args: list
-        List of addittional arguments. Currently unused
+        List of additional arguments. Currently unused
     kwargs: dict
         Dictionary with request arguments. Currently unused
 
@@ -1437,7 +1471,7 @@ def ole_send_night_report(request, *args, **kwargs):
         The Request object
 
     args : `list`
-        List of addittional arguments. Currently unused.
+        List of additional arguments. Currently unused.
 
     kwargs : `dict`
         Dictionary with request arguments. Currently using the following keys:
@@ -1467,7 +1501,13 @@ def ole_send_night_report(request, *args, **kwargs):
         )
 
     # Trim white spaces from human written fields from the report
-    for key in ["summary", "telescope_status", "confluence_url"]:
+    for key in [
+        "summary",
+        "weather",
+        "maintel_summary",
+        "auxtel_summary",
+        "confluence_url",
+    ]:
         report[key] = report[key].strip()
 
     # Get JIRA observation issues
@@ -1481,8 +1521,21 @@ def ole_send_night_report(request, *args, **kwargs):
 
     # Arrange HMTl email content
     try:
-        html_content = arrange_nightreport_email(report)
-        plain_content = arrange_nightreport_email(report, plain=True)
+        html_content = arrange_nightreport_email(
+            {
+                **report,
+                "observatory_status": json_data["observatory_status"],
+                "cscs_status": json_data["cscs_status"],
+            }
+        )
+        plain_content = arrange_nightreport_email(
+            {
+                **report,
+                "observatory_status": json_data["observatory_status"],
+                "cscs_status": json_data["cscs_status"],
+            },
+            plain=True,
+        )
     except Exception as e:
         return Response(
             {"error": str(e)},
@@ -1490,7 +1543,7 @@ def ole_send_night_report(request, *args, **kwargs):
         )
 
     # Handle email sending
-    subject = f"{get_obsday_iso(report['day_obs'])} {report['telescope']} Night Log"
+    subject = f"Rubin Observatory Night Report {get_obsday_iso(report['day_obs'])}"
     email_sent = send_smtp_email(
         os.environ.get("NIGHTREPORT_MAIL_ADDRESS", "rubin-night-log@lists.lsst.org"),
         subject,
@@ -1511,6 +1564,57 @@ def ole_send_night_report(request, *args, **kwargs):
     response = requests.patch(url, json=json_data)
 
     return Response(response.json(), status=response.status_code)
+
+
+@api_view(["GET"])
+@permission_classes((IsAuthenticated,))
+def get_jira_tickets_report(request, *args, **kwargs):
+    """Get JIRA observation issues for a given obs day
+
+    Params
+    ------
+    request: `Request`
+        The Request object.
+
+    args : `list`
+        List of additional arguments. Currently unused.
+
+    kwargs : `dict`
+        Dictionary with request arguments. Currently using the following keys:
+            project (required): The project for which to get the JIRA issues.
+
+    Returns
+    -------
+    list
+        List of JIRA observation issues for the given obs day.
+    """
+    project = kwargs.get("project", None)
+    if not project:
+        return Response(
+            {"error": "project parameter is required"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    obs_day = request.query_params.get("day_obs", None)
+    if not obs_day:
+        obs_day = get_obsday_from_tai(astropy.time.Time.now().tai.datetime)
+
+    if project == "OBS":
+        try:
+            issues = get_jira_obs_report({"day_obs": obs_day, "project": project})
+            return Response(
+                issues,
+                status=status.HTTP_200_OK,
+            )
+        except Exception as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+    return Response(
+        {"error": "Invalid project"},
+        status=status.HTTP_400_BAD_REQUEST,
+    )
 
 
 class NightReportViewSet(viewsets.ViewSet):
