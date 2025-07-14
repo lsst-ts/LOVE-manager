@@ -989,20 +989,6 @@
                       "salindex": 1
                     }
                   ],
-                  "ComCam": [
-                    {
-                      "name": "CCCamera",
-                      "salindex": 0
-                    },
-                    {
-                      "name": "CCOODS",
-                      "salindex": 0
-                    },
-                    {
-                      "name": "CCHeaderService",
-                      "salindex": 0
-                    }
-                  ],
                   "LSSTCam": [
                     {
                       "name": "MTCamera",
@@ -1015,32 +1001,6 @@
                     {
                       "name": "MTHeaderService",
                       "salindex": 0
-                    }
-                  ],
-                  "Star Tracker": [
-                    {
-                      "name": "GenericCamera",
-                      "salindex": 101
-                    },
-                    {
-                      "name": "GCHeaderService",
-                      "salindex": 101
-                    },
-                    {
-                      "name": "GenericCamera",
-                      "salindex": 102
-                    },
-                    {
-                      "name": "GCHeaderService",
-                      "salindex": 102
-                    },
-                    {
-                      "name": "GenericCamera",
-                      "salindex": 103
-                    },
-                    {
-                      "name": "GCHeaderService",
-                      "salindex": 103
                     }
                   ],
                   "Calibration Systems": [
