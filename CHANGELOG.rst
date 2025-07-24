@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.4.1
+------
+
+* Bump requests from 2.32.2 to 2.32.4 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/321>`_
+
 v7.4.0
 ------
 
