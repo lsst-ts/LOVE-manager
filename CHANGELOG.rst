@@ -2,6 +2,13 @@
 Version History
 ===============
 
+v7.4.1
+------
+
+* Remove ComCam and Star Tracker subsections from the Simonyi Survey Telescope group in the ASummary State View at summit. `<https://github.com/lsst-ts/LOVE-manager/pull/326>`_
+* Bump urllib3 from 1.26.19 to 2.5.0 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/324>`_
+* Bump requests from 2.32.2 to 2.32.4 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/321>`_
+
 v7.4.0
 ------
 
