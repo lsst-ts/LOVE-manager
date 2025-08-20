@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.4.2
+------
+
+* Add HVAC to ui-framework fixtures on base and tucson. `<https://github.com/lsst-ts/LOVE-manager/pull/327>`_
+
 v7.4.1
 ------
 
