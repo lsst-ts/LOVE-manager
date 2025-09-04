@@ -35,6 +35,7 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 
 from manager.utils import (
+    JIRA_PROJECTS_WITH_TIME_LOSS,
     OBS_SYSTEMS_FIELD,
     OBS_TIME_LOST_FIELD,
     get_jira_obs_report,
@@ -407,6 +408,24 @@ class JiraTestCase(TestCase):
         assert jira_response.status_code == 200
         assert jira_response.data["ack"] == "Jira comment created"
 
+        # if ticket project not in JIRA_PROJECTS_WITH_TIME_LOSS
+        # no time lost update call
+        assert mock_time_lost_client.call_count == 0
+
+        random_project_with_time_lost_field = random.choice(
+            JIRA_PROJECTS_WITH_TIME_LOSS
+        )
+        jira_response = jira_comment(
+            {
+                **self.jira_request_narrative_full_jira_comment.data,
+                "jira_issue_id": f"{random_project_with_time_lost_field}-1234",
+            }
+        )
+        assert jira_response.status_code == 200
+        assert jira_response.data["ack"] == "Jira comment created"
+
+        assert mock_time_lost_client.call_count == 1
+
         mock_jira_patcher.stop()
         mock_time_lost_patcher.stop()
 
@@ -428,7 +447,15 @@ class JiraTestCase(TestCase):
         }
         mock_time_lost_client.return_value = time_lost_response
 
-        resp = jira_comment(self.jira_request_narrative_full_jira_comment.data)
+        random_project_with_time_lost_field = random.choice(
+            JIRA_PROJECTS_WITH_TIME_LOSS
+        )
+        resp = jira_comment(
+            {
+                **self.jira_request_narrative_full_jira_comment.data,
+                "jira_issue_id": f"{random_project_with_time_lost_field}-1234",
+            }
+        )
         assert resp.status_code == 400
         assert resp.data["ack"] == "Jira time_lost field could not be updated"
 

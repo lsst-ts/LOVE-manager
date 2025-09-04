@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.4.3
+------
+
+* Fix the jira_comment function to avoid trying to update the time_lost field if the project doesn't support it. `<https://github.com/lsst-ts/LOVE-manager/pull/328>`_
+
 v7.4.2
 ------
 
