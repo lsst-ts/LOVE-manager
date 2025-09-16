@@ -45,8 +45,13 @@ JSON_RESPONSE_ERROR_NOT_VALID_JSON = {"error": "Not a valid JSON response."}
 OBS_ISSUE_TYPE_ID = "10065"
 OBS_TIME_LOST_FIELD = "customfield_10106"
 OBS_SYSTEMS_FIELD = "customfield_10476"
+OBS_TICKETS_FIELDS = (
+    "summary,created,creator,system," f"{OBS_TIME_LOST_FIELD},{OBS_SYSTEMS_FIELD}"
+)
 
 DATETIME_ISO_FORMAT = "%Y-%m-%dT%H:%M:%S.%f"
+
+JIRA_PROJECTS_WITH_TIME_LOSS = ["OBS"]
 
 
 class LocationPermission(BasePermission):
@@ -535,6 +540,9 @@ def jira_comment(request_data):
     """Connect to the Rubin Observatory JIRA Cloud REST API to
     make a comment on a previously created ticket.
 
+    Also update the time_lost field if the jira project
+    supports it and the time_lost parameter is present in the request_data.
+
     For more information on the REST API endpoints refer to:
     - https://developer.atlassian.com/cloud/jira/platform/rest/v3
     - https://developer.atlassian.com/cloud/jira/platform/\
@@ -559,6 +567,7 @@ def jira_comment(request_data):
         return Response({"ack": "Error reading the JIRA issue ID"}, status=400)
 
     jira_id = request_data.get("jira_issue_id")
+    jira_project = jira_id.split("-")[0]
 
     try:
         jira_payload = {
@@ -567,7 +576,7 @@ def jira_comment(request_data):
     except Exception as e:
         return Response({"ack": f"Error creating jira payload: {e}"}, status=400)
 
-    if "time_lost" in request_data:
+    if "time_lost" in request_data and jira_project in JIRA_PROJECTS_WITH_TIME_LOSS:
         timelost_response = update_time_lost(
             jira_id=jira_id, add_time_lost=float(request_data.get("time_lost", 0.0))
         )
@@ -690,7 +699,10 @@ def get_jira_obs_report(request_data):
         f"AND created <= '{final_day_obs_string} {end_date_user_time_string}'"
     )
 
-    url = f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/search?jql={quote(jql_query)}"
+    url = (
+        f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest"
+        f"/search/jql?jql={quote(jql_query)}&fields={OBS_TICKETS_FIELDS}"
+    )
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         issues = response.json()["issues"]

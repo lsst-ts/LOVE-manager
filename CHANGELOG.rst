@@ -2,6 +2,17 @@
 Version History
 ===============
 
+v7.4.3
+------
+
+* Fix deprecated jql Jira interface. `<https://github.com/lsst-ts/LOVE-manager/pull/329>`_
+* Fix the jira_comment function to avoid trying to update the time_lost field if the project doesn't support it. `<https://github.com/lsst-ts/LOVE-manager/pull/328>`_
+
+v7.4.2
+------
+
+* Add HVAC to ui-framework fixtures on base and tucson. `<https://github.com/lsst-ts/LOVE-manager/pull/327>`_
+
 v7.4.1
 ------
 
