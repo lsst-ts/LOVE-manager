@@ -37,6 +37,7 @@ from rest_framework.test import APIClient
 from manager.utils import (
     JIRA_PROJECTS_WITH_TIME_LOSS,
     OBS_SYSTEMS_FIELD,
+    OBS_TICKETS_FIELDS,
     OBS_TIME_LOST_FIELD,
     get_jira_obs_report,
     get_obsday_from_tai,
@@ -559,7 +560,8 @@ class JiraTestCase(TestCase):
         )
         url_call_2 = (
             f"https://{os.environ.get('JIRA_API_HOSTNAME')}"
-            f"/rest/api/latest/search?jql={quote(jql_query)}"
+            f"/rest/api/latest/search/jql?jql={quote(jql_query)}"
+            f"&fields={OBS_TICKETS_FIELDS}"
         )
 
         response_2 = requests.Response()
@@ -710,7 +712,8 @@ class JiraAPITestCase(TestCase):
         )
         url_call_2 = (
             f"https://{os.environ.get('JIRA_API_HOSTNAME')}"
-            f"/rest/api/latest/search?jql={quote(jql_query)}"
+            f"/rest/api/latest/search/jql?jql={quote(jql_query)}"
+            f"&fields={OBS_TICKETS_FIELDS}"
         )
         response_2 = requests.Response()
         response_2.status_code = 200
@@ -786,7 +789,8 @@ class JiraAPITestCase(TestCase):
         )
         url_call_2 = (
             f"https://{os.environ.get('JIRA_API_HOSTNAME')}"
-            f"/rest/api/latest/search?jql={quote(jql_query)}"
+            f"/rest/api/latest/search/jql?jql={quote(jql_query)}"
+            f"&fields={OBS_TICKETS_FIELDS}"
         )
         response_2 = requests.Response()
         response_2.status_code = 200
@@ -846,7 +850,8 @@ class JiraAPITestCase(TestCase):
         )
         url_call_2 = (
             f"https://{os.environ.get('JIRA_API_HOSTNAME')}"
-            f"/rest/api/latest/search?jql={quote(jql_query)}"
+            f"/rest/api/latest/search/jql?jql={quote(jql_query)}"
+            f"&fields={OBS_TICKETS_FIELDS}"
         )
 
         failed_response = requests.Response()

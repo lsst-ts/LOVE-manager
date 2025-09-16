@@ -45,6 +45,9 @@ JSON_RESPONSE_ERROR_NOT_VALID_JSON = {"error": "Not a valid JSON response."}
 OBS_ISSUE_TYPE_ID = "10065"
 OBS_TIME_LOST_FIELD = "customfield_10106"
 OBS_SYSTEMS_FIELD = "customfield_10476"
+OBS_TICKETS_FIELDS = (
+    "summary,created,creator,system," f"{OBS_TIME_LOST_FIELD},{OBS_SYSTEMS_FIELD}"
+)
 
 DATETIME_ISO_FORMAT = "%Y-%m-%dT%H:%M:%S.%f"
 
@@ -696,7 +699,10 @@ def get_jira_obs_report(request_data):
         f"AND created <= '{final_day_obs_string} {end_date_user_time_string}'"
     )
 
-    url = f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/search?jql={quote(jql_query)}"
+    url = (
+        f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest"
+        f"/search/jql?jql={quote(jql_query)}&fields={OBS_TICKETS_FIELDS}"
+    )
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         issues = response.json()["issues"]
