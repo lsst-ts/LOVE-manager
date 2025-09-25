@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.4.4
+------
+
+* Add Nightly Digest urls for Simonyi and AuxTel into the top of the Night Report email. `<https://github.com/lsst-ts/LOVE-manager/pull/330>`_
+
 v7.4.3
 ------
 
