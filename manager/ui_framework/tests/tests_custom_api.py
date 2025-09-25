@@ -19,11 +19,11 @@
 
 
 """Test the UI Framework Custom API."""
+from api.models import Token
 from django.conf import settings
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth.models import Permission, User
 from django.urls import reverse
 from rest_framework import status
-from api.models import Token
 from ui_framework.models import View
 from ui_framework.tests.utils import BaseTestCase
 
@@ -51,7 +51,9 @@ class AuthorizedCrudTestCase(BaseTestCase):
         self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token.key)
 
     def test_get_workspaces_with_view_name(self):
-        """Test that authorized users can retrieve the list of available workspaces, with views ids and names."""
+        """Test that authorized users
+        can retrieve the list of available workspaces,
+        with views ids and names."""
         # Arrange
         self.user.user_permissions.add(
             Permission.objects.get(codename="view_workspace")
@@ -63,9 +65,11 @@ class AuthorizedCrudTestCase(BaseTestCase):
                     {
                         "id": v_pk,
                         "name": v.name,
-                        "thumbnail": None
-                        if v.thumbnail.name == "" or v.thumbnail.name is None
-                        else settings.MEDIA_URL + str(v.thumbnail.name),
+                        "thumbnail": (
+                            None
+                            if v.thumbnail.name == "" or v.thumbnail.name is None
+                            else settings.MEDIA_URL + str(v.thumbnail.name)
+                        ),
                         "screen": v.screen,
                     }
                     for v_pk in w["views"]
@@ -91,7 +95,8 @@ class AuthorizedCrudTestCase(BaseTestCase):
         )
 
     def test_get_full_workspace(self):
-        """Test that authorized users can retrieve a workspace with all its views fully subserialized."""
+        """Test that authorized users
+        can retrieve a workspace with all its views fully subserialized."""
         # Arrange
         self.user.user_permissions.add(
             Permission.objects.get(codename="view_workspace")

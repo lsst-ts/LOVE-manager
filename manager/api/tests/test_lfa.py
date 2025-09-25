@@ -18,11 +18,13 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
 
-from unittest.mock import patch, Mock
+from unittest.mock import Mock, patch
+
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpRequest
 from django.test import TestCase, override_settings
 from django.utils.datastructures import MultiValueDict
+
 from manager.utils import upload_to_lfa
 
 

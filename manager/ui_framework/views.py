@@ -21,16 +21,16 @@
 """Defines the views exposed by the REST API exposed by this app."""
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import viewsets, status
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from ui_framework.models import Workspace, View, WorkspaceView
+from ui_framework.models import View, Workspace, WorkspaceView
 from ui_framework.serializers import (
-    WorkspaceSerializer,
     ViewSerializer,
     ViewSummarySerializer,
-    WorkspaceViewSerializer,
     WorkspaceFullSerializer,
+    WorkspaceSerializer,
+    WorkspaceViewSerializer,
     WorkspaceWithViewNameSerializer,
 )
 
@@ -62,7 +62,8 @@ class WorkspaceViewSet(viewsets.ModelViewSet):
         Returns
         -------
         Response
-            The response containing the serialized Workspaces, with the views fully subserialized
+            The response containing the serialized Workspaces,
+            with the views fully subserialized
         """
         try:
             workspace = Workspace.objects.get(pk=pk)
@@ -78,7 +79,8 @@ class WorkspaceViewSet(viewsets.ModelViewSet):
     )
     @action(detail=False)
     def with_view_name(self, request):
-        """Serialize Workspaces including the view's names in the views response.
+        """Serialize Workspaces including
+        the view's names in the views response.
 
         Params
         ------
@@ -136,7 +138,8 @@ class ViewViewSet(viewsets.ModelViewSet):
     )
     @action(detail=False)
     def summary(self, request):
-        """Serialize Views with summarized information, that is without their "data" field.
+        """Serialize Views with summarized information,
+        that is without their "data" field.
 
         Returns
         -------

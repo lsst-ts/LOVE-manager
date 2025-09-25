@@ -21,8 +21,9 @@
 import asyncio
 import datetime
 import json
-import requests
 import os
+
+import requests
 from channels.layers import get_channel_layer
 from django.conf import settings
 
@@ -30,8 +31,10 @@ from django.conf import settings
 class HeartbeatManager:
     """Manages the heartbeats of LOVE software components.
 
-    Uses an internal data structure (dictionary) to store the heartbeats of LOVE components.
-    Runs 2 tasks in order to dispatch the heartbeats and request the LOVE-Commander's heartbeat periodically.
+    Uses an internal data structure (dictionary) to store
+    the heartbeats of LOVE components.
+    Runs 2 tasks in order to dispatch the heartbeats and
+    request the LOVE-Commander's heartbeat periodically.
     """
 
     class __HeartbeatManager:
@@ -40,17 +43,20 @@ class HeartbeatManager:
         """Reference to the task that dispatches the heartbeats."""
 
         commander_heartbeat_task = None
-        """Reference to the task that requests the LOVE_COmmander heartbeats."""
+        """Reference to the task that requests the
+        LOVE-commanderheartbeats."""
 
         heartbeat_data = {}
-        """Dictionary comntaining the heartbeats data, indexed by source or component, e.g. "Commander"."""
+        """Dictionary comntaining the heartbeats data, indexed
+        by source or component, e.g. "Commander"."""
 
         @classmethod
         def initialize(cls):
             """Initialize the HeartbeatManager
 
-            Run 2 async tasks in the event loop, one to dispatch the heartbeats periodically,
-            and the other to request the heartbeats from the LOVE-Commander periodically.
+            Run 2 async tasks in the event loop, one to dispatch
+            the heartbeats periodically, and the other to request
+            the heartbeats from the LOVE-Commander periodically.
             """
             cls.heartbeat_data = {}
             if settings.HEARTBEAT_QUERY_COMMANDER:
@@ -101,7 +107,8 @@ class HeartbeatManager:
 
         @classmethod
         async def dispatch_heartbeats(cls):
-            """Dispatch all the heartbeats to the corresponding group in the Channels Layer.
+            """Dispatch all the heartbeats to the corresponding
+            group in the Channels Layer.
 
             This is what the `heartbeat_task` does
             """

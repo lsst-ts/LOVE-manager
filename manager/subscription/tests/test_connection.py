@@ -19,19 +19,22 @@
 
 
 """Tests for the connection of users."""
-import pytest
 import asyncio
-from django.contrib.auth.models import User
+
+import pytest
+from api.models import Token
 from channels.db import database_sync_to_async
-from channels.testing import WebsocketCommunicator
 from channels.layers import get_channel_layer
+from channels.testing import WebsocketCommunicator
+from django.contrib.auth.models import User
+
 from manager.routing import application
 from manager.settings import PROCESS_CONNECTION_PASS
-from api.models import Token
 
 
 class TestClientConnection:
-    """Test that clients can or cannot connect depending on different conditions."""
+    """Test that clients can or cannot connect
+    depending on different conditions."""
 
     def setup_method(self):
         self.user = User.objects.create_user(
@@ -100,7 +103,8 @@ class TestClientConnection:
     @pytest.mark.asyncio
     @pytest.mark.django_db(transaction=True)
     async def test_connection_interrupted_when_logout_message_is_sent(self):
-        """Test that a client gets disconnected when a message is sent for it to logout, for only that client"""
+        """Test that a client gets disconnected when a message
+        is sent for it to logout, for only that client"""
         # ARRANGE
         password = PROCESS_CONNECTION_PASS
         subscription_msg = {
@@ -161,7 +165,8 @@ class TestClientConnection:
     @pytest.mark.asyncio
     @pytest.mark.django_db(transaction=True)
     async def test_connection_interrupted_when_token_is_deleted(self):
-        """Test that a client gets disconnected when the token is deleted from the database"""
+        """Test that a client gets disconnected when
+        the token is deleted from the database."""
         # ARRANGE
         password = PROCESS_CONNECTION_PASS
         subscription_msg = {

@@ -19,11 +19,11 @@
 
 
 """Test the UI Framework REST API."""
-from django.contrib.auth.models import User, Permission
+from api.models import Token
+from django.contrib.auth.models import Permission, User
 from django.urls import reverse
 from rest_framework import status
-from api.models import Token
-from ui_framework.tests.utils import get_dict, BaseTestCase
+from ui_framework.tests.utils import BaseTestCase, get_dict
 
 
 class UnauthenticatedCrudTestCase(BaseTestCase):
@@ -35,7 +35,8 @@ class UnauthenticatedCrudTestCase(BaseTestCase):
         super().setUp()
 
     def test_unauthenticated_list_objects(self):
-        """Test that unauthenticated users cannot retrieve the list of objects through the API."""
+        """Test that unauthenticated users cannot retrieve
+        the list of objects through the API."""
         for case in self.cases:
             # Act
             url = reverse("{}-list".format(case["key"]))
@@ -48,7 +49,8 @@ class UnauthenticatedCrudTestCase(BaseTestCase):
             )
 
     def test_unauthenticated_create_objects(self):
-        """Test that unauthenticated users cannot create objects through the API."""
+        """Test that unauthenticated users
+        cannot create objects through the API."""
         for case in self.cases:
             # Act
             url = reverse("{}-list".format(case["key"]))
@@ -66,7 +68,8 @@ class UnauthenticatedCrudTestCase(BaseTestCase):
             )
 
     def test_unauthenticated_retrieve_objects(self):
-        """Test that unauthenticated users cannot retrieve objects through the API."""
+        """Test that unauthenticated users
+        cannot retrieve objects through the API."""
         for case in self.cases:
             # Act
             obj = case["class"].objects.first()
@@ -80,7 +83,8 @@ class UnauthenticatedCrudTestCase(BaseTestCase):
             )
 
     def test_unauthenticated_update_objects(self):
-        """Test that unauthenticated users cannot update objects through the API."""
+        """Test that unauthenticated users
+        cannot update objects through the API."""
         for case in self.cases:
             # Act
             obj = case["class"].objects.first()
@@ -101,7 +105,8 @@ class UnauthenticatedCrudTestCase(BaseTestCase):
             )
 
     def test_unauthenticated_delete_objects(self):
-        """Test that unauthenticated users cannot dalete objects through the API."""
+        """Test that unauthenticated users
+        cannot dalete objects through the API."""
         for case in self.cases:
             # Act
             obj = case["class"].objects.first()
@@ -143,7 +148,8 @@ class UnauthorizedCrudTestCase(BaseTestCase):
         self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token.key)
 
     def test_unauthorized_list_objects(self):
-        """Test that unauthorized users can still retrieve the list of objects through the API."""
+        """Test that unauthorized users
+        can still retrieve the list of objects through the API."""
         for case in self.cases:
             # Act
             url = reverse("{}-list".format(case["key"]))
@@ -162,7 +168,8 @@ class UnauthorizedCrudTestCase(BaseTestCase):
             )
 
     def test_unauthorized_create_objects(self):
-        """Test that unauthorized users cannot create objects through the API."""
+        """Test that unauthorized users
+        cannot create objects through the API."""
         for case in self.cases:
             # Act
             url = reverse("{}-list".format(case["key"]))
@@ -180,7 +187,8 @@ class UnauthorizedCrudTestCase(BaseTestCase):
             )
 
     def test_unauthorized_retrieve_objects(self):
-        """Test that unauthorized users can still retrieve objects through the API."""
+        """Test that unauthorized users
+        can still retrieve objects through the API."""
         for case in self.cases:
             # Act
             obj = case["class"].objects.get(id=case["selected_id"])
@@ -200,7 +208,8 @@ class UnauthorizedCrudTestCase(BaseTestCase):
             )
 
     def test_unauthorized_update_objects(self):
-        """Test that unauthorized users cannot update objects through the API."""
+        """Test that unauthorized users
+        cannot update objects through the API."""
         for case in self.cases:
             # Act
             obj = case["class"].objects.get(id=case["selected_id"])
@@ -221,7 +230,8 @@ class UnauthorizedCrudTestCase(BaseTestCase):
             )
 
     def test_unauthorized_delete_objects(self):
-        """Test that unauthorized users cannot dalete objects through the API."""
+        """Test that unauthorized users
+        cannot dalete objects through the API."""
         for case in self.cases:
             # Act
             obj = case["class"].objects.first()
@@ -263,7 +273,8 @@ class AuthorizedCrudTestCase(BaseTestCase):
         self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token.key)
 
     def test_authorized_list_objects(self):
-        """Test that authorized users can retrieve the list of objects through the API."""
+        """Test that authorized users
+        can retrieve the list of objects through the API."""
         for case in self.cases:
             # Arrange
             self.user.user_permissions.add(
@@ -287,7 +298,8 @@ class AuthorizedCrudTestCase(BaseTestCase):
             )
 
     def test_authorized_create_objects(self):
-        """Test that authorized users can create objects through the API."""
+        """Test that authorized users
+        can create objects through the API."""
         for case in self.cases:
             # Arrange
             self.user.user_permissions.add(
@@ -309,7 +321,8 @@ class AuthorizedCrudTestCase(BaseTestCase):
             )
 
     def test_authorized_retrieve_objects(self):
-        """Test that authorized users can retrieve objects through the API."""
+        """Test that authorized users
+        can retrieve objects through the API."""
         for case in self.cases:
             # Arrange
             self.user.user_permissions.add(
@@ -334,7 +347,8 @@ class AuthorizedCrudTestCase(BaseTestCase):
             )
 
     def test_authorized_update_objects(self):
-        """Test that authorized users can update objects through the API."""
+        """Test that authorized users
+        can update objects through the API."""
         for case in self.cases:
             # Arrange
             self.user.user_permissions.add(
@@ -359,7 +373,8 @@ class AuthorizedCrudTestCase(BaseTestCase):
             )
 
     def test_authorized_delete_objects(self):
-        """Test that authorized users can dalete objects through the API."""
+        """Test that authorized users
+        can dalete objects through the API."""
         for case in self.cases:
             # Arrange
             old_count = case["class"].objects.count()
