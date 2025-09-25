@@ -22,7 +22,7 @@
 from django.test import TestCase
 from django.utils import timezone
 from freezegun import freeze_time
-from ui_framework.models import Workspace, View, WorkspaceView
+from ui_framework.models import View, Workspace, WorkspaceView
 
 
 class WorkspaceModelTestCase(TestCase):
@@ -409,7 +409,8 @@ class WorkspaceViewModelTestCase(TestCase):
 
 
 class WorkspaceAndViewsRelationsTestCase(TestCase):
-    """Test the relationships vetween Workspace, View and WorkspaceView models."""
+    """Test the relationships vetween Workspace,
+    View and WorkspaceView models."""
 
     def setUp(self):
         """Testcase setup."""
@@ -428,7 +429,8 @@ class WorkspaceAndViewsRelationsTestCase(TestCase):
             ]
 
     def test_add_and_get_views_to_workspace(self):
-        """Test that Views can be added/retrieved to/from a Workspace in the DB."""
+        """Test that Views can be added/retrieved
+        to/from a Workspace in the DB."""
         # Act
         # - Add
         sorted_views = [self.views[0], self.views[2], self.views[1]]

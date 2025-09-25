@@ -7,13 +7,20 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('api', '0013_controllocation'),
+        ("api", "0013_controllocation"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='configfile',
-            name='config_file',
-            field=models.FileField(max_length=200, upload_to='configs/', validators=[api.models.ConfigFile.validate_file_extension, api.models.ConfigFile.validate_json_file]),
+            model_name="configfile",
+            name="config_file",
+            field=models.FileField(
+                max_length=200,
+                upload_to="configs/",
+                validators=[
+                    api.models.ConfigFile.validate_file_extension,
+                    api.models.ConfigFile.validate_json_file,
+                ],
+            ),
         ),
     ]

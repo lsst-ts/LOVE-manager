@@ -20,16 +20,18 @@
 
 """Tests for the subscription of consumers to streams."""
 import asyncio
-import pytest
 
-from django.contrib.auth.models import User, Permission
-from channels.testing import WebsocketCommunicator
-from manager.routing import application
+import pytest
 from api.models import Token
+from channels.testing import WebsocketCommunicator
+from django.contrib.auth.models import Permission, User
+
+from manager.routing import application
 
 
 class TestSubscriptionCombinations:
-    """Test that clients can or cannot establish to subscriptions depending on different conditions."""
+    """Test that clients can or cannot establish to subscriptions
+    depending on different conditions."""
 
     categories = ["event", "telemetry", "cmd"]
 
@@ -82,7 +84,8 @@ class TestSubscriptionCombinations:
         sent: `{}`
             Dictionary containing the message to send in the test
         expected: `{}`
-            Dictionary containing the expected response to be received by the client in the test
+            Dictionary containing the expected response to be
+            received by the client in the test
         """
         response = {
             "category": category,
@@ -103,7 +106,8 @@ class TestSubscriptionCombinations:
     @pytest.mark.asyncio
     @pytest.mark.django_db(transaction=True)
     async def test_join_and_leave_every_subscription(self):
-        """Test that clients can join and then leave any subscription stream."""
+        """Test that clients can join and then leave
+        any subscription stream."""
         # Arrange
         communicator = WebsocketCommunicator(application, self.url)
         connected, subprotocol = await communicator.connect()
@@ -189,7 +193,8 @@ class TestSubscriptionCombinations:
     @pytest.mark.asyncio
     @pytest.mark.django_db(transaction=True)
     async def test_receive_messages_from_every_subscription(self):
-        """Test that clients subscribed (individually) to every stream receive messages from all of them."""
+        """Test that clients subscribed (individually) to
+        every stream receive messages from all of them."""
         # Arrange
         communicator = WebsocketCommunicator(application, self.url)
         connected, subprotocol = await communicator.connect()
@@ -220,7 +225,8 @@ class TestSubscriptionCombinations:
     @pytest.mark.asyncio
     @pytest.mark.django_db(transaction=True)
     async def test_receive_messages_from_all_subscription(self):
-        """Test that clients subscribed to all streams receive messages from all of them."""
+        """Test that clients subscribed to all streams
+        receive messages from all of them."""
         # Arrange
         communicator = WebsocketCommunicator(application, self.url)
         connected, subprotocol = await communicator.connect()
@@ -252,7 +258,8 @@ class TestSubscriptionCombinations:
     @pytest.mark.asyncio
     @pytest.mark.django_db(transaction=True)
     async def test_receive_message_for_subscribed_group_only(self):
-        """Test that clients subscribed to some groups only receive messages from those."""
+        """Test that clients subscribed to some groups
+        only receive messages from those."""
         # Arrange
         communicator = WebsocketCommunicator(application, self.url)
         connected, subprotocol = await communicator.connect()
@@ -296,7 +303,8 @@ class TestSubscriptionCombinations:
     @pytest.mark.asyncio
     @pytest.mark.django_db(transaction=True)
     async def test_receive_message_for_subscribed_groups_only(self):
-        """Test that clients subscribed to some groups only receive messages from those."""
+        """Test that clients subscribed to some groups
+        only receive messages from those."""
         # Arrange
         communicator = WebsocketCommunicator(application, self.url)
         connected, subprotocol = await communicator.connect()
@@ -346,7 +354,8 @@ class TestSubscriptionCombinations:
     @pytest.mark.asyncio
     @pytest.mark.django_db(transaction=True)
     async def test_receive_part_of_message_for_subscribed_groups_only(self):
-        """Test that clients subscribed to some groups only receive the corresponding part of incoming messages."""
+        """Test that clients subscribed to some groups
+        only receive the corresponding part of incoming messages."""
         # Arrange
         communicator = WebsocketCommunicator(application, self.url)
         connected, subprotocol = await communicator.connect()

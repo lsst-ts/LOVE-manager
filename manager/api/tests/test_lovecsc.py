@@ -19,12 +19,14 @@
 
 
 import os
+from unittest.mock import call, patch
+
+from api.models import Token
+from django.contrib.auth.models import Permission, User
 from django.test import TestCase, override_settings
 from django.urls import reverse
-from api.models import Token
 from rest_framework.test import APIClient
-from django.contrib.auth.models import User, Permission
-from unittest.mock import patch, call
+
 from manager.utils import UserBasedPermission
 
 

@@ -18,11 +18,11 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
 
+from api.models import Token
+from django.contrib.auth.models import Permission, User
 from django.test import TestCase, override_settings
 from django.urls import reverse
-from api.models import Token
 from rest_framework.test import APIClient
-from django.contrib.auth.models import User, Permission
 
 
 @override_settings(DEBUG=True)
