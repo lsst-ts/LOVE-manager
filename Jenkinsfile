@@ -1,11 +1,13 @@
 pipeline {
-  agent any
+  agent{
+    docker {
+      alwaysPull true
+      image 'lsstts/develop-env:develop'
+      args "--entrypoint=''"
+    }
+  }
   environment {
-    registryCredential = "dockerhub-inriachile"
-    dockerImageName = "lsstts/love-manager:"
     dockerImage = ""
-    // SAL setup file
-    SAL_SETUP_FILE = "/home/saluser/.setup_dev.sh"
     // LTD credentials
     user_ci = credentials('lsst-io')
     LTD_USERNAME="${user_ci_USR}"
@@ -13,86 +15,25 @@ pipeline {
   }
 
   stages {
-    stage("Build Docker image") {
-      when {
-        anyOf {
-          branch "main"
-          branch "develop"
-          branch "bugfix/*"
-          branch "hotfix/*"
-          branch "release/*"
-          branch "tickets/*"
-        }
-      }
+    stage("Run pre-commit hooks and tests") {
       steps {
         script {
-          def git_branch = "${GIT_BRANCH}"
-          def image_tag = git_branch
-          def slashPosition = git_branch.indexOf('/')
+          sh """
+            source /home/saluser/.setup_dev.sh
 
-          if (slashPosition > 0) {
-            git_tag = git_branch.substring(slashPosition + 1, git_branch.length())
-            git_branch = git_branch.substring(0, slashPosition)
-            if (git_branch == "release" || git_branch == "hotfix" || git_branch == "bugfix" || git_branch == "tickets") {
-              image_tag = git_tag
-            }
-          }
+            generate_pre_commit_conf --skip-pre-commit-install
+            pre-commit run --all-files
 
-          dockerImageName = dockerImageName + image_tag
-          echo "dockerImageName: ${dockerImageName}"
-          dockerImage = docker.build(dockerImageName, "-f docker/Dockerfile .")
-        }
-      }
-    }
-    
-    stage("Push Docker image") {
-      when {
-        anyOf {
-          branch "main"
-          branch "develop"
-          branch "bugfix/*"
-          branch "hotfix/*"
-          branch "release/*"
-          branch "tickets/*"
-        }
-      }
-      steps {
-        script {
-          docker.withRegistry("", registryCredential) {
-            dockerImage.push()
-          }
-        }
-      }
-    }
+            cd ./manager
 
-    stage("Test Docker Image") {
-      when {
-        anyOf {
-          branch "main"
-          branch "develop"
-          branch "bugfix/*"
-          branch "hotfix/*"
-          branch "release/*"
-          branch "tickets/*"
-          branch "PR-*"
-        }
-      }
-      steps {
-        script {
-          sh "docker build -f docker/Dockerfile-test -t love-manager-test ."
-          sh "docker run love-manager-test"
+            pip install -r requirements.txt
+            pytest
+          """
         }
       }
     }
 
     stage("Deploy documentation") {
-      agent {
-        docker {
-          alwaysPull true
-          image 'lsstts/develop-env:develop'
-          args "--entrypoint=''"
-        }
-      }
       when {
         anyOf {
           branch "main"
@@ -102,12 +43,14 @@ pipeline {
       steps {
         script {
           sh """
-            source ${env.SAL_SETUP_FILE}
+            source /home/saluser/.setup_dev.sh
+
             # Create docs
             cd ./docsrc
             pip install -r requirements.txt
             sh ./create_docs.sh
             cd ..
+
             # Upload docs
             pip install ltd-conveyor
             ltd upload --product love-manager --git-ref ${GIT_BRANCH} --dir ./docs
