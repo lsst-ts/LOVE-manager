@@ -1059,7 +1059,6 @@ def arrange_nightreport_email(report, plain=False):
     if plain:
         return f"""{NIGHTLYDIGEST_TITLE}
 {nightlydigest_urls["simonyi"]}
-{nightlydigest_urls["auxtel"]}
 
 {SUMMARY_TITLE}
 {report["summary"]}
@@ -1118,8 +1117,6 @@ def arrange_nightreport_email(report, plain=False):
             {NIGHTLYDIGEST_TITLE}
             <br>
             <a href="{nightlydigest_urls["simonyi"]}">{nightlydigest_urls["simonyi"]}</a>
-            <br>
-            <a href="{nightlydigest_urls["auxtel"]}">{nightlydigest_urls["auxtel"]}</a>
         </p>
         <p>
             {SUMMARY_TITLE}
