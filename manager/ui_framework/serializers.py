@@ -21,18 +21,19 @@
 """Defines the serializer used by the REST API exposed by this app."""
 import base64
 import imghdr
+
 import six
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.db.models import Max
 from rest_framework import serializers
-from ui_framework.models import Workspace, View, WorkspaceView
+from ui_framework.models import View, Workspace, WorkspaceView
 
 
 class Base64ImageField(serializers.ImageField):
-    """
-    A Django REST framework field for handling image-uploads through raw post data.
-    It uses base64 for encoding and decoding the contents of the file.
+    """A Django REST framework field for handling image-uploads
+    through raw post data. It uses base64 for encoding
+    and decoding the contents of the file.
 
     Heavily based on
     https://github.com/tomchristie/django-rest-framework/pull/1268
@@ -122,7 +123,8 @@ class Base64ImageField(serializers.ImageField):
         return super(Base64ImageField, self).to_internal_value(data)
 
     def get_file_extension(self, file_name, decoded_file):
-        """Return the file extension of an image, given its filename and decoded_file
+        """Return the file extension of an image,
+        given its filename and decoded_file.
 
         Parameters
         ----------
@@ -189,7 +191,8 @@ class WorkspaceSerializer(serializers.ModelSerializer):
 
 
 class WorkspaceFullSerializer(serializers.ModelSerializer):
-    """Serializer for the Workspace model, including the views fully subserialized."""
+    """Serializer for the Workspace model,
+    including the views fully subserialized."""
 
     views = ViewSerializer(many=True, read_only=True)
 
@@ -201,7 +204,8 @@ class WorkspaceFullSerializer(serializers.ModelSerializer):
 
 
 class WorkspaceWithViewNameSerializer(serializers.ModelSerializer):
-    """Serializer for the Workspace model, including names of views in the view field."""
+    """Serializer for the Workspace model,
+    including names of views in the view field."""
 
     views = ViewSummarySerializer(many=True, read_only=True)
 

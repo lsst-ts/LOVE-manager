@@ -27,7 +27,8 @@ For more information see:
 https://docs.djangoproject.com/en/2.2/ref/contrib/admin/
 """
 from django.contrib import admin
-from .models import Workspace, View, WorkspaceView
+
+from .models import View, Workspace, WorkspaceView
 
 admin.site.register(Workspace)
 admin.site.register(View)
