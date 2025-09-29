@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.5.1
+------
+
+* Update Jenkins pipeline. `<https://github.com/lsst-ts/LOVE-manager/pull/331>`_
+
 v7.5.0
 ------
 
