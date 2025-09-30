@@ -5,6 +5,7 @@ Version History
 v7.4.4
 ------
 
+* Improve user feedback for errors with get_jira_obs_report. `<https://github.com/lsst-ts/LOVE-manager/pull/333>`_
 * Update ESS indices for Summary State view at summit, base and tucson. `<https://github.com/lsst-ts/LOVE-manager/pull/332>`_
 
 v7.4.3

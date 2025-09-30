@@ -22,6 +22,7 @@ import json
 import os
 import re
 import smtplib
+import traceback
 from datetime import timedelta
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -41,6 +42,8 @@ from rest_framework.response import Response
 # Constants
 JSON_RESPONSE_LOCAL_STORAGE_NOT_ALLOWED = {"error": "Local storage not allowed."}
 JSON_RESPONSE_ERROR_NOT_VALID_JSON = {"error": "Not a valid JSON response."}
+
+ERROR_OBS_TICKETS = f"Error getting issues from {os.environ.get('JIRA_API_HOSTNAME')}"
 
 OBS_ISSUE_TYPE_ID = "10065"
 OBS_TIME_LOST_FIELD = "customfield_10106"
@@ -706,22 +709,29 @@ def get_jira_obs_report(request_data):
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         issues = response.json()["issues"]
-        return [
-            {
-                "key": issue["key"],
-                "summary": issue["fields"]["summary"],
-                "time_lost": (
-                    issue["fields"][OBS_TIME_LOST_FIELD]
-                    if issue["fields"][OBS_TIME_LOST_FIELD] is not None
-                    else 0.0
-                ),
-                "reporter": issue["fields"]["creator"]["displayName"],
-                "created": issue["fields"]["created"].split(".")[0],
-                "systems": parse_obs_issue_systems(issue),
-            }
-            for issue in issues
-        ]
-    raise Exception(f"Error getting issues from {os.environ.get('JIRA_API_HOSTNAME')}")
+        try:
+            return [
+                {
+                    "key": issue["key"],
+                    "summary": issue["fields"]["summary"],
+                    "time_lost": (
+                        issue["fields"][OBS_TIME_LOST_FIELD]
+                        if issue["fields"][OBS_TIME_LOST_FIELD] is not None
+                        else 0.0
+                    ),
+                    "reporter": issue["fields"]["creator"]["displayName"],
+                    "created": issue["fields"]["created"].split(".")[0],
+                    "systems": parse_obs_issue_systems(issue),
+                }
+                for issue in issues
+            ]
+        except KeyError as e:
+            traceback.print_exc()
+            raise Exception(
+                f"{ERROR_OBS_TICKETS}. "
+                f"Parsing JIRA response failed: missing field {e}"
+            )
+    raise Exception(ERROR_OBS_TICKETS)
 
 
 def get_client_ip(request):

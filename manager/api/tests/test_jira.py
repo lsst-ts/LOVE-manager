@@ -35,6 +35,7 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 
 from manager.utils import (
+    ERROR_OBS_TICKETS,
     JIRA_PROJECTS_WITH_TIME_LOSS,
     OBS_SYSTEMS_FIELD,
     OBS_TICKETS_FIELDS,
@@ -256,6 +257,25 @@ class JiraTestCase(TestCase):
         self.headers = {
             "Authorization": f"Basic {os.environ.get('JIRA_API_TOKEN')}",
             "content-type": "application/json",
+        }
+
+    def mock_jira_issues_response(self):
+        """Mock jira issues response"""
+        return {
+            "issues": [
+                {
+                    "key": "LOVE-XX",
+                    "fields": {
+                        "summary": "Issue title",
+                        OBS_TIME_LOST_FIELD: 13.6,
+                        OBS_SYSTEMS_FIELD: json.loads(
+                            JIRA_OBS_SYSTEMS_SELECTION_EXAMPLE
+                        ),
+                        "creator": {"displayName": "user"},
+                        "created": "2024-11-27T12:00:00.00000",
+                    },
+                }
+            ]
         }
 
     def test_missing_parameters(self):
@@ -566,22 +586,7 @@ class JiraTestCase(TestCase):
 
         response_2 = requests.Response()
         response_2.status_code = 200
-        response_2.json = lambda: {
-            "issues": [
-                {
-                    "key": "LOVE-XX",
-                    "fields": {
-                        "summary": "Issue title",
-                        OBS_TIME_LOST_FIELD: 13.6,
-                        OBS_SYSTEMS_FIELD: json.loads(
-                            JIRA_OBS_SYSTEMS_SELECTION_EXAMPLE
-                        ),
-                        "creator": {"displayName": "user"},
-                        "created": "2024-11-27T12:00:00.00000",
-                    },
-                }
-            ]
-        }
+        response_2.json = self.mock_jira_issues_response
 
         mock_jira_client.side_effect = [response_1, response_2]
 
@@ -620,6 +625,9 @@ class JiraTestCase(TestCase):
             "timeZone": "America/Phoenix",
         }
 
+        sucess_response_2 = requests.Response()
+        sucess_response_2.status_code = 200
+
         failed_response = requests.Response()
         failed_response.status_code = 400
 
@@ -642,10 +650,27 @@ class JiraTestCase(TestCase):
         mock_jira_client.side_effect = [success_response_1, failed_response]
         with pytest.raises(Exception) as e:
             get_jira_obs_report(request_data)
-        assert (
-            str(e.value)
-            == f"Error getting issues from {os.environ.get('JIRA_API_HOSTNAME')}"
-        )
+        assert str(e.value) == ERROR_OBS_TICKETS
+
+        # Payload with missing field keys
+        field_keys = [
+            "summary",
+            OBS_TIME_LOST_FIELD,
+            OBS_SYSTEMS_FIELD,
+            "creator",
+            "created",
+        ]
+        for key in field_keys:
+            payload = self.mock_jira_issues_response()
+            del payload["issues"][0]["fields"][key]
+            sucess_response_2.json = lambda: payload
+            mock_jira_client.side_effect = [success_response_1, sucess_response_2]
+            with pytest.raises(Exception) as e:
+                get_jira_obs_report(request_data)
+            assert (
+                str(e.value)
+                == f"{ERROR_OBS_TICKETS}. Parsing JIRA response failed: missing field '{key}'"
+            )
 
         mock_jira_patcher.stop()
 
@@ -913,10 +938,7 @@ class JiraAPITestCase(TestCase):
         mock_jira_client.assert_any_call(url_call_2, headers=self.headers)
 
         self.assertEqual(response.status_code, 500)
-        self.assertEqual(
-            response.data["error"],
-            f"Error getting issues from {os.environ.get('JIRA_API_HOSTNAME')}",
-        )
+        self.assertEqual(response.data["error"], ERROR_OBS_TICKETS)
 
         mock_jira_patcher.stop()
 
