@@ -29,7 +29,7 @@ from django.test import TestCase, override_settings
 from django.urls import reverse
 from rest_framework.test import APIClient
 
-from manager.utils import DATETIME_ISO_FORMAT, get_tai_from_utc
+from manager.utils import DATETIME_ISO_FORMAT, ERROR_OBS_TICKETS, get_tai_from_utc
 
 OBS_SYSTEMS_HIERARCHY = """
 {
@@ -542,7 +542,7 @@ class NightReportTestCase(TestCase):
         self.response_report = {
             "id": "e75b07b6-a422-4cd7-99fc-95b0046645b0",
             "site_id": "base",
-            "day_obs": 0,
+            "day_obs": 20250930,
             "summary": "string",
             "weather": "string",
             "maintel_summary": "string",
@@ -707,28 +707,66 @@ class NightReportTestCase(TestCase):
         mock_get_jira_obs_report.stop()
         mock_send_smtp_email.stop()
 
-    def test_nightreport_already_sent(self):
-        """Test nightreport already sent."""
+    def test_nightreport_send_fail(self):
+        """Test nightreport send fail."""
         # Arrange:
         response_get = requests.Response()
         response_get.status_code = 200
-        response_get.json = lambda: {
-            **self.response_report,
-            "date_sent": "2024-03-20T15:12:46.508840",
-        }
-
         mock_ole_patcher_get = patch("requests.get")
         mock_ole_client_get = mock_ole_patcher_get.start()
         mock_ole_client_get.return_value = response_get
+
+        mock_get_jira_obs_report = patch("api.views.get_jira_obs_report")
+        mock_get_jira_obs_report_client = mock_get_jira_obs_report.start()
+
+        mock_arrange_nightreport_email = patch("api.views.arrange_nightreport_email")
+        mock_arrange_nightreport_email_client = mock_arrange_nightreport_email.start()
+
+        mock_send_smtp_email = patch("api.views.send_smtp_email")
+        mock_send_smtp_email_client = mock_send_smtp_email.start()
 
         self.client.credentials(
             HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
         )
 
-        # Act:
         url = reverse("OLE-nightreport-send-report", args=[self.response_report["id"]])
+
+        # Act:
+        # Night report already sent
+        response_get.json = lambda: {
+            **self.response_report,
+            "date_sent": "2024-03-20T15:12:46.508840",
+        }
         response = self.client.post(url)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data, {"error": "Night report already sent"})
 
+        # Obs ticket report raise error
+        response_get.json = lambda: {
+            **self.response_report,
+        }
+        mock_get_jira_obs_report_client.side_effect = Exception(ERROR_OBS_TICKETS)
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(response.data, {"error": ERROR_OBS_TICKETS})
+
+        # Arrange night report email raise error
+        mock_get_jira_obs_report_client.side_effect = None
+        mock_arrange_nightreport_email_client.side_effect = Exception(
+            "Error arranging night report email"
+        )
+        response = self.client.post(url, data=self.send_report_payload, format="json")
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(response.data, {"error": "Error arranging night report email"})
+
+        # SMTP email send fail
+        mock_arrange_nightreport_email_client.side_effect = None
+        mock_send_smtp_email_client.return_value = False
+        response = self.client.post(url, data=self.send_report_payload, format="json")
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(response.data, {"error": "Error sending email"})
+
         mock_ole_patcher_get.stop()
+        mock_get_jira_obs_report.stop()
+        mock_arrange_nightreport_email.stop()
+        mock_send_smtp_email.stop()

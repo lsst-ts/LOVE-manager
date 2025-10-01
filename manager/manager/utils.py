@@ -23,7 +23,7 @@ import os
 import re
 import smtplib
 import traceback
-from datetime import timedelta
+from datetime import datetime, timedelta
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from tempfile import TemporaryFile
@@ -1042,6 +1042,7 @@ def arrange_nightreport_email(report, plain=False):
         "https://rubinobs.atlassian.net/jira/software/c/projects/OBS/boards/232"
     )
     day_added = get_obsday_iso(report["day_obs"])
+    nightlydigest_urls = arrange_nightlydigest_urls_for_obsday(report["day_obs"])
 
     # TODO: Swap this hardcoded url by a dynamic one.
     # The service is meant to be run in the summit,
@@ -1049,6 +1050,7 @@ def arrange_nightreport_email(report, plain=False):
     # See: DM-43637
     url_rolex = f"https://summit-lsp.lsst.codes/rolex?log_date={day_added}"
 
+    NIGHTLYDIGEST_TITLE = "Nightly Digest:"
     SUMMARY_TITLE = "Summary:"
     WEATHER_TITLE = "Weather summary:"
     MAINTEL_SUMMARY_TITLE = "Simonyi summary:"
@@ -1063,7 +1065,10 @@ def arrange_nightreport_email(report, plain=False):
     CSCS_STATUS_TITLE = "CSCs status:"
 
     if plain:
-        plain_content = f"""{SUMMARY_TITLE}
+        return f"""{NIGHTLYDIGEST_TITLE}
+{nightlydigest_urls["simonyi"]}
+
+{SUMMARY_TITLE}
 {report["summary"]}
 
 {WEATHER_TITLE}
@@ -1092,7 +1097,6 @@ def arrange_nightreport_email(report, plain=False):
 
 {SIGNED_MSG}
 {", ".join(report["observers_crew"])}"""
-        return plain_content
 
     new_line_character = "\n"
     html_content = f"""
@@ -1117,6 +1121,11 @@ def arrange_nightreport_email(report, plain=False):
         </style>
     </head>
     <body>
+        <p>
+            {NIGHTLYDIGEST_TITLE}
+            <br>
+            <a href="{nightlydigest_urls["simonyi"]}">{nightlydigest_urls["simonyi"]}</a>
+        </p>
         <p>
             {SUMMARY_TITLE}
             <br>
@@ -1468,3 +1477,50 @@ def parse_cscs_status_to_plain_text(cscs_status):
         plain_text += f"{status}: {cscs_status[status]}\n"
 
     return plain_text.strip()
+
+
+def arrange_nightlydigest_urls_for_obsday(obsday):
+    """Arrange the URL for the nightly digest page
+    for a given observing day for both telescopes
+    Simonyi and AuxTel.
+
+    Parameters
+    ----------
+    obsday : `int`
+        The observing day in the format "YYYYMMDD"
+
+    Returns
+    -------
+    dict
+        Dictionary with the following keys
+        - simonyi: URL for the Simonyi telescope nightly digest page
+        - auxtel: URL for the AuxTel telescope nightly digest page
+
+    Raises
+    ------
+    ValueError
+        If obsday is not in the format "YYYYMMDD"
+    """
+
+    if len(str(obsday)) != 8:
+        raise ValueError(
+            f"Invalid obsday format: {obsday}. Expected format is 'YYYYMMDD'."
+        )
+
+    try:
+        datetime.strptime(str(obsday), "%Y%m%d")
+    except ValueError:
+        raise ValueError(
+            f"Invalid obsday format: {obsday}. Expected format is 'YYYYMMDD'."
+        )
+
+    return {
+        "simonyi": (
+            f"{settings.NIGHTLYDIGEST_BASE_URL}"
+            f"/?startDayobs={obsday}&endDayobs={obsday}&telescope=Simonyi"
+        ),
+        "auxtel": (
+            f"{settings.NIGHTLYDIGEST_BASE_URL}"
+            f"/?startDayobs={obsday}&endDayobs={obsday}&telescope=AuxTel"
+        ),
+    }
