@@ -2,6 +2,12 @@
 Version History
 ===============
 
+v7.5.0
+------
+
+* Add Nightly Digest urls for Simonyi and AuxTel into the top of the Night Report email. `<https://github.com/lsst-ts/LOVE-manager/pull/330>`_
+* Improve user feedback for errors with get_jira_obs_report. `<https://github.com/lsst-ts/LOVE-manager/pull/333>`_
+
 v7.4.4
 ------
 
