@@ -19,15 +19,17 @@
 
 
 """Tests for the subscription of consumers to love_csc streams."""
-import datetime
-import pytest
 import asyncio
-from django.contrib.auth.models import User, Permission
-from django.test import override_settings
-from channels.testing import WebsocketCommunicator
-from manager.routing import application
+import datetime
+
+import pytest
 from api.models import Token
+from channels.testing import WebsocketCommunicator
+from django.contrib.auth.models import Permission, User
+from django.test import override_settings
 from subscription.heartbeat_manager import HeartbeatManager
+
+from manager.routing import application
 
 
 class TestHeartbeat:
