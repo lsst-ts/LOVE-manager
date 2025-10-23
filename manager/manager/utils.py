@@ -1524,3 +1524,48 @@ def arrange_nightlydigest_urls_for_obsday(obsday):
             f"/?startDayobs={obsday}&endDayobs={obsday}&telescope=AuxTel"
         ),
     }
+
+
+def get_last_valid_night_report(day_obs=None):
+    """Get the night report for the current obs day
+    from the Nightreport REST API.
+
+    Parameters
+    ----------
+    day_obs : `int`
+        The observing day in the format "YYYYMMDD"
+        If None, the current obs day is used.
+
+    Returns
+    -------
+    dict | None
+        The current night report data or None if there is no report
+        for the current obs day.
+
+    Raises
+    ------
+    Exception
+        If there is an error getting the current night report
+    """
+    if day_obs is None:
+        day_obs = get_obsday_from_tai(Time.now().tai.datetime)
+
+    day_obs_date = datetime.strptime(str(day_obs), "%Y%m%d")
+    next_day = day_obs_date + timedelta(days=1)
+    next_day_obs = int(next_day.strftime("%Y%m%d"))
+
+    query_params = (
+        f"?min_day_obs={day_obs}"
+        f"&max_day_obs={next_day_obs}"
+        f"&order_by=-date_added"
+    )
+    url = (
+        f"http://{os.environ.get('OLE_API_HOSTNAME')}/nightreport/reports{query_params}"
+    )
+    response = requests.get(url)
+    if response.ok:
+        reports = response.json()
+        if len(reports) == 0:
+            return None
+        return reports[0]
+    raise Exception("Error getting the current night report from the Nightreport API.")

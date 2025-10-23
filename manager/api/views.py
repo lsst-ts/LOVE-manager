@@ -69,6 +69,7 @@ from manager.utils import (
     CommandPermission,
     arrange_nightreport_email,
     get_jira_obs_report,
+    get_last_valid_night_report,
     get_obsday_from_tai,
     get_obsday_iso,
     get_tai_from_utc,
@@ -82,6 +83,11 @@ from .schema_validator import DefaultingValidator
 valid_response = openapi.Response("Valid token", TokenSerializer)
 invalid_response = openapi.Response("Invalid token")
 not_found_response = openapi.Response("Not found")
+
+
+NIGHT_REPORT_CONFLICT_MESSAGE = (
+    "Conflict with the last valid night report. Please update your report data."
+)
 
 
 @swagger_auto_schema(
@@ -1491,11 +1497,13 @@ def ole_send_night_report(request, *args, **kwargs):
     json_data = request.data.copy()
 
     # Get current report
-    url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/nightreport/reports/{pk}"
-    response = requests.get(url, json=request.data)
-    report = response.json()
-
-    if report["date_sent"] is not None:
+    last_valid_report = get_last_valid_night_report(int(json_data["day_obs"]))
+    if last_valid_report["id"] != pk:
+        return Response(
+            {"error": NIGHT_REPORT_CONFLICT_MESSAGE},
+            status=status.HTTP_409_CONFLICT,
+        )
+    if last_valid_report["date_sent"] is not None:
         return Response(
             {"error": "Night report already sent"}, status=status.HTTP_400_BAD_REQUEST
         )
@@ -1508,11 +1516,11 @@ def ole_send_night_report(request, *args, **kwargs):
         "auxtel_summary",
         "confluence_url",
     ]:
-        report[key] = report[key].strip()
+        json_data[key] = json_data[key].strip()
 
     # Get JIRA observation issues
     try:
-        report["obs_issues"] = get_jira_obs_report({"day_obs": report["day_obs"]})
+        json_data["obs_issues"] = get_jira_obs_report({"day_obs": json_data["day_obs"]})
     except Exception as e:
         return Response(
             {"error": str(e)},
@@ -1523,14 +1531,14 @@ def ole_send_night_report(request, *args, **kwargs):
     try:
         html_content = arrange_nightreport_email(
             {
-                **report,
+                **json_data,
                 "observatory_status": json_data["observatory_status"],
                 "cscs_status": json_data["cscs_status"],
             }
         )
         plain_content = arrange_nightreport_email(
             {
-                **report,
+                **json_data,
                 "observatory_status": json_data["observatory_status"],
                 "cscs_status": json_data["cscs_status"],
             },
@@ -1543,7 +1551,7 @@ def ole_send_night_report(request, *args, **kwargs):
         )
 
     # Handle email sending
-    subject = f"Rubin Observatory Night Report {get_obsday_iso(report['day_obs'])}"
+    subject = f"Rubin Observatory Night Report {get_obsday_iso(json_data['day_obs'])}"
     email_sent = send_smtp_email(
         os.environ.get("NIGHTREPORT_MAIL_ADDRESS", "rubin-night-log@lists.lsst.org"),
         subject,
@@ -1644,6 +1652,14 @@ class NightReportViewSet(viewsets.ViewSet):
 
     @swagger_auto_schema(responses={201: "NightReport log added"})
     def create(self, request, *args, **kwargs):
+
+        last_valid_report = get_last_valid_night_report()
+        if last_valid_report is not None:
+            return Response(
+                {"error": NIGHT_REPORT_CONFLICT_MESSAGE},
+                status=status.HTTP_409_CONFLICT,
+            )
+
         query_params_string = urllib.parse.urlencode(request.query_params)
         url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/nightreport/reports?{query_params_string}"
 
@@ -1670,13 +1686,20 @@ class NightReportViewSet(viewsets.ViewSet):
 
     @swagger_auto_schema(responses={200: "NightReport log edited"})
     def update(self, request, pk=None, *args, **kwargs):
-        url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/nightreport/reports/{pk}"
-
         # Make a copy of the request data for payload cleaning
         # so it is json serializable
         json_data = request.data.copy()
 
+        # Get current report
+        last_valid_report = get_last_valid_night_report(int(json_data["day_obs"]))
+        if last_valid_report["id"] != pk:
+            return Response(
+                {"error": NIGHT_REPORT_CONFLICT_MESSAGE},
+                status=status.HTTP_409_CONFLICT,
+            )
+
         # Send the request to the OLE API
+        url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/nightreport/reports/{pk}"
         response = requests.patch(url, json=json_data)
         return Response(response.json(), status=response.status_code)
 
