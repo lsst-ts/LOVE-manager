@@ -570,28 +570,49 @@ class NightReportTestCase(TestCase):
             "observers_crew": [],
         }
 
+        self.observatory_status_efd = {
+            "simonyiAzimuth": 100,
+            "simonyiElevation": 45,
+            "simonyiDomeAzimuth": 150,
+            "simonyiRotator": 90,
+            "simonyiMirrorCoversState": "UNKNOWN",
+            "simonyiOilSupplySystemState": "UNKNOWN",
+            "simonyiPowerSupplySystemState": "UNKNOWN",
+            "simonyiLockingPinsSystemState": "UNKNOWN",
+            "auxtelAzimuth": 200,
+            "auxtelElevation": 60,
+            "auxtelDomeAzimuth": 250,
+            "auxtelMirrorCoversState": "UNKNOWN",
+        }
+
+        self.cscs_status_efd = {
+            "MTMount:0": "ENABLED",
+            "MTM1M3:0": "ENABLED",
+            "MTAOS:0": "ENABLED",
+            "MTM2:0": "ENABLED",
+            "MTDome:0": "ENABLED",
+            "MTDomeTrajectory:0": "ENABLED",
+            "MTHexapod:1": "ENABLED",
+            "MTHexapod:2": "ENABLED",
+            "MTRotator:0": "ENABLED",
+            "MTPtg:0": "ENABLED",
+            "MTM1M3TS:0": "ENABLED",
+            "MTCamera:0": "ENABLED",
+            "ATMCS:0": "ENABLED",
+            "ATPtg:0": "ENABLED",
+            "ATDome:0": "ENABLED",
+            "ATDomeTrajectory:0": "ENABLED",
+            "ATAOS:0": "ENABLED",
+            "ATPneumatics:0": "ENABLED",
+            "ATHexapod:0": "ENABLED",
+            "ATCamera:0": "ENABLED",
+            "ATOODS:0": "ENABLED",
+            "ATHeaderService:0": "ENABLED",
+            "ATSpectrograph:0": "ENABLED",
+        }
+
         self.send_report_payload = {
             **self.payload_update,
-            "observatory_status": {
-                "simonyiAzimuth": "0.00°",
-                "simonyiElevation": "0.00°",
-                "simonyiDomeAzimuth": "0.00°",
-                "simonyiRotator": "0.00°",
-                "simonyiMirrorCoversState": "UNKNOWN",
-                "simonyiOilSupplySystemState": "UNKNOWN",
-                "simonyiPowerSupplySystemState": "UNKNOWN",
-                "simonyiLockingPinsSystemState": "UNKNOWN",
-                "auxtelAzimuth": "0.00°",
-                "auxtelElevation": "0.00°",
-                "auxtelDomeAzimuth": "0.00°",
-                "auxtelMirrorCoversState": "UNKNOWN",
-            },
-            "cscs_status": {
-                "CSC:0": "UNKNOWN",
-                "CSC:1": "UNKNOWN",
-                "CSC:2": "UNKNOWN",
-                "CSC:3": "UNKNOWN",
-            },
         }
 
     def test_nightreport_list(self):
@@ -736,9 +757,9 @@ class NightReportTestCase(TestCase):
         response_patch.status_code = 200
         response_patch.json = lambda: self.response_report
 
-        mock_ole_patcher_patch = patch("requests.patch")
-        mock_ole_client_patch = mock_ole_patcher_patch.start()
-        mock_ole_client_patch.return_value = response_patch
+        mock_requests_patch = patch("requests.patch")
+        mock_requests_patch_client = mock_requests_patch.start()
+        mock_requests_patch_client.return_value = response_patch
 
         mock_get_jira_obs_report = patch("api.views.get_jira_obs_report")
         mock_get_jira_obs_report_client = mock_get_jira_obs_report.start()
@@ -756,6 +777,26 @@ class NightReportTestCase(TestCase):
         )
         mock_get_last_valid_night_report_client.return_value = self.response_report
 
+        mock_get_nightreport_observatory_status_from_efd = patch(
+            "api.views.get_nightreport_observatory_status_from_efd"
+        )
+        mock_get_nightreport_observatory_status_from_efd_client = (
+            mock_get_nightreport_observatory_status_from_efd.start()
+        )
+        mock_get_nightreport_observatory_status_from_efd_client.return_value = (
+            self.observatory_status_efd
+        )
+
+        mock_get_nightreport_cscs_status_from_efd = patch(
+            "api.views.get_nightreport_cscs_status_from_efd"
+        )
+        mock_get_nightreport_cscs_status_from_efd_client = (
+            mock_get_nightreport_cscs_status_from_efd.start()
+        )
+        mock_get_nightreport_cscs_status_from_efd_client.return_value = (
+            self.cscs_status_efd
+        )
+
         self.client.credentials(
             HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
         )
@@ -765,10 +806,12 @@ class NightReportTestCase(TestCase):
         response = self.client.post(url, data=self.send_report_payload, format="json")
         self.assertEqual(response.status_code, 200)
 
-        mock_ole_patcher_patch.stop()
+        mock_requests_patch.stop()
         mock_get_jira_obs_report.stop()
         mock_send_smtp_email.stop()
         mock_get_last_valid_night_report_patcher.stop()
+        mock_get_nightreport_observatory_status_from_efd_client.stop()
+        mock_get_nightreport_cscs_status_from_efd_client.stop()
 
     def test_nightreport_send_fail(self):
         """Test nightreport send fail."""
@@ -778,6 +821,20 @@ class NightReportTestCase(TestCase):
         )
         mock_get_last_valid_night_report_client = (
             mock_get_last_valid_night_report_patcher.start()
+        )
+
+        mock_get_nightreport_observatory_status_from_efd = patch(
+            "api.views.get_nightreport_observatory_status_from_efd"
+        )
+        mock_get_nightreport_observatory_status_from_efd_client = (
+            mock_get_nightreport_observatory_status_from_efd.start()
+        )
+
+        mock_get_nightreport_cscs_status_from_efd = patch(
+            "api.views.get_nightreport_cscs_status_from_efd"
+        )
+        mock_get_nightreport_cscs_status_from_efd_client = (
+            mock_get_nightreport_cscs_status_from_efd.start()
         )
 
         mock_get_jira_obs_report = patch("api.views.get_jira_obs_report")
@@ -827,6 +884,34 @@ class NightReportTestCase(TestCase):
         mock_get_last_valid_night_report_client.return_value = {
             **self.response_report,
         }
+
+        # Getting the EFD observatory status raise error
+        mock_get_nightreport_observatory_status_from_efd_client.side_effect = Exception(
+            "Error getting observatory status from EFD."
+        )
+        response = self.client.post(url, data=self.send_report_payload, format="json")
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(
+            response.data, {"error": "Error getting observatory status from EFD."}
+        )
+        mock_get_nightreport_observatory_status_from_efd_client.side_effect = None
+        mock_get_nightreport_observatory_status_from_efd_client.return_value = (
+            self.observatory_status_efd
+        )
+
+        # Getting the EFD CSCS status raise error
+        mock_get_nightreport_cscs_status_from_efd_client.side_effect = Exception(
+            "Error getting CSCS status from EFD."
+        )
+        response = self.client.post(url, data=self.send_report_payload, format="json")
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(
+            response.data, {"error": "Error getting CSCS status from EFD."}
+        )
+        mock_get_nightreport_cscs_status_from_efd_client.side_effect = None
+        mock_get_nightreport_cscs_status_from_efd_client.return_value = (
+            self.cscs_status_efd
+        )
 
         # Obs ticket report raise error
         mock_get_jira_obs_report_client.side_effect = Exception(ERROR_OBS_TICKETS)
