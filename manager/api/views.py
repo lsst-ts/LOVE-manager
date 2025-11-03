@@ -1645,7 +1645,7 @@ class NightReportViewSet(viewsets.ViewSet):
 
     @swagger_auto_schema(responses={201: "NightReport log added"})
     def create(self, request, *args, **kwargs):
-
+        # Get current report
         last_valid_report = get_last_valid_night_report()
         if last_valid_report is not None:
             return Response(
@@ -1653,11 +1653,19 @@ class NightReportViewSet(viewsets.ViewSet):
                 status=status.HTTP_409_CONFLICT,
             )
 
-        url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/nightreport/reports/"
-
         # Make a copy of the request data for payload cleaning
         # so it is json serializable
         json_data = request.data.copy()
+
+        # Strip empty spaces from text fields
+        for key in [
+            "summary",
+            "weather",
+            "maintel_summary",
+            "auxtel_summary",
+            "confluence_url",
+        ]:
+            json_data[key] = json_data[key].strip()
 
         # Set current obs day
         curr_tai = astropy.time.Time.now().tai.datetime
@@ -1667,6 +1675,7 @@ class NightReportViewSet(viewsets.ViewSet):
         json_data["user_agent"] = "LOVE"
         json_data["user_id"] = f"{request.user}@{request.get_host()}"
 
+        url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/nightreport/reports/"
         response = requests.post(url, json=json_data)
         return Response(response.json(), status=response.status_code)
 
@@ -1689,6 +1698,16 @@ class NightReportViewSet(viewsets.ViewSet):
                 {"error": NIGHT_REPORT_CONFLICT_MESSAGE},
                 status=status.HTTP_409_CONFLICT,
             )
+
+        # Strip empty spaces from text fields
+        for key in [
+            "summary",
+            "weather",
+            "maintel_summary",
+            "auxtel_summary",
+            "confluence_url",
+        ]:
+            json_data[key] = json_data[key].strip()
 
         # Send the request to the OLE API
         url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/nightreport/reports/{pk}"
