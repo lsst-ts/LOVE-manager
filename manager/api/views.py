@@ -1653,8 +1653,7 @@ class NightReportViewSet(viewsets.ViewSet):
                 status=status.HTTP_409_CONFLICT,
             )
 
-        query_params_string = urllib.parse.urlencode(request.query_params)
-        url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/nightreport/reports?{query_params_string}"
+        url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/nightreport/reports/"
 
         # Make a copy of the request data for payload cleaning
         # so it is json serializable
