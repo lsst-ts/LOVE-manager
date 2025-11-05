@@ -70,6 +70,8 @@ from manager.utils import (
     arrange_nightreport_email,
     get_jira_obs_report,
     get_last_valid_night_report,
+    get_nightreport_cscs_status_from_efd,
+    get_nightreport_observatory_status_from_efd,
     get_obsday_from_tai,
     get_obsday_iso,
     get_tai_from_utc,
@@ -1508,19 +1510,23 @@ def ole_send_night_report(request, *args, **kwargs):
             {"error": "Night report already sent"}, status=status.HTTP_400_BAD_REQUEST
         )
 
-    # Trim white spaces from human written fields from the report
-    for key in [
-        "summary",
-        "weather",
-        "maintel_summary",
-        "auxtel_summary",
-        "confluence_url",
-    ]:
-        json_data[key] = json_data[key].strip()
+    # Get observatory and CSCS status
+    try:
+        observatory_status = get_nightreport_observatory_status_from_efd()
+        cscs_status = get_nightreport_cscs_status_from_efd()
+        last_valid_report["observatory_status"] = observatory_status
+        last_valid_report["cscs_status"] = cscs_status
+    except Exception as e:
+        return Response(
+            {"error": str(e)},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
     # Get JIRA observation issues
     try:
-        json_data["obs_issues"] = get_jira_obs_report({"day_obs": json_data["day_obs"]})
+        last_valid_report["obs_issues"] = get_jira_obs_report(
+            {"day_obs": last_valid_report["day_obs"]}
+        )
     except Exception as e:
         return Response(
             {"error": str(e)},
@@ -1529,21 +1535,8 @@ def ole_send_night_report(request, *args, **kwargs):
 
     # Arrange HMTl email content
     try:
-        html_content = arrange_nightreport_email(
-            {
-                **json_data,
-                "observatory_status": json_data["observatory_status"],
-                "cscs_status": json_data["cscs_status"],
-            }
-        )
-        plain_content = arrange_nightreport_email(
-            {
-                **json_data,
-                "observatory_status": json_data["observatory_status"],
-                "cscs_status": json_data["cscs_status"],
-            },
-            plain=True,
-        )
+        html_content = arrange_nightreport_email(last_valid_report, plain=False)
+        plain_content = arrange_nightreport_email(last_valid_report, plain=True)
     except Exception as e:
         return Response(
             {"error": str(e)},
@@ -1652,7 +1645,7 @@ class NightReportViewSet(viewsets.ViewSet):
 
     @swagger_auto_schema(responses={201: "NightReport log added"})
     def create(self, request, *args, **kwargs):
-
+        # Get current report
         last_valid_report = get_last_valid_night_report()
         if last_valid_report is not None:
             return Response(
@@ -1660,12 +1653,19 @@ class NightReportViewSet(viewsets.ViewSet):
                 status=status.HTTP_409_CONFLICT,
             )
 
-        query_params_string = urllib.parse.urlencode(request.query_params)
-        url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/nightreport/reports?{query_params_string}"
-
         # Make a copy of the request data for payload cleaning
         # so it is json serializable
         json_data = request.data.copy()
+
+        # Strip empty spaces from text fields
+        for key in [
+            "summary",
+            "weather",
+            "maintel_summary",
+            "auxtel_summary",
+            "confluence_url",
+        ]:
+            json_data[key] = json_data[key].strip()
 
         # Set current obs day
         curr_tai = astropy.time.Time.now().tai.datetime
@@ -1675,6 +1675,7 @@ class NightReportViewSet(viewsets.ViewSet):
         json_data["user_agent"] = "LOVE"
         json_data["user_id"] = f"{request.user}@{request.get_host()}"
 
+        url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/nightreport/reports/"
         response = requests.post(url, json=json_data)
         return Response(response.json(), status=response.status_code)
 
@@ -1697,6 +1698,16 @@ class NightReportViewSet(viewsets.ViewSet):
                 {"error": NIGHT_REPORT_CONFLICT_MESSAGE},
                 status=status.HTTP_409_CONFLICT,
             )
+
+        # Strip empty spaces from text fields
+        for key in [
+            "summary",
+            "weather",
+            "maintel_summary",
+            "auxtel_summary",
+            "confluence_url",
+        ]:
+            json_data[key] = json_data[key].strip()
 
         # Send the request to the OLE API
         url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/nightreport/reports/{pk}"
