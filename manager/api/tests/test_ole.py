@@ -855,10 +855,12 @@ class NightReportTestCase(TestCase):
         # Act:
         # Last valid night report does not exist
         mock_get_last_valid_night_report_client.return_value = None
-        with self.assertRaises(TypeError):
-            response = self.client.post(
-                url, data=self.send_report_payload, format="json"
-            )
+        response = self.client.post(url, data=self.send_report_payload, format="json")
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(
+            response.data,
+            {"error": NIGHT_REPORT_CONFLICT_MESSAGE},
+        )
 
         # Last valid night report is different
         mock_get_last_valid_night_report_client.return_value = {

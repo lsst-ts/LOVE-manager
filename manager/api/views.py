@@ -1500,7 +1500,7 @@ def ole_send_night_report(request, *args, **kwargs):
 
     # Get current report
     last_valid_report = get_last_valid_night_report(int(json_data["day_obs"]))
-    if last_valid_report["id"] != pk:
+    if last_valid_report is None or last_valid_report["id"] != pk:
         return Response(
             {"error": NIGHT_REPORT_CONFLICT_MESSAGE},
             status=status.HTTP_409_CONFLICT,
@@ -1693,7 +1693,7 @@ class NightReportViewSet(viewsets.ViewSet):
 
         # Get current report
         last_valid_report = get_last_valid_night_report(int(json_data["day_obs"]))
-        if last_valid_report["id"] != pk:
+        if last_valid_report is None or last_valid_report["id"] != pk:
             return Response(
                 {"error": NIGHT_REPORT_CONFLICT_MESSAGE},
                 status=status.HTTP_409_CONFLICT,
