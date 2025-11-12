@@ -68,6 +68,7 @@ from manager.utils import (
     DATETIME_ISO_FORMAT,
     CommandPermission,
     arrange_nightreport_email,
+    get_efd_instance_from_request,
     get_jira_obs_report,
     get_last_valid_night_report,
     get_nightreport_cscs_status_from_efd,
@@ -1512,8 +1513,9 @@ def ole_send_night_report(request, *args, **kwargs):
 
     # Get observatory and CSCS status
     try:
-        observatory_status = get_nightreport_observatory_status_from_efd()
-        cscs_status = get_nightreport_cscs_status_from_efd()
+        efd_instance = get_efd_instance_from_request(request)
+        observatory_status = get_nightreport_observatory_status_from_efd(efd_instance)
+        cscs_status = get_nightreport_cscs_status_from_efd(efd_instance)
         last_valid_report["observatory_status"] = observatory_status
         last_valid_report["cscs_status"] = cscs_status
     except Exception as e:
