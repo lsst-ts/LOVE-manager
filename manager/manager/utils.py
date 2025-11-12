@@ -130,6 +130,12 @@ NIGHT_REPORT_CSCS = [
     "ATSpectrograph:0",
 ]
 
+EFD_INSTACES = {
+    "summit-lsp.lsst.codes": "summit_efd",
+    "base-lsp.lsst.codes": "base_efd",
+    "tucson-teststand.lsst.codes": "tucson_teststand_efd",
+}
+
 
 class LocationPermission(BasePermission):
     """Permission class to check if the user is in the location whitelist."""
@@ -2002,3 +2008,21 @@ def get_last_valid_night_report(day_obs=None):
             return None
         return reports[0]
     raise Exception("Error getting the current night report from the Nightreport API.")
+
+
+def get_efd_instance_from_request(request):
+    """Get the EFD instance in base to the host
+    in the request headers.
+
+    Parameters
+    ----------
+    request : `django.http.HttpRequest`
+        The HTTP request object.
+
+    Returns
+    -------
+    str
+        The EFD instance name. Default is "summit_efd".
+    """
+    host = request.get_host()
+    return EFD_INSTACES.get(host, "summit_efd")
