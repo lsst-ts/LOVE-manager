@@ -20,17 +20,17 @@
 
 """Test users' authentication through the API."""
 import json
-import requests
 import tempfile
-from django.test import TestCase, override_settings
-from django.urls import reverse
-from django.contrib.auth.models import User
-from rest_framework.test import APIClient
-from api.models import ConfigFile, Token
-from django.conf import settings
-from django.core.files.base import ContentFile
 from unittest import mock
 
+import requests
+from api.models import ConfigFile, Token
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.core.files.base import ContentFile
+from django.test import TestCase, override_settings
+from django.urls import reverse
+from rest_framework.test import APIClient
 
 # python manage.py test api.tests.tests_configfile.ConfigFileApiTestCase
 
@@ -87,7 +87,8 @@ class ConfigFileApiTestCase(TestCase):
             ),
             file_name="remote_filename",
         )
-        # Need to overwrite config file name to match the one in the remote server
+        # Need to overwrite config file name to match
+        # the one in the remote server
         self.remote_config_file.config_file.name = (
             self.remote_config_file.config_file.name.replace("configs/", "")
         )
@@ -102,7 +103,8 @@ class ConfigFileApiTestCase(TestCase):
             ),
             file_name="remote_filename_invalid_url",
         )
-        # Need to overwrite config file name to match the one in the remote server
+        # Need to overwrite config file name to match
+        # the one in the remote server
         self.remote_config_file_invalid_url.config_file.name = (
             self.remote_config_file_invalid_url.config_file.name.replace("configs/", "")
         )
@@ -117,7 +119,8 @@ class ConfigFileApiTestCase(TestCase):
             ),
             file_name="remote_filename_not_found",
         )
-        # Need to overwrite config file name to match the one in the remote server
+        # Need to overwrite config file name to match
+        # the one in the remote server
         self.remote_config_file_not_found.config_file.name = (
             self.remote_config_file_not_found.config_file.name.replace("configs/", "")
         )
@@ -132,7 +135,8 @@ class ConfigFileApiTestCase(TestCase):
             ),
             file_name="remote_filename_type_notallow",
         )
-        # Need to overwrite config file name to match the one in the remote server
+        # Need to overwrite config file name to match
+        # the one in the remote server
         self.remote_config_file_type_not_allowed.config_file.name = (
             self.remote_config_file_type_not_allowed.config_file.name.replace(
                 "configs/", ""
@@ -251,7 +255,8 @@ class ConfigFileApiTestCase(TestCase):
 
     @override_settings(DEFAULT_FILE_STORAGE="manager.utils.RemoteStorage")
     def test_get_config_file_content_with_remote_storage_error_invalid_url(self):
-        """Test that an authenticated user cannot get a config file content with an invalid url."""
+        """Test that an authenticated user cannot get
+        a config file content with an invalid url."""
 
         # Arrange:
         self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token.key)
@@ -269,7 +274,8 @@ class ConfigFileApiTestCase(TestCase):
 
     @override_settings(DEFAULT_FILE_STORAGE="manager.utils.RemoteStorage")
     def test_get_config_file_content_with_remote_storage_error_file_not_found(self):
-        """Test that an authenticated user cannot get a config file content which cannot be found."""
+        """Test that an authenticated user cannot get
+        a config file content which cannot be found."""
 
         # Arrange:
         self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token.key)
@@ -295,7 +301,8 @@ class ConfigFileApiTestCase(TestCase):
     def test_get_config_file_content_with_remote_storage_error_file_type_not_allowed(
         self,
     ):
-        """Test that an authenticated user cannot get a config file content which cannot be found."""
+        """Test that an authenticated user cannot get
+        a config file content which cannot be found."""
 
         # Arrange:
         self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token.key)

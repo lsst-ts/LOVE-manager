@@ -19,16 +19,18 @@
 
 
 """Defines custom authentication classes."""
-import rest_framework.authentication
-from rest_framework.exceptions import AuthenticationFailed
 from datetime import timedelta
-from django.utils import timezone
-from django.conf import settings
+
+import rest_framework.authentication
 from api.models import Token
+from django.conf import settings
+from django.utils import timezone
+from rest_framework.exceptions import AuthenticationFailed
 
 
 class TokenAuthentication(rest_framework.authentication.TokenAuthentication):
-    """Custom authentication class. Created in order to use our custom Token model."""
+    """Custom authentication class. Created in order
+    to use our custom Token model."""
 
     model = Token
     """django.model: defines the Token model associated to this class"""
@@ -48,7 +50,8 @@ class ExpiringTokenAuthentication(rest_framework.authentication.TokenAuthenticat
     def authenticate_credentials(self, key):
         """Check if a provided token is valid or not.
 
-        If it is valid, the user and token are returned, if not, an AuthenticationFailed exception is raised
+        If it is valid, the user and token are returned,
+        if not, an AuthenticationFailed exception is raised.
 
         Params
         ------
@@ -76,7 +79,8 @@ class ExpiringTokenAuthentication(rest_framework.authentication.TokenAuthenticat
 
     @classmethod
     def token_expire_handler(cls, token):
-        """Check if a given token is expired or not, if it is the Token is deleted.
+        """Check if a given token is expired or not,
+        if it is the Token is deleted.
 
         Params
         ------

@@ -20,10 +20,11 @@
 
 """Tests for the subscription of consumers to love_csc streams."""
 import pytest
-from django.contrib.auth.models import User, Permission
-from channels.testing import WebsocketCommunicator
-from manager.routing import application
 from api.models import Token
+from channels.testing import WebsocketCommunicator
+from django.contrib.auth.models import Permission, User
+
+from manager.routing import application
 
 
 class TestLOVECscSubscriptions:

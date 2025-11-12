@@ -22,17 +22,18 @@
 import filecmp
 import glob
 import os
+from unittest import mock
+
 import pytest
 import requests
-from django.contrib.auth.models import User, Permission
-from django.urls import reverse
+from api.models import Token
+from django.conf import settings
+from django.contrib.auth.models import Permission, User
 from django.test import TestCase, override_settings
+from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 from ui_framework.models import View
-from unittest import mock
-from api.models import Token
-from django.conf import settings
 
 
 @override_settings(DEBUG=True)
@@ -66,7 +67,8 @@ class ViewThumbnailTestCase(TestCase):
 
     @override_settings(DEFAULT_FILE_STORAGE="manager.utils.RemoteStorage")
     def test_new_view_from_remote_storage(self):
-        """Test thumbnail behavior when adding a new view from remote storage"""
+        """Test thumbnail behavior when adding
+        a new view from remote storage."""
         # Arrange
         # read test data (base64 string)
         old_count = View.objects.count()

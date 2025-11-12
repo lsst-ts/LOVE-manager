@@ -20,25 +20,26 @@
 
 """Utilities for testing purposes."""
 import json
+
 from django.conf import settings
 from django.test import TestCase
 from django.utils import timezone
 from freezegun import freeze_time
 from rest_framework import serializers
 from rest_framework.test import APIClient
-from ui_framework.models import Workspace, View, WorkspaceView
+from ui_framework.models import View, Workspace, WorkspaceView
 
 
 def get_dict(obj):
     """Return a dictionary with the fields of a given object."""
-    if type(obj) == Workspace:
+    if type(obj) is Workspace:
         return {
             "id": obj.id,
             "name": obj.name,
             "creation_timestamp": obj.creation_timestamp,
             "update_timestamp": obj.update_timestamp,
         }
-    if type(obj) == View:
+    if type(obj) is View:
         return {
             "id": obj.id,
             "name": obj.name,
@@ -46,7 +47,7 @@ def get_dict(obj):
             "creation_timestamp": obj.creation_timestamp,
             "update_timestamp": obj.update_timestamp,
         }
-    if type(obj) == WorkspaceView:
+    if type(obj) is WorkspaceView:
         return {
             "id": obj.id,
             "view_name": obj.view_name,
@@ -63,7 +64,8 @@ class BaseTestCase(TestCase):
     def setUp(self):
         """Set the base testcase.
 
-        We start with 3 workspaces and 4 views and we add view_i and view_i+1 to workspace_i
+        We start with 3 workspaces and 4 views
+        and we add view_i and view_i+1 to workspace_i.
         """
         # Arrange
         # Populate the Database
@@ -110,14 +112,16 @@ class BaseTestCase(TestCase):
                     View._meta.get_field("thumbnail").get_default()
                 )
 
-            # Create views, store them in self.views and add auto-generated fields to self.views_data
+            # Create views, store them in self.views
+            # and add auto-generated fields to self.views_data
             for i in range(0, len(self.views_data)):
                 view = View.objects.create(**self.views_data[i])
                 self.views_data[i]["id"] = view.id
                 self.views_data[i]["thumbnail"] = default_thumbnail
                 self.views.append(view)
 
-            # Create views, store them in self.views and add auto-generated fields to self.views_data
+            # Create views, store them in self.views
+            # and add auto-generated fields to self.views_data
             for i in range(0, len(self.workspaces_data)):
                 workspace = Workspace.objects.create(**self.workspaces_data[i])
                 self.workspaces_data[i]["id"] = workspace.id

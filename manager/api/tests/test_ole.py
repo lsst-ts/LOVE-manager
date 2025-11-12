@@ -24,6 +24,7 @@ from unittest.mock import patch
 import requests
 import rest_framework.response
 from api.models import Token
+from api.views import NIGHT_REPORT_CONFLICT_MESSAGE
 from django.contrib.auth.models import User
 from django.test import TestCase, override_settings
 from django.urls import reverse
@@ -530,13 +531,24 @@ class NightReportTestCase(TestCase):
         )
         self.token_user_normal = Token.objects.create(user=self.user_normal)
 
-        self.payload = {
+        self.payload_create = {
             "summary": "summary",
             "weather": "weather summary",
             "maintel_summary": "maintel summary",
             "auxtel_summary": "auxtel summary",
             "confluence_url": "https://localhost/confluence",
             "observers_crew": ["User1", "User2"],
+        }
+
+        self.payload_update = {
+            "id": "e75b07b6-a422-4cd7-99fc-95b0046645b0",
+            "day_obs": 20250930,
+            "summary": "updated summary",
+            "weather": "updated weather summary",
+            "maintel_summary": "updated maintel summary",
+            "auxtel_summary": "updated auxtel summary",
+            "confluence_url": "https://localhost/confluence/updated",
+            "observers_crew": ["User3", "User4"],
         }
 
         self.response_report = {
@@ -558,27 +570,49 @@ class NightReportTestCase(TestCase):
             "observers_crew": [],
         }
 
+        self.observatory_status_efd = {
+            "simonyiAzimuth": 100,
+            "simonyiElevation": 45,
+            "simonyiDomeAzimuth": 150,
+            "simonyiRotator": 90,
+            "simonyiMirrorCoversState": "UNKNOWN",
+            "simonyiOilSupplySystemState": "UNKNOWN",
+            "simonyiPowerSupplySystemState": "UNKNOWN",
+            "simonyiLockingPinsSystemState": "UNKNOWN",
+            "auxtelAzimuth": 200,
+            "auxtelElevation": 60,
+            "auxtelDomeAzimuth": 250,
+            "auxtelMirrorCoversState": "UNKNOWN",
+        }
+
+        self.cscs_status_efd = {
+            "MTMount:0": "ENABLED",
+            "MTM1M3:0": "ENABLED",
+            "MTAOS:0": "ENABLED",
+            "MTM2:0": "ENABLED",
+            "MTDome:0": "ENABLED",
+            "MTDomeTrajectory:0": "ENABLED",
+            "MTHexapod:1": "ENABLED",
+            "MTHexapod:2": "ENABLED",
+            "MTRotator:0": "ENABLED",
+            "MTPtg:0": "ENABLED",
+            "MTM1M3TS:0": "ENABLED",
+            "MTCamera:0": "ENABLED",
+            "ATMCS:0": "ENABLED",
+            "ATPtg:0": "ENABLED",
+            "ATDome:0": "ENABLED",
+            "ATDomeTrajectory:0": "ENABLED",
+            "ATAOS:0": "ENABLED",
+            "ATPneumatics:0": "ENABLED",
+            "ATHexapod:0": "ENABLED",
+            "ATCamera:0": "ENABLED",
+            "ATOODS:0": "ENABLED",
+            "ATHeaderService:0": "ENABLED",
+            "ATSpectrograph:0": "ENABLED",
+        }
+
         self.send_report_payload = {
-            "observatory_status": {
-                "simonyiAzimuth": "0.00°",
-                "simonyiElevation": "0.00°",
-                "simonyiDomeAzimuth": "0.00°",
-                "simonyiRotator": "0.00°",
-                "simonyiMirrorCoversState": "UNKNOWN",
-                "simonyiOilSupplySystemState": "UNKNOWN",
-                "simonyiPowerSupplySystemState": "UNKNOWN",
-                "simonyiLockingPinsSystemState": "UNKNOWN",
-                "auxtelAzimuth": "0.00°",
-                "auxtelElevation": "0.00°",
-                "auxtelDomeAzimuth": "0.00°",
-                "auxtelMirrorCoversState": "UNKNOWN",
-            },
-            "cscs_status": {
-                "CSC:0": "UNKNOWN",
-                "CSC:1": "UNKNOWN",
-                "CSC:2": "UNKNOWN",
-                "CSC:3": "UNKNOWN",
-            },
+            **self.payload_update,
         }
 
     def test_nightreport_list(self):
@@ -603,9 +637,16 @@ class NightReportTestCase(TestCase):
 
         mock_ole_patcher.stop()
 
-    def test_simple_nightreport_create(self):
+    def test_nightreport_create(self):
         """Test nightreport create."""
         # Arrange:
+        mock_get_last_valid_night_report_patcher = patch(
+            "api.views.get_last_valid_night_report"
+        )
+        mock_get_last_valid_night_report_client = (
+            mock_get_last_valid_night_report_patcher.start()
+        )
+
         mock_ole_patcher = patch("requests.post")
         mock_ole_client = mock_ole_patcher.start()
         response = requests.Response()
@@ -617,16 +658,36 @@ class NightReportTestCase(TestCase):
             HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
         )
 
-        # Act:
         url = reverse("NightReportLogs-list")
-        response = self.client.post(url, self.payload)
+
+        # Act:
+        # Succeeds if no valid night report exists
+        mock_get_last_valid_night_report_client.return_value = None
+        response = self.client.post(url, self.payload_create)
         self.assertEqual(response.status_code, 201)
 
+        # Fails if valid night report exists
+        mock_get_last_valid_night_report_client.return_value = self.response_report
+        response = self.client.post(url, self.payload_create)
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(
+            response.data,
+            {"error": NIGHT_REPORT_CONFLICT_MESSAGE},
+        )
+
         mock_ole_patcher.stop()
+        mock_get_last_valid_night_report_patcher.stop()
 
     def test_nightreport_update(self):
         """Test nightreport update."""
         # Arrange:
+        mock_get_last_valid_night_report_patcher = patch(
+            "api.views.get_last_valid_night_report"
+        )
+        mock_get_last_valid_night_report_client = (
+            mock_get_last_valid_night_report_patcher.start()
+        )
+
         mock_ole_patcher = patch("requests.patch")
         mock_ole_client = mock_ole_patcher.start()
         response = requests.Response()
@@ -638,12 +699,35 @@ class NightReportTestCase(TestCase):
             HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
         )
 
+        url = reverse("NightReportLogs-detail", args=[self.payload_update["id"]])
+
         # Act:
-        url = reverse("NightReportLogs-detail", args=[1])
-        response = self.client.put(url, self.payload)
+        # Fails if not valid night report exists
+        mock_get_last_valid_night_report_client.return_value = None
+        with self.assertRaises(TypeError):
+            response = self.client.put(url, self.payload_update)
+
+        # Fails if valid night report exists,
+        # but is different from the one being updated
+        mock_get_last_valid_night_report_client.return_value = {
+            **self.response_report,
+            "id": "different-id",
+        }
+        response = self.client.put(url, self.payload_update)
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(
+            response.data,
+            {"error": NIGHT_REPORT_CONFLICT_MESSAGE},
+        )
+
+        # Succeeds if valid night report exists
+        # and is the same as the one being updated
+        mock_get_last_valid_night_report_client.return_value = self.response_report
+        response = self.client.put(url, self.payload_update)
         self.assertEqual(response.status_code, 200)
 
         mock_ole_patcher.stop()
+        mock_get_last_valid_night_report_patcher.stop()
 
     def test_nightreport_delete(self):
         """Test nightreport delete."""
@@ -669,21 +753,13 @@ class NightReportTestCase(TestCase):
     def test_nightreport_send(self):
         """Test nightreport send."""
         # Arrange:
-        response_get = requests.Response()
-        response_get.status_code = 200
-        response_get.json = lambda: self.response_report
-
         response_patch = requests.Response()
         response_patch.status_code = 200
         response_patch.json = lambda: self.response_report
 
-        mock_ole_patcher_get = patch("requests.get")
-        mock_ole_client_get = mock_ole_patcher_get.start()
-        mock_ole_client_get.return_value = response_get
-
-        mock_ole_patcher_patch = patch("requests.patch")
-        mock_ole_client_patch = mock_ole_patcher_patch.start()
-        mock_ole_client_patch.return_value = response_patch
+        mock_requests_patch = patch("requests.patch")
+        mock_requests_patch_client = mock_requests_patch.start()
+        mock_requests_patch_client.return_value = response_patch
 
         mock_get_jira_obs_report = patch("api.views.get_jira_obs_report")
         mock_get_jira_obs_report_client = mock_get_jira_obs_report.start()
@@ -692,6 +768,34 @@ class NightReportTestCase(TestCase):
         mock_send_smtp_email = patch("api.views.send_smtp_email")
         mock_send_smtp_email_client = mock_send_smtp_email.start()
         mock_send_smtp_email_client.return_value = True
+
+        mock_get_last_valid_night_report_patcher = patch(
+            "api.views.get_last_valid_night_report"
+        )
+        mock_get_last_valid_night_report_client = (
+            mock_get_last_valid_night_report_patcher.start()
+        )
+        mock_get_last_valid_night_report_client.return_value = self.response_report
+
+        mock_get_nightreport_observatory_status_from_efd = patch(
+            "api.views.get_nightreport_observatory_status_from_efd"
+        )
+        mock_get_nightreport_observatory_status_from_efd_client = (
+            mock_get_nightreport_observatory_status_from_efd.start()
+        )
+        mock_get_nightreport_observatory_status_from_efd_client.return_value = (
+            self.observatory_status_efd
+        )
+
+        mock_get_nightreport_cscs_status_from_efd = patch(
+            "api.views.get_nightreport_cscs_status_from_efd"
+        )
+        mock_get_nightreport_cscs_status_from_efd_client = (
+            mock_get_nightreport_cscs_status_from_efd.start()
+        )
+        mock_get_nightreport_cscs_status_from_efd_client.return_value = (
+            self.cscs_status_efd
+        )
 
         self.client.credentials(
             HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
@@ -702,19 +806,36 @@ class NightReportTestCase(TestCase):
         response = self.client.post(url, data=self.send_report_payload, format="json")
         self.assertEqual(response.status_code, 200)
 
-        mock_ole_patcher_get.stop()
-        mock_ole_patcher_patch.stop()
+        mock_requests_patch.stop()
         mock_get_jira_obs_report.stop()
         mock_send_smtp_email.stop()
+        mock_get_last_valid_night_report_patcher.stop()
+        mock_get_nightreport_observatory_status_from_efd_client.stop()
+        mock_get_nightreport_cscs_status_from_efd_client.stop()
 
     def test_nightreport_send_fail(self):
         """Test nightreport send fail."""
         # Arrange:
-        response_get = requests.Response()
-        response_get.status_code = 200
-        mock_ole_patcher_get = patch("requests.get")
-        mock_ole_client_get = mock_ole_patcher_get.start()
-        mock_ole_client_get.return_value = response_get
+        mock_get_last_valid_night_report_patcher = patch(
+            "api.views.get_last_valid_night_report"
+        )
+        mock_get_last_valid_night_report_client = (
+            mock_get_last_valid_night_report_patcher.start()
+        )
+
+        mock_get_nightreport_observatory_status_from_efd = patch(
+            "api.views.get_nightreport_observatory_status_from_efd"
+        )
+        mock_get_nightreport_observatory_status_from_efd_client = (
+            mock_get_nightreport_observatory_status_from_efd.start()
+        )
+
+        mock_get_nightreport_cscs_status_from_efd = patch(
+            "api.views.get_nightreport_cscs_status_from_efd"
+        )
+        mock_get_nightreport_cscs_status_from_efd_client = (
+            mock_get_nightreport_cscs_status_from_efd.start()
+        )
 
         mock_get_jira_obs_report = patch("api.views.get_jira_obs_report")
         mock_get_jira_obs_report_client = mock_get_jira_obs_report.start()
@@ -732,21 +853,69 @@ class NightReportTestCase(TestCase):
         url = reverse("OLE-nightreport-send-report", args=[self.response_report["id"]])
 
         # Act:
+        # Last valid night report does not exist
+        mock_get_last_valid_night_report_client.return_value = None
+        with self.assertRaises(TypeError):
+            response = self.client.post(
+                url, data=self.send_report_payload, format="json"
+            )
+
+        # Last valid night report is different
+        mock_get_last_valid_night_report_client.return_value = {
+            **self.response_report,
+            "id": "different-id",
+        }
+        response = self.client.post(url, data=self.send_report_payload, format="json")
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(
+            response.data,
+            {"error": NIGHT_REPORT_CONFLICT_MESSAGE},
+        )
+
         # Night report already sent
-        response_get.json = lambda: {
+        mock_get_last_valid_night_report_client.return_value = {
             **self.response_report,
             "date_sent": "2024-03-20T15:12:46.508840",
         }
-        response = self.client.post(url)
+        response = self.client.post(url, data=self.send_report_payload, format="json")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data, {"error": "Night report already sent"})
 
-        # Obs ticket report raise error
-        response_get.json = lambda: {
+        mock_get_last_valid_night_report_client.return_value = {
             **self.response_report,
         }
+
+        # Getting the EFD observatory status raise error
+        mock_get_nightreport_observatory_status_from_efd_client.side_effect = Exception(
+            "Error getting observatory status from EFD."
+        )
+        response = self.client.post(url, data=self.send_report_payload, format="json")
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(
+            response.data, {"error": "Error getting observatory status from EFD."}
+        )
+        mock_get_nightreport_observatory_status_from_efd_client.side_effect = None
+        mock_get_nightreport_observatory_status_from_efd_client.return_value = (
+            self.observatory_status_efd
+        )
+
+        # Getting the EFD CSCS status raise error
+        mock_get_nightreport_cscs_status_from_efd_client.side_effect = Exception(
+            "Error getting CSCS status from EFD."
+        )
+        response = self.client.post(url, data=self.send_report_payload, format="json")
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(
+            response.data, {"error": "Error getting CSCS status from EFD."}
+        )
+        mock_get_nightreport_cscs_status_from_efd_client.side_effect = None
+        mock_get_nightreport_cscs_status_from_efd_client.return_value = (
+            self.cscs_status_efd
+        )
+
+        # Obs ticket report raise error
         mock_get_jira_obs_report_client.side_effect = Exception(ERROR_OBS_TICKETS)
-        response = self.client.post(url)
+        response = self.client.post(url, data=self.send_report_payload, format="json")
         self.assertEqual(response.status_code, 500)
         self.assertEqual(response.data, {"error": ERROR_OBS_TICKETS})
 
@@ -766,7 +935,7 @@ class NightReportTestCase(TestCase):
         self.assertEqual(response.status_code, 500)
         self.assertEqual(response.data, {"error": "Error sending email"})
 
-        mock_ole_patcher_get.stop()
         mock_get_jira_obs_report.stop()
         mock_arrange_nightreport_email.stop()
         mock_send_smtp_email.stop()
+        mock_get_last_valid_night_report_patcher.stop()
