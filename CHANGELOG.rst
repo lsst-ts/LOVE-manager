@@ -5,13 +5,15 @@ Version History
 v7.5.2
 ------
 
-* Implement observatory status efd retrieval when sending the night report. `<https://github.com/lsst-ts/LOVE-manager/pull/337>`_ 
-* Improved conflict handling in the night report for create and update methods. `<https://github.com/lsst-ts/LOVE-manager/pull/336>`_
-* Switched from psycopg2 to psycopg 3.3. `<https://github.com/lsst-ts/LOVE-manager/pull/336>`_
+* Hotfix for use of the get_last_valid_night_report method. `<https://github.com/lsst-ts/LOVE-manager/pull/338>`_ 
+
 
 v7.5.1
 ------
 
+* Implement observatory status efd retrieval when sending the night report. `<https://github.com/lsst-ts/LOVE-manager/pull/337>`_ 
+* Improved conflict handling in the night report for create and update methods. `<https://github.com/lsst-ts/LOVE-manager/pull/336>`_
+* Switched from psycopg2 to psycopg 3.3. `<https://github.com/lsst-ts/LOVE-manager/pull/336>`_
 * Update Jenkins pipeline. `<https://github.com/lsst-ts/LOVE-manager/pull/331>`_
 
 v7.5.0

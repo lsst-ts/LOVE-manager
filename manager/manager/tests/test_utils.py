@@ -7,7 +7,9 @@ from django.test import TestCase
 from django.test.utils import override_settings
 
 from manager.utils import (
+    EFD_INSTACES,
     arrange_nightlydigest_urls_for_obsday,
+    get_efd_instance_from_request,
     get_last_valid_night_report,
     get_nightreport_cscs_status_from_efd,
     get_nightreport_observatory_status_from_efd,
@@ -141,10 +143,13 @@ class UtilsTestCase(TestCase):
         self.mock_requests_get = self.requests_get_patcher.start()
         self.requests_post_patcher = patch("requests.post")
         self.mock_requests_post = self.requests_post_patcher.start()
+        self.django_http_request_patcher = patch("django.http.HttpRequest")
+        self.mock_django_http_request = self.django_http_request_patcher.start()
 
     def tearDown(self):
         self.requests_get_patcher.stop()
         self.requests_post_patcher.stop()
+        self.django_http_request_patcher.stop()
 
     @override_settings(NIGHTLYDIGEST_BASE_URL="https://example.com/nightlydigest")
     def test_arrange_nightlydigest_urls_for_obsday(self):
@@ -297,3 +302,16 @@ class UtilsTestCase(TestCase):
         response_post.json = lambda: cscs_status_clone
         with self.assertRaises(Exception):
             get_nightreport_cscs_status_from_efd()
+
+    def test_get_efd_instance_from_request(self):
+        # Test default behavior
+        mock_request = self.mock_django_http_request()
+        mock_request.get_host.return_value = "unknown_host"
+        efd_instance = get_efd_instance_from_request(mock_request)
+        assert efd_instance == "summit_efd"
+
+        # Test with known hosts
+        for host, expected_efd in EFD_INSTACES.items():
+            mock_request.get_host.return_value = host
+            efd_instance = get_efd_instance_from_request(mock_request)
+            assert efd_instance == expected_efd
