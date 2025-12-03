@@ -1093,15 +1093,10 @@ def arrange_nightreport_email(report, plain=False):
     if missing_keys:
         raise ValueError(f"Missing keys in report: {', '.join(missing_keys)}")
 
-    url_jira_obs_tickets = "https://rubinobs.atlassian.net/jira/software/c/projects/OBS/boards/232"
-    day_added = get_obsday_iso(report["day_obs"])
+    url_jira_obs_tickets = (
+        "https://rubinobs.atlassian.net/jira/software/c/projects/OBS/boards/232"
+    )
     nightlydigest_urls = arrange_nightlydigest_urls_for_obsday(report["day_obs"])
-
-    # TODO: Swap this hardcoded url by a dynamic one.
-    # The service is meant to be run in the summit,
-    # so this will work for the moment.
-    # See: DM-43637
-    url_rolex = f"https://summit-lsp.lsst.codes/rolex?log_date={day_added}"
 
     NIGHTLYDIGEST_TITLE = "Nightly Digest:"
     SUMMARY_TITLE = "Summary:"
@@ -1112,7 +1107,6 @@ def arrange_nightreport_email(report, plain=False):
     SIGNED_MSG = "Submitted by:"
     LINK_MSG_OBS = "OBS fault reports from last 24 hours:"
     LINK_MSG_CONFLUENCE = "Link to night plan page:"
-    LINK_MSG_ROLEX = "Link to detailed night log entries (requires Summit VPN):"
     DETAILED_ISSUE_REPORT_TITLE = "Detailed issue report:"
     OBSERVATORY_STATUS_TITLE = "Observatory status:"
     CSCS_STATUS_TITLE = "CSCs status:"
@@ -1142,9 +1136,7 @@ def arrange_nightreport_email(report, plain=False):
 {ADDITIONAL_RESOURCES_TITLE}
 - {LINK_MSG_OBS} {url_jira_obs_tickets}
 - {LINK_MSG_CONFLUENCE} {report["confluence_url"]}
-- {LINK_MSG_ROLEX} {url_rolex}
-{
-            f'''
+{f'''
 {DETAILED_ISSUE_REPORT_TITLE}
 {parse_obs_issues_array_to_plain_text(report["obs_issues"])}
 '''
@@ -1224,10 +1216,6 @@ def arrange_nightreport_email(report, plain=False):
                 <li>
                     {LINK_MSG_CONFLUENCE}
                     <a href="{report["confluence_url"]}">{report["confluence_url"]}</a>
-                </li>
-                <li>
-                    {LINK_MSG_ROLEX}
-                    <a href="{url_rolex}">{url_rolex}</a>
                 </li>
             </ul>
         </p>
