@@ -19,6 +19,7 @@
 
 
 """Django apps configuration for the api app."""
+
 from django.apps import AppConfig
 
 

@@ -19,20 +19,18 @@
 
 
 """Tests for the subscription of consumers to love_csc streams."""
+
 import pytest
 from api.models import Token
 from channels.testing import WebsocketCommunicator
 from django.contrib.auth.models import Permission, User
-
 from manager.routing import application
 
 
 class TestLOVECscSubscriptions:
     def setup_method(self):
         """Set up the TestCase, executed before each test of the TestCase."""
-        self.user = User.objects.create_user(
-            "username", password="123", email="user@user.cl"
-        )
+        self.user = User.objects.create_user("username", password="123", email="user@user.cl")
         self.token = Token.objects.create(user=self.user)
         self.user.user_permissions.add(Permission.objects.get(name="Execute Commands"))
         self.url = "manager/ws/subscription/?token={}".format(self.token)
@@ -60,10 +58,7 @@ class TestLOVECscSubscriptions:
         response = await communicator.receive_json_from()
 
         # Assert 1
-        assert (
-            response["data"]
-            == f"Successfully subscribed to {category}-{csc}-{salindex}-{stream}"
-        )
+        assert response["data"] == f"Successfully subscribed to {category}-{csc}-{salindex}-{stream}"
 
         # Act 2 (Unsubscribe)
         msg = {
@@ -77,10 +72,7 @@ class TestLOVECscSubscriptions:
         response = await communicator.receive_json_from()
 
         # Assert 2
-        assert (
-            response["data"]
-            == f"Successfully unsubscribed to {category}-{csc}-{salindex}-{stream}"
-        )
+        assert response["data"] == f"Successfully unsubscribed to {category}-{csc}-{salindex}-{stream}"
 
         await communicator.disconnect()
 
@@ -110,9 +102,7 @@ class TestLOVECscSubscriptions:
         subscription_response = await lovecsc_communicator.receive_json_from()
 
         # Assert 1:
-        assert subscription_response == {
-            "data": "Successfully subscribed to love_csc-love-0-observingLog"
-        }
+        assert subscription_response == {"data": "Successfully subscribed to love_csc-love-0-observingLog"}
 
         # Act 2: Client sends observing logs
         message = {

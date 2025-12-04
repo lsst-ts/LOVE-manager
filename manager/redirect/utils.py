@@ -2832,9 +2832,7 @@ def force_actuator_from_id(actuator_id: int) -> ForceActuatorData:
         raise RuntimeError(f"Cannot find force actuator with ID {actuator_id}")
 
 
-def actuator_id_to_index(
-    actuator_id: int, index_type: FAIndex = FAIndex.PRIMARY
-) -> int:
+def actuator_id_to_index(actuator_id: int, index_type: FAIndex = FAIndex.PRIMARY) -> int:
     """Returns index for given actuator ID.
 
     Parameters
@@ -2863,7 +2861,7 @@ def actuator_id_to_index(
 # TODO: transform this class into an StrEnum
 # https://docs.python.org/3/library/enum.html#enum.StrEnum
 # See: DM-42393
-class CHRONOGRAF_SITES:
+class ChronografSites:
     """Enumeration of Chronograf sites
 
     Attributes
@@ -2902,13 +2900,13 @@ def get_site_url_domain(site):
     RuntimeError
         When site name is not recognized
     """
-    if site == CHRONOGRAF_SITES.SUMMIT:
+    if site == ChronografSites.SUMMIT:
         return "summit-lsp.lsst.codes"
-    elif site == CHRONOGRAF_SITES.USDF:
+    elif site == ChronografSites.USDF:
         return "usdf-rsp.slac.stanford.edu"
-    elif site == CHRONOGRAF_SITES.TUCSON:
+    elif site == ChronografSites.TUCSON:
         return "tucson-teststand.lsst.codes"
-    elif site == CHRONOGRAF_SITES.BASE:
+    elif site == ChronografSites.BASE:
         return "base-lsp.lsst.codes"
 
     raise RuntimeError(f"Cannot find site {site}")
@@ -2936,13 +2934,13 @@ def get_chronograf_dashboard_route(site):
         When site name is not recognized
     """
 
-    if site == CHRONOGRAF_SITES.SUMMIT:
+    if site == ChronografSites.SUMMIT:
         return "/chronograf/sources/1/dashboards/199"
-    elif site == CHRONOGRAF_SITES.USDF:
+    elif site == ChronografSites.USDF:
         return "/chronograf/sources/1/dashboards/61"
-    elif site == CHRONOGRAF_SITES.TUCSON:
+    elif site == ChronografSites.TUCSON:
         raise NotImplementedError("TTS dashboard not yet implemented")
-    elif site == CHRONOGRAF_SITES.BASE:
+    elif site == ChronografSites.BASE:
         raise NotImplementedError("BTS dashboard not yet implemented")
 
     raise RuntimeError(f"Cannot find site {site}")

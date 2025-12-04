@@ -19,6 +19,7 @@
 
 
 """Django apps configuration for the ui_framework app."""
+
 from django.apps import AppConfig
 
 

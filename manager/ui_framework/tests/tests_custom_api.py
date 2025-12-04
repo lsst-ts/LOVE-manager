@@ -19,11 +19,13 @@
 
 
 """Test the UI Framework Custom API."""
+
 from api.models import Token
 from django.conf import settings
 from django.contrib.auth.models import Permission, User
 from django.urls import reverse
 from rest_framework import status
+
 from ui_framework.models import View
 from ui_framework.tests.utils import BaseTestCase
 
@@ -55,9 +57,7 @@ class AuthorizedCrudTestCase(BaseTestCase):
         can retrieve the list of available workspaces,
         with views ids and names."""
         # Arrange
-        self.user.user_permissions.add(
-            Permission.objects.get(codename="view_workspace")
-        )
+        self.user.user_permissions.add(Permission.objects.get(codename="view_workspace"))
         expected_data = [
             {
                 **w,
@@ -98,9 +98,7 @@ class AuthorizedCrudTestCase(BaseTestCase):
         """Test that authorized users
         can retrieve a workspace with all its views fully subserialized."""
         # Arrange
-        self.user.user_permissions.add(
-            Permission.objects.get(codename="view_workspace")
-        )
+        self.user.user_permissions.add(Permission.objects.get(codename="view_workspace"))
         w = self.workspaces_data[0]
         expected_data = {**w, "views": self.views_data[0:2]}
 

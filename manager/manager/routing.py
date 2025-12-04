@@ -20,6 +20,7 @@
 
 """Defines the rules for routing of
 channels messages (websockets) in the whole project."""
+
 import subscription.routing
 from channels.routing import ProtocolTypeRouter, URLRouter
 from django.core.asgi import get_asgi_application
@@ -33,8 +34,6 @@ application = ProtocolTypeRouter(
     {
         # Django's ASGI application to handle traditional HTTP requests
         "http": django_asgi_app,
-        "websocket": TokenAuthMiddleware(
-            URLRouter(subscription.routing.websocket_urlpatterns)
-        ),
+        "websocket": TokenAuthMiddleware(URLRouter(subscription.routing.websocket_urlpatterns)),
     }
 )

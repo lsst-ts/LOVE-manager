@@ -19,10 +19,12 @@
 
 
 """Test the UI Framework REST API."""
+
 from api.models import Token
 from django.contrib.auth.models import Permission, User
 from django.urls import reverse
 from rest_framework import status
+
 from ui_framework.tests.utils import BaseTestCase, get_dict
 
 
@@ -277,9 +279,7 @@ class AuthorizedCrudTestCase(BaseTestCase):
         can retrieve the list of objects through the API."""
         for case in self.cases:
             # Arrange
-            self.user.user_permissions.add(
-                Permission.objects.get(codename="view_{}".format(case["key"]))
-            )
+            self.user.user_permissions.add(Permission.objects.get(codename="view_{}".format(case["key"])))
             # Act
             url = reverse("{}-list".format(case["key"]))
             response = self.client.get(url)
@@ -302,9 +302,7 @@ class AuthorizedCrudTestCase(BaseTestCase):
         can create objects through the API."""
         for case in self.cases:
             # Arrange
-            self.user.user_permissions.add(
-                Permission.objects.get(codename="add_{}".format(case["key"]))
-            )
+            self.user.user_permissions.add(Permission.objects.get(codename="add_{}".format(case["key"])))
             # Act
             url = reverse("{}-list".format(case["key"]))
             response = self.client.post(url, case["new_data"])
@@ -325,9 +323,7 @@ class AuthorizedCrudTestCase(BaseTestCase):
         can retrieve objects through the API."""
         for case in self.cases:
             # Arrange
-            self.user.user_permissions.add(
-                Permission.objects.get(codename="view_{}".format(case["key"]))
-            )
+            self.user.user_permissions.add(Permission.objects.get(codename="view_{}".format(case["key"])))
             # Act
             obj = case["class"].objects.get(id=case["selected_id"])
             url = reverse("{}-detail".format(case["key"]), kwargs={"pk": obj.pk})
@@ -351,9 +347,7 @@ class AuthorizedCrudTestCase(BaseTestCase):
         can update objects through the API."""
         for case in self.cases:
             # Arrange
-            self.user.user_permissions.add(
-                Permission.objects.get(codename="change_{}".format(case["key"]))
-            )
+            self.user.user_permissions.add(Permission.objects.get(codename="change_{}".format(case["key"])))
             # Act
             obj = case["class"].objects.get(id=case["selected_id"])
             old_data = get_dict(obj)
@@ -378,9 +372,7 @@ class AuthorizedCrudTestCase(BaseTestCase):
         for case in self.cases:
             # Arrange
             old_count = case["class"].objects.count()
-            self.user.user_permissions.add(
-                Permission.objects.get(codename="delete_{}".format(case["key"]))
-            )
+            self.user.user_permissions.add(Permission.objects.get(codename="delete_{}".format(case["key"])))
             # Act
             obj = case["class"].objects.first()
             url = reverse("{}-detail".format(case["key"]), kwargs={"pk": obj.pk})

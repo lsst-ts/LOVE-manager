@@ -21,6 +21,7 @@
 # !/usr/bin/env python
 
 """Main executable of the Django Application."""
+
 import os
 import sys
 

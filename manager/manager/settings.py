@@ -63,9 +63,7 @@ TESTING = os.environ.get("TESTING", False)
 get from the `TESTING` environment variable (`string`)"""
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv(
-    "SECRET_KEY", "tbder3gzppu)kl%(u3awhhg^^zu#j&!ceh@$n&v0d38sjx43s8"
-)
+SECRET_KEY = os.getenv("SECRET_KEY", "tbder3gzppu)kl%(u3awhhg^^zu#j&!ceh@$n&v0d38sjx43s8")
 """Secret Key for Django, read from the `SECRET_KEY`
 environment variable (`string`)"""
 
@@ -218,9 +216,7 @@ TOKEN_EXPIRED_AFTER_DAYS = 30
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = (
-    f"{FORCE_SCRIPT_NAME}/manager/static/" if FORCE_SCRIPT_NAME else "/manager/static/"
-)
+STATIC_URL = f"{FORCE_SCRIPT_NAME}/manager/static/" if FORCE_SCRIPT_NAME else "/manager/static/"
 
 """URL to access Django static files (`string`)"""
 
@@ -237,9 +233,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static_files"),
 ]
 
-MEDIA_URL = (
-    f"{FORCE_SCRIPT_NAME}/manager/media/" if FORCE_SCRIPT_NAME else "/manager/media/"
-)
+MEDIA_URL = f"{FORCE_SCRIPT_NAME}/manager/media/" if FORCE_SCRIPT_NAME else "/manager/media/"
 """URL for media files access (`string`)"""
 MEDIA_BASE = BASE_DIR
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
@@ -257,15 +251,7 @@ if REDIS_HOST and not TESTING:
         "default": {
             "BACKEND": "channels_redis.core.RedisChannelLayer",
             "CONFIG": {
-                "hosts": [
-                    "redis://:"
-                    + REDIS_PASS
-                    + "@"
-                    + REDIS_HOST
-                    + ":"
-                    + REDIS_PORT
-                    + "/0"
-                ],
+                "hosts": ["redis://:" + REDIS_PASS + "@" + REDIS_HOST + ":" + REDIS_PORT + "/0"],
                 "expiry": REDIS_CONFIG_EXPIRY,
                 "capacity": REDIS_CONFIG_CAPACITY,
                 "group_expiry": REDIS_CONFIG_GROUP_EXPIRY,
@@ -333,9 +319,7 @@ if os.environ.get("HIDE_TRACE_TIMESTAMPS", False):
     TRACE_TIMESTAMPS = False
 
 # Check HeartBeat Commanded
-HEARTBEAT_QUERY_COMMANDER = (
-    os.environ.get("HEARTBEAT_QUERY_COMMANDER", "true").lower() == "true"
-)
+HEARTBEAT_QUERY_COMMANDER = os.environ.get("HEARTBEAT_QUERY_COMMANDER", "true").lower() == "true"
 
 # LOVE-PRODUCER-CONFIGURATION
 """Defines wether or not ussing the legacy LOVE-producer version,
@@ -344,9 +328,7 @@ LOVE_PRODUCER_LEGACY = os.environ.get("LOVE_PRODUCER_LEGACY", False)
 
 
 # Get permision type configuration
-COMMANDING_PERMISSION_TYPE = os.environ.get(
-    "COMMANDING_PERMISSION_TYPE", "user"
-).lower()
+COMMANDING_PERMISSION_TYPE = os.environ.get("COMMANDING_PERMISSION_TYPE", "user").lower()
 
 
 NIGHTLYDIGEST_BASE_URL = os.environ.get(

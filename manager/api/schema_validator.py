@@ -107,16 +107,12 @@ class DefaultingValidator:
                     "uniqueItems",
                 )
             )
-            DefaultingValidator.set_default_properties(
-                properties, skip_properties, instance
-            )
+            DefaultingValidator.set_default_properties(properties, skip_properties, instance)
 
             for error in validate_properties(validator, properties, instance, schema):
                 yield error
 
-        WrappedValidator = jsonschema.validators.extend(
-            ValidatorClass, {"properties": set_defaults}
-        )
+        WrappedValidator = jsonschema.validators.extend(ValidatorClass, {"properties": set_defaults})
         WrappedValidator.check_schema(schema)
         self.defaults_validator = WrappedValidator(schema=schema)
 

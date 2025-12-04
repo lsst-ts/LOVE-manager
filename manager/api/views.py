@@ -19,6 +19,7 @@
 
 
 """Defines the views exposed by the REST API exposed by this app."""
+
 import collections
 import json
 import os
@@ -29,36 +30,10 @@ import jsonschema
 import ldap
 import requests
 import yaml
-from api.models import (
-    ConfigFile,
-    ControlLocation,
-    EmergencyContact,
-    ImageTag,
-    ScriptConfiguration,
-    Token,
-)
-from api.serializers import (
-    ConfigFileContentSerializer,
-    ConfigFileSerializer,
-    ConfigSerializer,
-    ControlLocationSerializer,
-    EmergencyContactSerializer,
-    ImageTagSerializer,
-    ScriptConfigurationSerializer,
-    TokenSerializer,
-    UserSerializer,
-)
 from django.contrib.auth.models import Group, User
 from django_auth_ldap.backend import LDAPBackend
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import status, viewsets
-from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.decorators import action, api_view, permission_classes
-from rest_framework.parsers import MultiPartParser
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-
 from manager.settings import (
     AUTH_LDAP_1_SERVER_URI,
     AUTH_LDAP_2_SERVER_URI,
@@ -80,6 +55,32 @@ from manager.utils import (
     send_smtp_email,
     upload_to_lfa,
 )
+from rest_framework import status, viewsets
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework.parsers import MultiPartParser
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
+from api.models import (
+    ConfigFile,
+    ControlLocation,
+    EmergencyContact,
+    ImageTag,
+    ScriptConfiguration,
+    Token,
+)
+from api.serializers import (
+    ConfigFileContentSerializer,
+    ConfigFileSerializer,
+    ConfigSerializer,
+    ControlLocationSerializer,
+    EmergencyContactSerializer,
+    ImageTagSerializer,
+    ScriptConfigurationSerializer,
+    TokenSerializer,
+    UserSerializer,
+)
 
 from .schema_validator import DefaultingValidator
 
@@ -88,9 +89,7 @@ invalid_response = openapi.Response("Invalid token")
 not_found_response = openapi.Response("Not found")
 
 
-NIGHT_REPORT_CONFLICT_MESSAGE = (
-    "Conflict with the last valid night report. Please update your report data."
-)
+NIGHT_REPORT_CONFLICT_MESSAGE = "Conflict with the last valid night report. Please update your report data."
 
 
 @swagger_auto_schema(
@@ -140,9 +139,7 @@ def validate_token(request, *args, **kwargs):
     return Response(data)
 
 
-@swagger_auto_schema(
-    method="delete", responses={204: openapi.Response("Logout Successful")}
-)
+@swagger_auto_schema(method="delete", responses={204: openapi.Response("Logout Successful")})
 @api_view(["DELETE"])
 @permission_classes((IsAuthenticated,))
 def logout(request):
@@ -248,9 +245,7 @@ class CustomObtainAuthToken(ObtainAuthToken):
             The response containing the token and other user data.
         """
         username = request.data["username"]
-        serializer = self.serializer_class(
-            data=request.data, context={"request": request}
-        )
+        serializer = self.serializer_class(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
         user_obj = serializer.validated_data["user"]
 
@@ -268,26 +263,18 @@ class CustomObtainAuthToken(ObtainAuthToken):
         if ldap_result is not None:
             try:
                 ldap_result = ldap_result.search_s(baseDN, searchScope)
-                ops_users = list(
-                    map(lambda u: u.decode(), ldap_result[0][1]["memberUid"])
-                )
+                ops_users = list(map(lambda u: u.decode(), ldap_result[0][1]["memberUid"]))
                 if username in ops_users:
                     cmd_group = Group.objects.filter(name="cmd").first()
-                    ui_framework_group = Group.objects.filter(
-                        name="ui_framework"
-                    ).first()
+                    ui_framework_group = Group.objects.filter(name="ui_framework").first()
                     cmd_group.user_set.add(user_obj)
                     ui_framework_group.user_set.add(user_obj)
             except Exception:
-                data = {
-                    "detail": "Login failed, add cmd and ui_framework permissions error."
-                }
+                data = {"detail": "Login failed, add cmd and ui_framework permissions error."}
                 return Response(data, status=400)
 
         token = Token.objects.create(user=user_obj)
-        request.user = (
-            user_obj  # This is required to pass a logged user to the serializer
-        )
+        request.user = user_obj  # This is required to pass a logged user to the serializer
         return Response(TokenSerializer(token, context={"request": request}).data)
 
 
@@ -332,9 +319,7 @@ class CustomSwapAuthToken(ObtainAuthToken):
         username = request.data["username"]
         if not request.user.is_authenticated or not request._auth:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
-        serializer = self.serializer_class(
-            data=request.data, context={"request": request}
-        )
+        serializer = self.serializer_class(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
         user_obj = serializer.validated_data["user"]
 
@@ -352,20 +337,14 @@ class CustomSwapAuthToken(ObtainAuthToken):
         if ldap_result is not None:
             try:
                 ldap_result = ldap_result.search_s(baseDN, searchScope)
-                ops_users = list(
-                    map(lambda u: u.decode(), ldap_result[0][1]["memberUid"])
-                )
+                ops_users = list(map(lambda u: u.decode(), ldap_result[0][1]["memberUid"]))
                 if username in ops_users:
                     cmd_group = Group.objects.filter(name="cmd").first()
-                    ui_framework_group = Group.objects.filter(
-                        name="ui_framework"
-                    ).first()
+                    ui_framework_group = Group.objects.filter(name="ui_framework").first()
                     cmd_group.user_set.add(user_obj)
                     ui_framework_group.user_set.add(user_obj)
             except Exception:
-                data = {
-                    "detail": "Login failed, add cmd and ui_framework permissions error."
-                }
+                data = {"detail": "Login failed, add cmd and ui_framework permissions error."}
                 return Response(data, status=400)
 
         token = Token.objects.create(user=user_obj)
@@ -375,9 +354,7 @@ class CustomSwapAuthToken(ObtainAuthToken):
         flags = kwargs.get("flags", None)
         no_config = flags == "no_config" or flags == "no-config"
 
-        request.user = (
-            user_obj  # This is required to pass a logged user to the serializer
-        )
+        request.user = user_obj  # This is required to pass a logged user to the serializer
         return Response(
             TokenSerializer(
                 token,
@@ -428,9 +405,7 @@ def validate_config_schema(request):
                 "error": {
                     "message": str(error["message"]),
                     "path": [] if not error["path"] else list(error["path"]),
-                    "schema_path": (
-                        [] if not error["schema_path"] else list(error["schema_path"])
-                    ),
+                    "schema_path": ([] if not error["schema_path"] else list(error["schema_path"])),
                 },
             }
         )
@@ -699,9 +674,7 @@ def set_config_selected(request):
     """
 
     try:
-        configuration_to_update = ConfigFile.objects.get(
-            pk=request.data.get("config_id")
-        )
+        configuration_to_update = ConfigFile.objects.get(pk=request.data.get("config_id"))
         current_user = request.user
     except Exception:
         return Response(status=status.HTTP_404_NOT_FOUND)
@@ -891,8 +864,7 @@ def query_efd_most_recent_timeseries(request, *args, **kwargs):
         The response and status code of the request to the LOVE-Commander
     """
     url = (
-        f"http://{os.environ.get('COMMANDER_HOSTNAME')}"
-        f":{os.environ.get('COMMANDER_PORT')}/efd/top_timeseries"
+        f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/efd/top_timeseries"
     )
     response = requests.post(url, json=request.data)
     return Response(response.json(), status=response.status_code)
@@ -1017,8 +989,7 @@ def tcs_aux_docstrings(request, *args, **kwargs):
         The response and status code of the request to the LOVE-Commander
     """
     url = (
-        f"http://{os.environ.get('COMMANDER_HOSTNAME')}"
-        f":{os.environ.get('COMMANDER_PORT')}/tcs/aux/docstrings"
+        f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/tcs/aux/docstrings"
     )
     response = requests.get(url)
     return Response(response.json(), status=response.status_code)
@@ -1507,9 +1478,7 @@ def ole_send_night_report(request, *args, **kwargs):
             status=status.HTTP_409_CONFLICT,
         )
     if last_valid_report["date_sent"] is not None:
-        return Response(
-            {"error": "Night report already sent"}, status=status.HTTP_400_BAD_REQUEST
-        )
+        return Response({"error": "Night report already sent"}, status=status.HTTP_400_BAD_REQUEST)
 
     # Get observatory and CSCS status
     try:
@@ -1526,9 +1495,7 @@ def ole_send_night_report(request, *args, **kwargs):
 
     # Get JIRA observation issues
     try:
-        last_valid_report["obs_issues"] = get_jira_obs_report(
-            {"day_obs": last_valid_report["day_obs"]}
-        )
+        last_valid_report["obs_issues"] = get_jira_obs_report({"day_obs": last_valid_report["day_obs"]})
     except Exception as e:
         return Response(
             {"error": str(e)},
@@ -1805,11 +1772,7 @@ class ScriptConfigurationViewSet(viewsets.ModelViewSet):
                     "error": {
                         "message": str(error["message"]),
                         "path": [] if not error["path"] else list(error["path"]),
-                        "schema_path": (
-                            []
-                            if not error["schema_path"]
-                            else list(error["schema_path"])
-                        ),
+                        "schema_path": ([] if not error["schema_path"] else list(error["schema_path"])),
                     },
                 },
                 status=status.HTTP_400_BAD_REQUEST,
@@ -1860,11 +1823,7 @@ class ScriptConfigurationViewSet(viewsets.ModelViewSet):
                     "error": {
                         "message": str(error["message"]),
                         "path": [] if not error["path"] else list(error["path"]),
-                        "schema_path": (
-                            []
-                            if not error["schema_path"]
-                            else list(error["schema_path"])
-                        ),
+                        "schema_path": ([] if not error["schema_path"] else list(error["schema_path"])),
                     },
                 },
                 status=status.HTTP_400_BAD_REQUEST,

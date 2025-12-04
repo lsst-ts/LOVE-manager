@@ -19,9 +19,11 @@
 
 
 """Test the models."""
+
 from django.test import TestCase
 from django.utils import timezone
 from freezegun import freeze_time
+
 from ui_framework.models import View, Workspace, WorkspaceView
 
 
@@ -46,9 +48,7 @@ class WorkspaceModelTestCase(TestCase):
             self.new_workspaces_num,
             "There is not a new object in the database",
         )
-        self.assertEqual(
-            self.workspace.name, self.workspace_name, "The name is not as expected"
-        )
+        self.assertEqual(self.workspace.name, self.workspace_name, "The name is not as expected")
         self.assertEqual(
             self.workspace.creation_timestamp,
             self.creation_timestamp,
@@ -75,9 +75,7 @@ class WorkspaceModelTestCase(TestCase):
             self.new_workspaces_num,
             "The number of objects in the DB should not change",
         )
-        self.assertEqual(
-            self.workspace.name, self.workspace_name, "The name is not as expected"
-        )
+        self.assertEqual(self.workspace.name, self.workspace_name, "The name is not as expected")
         self.assertEqual(
             self.workspace.creation_timestamp,
             self.creation_timestamp,
@@ -108,9 +106,7 @@ class WorkspaceModelTestCase(TestCase):
             self.new_workspaces_num,
             "The number of objects in the DB should not change",
         )
-        self.assertEqual(
-            self.workspace.name, "This other name", "The name is not as expected"
-        )
+        self.assertEqual(self.workspace.name, "This other name", "The name is not as expected")
         self.assertEqual(
             self.workspace.creation_timestamp,
             self.creation_timestamp,
@@ -227,9 +223,7 @@ class ViewModelTestCase(TestCase):
             self.new_views_num,
             "The number of objects in the DB should not change",
         )
-        self.assertEqual(
-            self.view.name, "This other name", "The name is not as expected"
-        )
+        self.assertEqual(self.view.name, "This other name", "The name is not as expected")
         self.assertEqual(
             self.view.creation_timestamp,
             self.creation_timestamp,
@@ -363,9 +357,7 @@ class WorkspaceViewModelTestCase(TestCase):
             self.new_workspace_views_num,
             "The number of objects in the DB should not change",
         )
-        self.assertEqual(
-            self.workspace_view.view_name, "This other name", "The name was not updated"
-        )
+        self.assertEqual(self.workspace_view.view_name, "This other name", "The name was not updated")
         self.assertEqual(
             self.workspace_view.sort_value,
             self.new_sort_value,

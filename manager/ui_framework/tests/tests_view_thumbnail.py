@@ -19,6 +19,7 @@
 
 
 """Test the UI Framework thumbnail behavior."""
+
 import filecmp
 import glob
 import os
@@ -33,6 +34,7 @@ from django.test import TestCase, override_settings
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
+
 from ui_framework.models import View
 
 
@@ -72,9 +74,7 @@ class ViewThumbnailTestCase(TestCase):
         # Arrange
         # read test data (base64 string)
         old_count = View.objects.count()
-        mock_location = os.path.join(
-            os.getcwd(), "ui_framework", "tests", "media", "mock", "test"
-        )
+        mock_location = os.path.join(os.getcwd(), "ui_framework", "tests", "media", "mock", "test")
         with open(mock_location) as f:
             image_data = f.read()
 
@@ -135,9 +135,7 @@ class ViewThumbnailTestCase(TestCase):
         # Arrange
         # read test data (base64 string)
         old_count = View.objects.count()
-        mock_location = os.path.join(
-            os.getcwd(), "ui_framework", "tests", "media", "mock", "test"
-        )
+        mock_location = os.path.join(os.getcwd(), "ui_framework", "tests", "media", "mock", "test")
         with open(mock_location) as f:
             image_data = f.read()
 
@@ -161,9 +159,7 @@ class ViewThumbnailTestCase(TestCase):
 
         # - thumbnail url
         view = View.objects.get(name="view name")
-        self.assertEqual(
-            view.thumbnail.url, f"{settings.MEDIA_URL}thumbnails/view_1.png"
-        )
+        self.assertEqual(view.thumbnail.url, f"{settings.MEDIA_URL}thumbnails/view_1.png")
 
         # - expected response data
         expected_response = {
@@ -188,9 +184,7 @@ class ViewThumbnailTestCase(TestCase):
         """Test thumbnail behavior when deleting a view"""
         # Arrange
         # add view with thumbnail
-        mock_location = os.path.join(
-            os.getcwd(), "ui_framework", "tests", "media", "mock", "test"
-        )
+        mock_location = os.path.join(os.getcwd(), "ui_framework", "tests", "media", "mock", "test")
         with open(mock_location) as f:
             image_data = f.read()
 
@@ -205,9 +199,7 @@ class ViewThumbnailTestCase(TestCase):
         # Act
         # delete the view
         view = View.objects.get(name="view name")
-        delete_response = self.client.delete(
-            reverse("view-detail", kwargs={"pk": view.pk})
-        )
+        delete_response = self.client.delete(reverse("view-detail", kwargs={"pk": view.pk}))
 
         # Assert 2
 

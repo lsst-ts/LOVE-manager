@@ -19,6 +19,7 @@
 
 
 """Management utility to create operator on duty user."""
+
 import getpass
 from argparse import RawTextHelpFormatter
 
@@ -135,12 +136,8 @@ class Command(BaseCommand):
         parser: object
             parser for the arguments
         """
-        parser.add_argument(
-            "--adminpass", help='Specifies the password for the "admin" user.'
-        )
-        parser.add_argument(
-            "--userpass", help='Specifies the password for the regular users ("user").'
-        )
+        parser.add_argument("--adminpass", help='Specifies the password for the "admin" user.')
+        parser.add_argument("--userpass", help='Specifies the password for the regular users ("user").')
         parser.add_argument(
             "--cmduserpass",
             help='Specifies password for the users with cmd permissions ("cmd_user").',
@@ -202,21 +199,15 @@ class Command(BaseCommand):
 
         # Create remote users
         if remote_base_password is not None:
-            remote_base_user = self._create_user(
-                remote_base_username, remote_base_password
-            )
+            remote_base_user = self._create_user(remote_base_username, remote_base_password)
             ui_framework_group.user_set.add(remote_base_user)
 
         if remote_tucson_password is not None:
-            remote_tucson_user = self._create_user(
-                remote_tucson_username, remote_tucson_password
-            )
+            remote_tucson_user = self._create_user(remote_tucson_username, remote_tucson_password)
             ui_framework_group.user_set.add(remote_tucson_user)
 
         if remote_slac_password is not None:
-            remote_slac_user = self._create_user(
-                remote_slac_username, remote_slac_password
-            )
+            remote_slac_user = self._create_user(remote_slac_username, remote_slac_password)
             ui_framework_group.user_set.add(remote_slac_user)
 
     def _create_user(self, username, password):
@@ -249,9 +240,7 @@ class Command(BaseCommand):
                 password=password,
             )
         else:
-            self.stderr.write(
-                "Warning: The {} user is already created".format(username)
-            )
+            self.stderr.write("Warning: The {} user is already created".format(username))
         return user
 
     def _create_cmd_group(self):
@@ -279,9 +268,7 @@ class Command(BaseCommand):
             The Group object
         """
         group, created = Group.objects.get_or_create(name=ui_framework_groupname)
-        permissions = Permission.objects.filter(
-            content_type__app_label__contains="ui_framework"
-        )
+        permissions = Permission.objects.filter(content_type__app_label__contains="ui_framework")
         for permission in permissions:
             group.permissions.add(permission)
         return group

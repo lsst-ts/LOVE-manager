@@ -19,14 +19,16 @@
 
 
 """Test users' authentication through the API."""
+
 import json
 
-from api.models import EmergencyContact, Token
 from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework.test import APIClient
+
+from api.models import EmergencyContact, Token
 
 
 class EmergencyContactApiTestCase(TestCase):

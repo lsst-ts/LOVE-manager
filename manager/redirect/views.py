@@ -1,13 +1,14 @@
 from urllib.parse import urlencode, urlunparse
 
 from django.shortcuts import redirect
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+
 from redirect.utils import (
     force_actuator_from_id,
     get_chronograf_dashboard_route,
     get_site_url_domain,
 )
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.response import Response
 
 
 @api_view(["GET"])

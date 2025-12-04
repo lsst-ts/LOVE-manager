@@ -28,12 +28,9 @@ import astropy
 import pytest
 import requests
 import rest_framework
-from api.models import Token
 from django.contrib.auth.models import User
 from django.test import TestCase, override_settings
 from django.urls import reverse
-from rest_framework.test import APIClient
-
 from manager.utils import (
     ERROR_OBS_TICKETS,
     JIRA_PROJECTS_WITH_TIME_LOSS,
@@ -48,6 +45,9 @@ from manager.utils import (
     jira_ticket,
     update_time_lost,
 )
+from rest_framework.test import APIClient
+
+from api.models import Token
 
 JIRA_OBS_SYSTEMS_SELECTION_EXAMPLE = """
 {
@@ -191,9 +191,7 @@ class JiraTestCase(TestCase):
         # exposure without param
         data_exposure_without_param = {**request_full_exposure}
         del data_exposure_without_param[random.choice(exposure_params_required)]
-        self.jira_request_exposure_without_param = requests.Request(
-            data=data_exposure_without_param
-        )
+        self.jira_request_exposure_without_param = requests.Request(data=data_exposure_without_param)
 
         # narrative without request type
         data_narrative_without_request_type = {**request_full_narrative}
@@ -212,9 +210,7 @@ class JiraTestCase(TestCase):
         # narrative without param
         data_narrative_without_param = {**request_full_narrative}
         del data_narrative_without_param[random.choice(narrative_params_required)]
-        self.jira_request_narrative_without_param = requests.Request(
-            data=data_narrative_without_param
-        )
+        self.jira_request_narrative_without_param = requests.Request(data=data_narrative_without_param)
 
         # narrative with not valid jira_obs_selection json
         data_narrative_invalid_jira_obs_selection = {**request_full_narrative}
@@ -228,15 +224,11 @@ class JiraTestCase(TestCase):
         self.jira_request_narrative_full = requests.Request(data=request_full_narrative)
 
         # all parameters requests with jira new
-        self.jira_request_exposure_full_jira_new = requests.Request(
-            data=request_full_exposure_jira_new
-        )
+        self.jira_request_exposure_full_jira_new = requests.Request(data=request_full_exposure_jira_new)
         self.jira_request_exposure_full_jira_new.user = "user"
         self.jira_request_exposure_full_jira_new.get_host = lambda: "localhost"
 
-        self.jira_request_narrative_full_jira_new = requests.Request(
-            data=request_full_narrative_jira_new
-        )
+        self.jira_request_narrative_full_jira_new = requests.Request(data=request_full_narrative_jira_new)
         self.jira_request_narrative_full_jira_new.user = "user"
         self.jira_request_narrative_full_jira_new.get_host = lambda: "localhost"
 
@@ -268,9 +260,7 @@ class JiraTestCase(TestCase):
                     "fields": {
                         "summary": "Issue title",
                         OBS_TIME_LOST_FIELD: 13.6,
-                        OBS_SYSTEMS_FIELD: json.loads(
-                            JIRA_OBS_SYSTEMS_SELECTION_EXAMPLE
-                        ),
+                        OBS_SYSTEMS_FIELD: json.loads(JIRA_OBS_SYSTEMS_SELECTION_EXAMPLE),
                         "creator": {"displayName": "user"},
                         "created": "2024-11-27T12:00:00.00000",
                     },
@@ -282,28 +272,20 @@ class JiraTestCase(TestCase):
         """Test call to jira_ticket function with missing parameters"""
 
         # exposure
-        jira_response = jira_ticket(
-            self.jira_request_exposure_without_request_type.data
-        )
+        jira_response = jira_ticket(self.jira_request_exposure_without_request_type.data)
         assert "Error reading request type" in jira_response.data["ack"]
 
-        jira_response = jira_ticket(
-            self.jira_request_exposure_without_shared_param.data
-        )
+        jira_response = jira_ticket(self.jira_request_exposure_without_shared_param.data)
         assert "Error creating jira payload" in jira_response.data["ack"]
 
         jira_response = jira_ticket(self.jira_request_exposure_without_param.data)
         assert "Error creating jira payload" in jira_response.data["ack"]
 
         # narrative
-        jira_response = jira_ticket(
-            self.jira_request_narrative_without_request_type.data
-        )
+        jira_response = jira_ticket(self.jira_request_narrative_without_request_type.data)
         assert "Error reading request type" in jira_response.data["ack"]
 
-        jira_response = jira_ticket(
-            self.jira_request_narrative_without_shared_param.data
-        )
+        jira_response = jira_ticket(self.jira_request_narrative_without_shared_param.data)
         assert "Error creating jira payload" in jira_response.data["ack"]
 
         jira_response = jira_ticket(self.jira_request_narrative_without_param.data)
@@ -311,9 +293,7 @@ class JiraTestCase(TestCase):
 
     def test_not_valid_obs_systems_json(self):
         """Test call to jira_ticket function with invalid jira_obs_selection"""
-        jira_response = jira_ticket(
-            self.jira_request_narrative_invalid_jira_obs_selection.data
-        )
+        jira_response = jira_ticket(self.jira_request_narrative_invalid_jira_obs_selection.data)
         assert "Error creating jira payload" in jira_response.data["ack"]
 
     @patch.dict(os.environ, {"JIRA_API_HOSTNAME": "jira.lsstcorp.org"})
@@ -329,18 +309,12 @@ class JiraTestCase(TestCase):
         jira_response = jira_ticket(self.jira_request_exposure_full.data)
         assert jira_response.status_code == 200
         assert jira_response.data["ack"] == "Jira ticket created"
-        assert (
-            jira_response.data["url"]
-            == f"https://{os.environ.get('JIRA_API_HOSTNAME')}/browse/LOVE-XX"
-        )
+        assert jira_response.data["url"] == f"https://{os.environ.get('JIRA_API_HOSTNAME')}/browse/LOVE-XX"
 
         jira_response = jira_ticket(self.jira_request_narrative_full.data)
         assert jira_response.status_code == 200
         assert jira_response.data["ack"] == "Jira ticket created"
-        assert (
-            jira_response.data["url"]
-            == f"https://{os.environ.get('JIRA_API_HOSTNAME')}/browse/LOVE-XX"
-        )
+        assert jira_response.data["url"] == f"https://{os.environ.get('JIRA_API_HOSTNAME')}/browse/LOVE-XX"
 
         mock_jira_patcher.stop()
 
@@ -433,9 +407,7 @@ class JiraTestCase(TestCase):
         # no time lost update call
         assert mock_time_lost_client.call_count == 0
 
-        random_project_with_time_lost_field = random.choice(
-            JIRA_PROJECTS_WITH_TIME_LOSS
-        )
+        random_project_with_time_lost_field = random.choice(JIRA_PROJECTS_WITH_TIME_LOSS)
         jira_response = jira_comment(
             {
                 **self.jira_request_narrative_full_jira_comment.data,
@@ -468,9 +440,7 @@ class JiraTestCase(TestCase):
         }
         mock_time_lost_client.return_value = time_lost_response
 
-        random_project_with_time_lost_field = random.choice(
-            JIRA_PROJECTS_WITH_TIME_LOSS
-        )
+        random_project_with_time_lost_field = random.choice(JIRA_PROJECTS_WITH_TIME_LOSS)
         resp = jira_comment(
             {
                 **self.jira_request_narrative_full_jira_comment.data,
@@ -504,20 +474,12 @@ class JiraTestCase(TestCase):
         jira_response = handle_jira_payload(self.jira_request_narrative_full_jira_new)
         assert jira_response.status_code == 200
         assert jira_response.data["ack"] == "Jira ticket created"
-        assert (
-            jira_response.data["url"]
-            == f"https://{os.environ.get('JIRA_API_HOSTNAME')}/browse/LOVE-XX"
-        )
+        assert jira_response.data["url"] == f"https://{os.environ.get('JIRA_API_HOSTNAME')}/browse/LOVE-XX"
 
-        jira_response = handle_jira_payload(
-            self.jira_request_narrative_full_jira_comment
-        )
+        jira_response = handle_jira_payload(self.jira_request_narrative_full_jira_comment)
         assert jira_response.status_code == 200
         assert jira_response.data["ack"] == "Jira comment created"
-        assert (
-            jira_response.data["url"]
-            == f"https://{os.environ.get('JIRA_API_HOSTNAME')}/browse/LOVE-XX"
-        )
+        assert jira_response.data["url"] == f"https://{os.environ.get('JIRA_API_HOSTNAME')}/browse/LOVE-XX"
 
         mock_jira_patcher.stop()
         mock_time_lost_patcher.stop()
@@ -536,20 +498,12 @@ class JiraTestCase(TestCase):
         jira_response = handle_jira_payload(self.jira_request_exposure_full_jira_new)
         assert jira_response.status_code == 200
         assert jira_response.data["ack"] == "Jira ticket created"
-        assert (
-            jira_response.data["url"]
-            == f"https://{os.environ.get('JIRA_API_HOSTNAME')}/browse/LOVE-XX"
-        )
+        assert jira_response.data["url"] == f"https://{os.environ.get('JIRA_API_HOSTNAME')}/browse/LOVE-XX"
 
-        jira_response = handle_jira_payload(
-            self.jira_request_exposure_full_jira_comment
-        )
+        jira_response = handle_jira_payload(self.jira_request_exposure_full_jira_comment)
         assert jira_response.status_code == 200
         assert jira_response.data["ack"] == "Jira comment created"
-        assert (
-            jira_response.data["url"]
-            == f"https://{os.environ.get('JIRA_API_HOSTNAME')}/browse/LOVE-XX"
-        )
+        assert jira_response.data["url"] == f"https://{os.environ.get('JIRA_API_HOSTNAME')}/browse/LOVE-XX"
 
         mock_jira_patcher.stop()
 
@@ -561,9 +515,7 @@ class JiraTestCase(TestCase):
         mock_jira_patcher = patch("requests.get")
         mock_jira_client = mock_jira_patcher.start()
 
-        url_call_1 = (
-            f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/myself"
-        )
+        url_call_1 = f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/myself"
 
         response_1 = requests.Response()
         response_1.status_code = 200
@@ -573,11 +525,7 @@ class JiraTestCase(TestCase):
 
         # American/Phoenix timezone is UTC-7
         day_obs = "20241127"
-        jql_query = (
-            "project = 'OBS' "
-            "AND created >= '2024-11-27 05:00' "
-            "AND created <= '2024-11-28 05:00'"
-        )
+        jql_query = "project = 'OBS' AND created >= '2024-11-27 05:00' AND created <= '2024-11-28 05:00'"
         url_call_2 = (
             f"https://{os.environ.get('JIRA_API_HOSTNAME')}"
             f"/rest/api/latest/search/jql?jql={quote(jql_query)}"
@@ -641,10 +589,7 @@ class JiraTestCase(TestCase):
         mock_jira_client.return_value = failed_response
         with pytest.raises(Exception) as e:
             get_jira_obs_report(request_data)
-        assert (
-            str(e.value)
-            == f"Error getting user timezone from {os.environ.get('JIRA_API_HOSTNAME')}"
-        )
+        assert str(e.value) == f"Error getting user timezone from {os.environ.get('JIRA_API_HOSTNAME')}"
 
         # Fail response from Jira to get issues
         mock_jira_client.side_effect = [success_response_1, failed_response]
@@ -667,10 +612,7 @@ class JiraTestCase(TestCase):
             mock_jira_client.side_effect = [success_response_1, sucess_response_2]
             with pytest.raises(Exception) as e:
                 get_jira_obs_report(request_data)
-            assert (
-                str(e.value)
-                == f"{ERROR_OBS_TICKETS}. Parsing JIRA response failed: missing field '{key}'"
-            )
+            assert str(e.value) == f"{ERROR_OBS_TICKETS}. Parsing JIRA response failed: missing field '{key}'"
 
         mock_jira_patcher.stop()
 
@@ -719,9 +661,7 @@ class JiraAPITestCase(TestCase):
 
         jira_project = "OBS"
 
-        url_call_1 = (
-            f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/myself"
-        )
+        url_call_1 = f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/myself"
         response_1 = requests.Response()
         response_1.status_code = 200
         response_1.json = lambda: {
@@ -731,9 +671,7 @@ class JiraAPITestCase(TestCase):
         # American/Phoenix timezone is UTC-7
         day_obs = "20241127"
         jql_query = (
-            f"project = '{jira_project}' "
-            "AND created >= '2024-11-27 05:00' "
-            "AND created <= '2024-11-28 05:00'"
+            f"project = '{jira_project}' AND created >= '2024-11-27 05:00' AND created <= '2024-11-28 05:00'"
         )
         url_call_2 = (
             f"https://{os.environ.get('JIRA_API_HOSTNAME')}"
@@ -749,9 +687,7 @@ class JiraAPITestCase(TestCase):
                     "fields": {
                         "summary": "Issue title",
                         OBS_TIME_LOST_FIELD: 13.6,
-                        OBS_SYSTEMS_FIELD: json.loads(
-                            JIRA_OBS_SYSTEMS_SELECTION_EXAMPLE
-                        ),
+                        OBS_SYSTEMS_FIELD: json.loads(JIRA_OBS_SYSTEMS_SELECTION_EXAMPLE),
                         "creator": {"displayName": "user"},
                         "created": "2024-11-27T12:00:00.00000",
                     },
@@ -761,9 +697,7 @@ class JiraAPITestCase(TestCase):
 
         mock_jira_client.side_effect = [response_1, response_2]
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
-        )
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token_user_normal.key)
 
         # Act:
         base_url = reverse("Jira-tickets-report", kwargs={"project": jira_project})
@@ -789,9 +723,7 @@ class JiraAPITestCase(TestCase):
 
         jira_project = "OBS"
 
-        url_call_1 = (
-            f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/myself"
-        )
+        url_call_1 = f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/myself"
         response_1 = requests.Response()
         response_1.status_code = 200
         response_1.json = lambda: {
@@ -826,9 +758,7 @@ class JiraAPITestCase(TestCase):
                     "fields": {
                         "summary": "Issue title",
                         OBS_TIME_LOST_FIELD: 13.6,
-                        OBS_SYSTEMS_FIELD: json.loads(
-                            JIRA_OBS_SYSTEMS_SELECTION_EXAMPLE
-                        ),
+                        OBS_SYSTEMS_FIELD: json.loads(JIRA_OBS_SYSTEMS_SELECTION_EXAMPLE),
                         "creator": {"displayName": "user"},
                         "created": f"{twelve_utc_day}T12:00:00.00000",
                     },
@@ -838,9 +768,7 @@ class JiraAPITestCase(TestCase):
 
         mock_jira_client.side_effect = [response_1, response_2]
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
-        )
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token_user_normal.key)
 
         # Act:
         url = reverse("Jira-tickets-report", kwargs={"project": jira_project})
@@ -862,16 +790,12 @@ class JiraAPITestCase(TestCase):
 
         jira_project = "OBS"
 
-        url_call_1 = (
-            f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/myself"
-        )
+        url_call_1 = f"https://{os.environ.get('JIRA_API_HOSTNAME')}/rest/api/latest/myself"
 
         # American/Phoenix timezone is UTC-7
         day_obs = "20241127"
         jql_query = (
-            f"project = '{jira_project}' "
-            "AND created >= '2024-11-27 05:00' "
-            "AND created <= '2024-11-28 05:00'"
+            f"project = '{jira_project}' AND created >= '2024-11-27 05:00' AND created <= '2024-11-28 05:00'"
         )
         url_call_2 = (
             f"https://{os.environ.get('JIRA_API_HOSTNAME')}"
@@ -897,9 +821,7 @@ class JiraAPITestCase(TestCase):
                     "fields": {
                         "summary": "Issue title",
                         OBS_TIME_LOST_FIELD: 13.6,
-                        OBS_SYSTEMS_FIELD: json.loads(
-                            JIRA_OBS_SYSTEMS_SELECTION_EXAMPLE
-                        ),
+                        OBS_SYSTEMS_FIELD: json.loads(JIRA_OBS_SYSTEMS_SELECTION_EXAMPLE),
                         "creator": {"displayName": "user"},
                         "created": "2024-11-27T12:00:00.00000",
                     },
@@ -907,9 +829,7 @@ class JiraAPITestCase(TestCase):
             ]
         }
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
-        )
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token_user_normal.key)
         base_url = reverse("Jira-tickets-report", kwargs={"project": jira_project})
         query_params = {"day_obs": day_obs}
         url = f"{base_url}?{urlencode(query_params)}"
@@ -945,9 +865,7 @@ class JiraAPITestCase(TestCase):
     def test_jira_tickets_report_invalid_project(self):
         """Test jira tickets report endpoint with invalid project."""
         # Arrange:
-        self.client.credentials(
-            HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
-        )
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token_user_normal.key)
         base_url = reverse("Jira-tickets-report", kwargs={"project": "INVALID"})
 
         # Act:

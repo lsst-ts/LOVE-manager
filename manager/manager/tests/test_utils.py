@@ -5,7 +5,6 @@ import pytest
 import requests
 from django.test import TestCase
 from django.test.utils import override_settings
-
 from manager.utils import (
     EFD_INSTACES,
     arrange_nightlydigest_urls_for_obsday,
@@ -17,14 +16,10 @@ from manager.utils import (
 
 observatory_status_efd_response = {
     "MTMount-0-azimuth": {
-        "actualPosition": [
-            {"ts": "2025-10-24 19:22:12.914495+00:00", "value": -32.0348721139252}
-        ]
+        "actualPosition": [{"ts": "2025-10-24 19:22:12.914495+00:00", "value": -32.0348721139252}]
     },
     "MTMount-0-elevation": {
-        "actualPosition": [
-            {"ts": "2025-10-24 19:22:12.886953+00:00", "value": 89.940244604426}
-        ]
+        "actualPosition": [{"ts": "2025-10-24 19:22:12.886953+00:00", "value": 89.940244604426}]
     },
     "MTMount-0-logevent_mirrorCoversMotionState": {
         "state": [{"ts": "2025-10-24 08:42:57.537999+00:00", "value": 1}]
@@ -39,26 +34,16 @@ observatory_status_efd_response = {
         "state": [{"ts": "2025-10-24 18:53:15.919564+00:00", "value": 2}]
     },
     "MTDome-0-azimuth": {
-        "positionActual": [
-            {"ts": "2025-10-24 19:22:04.829711+00:00", "value": 327.9999084472656}
-        ]
+        "positionActual": [{"ts": "2025-10-24 19:22:04.829711+00:00", "value": 327.9999084472656}]
     },
     "MTRotator-0-rotation": {
-        "actualPosition": [
-            {"ts": "2025-10-24 19:22:13.100240+00:00", "value": -0.0016296546160410818}
-        ]
+        "actualPosition": [{"ts": "2025-10-24 19:22:13.100240+00:00", "value": -0.0016296546160410818}]
     },
     "ATMCS-0-mount_AzEl_Encoders": {
-        "azimuthCalculatedAngle0": [
-            {"ts": "2025-10-24 19:22:03.259886+00:00", "value": 15.1014567}
-        ],
-        "elevationCalculatedAngle0": [
-            {"ts": "2025-10-24 19:22:03.259886+00:00", "value": 69.9999993}
-        ],
+        "azimuthCalculatedAngle0": [{"ts": "2025-10-24 19:22:03.259886+00:00", "value": 15.1014567}],
+        "elevationCalculatedAngle0": [{"ts": "2025-10-24 19:22:03.259886+00:00", "value": 69.9999993}],
     },
-    "ATDome-0-position": {
-        "azimuthPosition": [{"ts": "2025-10-24 19:22:04.123028+00:00", "value": 104.66}]
-    },
+    "ATDome-0-position": {"azimuthPosition": [{"ts": "2025-10-24 19:22:04.123028+00:00", "value": 104.66}]},
     "ATPneumatics-0-logevent_m1CoverState": {
         "state": [{"ts": "2025-10-24 15:45:44.900717+00:00", "value": 6}]
     },
@@ -156,12 +141,10 @@ class UtilsTestCase(TestCase):
         obsday = 20250930
         expected_urls = {
             "simonyi": (
-                "https://example.com/nightlydigest"
-                "/?startDayobs=20250930&endDayobs=20250930&telescope=Simonyi"
+                "https://example.com/nightlydigest/?startDayobs=20250930&endDayobs=20250930&telescope=Simonyi"
             ),
             "auxtel": (
-                "https://example.com/nightlydigest"
-                "/?startDayobs=20250930&endDayobs=20250930&telescope=AuxTel"
+                "https://example.com/nightlydigest/?startDayobs=20250930&endDayobs=20250930&telescope=AuxTel"
             ),
         }
 
@@ -174,10 +157,7 @@ class UtilsTestCase(TestCase):
         for obsday in invalid_obsdays:
             with pytest.raises(ValueError) as e:
                 arrange_nightlydigest_urls_for_obsday(obsday)
-            assert (
-                str(e.value)
-                == f"Invalid obsday format: {obsday}. Expected format is 'YYYYMMDD'."
-            )
+            assert str(e.value) == f"Invalid obsday format: {obsday}. Expected format is 'YYYYMMDD'."
 
     def test_get_last_valid_night_report(self):
         response_get = requests.Response()
