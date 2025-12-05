@@ -1134,13 +1134,12 @@ def arrange_nightreport_email(report, plain=False):
 {ADDITIONAL_RESOURCES_TITLE}
 - {LINK_MSG_OBS} {url_jira_obs_tickets}
 - {LINK_MSG_CONFLUENCE} {report["confluence_url"]}
-{
-            f'''
+
 {DETAILED_ISSUE_REPORT_TITLE}
-{parse_obs_issues_array_to_plain_text(report["obs_issues"])}
-'''
+{
+            parse_obs_issues_array_to_plain_text(report["obs_issues"])
             if len(report["obs_issues"]) > 0
-            else ""
+            else "No issues reported."
         }
 
 {SIGNED_MSG}
@@ -1218,15 +1217,15 @@ def arrange_nightreport_email(report, plain=False):
                 </li>
             </ul>
         </p>
-        {
-        f'''<p>
+        <p>
             {DETAILED_ISSUE_REPORT_TITLE}
             <br>
-            {parse_obs_issues_array_to_html_table(report["obs_issues"])}
-        </p>'''
+            {
+        parse_obs_issues_array_to_html_table(report["obs_issues"])
         if len(report["obs_issues"]) > 0
-        else ""
+        else "No issues reported."
     }
+        </p>
         <p>
             {SIGNED_MSG}
             <br>
