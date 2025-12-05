@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.5.3
+------
+
+* Update ts_pre_commit_config.yaml to start using ruff linter & formatter. `<https://github.com/lsst-ts/LOVE-manager/pull/338>`_
+
 v7.5.2
 ------
 
