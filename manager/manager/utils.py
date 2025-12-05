@@ -1093,9 +1093,7 @@ def arrange_nightreport_email(report, plain=False):
     if missing_keys:
         raise ValueError(f"Missing keys in report: {', '.join(missing_keys)}")
 
-    url_jira_obs_tickets = (
-        "https://rubinobs.atlassian.net/jira/software/c/projects/OBS/boards/232"
-    )
+    url_jira_obs_tickets = "https://rubinobs.atlassian.net/jira/software/c/projects/OBS/boards/232"
     nightlydigest_urls = arrange_nightlydigest_urls_for_obsday(report["day_obs"])
 
     NIGHTLYDIGEST_TITLE = "Nightly Digest:"
@@ -1136,7 +1134,8 @@ def arrange_nightreport_email(report, plain=False):
 {ADDITIONAL_RESOURCES_TITLE}
 - {LINK_MSG_OBS} {url_jira_obs_tickets}
 - {LINK_MSG_CONFLUENCE} {report["confluence_url"]}
-{f'''
+{
+            f'''
 {DETAILED_ISSUE_REPORT_TITLE}
 {parse_obs_issues_array_to_plain_text(report["obs_issues"])}
 '''
@@ -1420,6 +1419,19 @@ def get_nightreport_observatory_status_from_efd(efd_instance="summit_efd"):
         rounded_value = f"{measurement:.2f}"
         return f"{rounded_value}{unit}" if unit else f"{rounded_value}"
 
+    def get_efd_data_measurement(data, topic, field):
+        try:
+            return data[topic][field][0]["value"]
+        except Exception:
+            return None
+
+    def get_efd_data_state(data, topic, field, state_map):
+        try:
+            state = data[topic][field][0]["value"]
+        except Exception:
+            state = 0
+        return state_map.get(state, "UNKNOWN")
+
     curr_tai = astropy.time.Time.now().tai.datetime
     payload = {
         "cscs": cscs,
@@ -1432,46 +1444,91 @@ def get_nightreport_observatory_status_from_efd(efd_instance="summit_efd"):
     if response.ok:
         data = response.json()
         observatory_status = {
-            "simonyiAzimuth": parse_measurement(data["MTMount-0-azimuth"]["actualPosition"][0]["value"], "°"),
+            "simonyiAzimuth": parse_measurement(
+                get_efd_data_measurement(
+                    data,
+                    "MTMount-0-azimuth",
+                    "actualPosition",
+                ),
+                "°",
+            ),
             "simonyiElevation": parse_measurement(
-                data["MTMount-0-elevation"]["actualPosition"][0]["value"], "°"
+                get_efd_data_measurement(
+                    data,
+                    "MTMount-0-elevation",
+                    "actualPosition",
+                ),
+                "°",
             ),
             "simonyiDomeAzimuth": parse_measurement(
-                data["MTDome-0-azimuth"]["positionActual"][0]["value"], "°"
+                get_efd_data_measurement(
+                    data,
+                    "MTDome-0-azimuth",
+                    "positionActual",
+                ),
+                "°",
             ),
             "simonyiRotator": parse_measurement(
-                data["MTRotator-0-rotation"]["actualPosition"][0]["value"], "°"
+                get_efd_data_measurement(
+                    data,
+                    "MTRotator-0-rotation",
+                    "actualPosition",
+                ),
+                "°",
             ),
-            "simonyiMirrorCoversState": MTMOUNT_DEPLOYABLE_MOTION_STATE_MAP.get(
-                data["MTMount-0-logevent_mirrorCoversMotionState"]["state"][0]["value"],
-                "UNKNOWN",
+            "simonyiMirrorCoversState": get_efd_data_state(
+                data,
+                "MTMount-0-logevent_mirrorCoversMotionState",
+                "state",
+                MTMOUNT_DEPLOYABLE_MOTION_STATE_MAP,
             ),
-            "simonyiOilSupplySystemState": MTMOUNT_POWER_STATE_MAP.get(
-                data["MTMount-0-logevent_oilSupplySystemState"]["powerState"][0]["value"],
-                "UNKNOWN",
+            "simonyiOilSupplySystemState": get_efd_data_state(
+                data,
+                "MTMount-0-logevent_oilSupplySystemState",
+                "powerState",
+                MTMOUNT_POWER_STATE_MAP,
             ),
-            "simonyiPowerSupplySystemState": MTMOUNT_POWER_STATE_MAP.get(
-                data["MTMount-0-logevent_mainAxesPowerSupplySystemState"]["powerState"][0]["value"],
-                "UNKNOWN",
+            "simonyiPowerSupplySystemState": get_efd_data_state(
+                data,
+                "MTMount-0-logevent_mainAxesPowerSupplySystemState",
+                "powerState",
+                MTMOUNT_POWER_STATE_MAP,
             ),
-            "simonyiLockingPinsSystemState": MTMOUNT_MT_MOUNT_ELEVATION_LOCKING_PIN_MOTION_STATE_MAP.get(
-                data["MTMount-0-logevent_elevationLockingPinMotionState"]["state"][0]["value"],
-                "UNKNOWN",
+            "simonyiLockingPinsSystemState": get_efd_data_state(
+                data,
+                "MTMount-0-logevent_elevationLockingPinMotionState",
+                "state",
+                MTMOUNT_MT_MOUNT_ELEVATION_LOCKING_PIN_MOTION_STATE_MAP,
             ),
             "auxtelAzimuth": parse_measurement(
-                data["ATMCS-0-mount_AzEl_Encoders"]["azimuthCalculatedAngle0"][0]["value"],
+                get_efd_data_measurement(
+                    data,
+                    "ATMCS-0-mount_AzEl_Encoders",
+                    "azimuthCalculatedAngle0",
+                ),
                 "°",
             ),
             "auxtelElevation": parse_measurement(
-                data["ATMCS-0-mount_AzEl_Encoders"]["elevationCalculatedAngle0"][0]["value"],
+                get_efd_data_measurement(
+                    data,
+                    "ATMCS-0-mount_AzEl_Encoders",
+                    "elevationCalculatedAngle0",
+                ),
                 "°",
             ),
             "auxtelDomeAzimuth": parse_measurement(
-                data["ATDome-0-position"]["azimuthPosition"][0]["value"], "°"
+                get_efd_data_measurement(
+                    data,
+                    "ATDome-0-position",
+                    "azimuthPosition",
+                ),
+                "°",
             ),
-            "auxtelMirrorCoversState": ATPNEUMATICS_MIRROR_COVER_STATE_MAP.get(
-                data["ATPneumatics-0-logevent_m1CoverState"]["state"][0]["value"],
-                "UNKNOWN",
+            "auxtelMirrorCoversState": get_efd_data_state(
+                data,
+                "ATPneumatics-0-logevent_m1CoverState",
+                "state",
+                ATPNEUMATICS_MIRROR_COVER_STATE_MAP,
             ),
         }
         return observatory_status
@@ -1518,36 +1575,22 @@ def get_nightreport_cscs_status_from_efd(efd_instance="summit_efd"):
         "/efd/top_timeseries/"
     )
 
-    cscs = {
-        "MTMount": {0: {"logevent_summaryState": ["summaryState"]}},
-        "MTM1M3": {0: {"logevent_summaryState": ["summaryState"]}},
-        "MTAOS": {0: {"logevent_summaryState": ["summaryState"]}},
-        "MTM2": {0: {"logevent_summaryState": ["summaryState"]}},
-        "MTDome": {0: {"logevent_summaryState": ["summaryState"]}},
-        "MTDomeTrajectory": {0: {"logevent_summaryState": ["summaryState"]}},
-        "MTHexapod": {
-            1: {"logevent_summaryState": ["summaryState"]},
-            2: {"logevent_summaryState": ["summaryState"]},
-        },
-        "MTRotator": {0: {"logevent_summaryState": ["summaryState"]}},
-        "MTPtg": {0: {"logevent_summaryState": ["summaryState"]}},
-        "MTM1M3TS": {0: {"logevent_summaryState": ["summaryState"]}},
-        "MTCamera": {0: {"logevent_summaryState": ["summaryState"]}},
-        "ATMCS": {0: {"logevent_summaryState": ["summaryState"]}},
-        "ATPtg": {0: {"logevent_summaryState": ["summaryState"]}},
-        "ATDome": {0: {"logevent_summaryState": ["summaryState"]}},
-        "ATDomeTrajectory": {0: {"logevent_summaryState": ["summaryState"]}},
-        "ATAOS": {0: {"logevent_summaryState": ["summaryState"]}},
-        "ATPneumatics": {0: {"logevent_summaryState": ["summaryState"]}},
-        "ATHexapod": {0: {"logevent_summaryState": ["summaryState"]}},
-        "ATCamera": {0: {"logevent_summaryState": ["summaryState"]}},
-        "ATOODS": {0: {"logevent_summaryState": ["summaryState"]}},
-        "ATHeaderService": {0: {"logevent_summaryState": ["summaryState"]}},
-        "ATSpectrograph": {0: {"logevent_summaryState": ["summaryState"]}},
-    }
+    cscs = {}
+    for csc in NIGHT_REPORT_CSCS:
+        name, index = csc.split(":")
+        index = int(index)
+        if name not in cscs:
+            cscs[name] = {}
+        cscs[name][index] = {"logevent_summaryState": ["summaryState"]}
 
     def parse_cscs_state(state):
         return CSC_SUMMARY_STATE_MAP.get(state, "UNKNOWN")
+
+    def get_efd_data_summary_state(data, topic):
+        try:
+            return data[topic]["summaryState"][0]["value"]
+        except Exception:
+            return 0
 
     curr_tai = astropy.time.Time.now().tai.datetime
     payload = {
@@ -1559,57 +1602,10 @@ def get_nightreport_cscs_status_from_efd(efd_instance="summit_efd"):
     response = requests.post(url, json=payload)
     if response.ok:
         data = response.json()
-        cscs_status = {
-            "MTMount:0": parse_cscs_state(
-                data["MTMount-0-logevent_summaryState"]["summaryState"][0]["value"]
-            ),
-            "MTM1M3:0": parse_cscs_state(data["MTM1M3-0-logevent_summaryState"]["summaryState"][0]["value"]),
-            "MTAOS:0": parse_cscs_state(data["MTAOS-0-logevent_summaryState"]["summaryState"][0]["value"]),
-            "MTM2:0": parse_cscs_state(data["MTM2-0-logevent_summaryState"]["summaryState"][0]["value"]),
-            "MTDome:0": parse_cscs_state(data["MTDome-0-logevent_summaryState"]["summaryState"][0]["value"]),
-            "MTDomeTrajectory:0": parse_cscs_state(
-                data["MTDomeTrajectory-0-logevent_summaryState"]["summaryState"][0]["value"]
-            ),
-            "MTHexapod:1": parse_cscs_state(
-                data["MTHexapod-1-logevent_summaryState"]["summaryState"][0]["value"]
-            ),
-            "MTHexapod:2": parse_cscs_state(
-                data["MTHexapod-2-logevent_summaryState"]["summaryState"][0]["value"]
-            ),
-            "MTRotator:0": parse_cscs_state(
-                data["MTRotator-0-logevent_summaryState"]["summaryState"][0]["value"]
-            ),
-            "MTPtg:0": parse_cscs_state(data["MTPtg-0-logevent_summaryState"]["summaryState"][0]["value"]),
-            "MTM1M3TS:0": parse_cscs_state(
-                data["MTM1M3TS-0-logevent_summaryState"]["summaryState"][0]["value"]
-            ),
-            "MTCamera:0": parse_cscs_state(
-                data["MTCamera-0-logevent_summaryState"]["summaryState"][0]["value"]
-            ),
-            "ATMCS:0": parse_cscs_state(data["ATMCS-0-logevent_summaryState"]["summaryState"][0]["value"]),
-            "ATPtg:0": parse_cscs_state(data["ATPtg-0-logevent_summaryState"]["summaryState"][0]["value"]),
-            "ATDome:0": parse_cscs_state(data["ATDome-0-logevent_summaryState"]["summaryState"][0]["value"]),
-            "ATDomeTrajectory:0": parse_cscs_state(
-                data["ATDomeTrajectory-0-logevent_summaryState"]["summaryState"][0]["value"]
-            ),
-            "ATAOS:0": parse_cscs_state(data["ATAOS-0-logevent_summaryState"]["summaryState"][0]["value"]),
-            "ATPneumatics:0": parse_cscs_state(
-                data["ATPneumatics-0-logevent_summaryState"]["summaryState"][0]["value"]
-            ),
-            "ATHexapod:0": parse_cscs_state(
-                data["ATHexapod-0-logevent_summaryState"]["summaryState"][0]["value"]
-            ),
-            "ATCamera:0": parse_cscs_state(
-                data["ATCamera-0-logevent_summaryState"]["summaryState"][0]["value"]
-            ),
-            "ATOODS:0": parse_cscs_state(data["ATOODS-0-logevent_summaryState"]["summaryState"][0]["value"]),
-            "ATHeaderService:0": parse_cscs_state(
-                data["ATHeaderService-0-logevent_summaryState"]["summaryState"][0]["value"]
-            ),
-            "ATSpectrograph:0": parse_cscs_state(
-                data["ATSpectrograph-0-logevent_summaryState"]["summaryState"][0]["value"]
-            ),
-        }
+        cscs_status = {}
+        for csc in NIGHT_REPORT_CSCS:
+            topic = csc.replace(":", "-") + "-logevent_summaryState"
+            cscs_status[csc] = parse_cscs_state(get_efd_data_summary_state(data, topic))
 
         return cscs_status
     raise Exception("Error getting CSCS status from EFD.")
