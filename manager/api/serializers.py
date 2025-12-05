@@ -19,8 +19,14 @@
 
 
 """Defines the serializer used by the REST API exposed by this app ('api')."""
+
 import json
 from typing import Union
+
+from django.contrib.auth.models import User
+from drf_yasg.utils import swagger_serializer_method
+from manager.utils import CommandPermission
+from rest_framework import serializers
 
 from api.models import (
     ConfigFile,
@@ -29,12 +35,7 @@ from api.models import (
     ImageTag,
     ScriptConfiguration,
 )
-from django.contrib.auth.models import User
-from drf_yasg.utils import swagger_serializer_method
-from rest_framework import serializers
-
 from manager import utils
-from manager.utils import CommandPermission
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -197,9 +198,7 @@ class TokenSerializer(serializers.Serializer):
         if no_config:
             return None
         else:
-            selected_configuration = ConfigFile.objects.filter(
-                selected_by_users=token.user
-            ).first()
+            selected_configuration = ConfigFile.objects.filter(selected_by_users=token.user).first()
             if selected_configuration is not None:
                 serializer = ConfigFileContentSerializer(selected_configuration)
             else:
@@ -320,8 +319,6 @@ class ScriptConfigurationSerializer(serializers.Serializer):
         """Function that allows the method PATCH to be properly executed,
         returns the new instance of the object.
         """
-        instance.config_schema = validated_data.get(
-            "config_schema", instance.config_schema
-        )
+        instance.config_schema = validated_data.get("config_schema", instance.config_schema)
         instance.save()
         return instance

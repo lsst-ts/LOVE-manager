@@ -23,14 +23,14 @@ from unittest.mock import patch
 
 import requests
 import rest_framework.response
-from api.models import Token
-from api.views import NIGHT_REPORT_CONFLICT_MESSAGE
 from django.contrib.auth.models import User
 from django.test import TestCase, override_settings
 from django.urls import reverse
+from manager.utils import DATETIME_ISO_FORMAT, ERROR_OBS_TICKETS, get_tai_from_utc
 from rest_framework.test import APIClient
 
-from manager.utils import DATETIME_ISO_FORMAT, ERROR_OBS_TICKETS, get_tai_from_utc
+from api.models import Token
+from api.views import NIGHT_REPORT_CONFLICT_MESSAGE
 
 OBS_SYSTEMS_HIERARCHY = """
 {
@@ -147,9 +147,7 @@ class OLETestCase(TestCase):
         response.json = lambda: []
         mock_ole_client.return_value = response
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
-        )
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token_user_normal.key)
 
         # Act:
         url = reverse("ExposureLogs-list")
@@ -169,9 +167,7 @@ class OLETestCase(TestCase):
         response.json = lambda: {}
         mock_ole_client.return_value = response
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
-        )
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token_user_normal.key)
 
         # Act:
         url = reverse("ExposureLogs-list")
@@ -190,9 +186,7 @@ class OLETestCase(TestCase):
         response.json = lambda: {}
         mock_ole_client.return_value = response
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
-        )
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token_user_normal.key)
 
         # Act:
         url = reverse("ExposureLogs-detail", args=[1])
@@ -231,9 +225,7 @@ class OLETestCase(TestCase):
         response_ole.json = lambda: {}
         mock_ole_client.return_value = response_ole
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
-        )
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token_user_normal.key)
 
         # Act:
         # New jira ticket
@@ -280,9 +272,7 @@ class OLETestCase(TestCase):
         response_ole.json = lambda: {}
         mock_ole_client.return_value = response_ole
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
-        )
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token_user_normal.key)
 
         # Act:
         # New jira ticket
@@ -309,9 +299,7 @@ class OLETestCase(TestCase):
         response.json = lambda: []
         mock_ole_client.return_value = response
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
-        )
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token_user_normal.key)
 
         # Act:
         url = reverse("NarrativeLogs-list")
@@ -331,9 +319,7 @@ class OLETestCase(TestCase):
         response.json = lambda: {}
         mock_ole_client.return_value = response
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
-        )
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token_user_normal.key)
 
         # Act:
         url = reverse("NarrativeLogs-list")
@@ -347,12 +333,12 @@ class OLETestCase(TestCase):
         mock_ole_client_json_arg = mock_ole_client.call_args.kwargs["json"].dict()
         date_begin_arg = mock_ole_client_json_arg["date_begin"]
         date_end_arg = mock_ole_client_json_arg["date_end"]
-        payload_date_begin_formatted = get_tai_from_utc(
-            self.payload_full_narrative["date_begin"]
-        ).strftime("%Y-%m-%dT%H:%M:%S.%f")
-        payload_date_end_formatted = get_tai_from_utc(
-            self.payload_full_narrative["date_end"]
-        ).strftime("%Y-%m-%dT%H:%M:%S.%f")
+        payload_date_begin_formatted = get_tai_from_utc(self.payload_full_narrative["date_begin"]).strftime(
+            "%Y-%m-%dT%H:%M:%S.%f"
+        )
+        payload_date_end_formatted = get_tai_from_utc(self.payload_full_narrative["date_end"]).strftime(
+            "%Y-%m-%dT%H:%M:%S.%f"
+        )
         assert date_begin_arg == payload_date_begin_formatted
         assert date_end_arg == payload_date_end_formatted
 
@@ -368,9 +354,7 @@ class OLETestCase(TestCase):
         response.json = lambda: {}
         mock_ole_client.return_value = response
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
-        )
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token_user_normal.key)
 
         # Act:
         url = reverse("NarrativeLogs-detail", args=[1])
@@ -384,12 +368,12 @@ class OLETestCase(TestCase):
         mock_ole_client_json_arg = mock_ole_client.call_args.kwargs["json"].dict()
         date_begin_arg = mock_ole_client_json_arg["date_begin"]
         date_end_arg = mock_ole_client_json_arg["date_end"]
-        payload_date_begin_formatted = get_tai_from_utc(
-            self.payload_full_narrative["date_begin"]
-        ).strftime(DATETIME_ISO_FORMAT)
-        payload_date_end_formatted = get_tai_from_utc(
-            self.payload_full_narrative["date_end"]
-        ).strftime(DATETIME_ISO_FORMAT)
+        payload_date_begin_formatted = get_tai_from_utc(self.payload_full_narrative["date_begin"]).strftime(
+            DATETIME_ISO_FORMAT
+        )
+        payload_date_end_formatted = get_tai_from_utc(self.payload_full_narrative["date_end"]).strftime(
+            DATETIME_ISO_FORMAT
+        )
         assert date_begin_arg == payload_date_begin_formatted
         assert date_end_arg == payload_date_end_formatted
 
@@ -425,9 +409,7 @@ class OLETestCase(TestCase):
         response_ole.json = lambda: {}
         mock_ole_client.return_value = response_ole
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
-        )
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token_user_normal.key)
 
         # Act:
         # New jira ticket
@@ -474,9 +456,7 @@ class OLETestCase(TestCase):
         response_ole.json = lambda: {}
         mock_ole_client.return_value = response_ole
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
-        )
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token_user_normal.key)
 
         # Act:
         # New jira ticket
@@ -496,16 +476,12 @@ class OLETestCase(TestCase):
     def test_narrativelog_create_with_not_valid_obs_systems_hierarchy(self):
         """Test narrativelog create with not valid OBS systems hierarchy."""
         # Arrange:
-        self.client.credentials(
-            HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
-        )
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token_user_normal.key)
 
         # Act:
         url = reverse("NarrativeLogs-list")
         with self.assertRaises(json.decoder.JSONDecodeError):
-            self.client.post(
-                url, {**self.payload_full_narrative, "components_json": "invalid"}
-            )
+            self.client.post(url, {**self.payload_full_narrative, "components_json": "invalid"})
 
 
 @override_settings(DEBUG=True)
@@ -625,9 +601,7 @@ class NightReportTestCase(TestCase):
         response.json = lambda: [self.response_report]
         mock_ole_client.return_value = response
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
-        )
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token_user_normal.key)
 
         # Act:
         url = reverse("NightReportLogs-list")
@@ -640,12 +614,8 @@ class NightReportTestCase(TestCase):
     def test_nightreport_create(self):
         """Test nightreport create."""
         # Arrange:
-        mock_get_last_valid_night_report_patcher = patch(
-            "api.views.get_last_valid_night_report"
-        )
-        mock_get_last_valid_night_report_client = (
-            mock_get_last_valid_night_report_patcher.start()
-        )
+        mock_get_last_valid_night_report_patcher = patch("api.views.get_last_valid_night_report")
+        mock_get_last_valid_night_report_client = mock_get_last_valid_night_report_patcher.start()
 
         mock_ole_patcher = patch("requests.post")
         mock_ole_client = mock_ole_patcher.start()
@@ -654,9 +624,7 @@ class NightReportTestCase(TestCase):
         response.json = lambda: self.response_report
         mock_ole_client.return_value = response
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
-        )
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token_user_normal.key)
 
         url = reverse("NightReportLogs-list")
 
@@ -681,12 +649,8 @@ class NightReportTestCase(TestCase):
     def test_nightreport_update(self):
         """Test nightreport update."""
         # Arrange:
-        mock_get_last_valid_night_report_patcher = patch(
-            "api.views.get_last_valid_night_report"
-        )
-        mock_get_last_valid_night_report_client = (
-            mock_get_last_valid_night_report_patcher.start()
-        )
+        mock_get_last_valid_night_report_patcher = patch("api.views.get_last_valid_night_report")
+        mock_get_last_valid_night_report_client = mock_get_last_valid_night_report_patcher.start()
 
         mock_ole_patcher = patch("requests.patch")
         mock_ole_client = mock_ole_patcher.start()
@@ -695,9 +659,7 @@ class NightReportTestCase(TestCase):
         response.json = lambda: self.response_report
         mock_ole_client.return_value = response
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
-        )
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token_user_normal.key)
 
         url = reverse("NightReportLogs-detail", args=[self.payload_update["id"]])
 
@@ -745,9 +707,7 @@ class NightReportTestCase(TestCase):
         response.json = lambda: "ok"
         mock_ole_client.return_value = response
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
-        )
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token_user_normal.key)
 
         # Act:
         url = reverse("NightReportLogs-detail", args=[1])
@@ -775,12 +735,8 @@ class NightReportTestCase(TestCase):
         mock_send_smtp_email_client = mock_send_smtp_email.start()
         mock_send_smtp_email_client.return_value = True
 
-        mock_get_last_valid_night_report_patcher = patch(
-            "api.views.get_last_valid_night_report"
-        )
-        mock_get_last_valid_night_report_client = (
-            mock_get_last_valid_night_report_patcher.start()
-        )
+        mock_get_last_valid_night_report_patcher = patch("api.views.get_last_valid_night_report")
+        mock_get_last_valid_night_report_client = mock_get_last_valid_night_report_patcher.start()
         mock_get_last_valid_night_report_client.return_value = self.response_report
 
         mock_get_nightreport_observatory_status_from_efd = patch(
@@ -789,23 +745,13 @@ class NightReportTestCase(TestCase):
         mock_get_nightreport_observatory_status_from_efd_client = (
             mock_get_nightreport_observatory_status_from_efd.start()
         )
-        mock_get_nightreport_observatory_status_from_efd_client.return_value = (
-            self.observatory_status_efd
-        )
+        mock_get_nightreport_observatory_status_from_efd_client.return_value = self.observatory_status_efd
 
-        mock_get_nightreport_cscs_status_from_efd = patch(
-            "api.views.get_nightreport_cscs_status_from_efd"
-        )
-        mock_get_nightreport_cscs_status_from_efd_client = (
-            mock_get_nightreport_cscs_status_from_efd.start()
-        )
-        mock_get_nightreport_cscs_status_from_efd_client.return_value = (
-            self.cscs_status_efd
-        )
+        mock_get_nightreport_cscs_status_from_efd = patch("api.views.get_nightreport_cscs_status_from_efd")
+        mock_get_nightreport_cscs_status_from_efd_client = mock_get_nightreport_cscs_status_from_efd.start()
+        mock_get_nightreport_cscs_status_from_efd_client.return_value = self.cscs_status_efd
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
-        )
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token_user_normal.key)
 
         # Act:
         url = reverse("OLE-nightreport-send-report", args=[self.response_report["id"]])
@@ -822,12 +768,8 @@ class NightReportTestCase(TestCase):
     def test_nightreport_send_fail(self):
         """Test nightreport send fail."""
         # Arrange:
-        mock_get_last_valid_night_report_patcher = patch(
-            "api.views.get_last_valid_night_report"
-        )
-        mock_get_last_valid_night_report_client = (
-            mock_get_last_valid_night_report_patcher.start()
-        )
+        mock_get_last_valid_night_report_patcher = patch("api.views.get_last_valid_night_report")
+        mock_get_last_valid_night_report_client = mock_get_last_valid_night_report_patcher.start()
 
         mock_get_nightreport_observatory_status_from_efd = patch(
             "api.views.get_nightreport_observatory_status_from_efd"
@@ -836,12 +778,8 @@ class NightReportTestCase(TestCase):
             mock_get_nightreport_observatory_status_from_efd.start()
         )
 
-        mock_get_nightreport_cscs_status_from_efd = patch(
-            "api.views.get_nightreport_cscs_status_from_efd"
-        )
-        mock_get_nightreport_cscs_status_from_efd_client = (
-            mock_get_nightreport_cscs_status_from_efd.start()
-        )
+        mock_get_nightreport_cscs_status_from_efd = patch("api.views.get_nightreport_cscs_status_from_efd")
+        mock_get_nightreport_cscs_status_from_efd_client = mock_get_nightreport_cscs_status_from_efd.start()
 
         mock_get_jira_obs_report = patch("api.views.get_jira_obs_report")
         mock_get_jira_obs_report_client = mock_get_jira_obs_report.start()
@@ -852,9 +790,7 @@ class NightReportTestCase(TestCase):
         mock_send_smtp_email = patch("api.views.send_smtp_email")
         mock_send_smtp_email_client = mock_send_smtp_email.start()
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION="Token " + self.token_user_normal.key
-        )
+        self.client.credentials(HTTP_AUTHORIZATION="Token " + self.token_user_normal.key)
 
         url = reverse("OLE-nightreport-send-report", args=[self.response_report["id"]])
 
@@ -899,13 +835,9 @@ class NightReportTestCase(TestCase):
         )
         response = self.client.post(url, data=self.send_report_payload, format="json")
         self.assertEqual(response.status_code, 500)
-        self.assertEqual(
-            response.data, {"error": "Error getting observatory status from EFD."}
-        )
+        self.assertEqual(response.data, {"error": "Error getting observatory status from EFD."})
         mock_get_nightreport_observatory_status_from_efd_client.side_effect = None
-        mock_get_nightreport_observatory_status_from_efd_client.return_value = (
-            self.observatory_status_efd
-        )
+        mock_get_nightreport_observatory_status_from_efd_client.return_value = self.observatory_status_efd
 
         # Getting the EFD CSCS status raise error
         mock_get_nightreport_cscs_status_from_efd_client.side_effect = Exception(
@@ -913,13 +845,9 @@ class NightReportTestCase(TestCase):
         )
         response = self.client.post(url, data=self.send_report_payload, format="json")
         self.assertEqual(response.status_code, 500)
-        self.assertEqual(
-            response.data, {"error": "Error getting CSCS status from EFD."}
-        )
+        self.assertEqual(response.data, {"error": "Error getting CSCS status from EFD."})
         mock_get_nightreport_cscs_status_from_efd_client.side_effect = None
-        mock_get_nightreport_cscs_status_from_efd_client.return_value = (
-            self.cscs_status_efd
-        )
+        mock_get_nightreport_cscs_status_from_efd_client.return_value = self.cscs_status_efd
 
         # Obs ticket report raise error
         mock_get_jira_obs_report_client.side_effect = Exception(ERROR_OBS_TICKETS)
@@ -929,9 +857,7 @@ class NightReportTestCase(TestCase):
 
         # Arrange night report email raise error
         mock_get_jira_obs_report_client.side_effect = None
-        mock_arrange_nightreport_email_client.side_effect = Exception(
-            "Error arranging night report email"
-        )
+        mock_arrange_nightreport_email_client.side_effect = Exception("Error arranging night report email")
         response = self.client.post(url, data=self.send_report_payload, format="json")
         self.assertEqual(response.status_code, 500)
         self.assertEqual(response.data, {"error": "Error arranging night report email"})

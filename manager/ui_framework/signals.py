@@ -22,9 +22,9 @@ import os
 
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
-from ui_framework.models import View
 
 from manager import settings
+from ui_framework.models import View
 
 
 @receiver(post_delete, sender=View)

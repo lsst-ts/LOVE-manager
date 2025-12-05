@@ -21,13 +21,13 @@
 import os
 from unittest.mock import call, patch
 
-from api.models import Token
 from django.contrib.auth.models import Permission, User
 from django.test import TestCase, override_settings
 from django.urls import reverse
+from manager.utils import UserBasedPermission
 from rest_framework.test import APIClient
 
-from manager.utils import UserBasedPermission
+from api.models import Token
 
 # python manage.py test api.tests.test_commander.CommanderTestCase
 # python manage.py test api.tests.test_commander.SalinfoTestCase
@@ -82,9 +82,7 @@ class CommanderTestCase(TestCase):
         with self.assertRaises(ValueError):
             self.client.post(url, data, format="json")
         expected_url = "http://foo:bar/cmd"
-        self.assertEqual(
-            mock_requests.call_args, call(expected_url, json=data_with_identity)
-        )
+        self.assertEqual(mock_requests.call_args, call(expected_url, json=data_with_identity))
 
     @patch("requests.post")
     def test_unauthorized_commander(self, mock_requests):
@@ -291,9 +289,7 @@ class TCSTestCase(TestCase):
     @patch("requests.post")
     def test_command_query_atcs_unauthorized(self, mock_requests):
         """Test unauthorized user cannot send a ATCS command"""
-        self.user.user_permissions.remove(
-            Permission.objects.get(name="Execute Commands")
-        )
+        self.user.user_permissions.remove(Permission.objects.get(name="Execute Commands"))
         # Act:
         data = {
             "command_name": "atcs_command",
@@ -343,9 +339,7 @@ class TCSTestCase(TestCase):
     @patch("requests.post")
     def test_command_query_mtcs_unauthorized(self, mock_requests):
         """Test unauthorized user cannot send a MTCS command"""
-        self.user.user_permissions.remove(
-            Permission.objects.get(name="Execute Commands")
-        )
+        self.user.user_permissions.remove(Permission.objects.get(name="Execute Commands"))
         # Act:
         data = {
             "command_name": "mtcs_command",

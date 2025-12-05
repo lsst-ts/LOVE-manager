@@ -20,6 +20,7 @@
 
 """Define the rules for routing
 of channels messages (websockets) in the subscription application."""
+
 from django.urls import re_path
 
 from .consumers import SubscriptionConsumer

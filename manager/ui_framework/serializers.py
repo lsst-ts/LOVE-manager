@@ -19,6 +19,7 @@
 
 
 """Defines the serializer used by the REST API exposed by this app."""
+
 import base64
 import imghdr
 
@@ -27,6 +28,7 @@ from django.conf import settings
 from django.core.files.base import ContentFile
 from django.db.models import Max
 from rest_framework import serializers
+
 from ui_framework.models import View, Workspace, WorkspaceView
 
 

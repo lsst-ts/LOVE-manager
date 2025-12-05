@@ -19,11 +19,13 @@
 
 
 """Defines the views exposed by the REST API exposed by this app."""
+
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+
 from ui_framework.models import View, Workspace, WorkspaceView
 from ui_framework.serializers import (
     ViewSerializer,
@@ -107,9 +109,7 @@ class ViewViewSet(viewsets.ModelViewSet):
     serializer_class = ViewSerializer
     """Serializer used to serialize View objects"""
 
-    @swagger_auto_schema(
-        method="get", responses={200: openapi.Response("Response", ViewSerializer)}
-    )
+    @swagger_auto_schema(method="get", responses={200: openapi.Response("Response", ViewSerializer)})
     @action(detail=False)
     def search(self, request):
         """Serialize Views containing the query string.
@@ -133,9 +133,7 @@ class ViewViewSet(viewsets.ModelViewSet):
         serializer = ViewSerializer(views, many=True)
         return Response(serializer.data)
 
-    @swagger_auto_schema(
-        method="get", responses={200: openapi.Response("Response", ViewSerializer)}
-    )
+    @swagger_auto_schema(method="get", responses={200: openapi.Response("Response", ViewSerializer)})
     @action(detail=False)
     def summary(self, request):
         """Serialize Views with summarized information,

@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -32,9 +31,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "key",
-                    models.CharField(
-                        db_index=True, max_length=40, unique=True, verbose_name="Key"
-                    ),
+                    models.CharField(db_index=True, max_length=40, unique=True, verbose_name="Key"),
                 ),
                 ("name", models.CharField(max_length=64, verbose_name="Name")),
                 (

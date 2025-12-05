@@ -17,6 +17,7 @@ Including another URLconf
 """
 
 from django.urls import path
+
 from redirect.views import m1m3_force_actuators_tests_redirect
 
 urlpatterns = [

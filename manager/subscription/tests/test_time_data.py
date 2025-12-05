@@ -19,21 +19,20 @@
 
 
 """Tests for the subscription of consumers to love_csc streams."""
+
 import pytest
 from api.models import Token
 from channels.testing import WebsocketCommunicator
 from django.contrib.auth.models import Permission, User
+from manager.routing import application
 
 from manager import utils
-from manager.routing import application
 
 
 class TestTimeData:
     def setup_method(self):
         """Set up the TestCase, executed before each test of the TestCase."""
-        self.user = User.objects.create_user(
-            "username", password="123", email="user@user.cl"
-        )
+        self.user = User.objects.create_user("username", password="123", email="user@user.cl")
         self.token = Token.objects.create(user=self.user)
         self.user.user_permissions.add(Permission.objects.get(name="Execute Commands"))
         self.url = "manager/ws/subscription/?token={}".format(self.token)

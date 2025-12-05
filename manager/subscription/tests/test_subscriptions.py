@@ -19,13 +19,13 @@
 
 
 """Tests for the subscription of consumers to streams."""
+
 import asyncio
 
 import pytest
 from api.models import Token
 from channels.testing import WebsocketCommunicator
 from django.contrib.auth.models import Permission, User
-
 from manager.routing import application
 
 
@@ -47,9 +47,7 @@ class TestSubscriptionCombinations:
 
     def setup_method(self):
         """Set up the TestCase, executed before each test of the TestCase."""
-        self.user = User.objects.create_user(
-            "username", password="123", email="user@user.cl"
-        )
+        self.user = User.objects.create_user("username", password="123", email="user@user.cl")
         self.token = Token.objects.create(user=self.user)
         self.user.user_permissions.add(Permission.objects.get(name="Execute Commands"))
         self.url = "manager/ws/subscription/?token={}".format(self.token)
@@ -94,8 +92,7 @@ class TestSubscriptionCombinations:
                     "csc": csc,
                     "salindex": salindex,
                     "data": {
-                        stream: {"value": 1.02813957817852497, "dataType": "Float"}
-                        for stream in streams
+                        stream: {"value": 1.02813957817852497, "dataType": "Float"} for stream in streams
                     },
                 }
             ],
@@ -141,9 +138,7 @@ class TestSubscriptionCombinations:
             await communicator.send_json_to(msg)
             response = await communicator.receive_json_from()
             # Assert
-            assert response[
-                "data"
-            ] == "Successfully unsubscribed to {}-{}-{}-{}".format(
+            assert response["data"] == "Successfully unsubscribed to {}-{}-{}-{}".format(
                 combination["category"],
                 combination["csc"],
                 combination["salindex"],
@@ -170,9 +165,7 @@ class TestSubscriptionCombinations:
             await communicator.send_json_to(msg)
             # Assert 1
             response = await communicator.receive_json_from()
-            assert response[
-                "data"
-            ] == "Successfully subscribed to {}-all-all-all".format(category)
+            assert response["data"] == "Successfully subscribed to {}-all-all-all".format(category)
         # Act 2 (Unsubscribe)
         for category in self.categories:
             msg = {
@@ -185,9 +178,7 @@ class TestSubscriptionCombinations:
             await communicator.send_json_to(msg)
             # Assert 2
             response = await communicator.receive_json_from()
-            assert response[
-                "data"
-            ] == "Successfully unsubscribed to {}-all-all-all".format(category)
+            assert response["data"] == "Successfully unsubscribed to {}-all-all-all".format(category)
         await communicator.disconnect()
 
     @pytest.mark.asyncio
@@ -421,9 +412,7 @@ class TestSubscriptionCombinations:
         await producer_communicator.connect()
 
         # initial state is only useful for events
-        combinations = filter(
-            lambda item: (item["category"] == "event"), self.combinations
-        )
+        combinations = filter(lambda item: (item["category"] == "event"), self.combinations)
 
         for combination in combinations:
             # Act 1 (Subscribe producer)
@@ -437,11 +426,7 @@ class TestSubscriptionCombinations:
                 }
             )
             producer_response = await producer_communicator.receive_json_from()
-            expected = {
-                "data": "Successfully subscribed to initial_state-"
-                + combination["csc"]
-                + "-all-all"
-            }
+            expected = {"data": "Successfully subscribed to initial_state-" + combination["csc"] + "-all-all"}
             assert producer_response == expected
 
             # Act 2  (Subscribe client)

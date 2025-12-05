@@ -49,9 +49,7 @@ ERROR_OBS_TICKETS = f"Error getting issues from {os.environ.get('JIRA_API_HOSTNA
 OBS_ISSUE_TYPE_ID = "10065"
 OBS_TIME_LOST_FIELD = "customfield_10106"
 OBS_SYSTEMS_FIELD = "customfield_10476"
-OBS_TICKETS_FIELDS = (
-    "summary,created,creator,system," f"{OBS_TIME_LOST_FIELD},{OBS_SYSTEMS_FIELD}"
-)
+OBS_TICKETS_FIELDS = f"summary,created,creator,system,{OBS_TIME_LOST_FIELD},{OBS_SYSTEMS_FIELD}"
 
 DATETIME_ISO_FORMAT = "%Y-%m-%dT%H:%M:%S.%f"
 
@@ -146,9 +144,7 @@ class LocationPermission(BasePermission):
         """Return True if the request comes from a location
         configured as command location."""
         selected_location = ControlLocation.objects.filter(selected=True).first()
-        location = (
-            selected_location if selected_location else ControlLocation.objects.first()
-        )
+        location = selected_location if selected_location else ControlLocation.objects.first()
         client_ip = get_client_ip(request)
         return client_ip in location.ip_whitelist
 
@@ -175,9 +171,7 @@ class CommandPermission(BasePermission):
         elif configured_command_permission == "location":
             return LocationPermission()
         else:
-            raise ValueError(
-                f"Invalid permission type: {configured_command_permission}"
-            )
+            raise ValueError(f"Invalid permission type: {configured_command_permission}")
 
 
 class RemoteStorage(Storage):
@@ -194,8 +188,7 @@ class RemoteStorage(Storage):
 
     def __init__(self, location=None):
         self.location = (
-            f"http://{os.environ.get('COMMANDER_HOSTNAME')}"
-            f":{os.environ.get('COMMANDER_PORT')}/lfa"
+            f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/lfa"
         )
 
     def _validate_LFA_url(self, name):
@@ -222,9 +215,7 @@ class RemoteStorage(Storage):
         # If request is for thumbnail (image file)
         if (
             response.headers.get("content-type") in RemoteStorage.ALLOWED_FILE_TYPES[:3]
-        ) or response.headers.get("content-type") == RemoteStorage.ALLOWED_FILE_TYPES[
-            4
-        ]:
+        ) or response.headers.get("content-type") == RemoteStorage.ALLOWED_FILE_TYPES[4]:
             byte_encoded_response = response.content
             tf.write(byte_encoded_response)
             # Before sending the file,
@@ -235,8 +226,7 @@ class RemoteStorage(Storage):
         # If request is for config files (json file)
         if (
             response.headers.get("content-type") == RemoteStorage.ALLOWED_FILE_TYPES[3]
-            or response.headers.get("content-type")
-            == RemoteStorage.ALLOWED_FILE_TYPES[4]
+            or response.headers.get("content-type") == RemoteStorage.ALLOWED_FILE_TYPES[4]
         ):
             json_response = response.json()
             byte_encoded_response = json.dumps(json_response).encode("ascii")
@@ -247,9 +237,7 @@ class RemoteStorage(Storage):
             return tf
 
         # Raise error if file type is not supported
-        raise ValueError(
-            f"File type not supported: {response.headers.get('content-type')}"
-        )
+        raise ValueError(f"File type not supported: {response.headers.get('content-type')}")
 
     def _save(self, name, content):
         """Upload the file to the remote server.
@@ -558,11 +546,7 @@ def jira_ticket(request_data):
     return Response(
         {
             "ack": "Jira ticket could not be created",
-            "error": (
-                str(response_data["errors"])
-                if "errors" in response_data
-                else str(response_data)
-            ),
+            "error": (str(response_data["errors"]) if "errors" in response_data else str(response_data)),
         },
         status=400,
     )
@@ -759,16 +743,10 @@ def get_jira_obs_report(request_data):
     if response.status_code == 200:
         user_timezone = timezone(response.json()["timeZone"])
     else:
-        raise Exception(
-            f"Error getting user timezone from {os.environ.get('JIRA_API_HOSTNAME')}"
-        )
+        raise Exception(f"Error getting user timezone from {os.environ.get('JIRA_API_HOSTNAME')}")
 
-    start_date_user_datetime = intitial_day_obs_tai.replace(
-        tzinfo=timezone("UTC")
-    ).astimezone(user_timezone)
-    end_date_user_datetime = final_day_obs_tai.replace(
-        tzinfo=timezone("UTC")
-    ).astimezone(user_timezone)
+    start_date_user_datetime = intitial_day_obs_tai.replace(tzinfo=timezone("UTC")).astimezone(user_timezone)
+    end_date_user_datetime = final_day_obs_tai.replace(tzinfo=timezone("UTC")).astimezone(user_timezone)
 
     initial_day_obs_string = start_date_user_datetime.strftime("%Y-%m-%d")
     final_day_obs_string = end_date_user_datetime.strftime("%Y-%m-%d")
@@ -807,10 +785,7 @@ def get_jira_obs_report(request_data):
             ]
         except KeyError as e:
             traceback.print_exc()
-            raise Exception(
-                f"{ERROR_OBS_TICKETS}. "
-                f"Parsing JIRA response failed: missing field {e}"
-            )
+            raise Exception(f"{ERROR_OBS_TICKETS}. Parsing JIRA response failed: missing field {e}")
     raise Exception(ERROR_OBS_TICKETS)
 
 
@@ -1118,9 +1093,7 @@ def arrange_nightreport_email(report, plain=False):
     if missing_keys:
         raise ValueError(f"Missing keys in report: {', '.join(missing_keys)}")
 
-    url_jira_obs_tickets = (
-        "https://rubinobs.atlassian.net/jira/software/c/projects/OBS/boards/232"
-    )
+    url_jira_obs_tickets = "https://rubinobs.atlassian.net/jira/software/c/projects/OBS/boards/232"
     day_added = get_obsday_iso(report["day_obs"])
     nightlydigest_urls = arrange_nightlydigest_urls_for_obsday(report["day_obs"])
 
@@ -1170,10 +1143,14 @@ def arrange_nightreport_email(report, plain=False):
 - {LINK_MSG_OBS} {url_jira_obs_tickets}
 - {LINK_MSG_CONFLUENCE} {report["confluence_url"]}
 - {LINK_MSG_ROLEX} {url_rolex}
-{f'''
+{
+            f'''
 {DETAILED_ISSUE_REPORT_TITLE}
 {parse_obs_issues_array_to_plain_text(report["obs_issues"])}
-''' if len(report["obs_issues"]) > 0 else ""}
+'''
+            if len(report["obs_issues"]) > 0
+            else ""
+        }
 
 {SIGNED_MSG}
 {", ".join(report["observers_crew"])}"""
@@ -1209,22 +1186,22 @@ def arrange_nightreport_email(report, plain=False):
         <p>
             {SUMMARY_TITLE}
             <br>
-            {report["summary"].replace(new_line_character, '<br>')}
+            {report["summary"].replace(new_line_character, "<br>")}
         </p>
         <p>
             {WEATHER_TITLE}
             <br>
-            {report["weather"].replace(new_line_character, '<br>')}
+            {report["weather"].replace(new_line_character, "<br>")}
         </p>
         <p>
             {MAINTEL_SUMMARY_TITLE}
             <br>
-            {report["maintel_summary"].replace(new_line_character, '<br>')}
+            {report["maintel_summary"].replace(new_line_character, "<br>")}
         </p>
         <p>
             {AUXTEL_SUMMARY_TITLE}
             <br>
-            {report["auxtel_summary"].replace(new_line_character, '<br>')}
+            {report["auxtel_summary"].replace(new_line_character, "<br>")}
         </p>
         <p>
             {OBSERVATORY_STATUS_TITLE}
@@ -1254,11 +1231,15 @@ def arrange_nightreport_email(report, plain=False):
                 </li>
             </ul>
         </p>
-        {f'''<p>
+        {
+        f'''<p>
             {DETAILED_ISSUE_REPORT_TITLE}
             <br>
             {parse_obs_issues_array_to_html_table(report["obs_issues"])}
-        </p>''' if len(report["obs_issues"]) > 0 else ""}
+        </p>'''
+        if len(report["obs_issues"]) > 0
+        else ""
+    }
         <p>
             {SIGNED_MSG}
             <br>
@@ -1310,10 +1291,10 @@ def parse_obs_issues_array_to_html_table(obs_issues):
     for issue in obs_issues:
         html_table += f"""
         <tr>
-            <td>{issue.get('key', '-')}</td>
-            <td>{issue.get('summary', '-')}</td>
-            <td>{issue.get('reporter', '-')}</td>
-            <td>{issue.get('created', '-')}</td>
+            <td>{issue.get("key", "-")}</td>
+            <td>{issue.get("summary", "-")}</td>
+            <td>{issue.get("reporter", "-")}</td>
+            <td>{issue.get("created", "-")}</td>
         </tr>
         """
 
@@ -1463,9 +1444,7 @@ def get_nightreport_observatory_status_from_efd(efd_instance="summit_efd"):
     if response.ok:
         data = response.json()
         observatory_status = {
-            "simonyiAzimuth": parse_measurement(
-                data["MTMount-0-azimuth"]["actualPosition"][0]["value"], "°"
-            ),
+            "simonyiAzimuth": parse_measurement(data["MTMount-0-azimuth"]["actualPosition"][0]["value"], "°"),
             "simonyiElevation": parse_measurement(
                 data["MTMount-0-elevation"]["actualPosition"][0]["value"], "°"
             ),
@@ -1480,33 +1459,23 @@ def get_nightreport_observatory_status_from_efd(efd_instance="summit_efd"):
                 "UNKNOWN",
             ),
             "simonyiOilSupplySystemState": MTMOUNT_POWER_STATE_MAP.get(
-                data["MTMount-0-logevent_oilSupplySystemState"]["powerState"][0][
-                    "value"
-                ],
+                data["MTMount-0-logevent_oilSupplySystemState"]["powerState"][0]["value"],
                 "UNKNOWN",
             ),
             "simonyiPowerSupplySystemState": MTMOUNT_POWER_STATE_MAP.get(
-                data["MTMount-0-logevent_mainAxesPowerSupplySystemState"]["powerState"][
-                    0
-                ]["value"],
+                data["MTMount-0-logevent_mainAxesPowerSupplySystemState"]["powerState"][0]["value"],
                 "UNKNOWN",
             ),
             "simonyiLockingPinsSystemState": MTMOUNT_MT_MOUNT_ELEVATION_LOCKING_PIN_MOTION_STATE_MAP.get(
-                data["MTMount-0-logevent_elevationLockingPinMotionState"]["state"][0][
-                    "value"
-                ],
+                data["MTMount-0-logevent_elevationLockingPinMotionState"]["state"][0]["value"],
                 "UNKNOWN",
             ),
             "auxtelAzimuth": parse_measurement(
-                data["ATMCS-0-mount_AzEl_Encoders"]["azimuthCalculatedAngle0"][0][
-                    "value"
-                ],
+                data["ATMCS-0-mount_AzEl_Encoders"]["azimuthCalculatedAngle0"][0]["value"],
                 "°",
             ),
             "auxtelElevation": parse_measurement(
-                data["ATMCS-0-mount_AzEl_Encoders"]["elevationCalculatedAngle0"][0][
-                    "value"
-                ],
+                data["ATMCS-0-mount_AzEl_Encoders"]["elevationCalculatedAngle0"][0]["value"],
                 "°",
             ),
             "auxtelDomeAzimuth": parse_measurement(
@@ -1606,22 +1575,12 @@ def get_nightreport_cscs_status_from_efd(efd_instance="summit_efd"):
             "MTMount:0": parse_cscs_state(
                 data["MTMount-0-logevent_summaryState"]["summaryState"][0]["value"]
             ),
-            "MTM1M3:0": parse_cscs_state(
-                data["MTM1M3-0-logevent_summaryState"]["summaryState"][0]["value"]
-            ),
-            "MTAOS:0": parse_cscs_state(
-                data["MTAOS-0-logevent_summaryState"]["summaryState"][0]["value"]
-            ),
-            "MTM2:0": parse_cscs_state(
-                data["MTM2-0-logevent_summaryState"]["summaryState"][0]["value"]
-            ),
-            "MTDome:0": parse_cscs_state(
-                data["MTDome-0-logevent_summaryState"]["summaryState"][0]["value"]
-            ),
+            "MTM1M3:0": parse_cscs_state(data["MTM1M3-0-logevent_summaryState"]["summaryState"][0]["value"]),
+            "MTAOS:0": parse_cscs_state(data["MTAOS-0-logevent_summaryState"]["summaryState"][0]["value"]),
+            "MTM2:0": parse_cscs_state(data["MTM2-0-logevent_summaryState"]["summaryState"][0]["value"]),
+            "MTDome:0": parse_cscs_state(data["MTDome-0-logevent_summaryState"]["summaryState"][0]["value"]),
             "MTDomeTrajectory:0": parse_cscs_state(
-                data["MTDomeTrajectory-0-logevent_summaryState"]["summaryState"][0][
-                    "value"
-                ]
+                data["MTDomeTrajectory-0-logevent_summaryState"]["summaryState"][0]["value"]
             ),
             "MTHexapod:1": parse_cscs_state(
                 data["MTHexapod-1-logevent_summaryState"]["summaryState"][0]["value"]
@@ -1632,32 +1591,20 @@ def get_nightreport_cscs_status_from_efd(efd_instance="summit_efd"):
             "MTRotator:0": parse_cscs_state(
                 data["MTRotator-0-logevent_summaryState"]["summaryState"][0]["value"]
             ),
-            "MTPtg:0": parse_cscs_state(
-                data["MTPtg-0-logevent_summaryState"]["summaryState"][0]["value"]
-            ),
+            "MTPtg:0": parse_cscs_state(data["MTPtg-0-logevent_summaryState"]["summaryState"][0]["value"]),
             "MTM1M3TS:0": parse_cscs_state(
                 data["MTM1M3TS-0-logevent_summaryState"]["summaryState"][0]["value"]
             ),
             "MTCamera:0": parse_cscs_state(
                 data["MTCamera-0-logevent_summaryState"]["summaryState"][0]["value"]
             ),
-            "ATMCS:0": parse_cscs_state(
-                data["ATMCS-0-logevent_summaryState"]["summaryState"][0]["value"]
-            ),
-            "ATPtg:0": parse_cscs_state(
-                data["ATPtg-0-logevent_summaryState"]["summaryState"][0]["value"]
-            ),
-            "ATDome:0": parse_cscs_state(
-                data["ATDome-0-logevent_summaryState"]["summaryState"][0]["value"]
-            ),
+            "ATMCS:0": parse_cscs_state(data["ATMCS-0-logevent_summaryState"]["summaryState"][0]["value"]),
+            "ATPtg:0": parse_cscs_state(data["ATPtg-0-logevent_summaryState"]["summaryState"][0]["value"]),
+            "ATDome:0": parse_cscs_state(data["ATDome-0-logevent_summaryState"]["summaryState"][0]["value"]),
             "ATDomeTrajectory:0": parse_cscs_state(
-                data["ATDomeTrajectory-0-logevent_summaryState"]["summaryState"][0][
-                    "value"
-                ]
+                data["ATDomeTrajectory-0-logevent_summaryState"]["summaryState"][0]["value"]
             ),
-            "ATAOS:0": parse_cscs_state(
-                data["ATAOS-0-logevent_summaryState"]["summaryState"][0]["value"]
-            ),
+            "ATAOS:0": parse_cscs_state(data["ATAOS-0-logevent_summaryState"]["summaryState"][0]["value"]),
             "ATPneumatics:0": parse_cscs_state(
                 data["ATPneumatics-0-logevent_summaryState"]["summaryState"][0]["value"]
             ),
@@ -1667,18 +1614,12 @@ def get_nightreport_cscs_status_from_efd(efd_instance="summit_efd"):
             "ATCamera:0": parse_cscs_state(
                 data["ATCamera-0-logevent_summaryState"]["summaryState"][0]["value"]
             ),
-            "ATOODS:0": parse_cscs_state(
-                data["ATOODS-0-logevent_summaryState"]["summaryState"][0]["value"]
-            ),
+            "ATOODS:0": parse_cscs_state(data["ATOODS-0-logevent_summaryState"]["summaryState"][0]["value"]),
             "ATHeaderService:0": parse_cscs_state(
-                data["ATHeaderService-0-logevent_summaryState"]["summaryState"][0][
-                    "value"
-                ]
+                data["ATHeaderService-0-logevent_summaryState"]["summaryState"][0]["value"]
             ),
             "ATSpectrograph:0": parse_cscs_state(
-                data["ATSpectrograph-0-logevent_summaryState"]["summaryState"][0][
-                    "value"
-                ]
+                data["ATSpectrograph-0-logevent_summaryState"]["summaryState"][0]["value"]
             ),
         }
 
@@ -1790,27 +1731,19 @@ def parse_observatory_status_to_plain_text(observatory_status):
     plain_text += f"el = {observatory_status['simonyiElevation']}{maintel_params_units['simonyiElevation']}, "
     plain_text += f"az = {observatory_status['simonyiAzimuth']}{maintel_params_units['simonyiAzimuth']}, "
     plain_text += (
-        f"dome az = {observatory_status['simonyiDomeAzimuth']}"
-        f"{maintel_params_units['simonyiDomeAzimuth']}, "
+        f"dome az = {observatory_status['simonyiDomeAzimuth']}{maintel_params_units['simonyiDomeAzimuth']}, "
     )
     plain_text += f"rotator = {observatory_status['simonyiRotator']}{maintel_params_units['simonyiRotator']}."
     plain_text += "\n"
     plain_text += f"Mirror covers: {observatory_status['simonyiMirrorCoversState']}, "
-    plain_text += (
-        f"Oil supply system: {observatory_status['simonyiOilSupplySystemState']}, "
-    )
-    plain_text += (
-        f"Power supply system: {observatory_status['simonyiPowerSupplySystemState']}, "
-    )
-    plain_text += (
-        f"Locking pins system: {observatory_status['simonyiLockingPinsSystemState']}.\n"
-    )
+    plain_text += f"Oil supply system: {observatory_status['simonyiOilSupplySystemState']}, "
+    plain_text += f"Power supply system: {observatory_status['simonyiPowerSupplySystemState']}, "
+    plain_text += f"Locking pins system: {observatory_status['simonyiLockingPinsSystemState']}.\n"
     plain_text += "AuxTel Telescope: "
     plain_text += f"el = {observatory_status['auxtelElevation']}{auxtel_params_units['auxtelElevation']}, "
     plain_text += f"az = {observatory_status['auxtelAzimuth']}{auxtel_params_units['auxtelAzimuth']}, "
     plain_text += (
-        f"dome az = {observatory_status['auxtelDomeAzimuth']}"
-        f"{auxtel_params_units['auxtelDomeAzimuth']}."
+        f"dome az = {observatory_status['auxtelDomeAzimuth']}{auxtel_params_units['auxtelDomeAzimuth']}."
     )
     plain_text += "\n"
     plain_text += f"Mirror covers: {observatory_status['auxtelMirrorCoversState']}.\n"
@@ -1942,25 +1875,19 @@ def arrange_nightlydigest_urls_for_obsday(obsday):
     """
 
     if len(str(obsday)) != 8:
-        raise ValueError(
-            f"Invalid obsday format: {obsday}. Expected format is 'YYYYMMDD'."
-        )
+        raise ValueError(f"Invalid obsday format: {obsday}. Expected format is 'YYYYMMDD'.")
 
     try:
         datetime.strptime(str(obsday), "%Y%m%d")
     except ValueError:
-        raise ValueError(
-            f"Invalid obsday format: {obsday}. Expected format is 'YYYYMMDD'."
-        )
+        raise ValueError(f"Invalid obsday format: {obsday}. Expected format is 'YYYYMMDD'.")
 
     return {
         "simonyi": (
-            f"{settings.NIGHTLYDIGEST_BASE_URL}"
-            f"/?startDayobs={obsday}&endDayobs={obsday}&telescope=Simonyi"
+            f"{settings.NIGHTLYDIGEST_BASE_URL}/?startDayobs={obsday}&endDayobs={obsday}&telescope=Simonyi"
         ),
         "auxtel": (
-            f"{settings.NIGHTLYDIGEST_BASE_URL}"
-            f"/?startDayobs={obsday}&endDayobs={obsday}&telescope=AuxTel"
+            f"{settings.NIGHTLYDIGEST_BASE_URL}/?startDayobs={obsday}&endDayobs={obsday}&telescope=AuxTel"
         ),
     }
 
@@ -1993,14 +1920,8 @@ def get_last_valid_night_report(day_obs=None):
     next_day = day_obs_date + timedelta(days=1)
     next_day_obs = int(next_day.strftime("%Y%m%d"))
 
-    query_params = (
-        f"?min_day_obs={day_obs}"
-        f"&max_day_obs={next_day_obs}"
-        f"&order_by=-date_added"
-    )
-    url = (
-        f"http://{os.environ.get('OLE_API_HOSTNAME')}/nightreport/reports{query_params}"
-    )
+    query_params = f"?min_day_obs={day_obs}&max_day_obs={next_day_obs}&order_by=-date_added"
+    url = f"http://{os.environ.get('OLE_API_HOSTNAME')}/nightreport/reports{query_params}"
     response = requests.get(url)
     if response.ok:
         reports = response.json()

@@ -19,6 +19,7 @@
 
 
 """Tests for the connection of users."""
+
 import asyncio
 
 import pytest
@@ -27,7 +28,6 @@ from channels.db import database_sync_to_async
 from channels.layers import get_channel_layer
 from channels.testing import WebsocketCommunicator
 from django.contrib.auth.models import User
-
 from manager.routing import application
 from manager.settings import PROCESS_CONNECTION_PASS
 
@@ -37,13 +37,9 @@ class TestClientConnection:
     depending on different conditions."""
 
     def setup_method(self):
-        self.user = User.objects.create_user(
-            "username", password="123", email="user@user.cl"
-        )
+        self.user = User.objects.create_user("username", password="123", email="user@user.cl")
         self.token = Token.objects.create(user=self.user)
-        self.user2 = User.objects.create_user(
-            "username2", password="123", email="user@user.cl"
-        )
+        self.user2 = User.objects.create_user("username2", password="123", email="user@user.cl")
         self.token2 = Token.objects.create(user=self.user2)
 
     @pytest.mark.asyncio
@@ -118,28 +114,16 @@ class TestClientConnection:
         channel_layer = get_channel_layer()
 
         # Connect 3 clients (2 users and 1 with password)
-        client1 = WebsocketCommunicator(
-            application, "manager/ws/subscription/?token={}".format(self.token)
-        )
-        client2 = WebsocketCommunicator(
-            application, "manager/ws/subscription/?token={}".format(self.token2)
-        )
-        client3 = WebsocketCommunicator(
-            application, "manager/ws/subscription/?password={}".format(password)
-        )
+        client1 = WebsocketCommunicator(application, "manager/ws/subscription/?token={}".format(self.token))
+        client2 = WebsocketCommunicator(application, "manager/ws/subscription/?token={}".format(self.token2))
+        client3 = WebsocketCommunicator(application, "manager/ws/subscription/?password={}".format(password))
         for client in [client1, client2, client3]:
             connected, subprotocol = await client.connect()
-            assert (
-                connected
-            ), "Error, client was not connected, test could not be completed"
+            assert connected, "Error, client was not connected, test could not be completed"
 
         # ACT
-        await channel_layer.group_send(
-            "token-{}".format(str(self.token)), {"type": "logout", "message": ""}
-        )
-        await asyncio.sleep(
-            1
-        )  # Wait 1 second, to ensure the connection is closed before we continue
+        await channel_layer.group_send("token-{}".format(str(self.token)), {"type": "logout", "message": ""})
+        await asyncio.sleep(1)  # Wait 1 second, to ensure the connection is closed before we continue
 
         # ASSERT
         # Client 1 should not be able to send and receive messages
@@ -179,27 +163,17 @@ class TestClientConnection:
         expected_response = "Successfully subscribed to event-ScriptQueue-0-stream1"
 
         # Connect 3 clients (2 users and 1 with password)
-        client1 = WebsocketCommunicator(
-            application, "manager/ws/subscription/?token={}".format(self.token)
-        )
-        client2 = WebsocketCommunicator(
-            application, "manager/ws/subscription/?token={}".format(self.token2)
-        )
-        client3 = WebsocketCommunicator(
-            application, "manager/ws/subscription/?password={}".format(password)
-        )
+        client1 = WebsocketCommunicator(application, "manager/ws/subscription/?token={}".format(self.token))
+        client2 = WebsocketCommunicator(application, "manager/ws/subscription/?token={}".format(self.token2))
+        client3 = WebsocketCommunicator(application, "manager/ws/subscription/?password={}".format(password))
         for client in [client1, client2, client3]:
             connected, subprotocol = await client.connect()
-            assert (
-                connected
-            ), "Error, client was not connected, test could not be completed"
+            assert connected, "Error, client was not connected, test could not be completed"
 
         # ACT: delete de token
         # await self.delete_token()
         await database_sync_to_async(self.token.delete)()
-        await asyncio.sleep(
-            1
-        )  # Wait 1 second, to ensure the connection is closed before we continue
+        await asyncio.sleep(1)  # Wait 1 second, to ensure the connection is closed before we continue
 
         # ASSERT
         # Client 1 should not be able to send and receive messages

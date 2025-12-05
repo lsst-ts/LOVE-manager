@@ -26,6 +26,9 @@ Registers the models that will be available throgh the Djangpo Admin interface.
 For more information see:
 https://docs.djangoproject.com/en/2.2/ref/contrib/admin/
 """
+
+from django.contrib import admin
+
 from api.models import (
     ConfigFile,
     ControlLocation,
@@ -34,7 +37,6 @@ from api.models import (
     ScriptConfiguration,
     Token,
 )
-from django.contrib import admin
 
 # from django.contrib.auth.models import Permission
 

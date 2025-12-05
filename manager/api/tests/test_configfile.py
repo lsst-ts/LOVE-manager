@@ -19,18 +19,20 @@
 
 
 """Test users' authentication through the API."""
+
 import json
 import tempfile
 from unittest import mock
 
 import requests
-from api.models import ConfigFile, Token
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 from django.test import TestCase, override_settings
 from django.urls import reverse
 from rest_framework.test import APIClient
+
+from api.models import ConfigFile, Token
 
 # python manage.py test api.tests.tests_configfile.ConfigFileApiTestCase
 
@@ -63,9 +65,7 @@ class ConfigFileApiTestCase(TestCase):
         self.url = reverse("config")
 
         # Local config file
-        self.local_config_file_content = {
-            "key1": "this is the content of the local file"
-        }
+        self.local_config_file_content = {"key1": "this is the content of the local file"}
         self.local_config_file = ConfigFile.objects.create(
             user=self.user,
             config_file=ConfigFileApiTestCase.get_config_file_sample(
@@ -76,9 +76,7 @@ class ConfigFileApiTestCase(TestCase):
         )
 
         # Remote config file
-        self.remote_config_file_content = {
-            "key1": "this is the content of the remote file"
-        }
+        self.remote_config_file_content = {"key1": "this is the content of the remote file"}
         self.remote_config_file = ConfigFile.objects.create(
             user=self.user,
             config_file=ConfigFileApiTestCase.get_config_file_sample(
@@ -89,8 +87,8 @@ class ConfigFileApiTestCase(TestCase):
         )
         # Need to overwrite config file name to match
         # the one in the remote server
-        self.remote_config_file.config_file.name = (
-            self.remote_config_file.config_file.name.replace("configs/", "")
+        self.remote_config_file.config_file.name = self.remote_config_file.config_file.name.replace(
+            "configs/", ""
         )
         self.remote_config_file.save()
 
@@ -138,9 +136,7 @@ class ConfigFileApiTestCase(TestCase):
         # Need to overwrite config file name to match
         # the one in the remote server
         self.remote_config_file_type_not_allowed.config_file.name = (
-            self.remote_config_file_type_not_allowed.config_file.name.replace(
-                "configs/", ""
-            )
+            self.remote_config_file_type_not_allowed.config_file.name.replace("configs/", "")
         )
         self.remote_config_file_type_not_allowed.save()
 
@@ -263,9 +259,7 @@ class ConfigFileApiTestCase(TestCase):
 
         # Act:
         response = self.client.get(
-            reverse(
-                "configfile-content", args=[self.remote_config_file_invalid_url.id]
-            ),
+            reverse("configfile-content", args=[self.remote_config_file_invalid_url.id]),
             format="json",
         )
 
@@ -316,9 +310,7 @@ class ConfigFileApiTestCase(TestCase):
 
         # Act:
         response = self.client.get(
-            reverse(
-                "configfile-content", args=[self.remote_config_file_type_not_allowed.id]
-            ),
+            reverse("configfile-content", args=[self.remote_config_file_type_not_allowed.id]),
             format="json",
         )
 

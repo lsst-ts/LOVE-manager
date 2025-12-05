@@ -19,6 +19,7 @@
 
 
 """Tests for the subscription of consumers to love_csc streams."""
+
 import asyncio
 import datetime
 
@@ -27,20 +28,16 @@ from api.models import Token
 from channels.testing import WebsocketCommunicator
 from django.contrib.auth.models import Permission, User
 from django.test import override_settings
-from subscription.heartbeat_manager import HeartbeatManager
-
 from manager.routing import application
+from subscription.heartbeat_manager import HeartbeatManager
 
 
 class TestHeartbeat:
-
     no_reception_timeout = 4
 
     def setup_method(self):
         """Set up the TestCase, executed before each test of the TestCase."""
-        self.user = User.objects.create_user(
-            "username", password="123", email="user@user.cl"
-        )
+        self.user = User.objects.create_user("username", password="123", email="user@user.cl")
         self.token = Token.objects.create(user=self.user)
         self.user.user_permissions.add(Permission.objects.get(name="Execute Commands"))
         self.url = "manager/ws/subscription/?token={}".format(self.token)
@@ -69,9 +66,7 @@ class TestHeartbeat:
         response = await communicator.receive_json_from()
 
         # Assert 1
-        assert (
-            response["data"] == "Successfully subscribed to heartbeat-manager-0-stream"
-        )
+        assert response["data"] == "Successfully subscribed to heartbeat-manager-0-stream"
 
         response = await communicator.receive_json_from(timeout=10)
         assert response["data"][0]["data"]["timestamp"] is not None
@@ -87,10 +82,7 @@ class TestHeartbeat:
         response = await communicator.receive_json_from()
 
         # Assert 2
-        assert (
-            response["data"]
-            == "Successfully unsubscribed to heartbeat-manager-0-stream"
-        )
+        assert response["data"] == "Successfully unsubscribed to heartbeat-manager-0-stream"
 
         await communicator.disconnect()
 
@@ -111,9 +103,7 @@ class TestHeartbeat:
         response = await communicator.receive_json_from()
 
         # Assert 1
-        assert (
-            response["data"] == "Successfully subscribed to heartbeat-manager-0-stream"
-        )
+        assert response["data"] == "Successfully subscribed to heartbeat-manager-0-stream"
 
         response = await communicator.receive_json_from(timeout=10)
         assert response["data"][0]["data"]["timestamp"] is not None
@@ -129,10 +119,7 @@ class TestHeartbeat:
         response = await communicator.receive_json_from()
 
         # Assert 2
-        assert (
-            response["data"]
-            == "Successfully unsubscribed to heartbeat-manager-0-stream"
-        )
+        assert response["data"] == "Successfully unsubscribed to heartbeat-manager-0-stream"
         await communicator.disconnect()
         await hb_manager.stop()
 
@@ -140,7 +127,6 @@ class TestHeartbeat:
     @pytest.mark.django_db(transaction=True)
     @override_settings(HEARTBEAT_QUERY_COMMANDER=True)
     async def test_heartbeat_manager_setter(self):
-
         hb_manager = HeartbeatManager()
         # Arrange
         await hb_manager.reset()
@@ -161,9 +147,7 @@ class TestHeartbeat:
         response = await communicator.receive_json_from()
 
         # Assert 1
-        assert (
-            response["data"] == "Successfully subscribed to heartbeat-manager-0-stream"
-        )
+        assert response["data"] == "Successfully subscribed to heartbeat-manager-0-stream"
 
         response = await communicator.receive_json_from(timeout=10)
         assert response["data"][0]["data"]["timestamp"] is not None
@@ -183,7 +167,6 @@ class TestHeartbeat:
     @pytest.mark.django_db(transaction=True)
     @override_settings(HEARTBEAT_QUERY_COMMANDER=True)
     async def test_producer_heartbeat(self):
-
         # Arrange
         hb_manager = HeartbeatManager()
         await hb_manager.reset()
@@ -234,7 +217,6 @@ class TestHeartbeat:
     @pytest.mark.django_db(transaction=True)
     @override_settings(HEARTBEAT_QUERY_COMMANDER=True)
     async def test_unauthorized_commander(self):
-
         # Arrange
         hb_manager = HeartbeatManager()
         await hb_manager.reset()
@@ -255,9 +237,7 @@ class TestHeartbeat:
         response = await communicator.receive_json_from()
 
         # Assert 1
-        assert (
-            response["data"] == "Successfully subscribed to heartbeat-manager-0-stream"
-        )
+        assert response["data"] == "Successfully subscribed to heartbeat-manager-0-stream"
         response = await communicator.receive_json_from(timeout=5)
         assert response["data"][0]["data"]["timestamp"] is not None
 
@@ -268,11 +248,9 @@ class TestHeartbeat:
         # Assert 2 (Get producer heartbeat data)
         heartbeat_sources = [source["csc"] for source in response["data"]]
         assert "Commander" in heartbeat_sources
-        commander_heartbeat = [
-            source["data"]
-            for source in response["data"]
-            if source["csc"] == "Commander"
-        ][0]
+        commander_heartbeat = [source["data"] for source in response["data"] if source["csc"] == "Commander"][
+            0
+        ]
         commander_timestamp = commander_heartbeat["timestamp"]
         assert commander_timestamp == 123123123
         await communicator.disconnect()
@@ -282,7 +260,6 @@ class TestHeartbeat:
     @pytest.mark.django_db(transaction=True)
     @override_settings(HEARTBEAT_QUERY_COMMANDER=True)
     async def test_heartbeat_commander_with_heartbeat_query_commander_in_true(self):
-
         hb_manager = HeartbeatManager()
         # Arrange
         await hb_manager.reset()
@@ -303,9 +280,7 @@ class TestHeartbeat:
         response = await communicator.receive_json_from()
 
         # Assert 1
-        assert (
-            response["data"] == "Successfully subscribed to heartbeat-manager-0-stream"
-        )
+        assert response["data"] == "Successfully subscribed to heartbeat-manager-0-stream"
 
         response = await communicator.receive_json_from(timeout=10)
         assert response["data"][0]["data"]["timestamp"] is not None
@@ -325,7 +300,6 @@ class TestHeartbeat:
     @pytest.mark.django_db(transaction=True)
     @override_settings(HEARTBEAT_QUERY_COMMANDER=False)
     async def test_heartbeat_commander_with_heartbeat_query_commander_in_false(self):
-
         hb_manager = HeartbeatManager()
         # Arrange
         await hb_manager.reset()
@@ -346,9 +320,7 @@ class TestHeartbeat:
         response = await communicator.receive_json_from()
 
         # Assert 1
-        assert (
-            response["data"] == "Successfully subscribed to heartbeat-manager-0-stream"
-        )
+        assert response["data"] == "Successfully subscribed to heartbeat-manager-0-stream"
 
         try:
             response = await communicator.receive_json_from(timeout=10)
