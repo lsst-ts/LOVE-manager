@@ -35,6 +35,20 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
+def validate_file_extension(value):
+    ext = os.path.splitext(value.name)[1]  # [0] returns path+filename
+    valid_extensions = [".json"]
+    if ext.lower() not in valid_extensions:
+        raise ValidationError("Unsupported file extension.")
+
+
+def validate_json_file(value):
+    try:
+        json.loads(value.read().decode("ascii"))
+    except Exception:
+        raise ValidationError("Malformatted JSON object.")
+
+
 class BaseModel(models.Model):
     """Base Model for the models of this app."""
 
@@ -103,18 +117,6 @@ class GlobalPermissions(models.Model):
 class ConfigFile(BaseModel):
     """ConfigFile Model, that includes actual configuration files,
     creation date and user."""
-
-    def validate_file_extension(value):
-        ext = os.path.splitext(value.name)[1]  # [0] returns path+filename
-        valid_extensions = [".json"]
-        if ext.lower() not in valid_extensions:
-            raise ValidationError("Unsupported file extension.")
-
-    def validate_json_file(value):
-        try:
-            json.loads(value.read().decode("ascii"))
-        except Exception:
-            raise ValidationError("Malformatted JSON object.")
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
