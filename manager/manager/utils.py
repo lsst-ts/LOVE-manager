@@ -31,10 +31,10 @@ from urllib.parse import quote
 
 import astropy.time
 import requests
-from api.models import ControlLocation
 from astropy.time import Time
 from astropy.units import hour
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.core.files.storage import Storage
 from pytz import timezone
 from rest_framework.permissions import BasePermission
@@ -143,6 +143,8 @@ class LocationPermission(BasePermission):
     def has_permission(self, request, view):
         """Return True if the request comes from a location
         configured as command location."""
+        from api.models import ControlLocation
+
         selected_location = ControlLocation.objects.filter(selected=True).first()
         location = selected_location if selected_location else ControlLocation.objects.first()
         client_ip = get_client_ip(request)
@@ -1930,3 +1932,17 @@ def get_efd_instance_from_request(request):
     """
     host = request.get_host()
     return EFD_INSTACES.get(host, "summit_efd")
+
+
+def validate_file_extension(value):
+    ext = os.path.splitext(value.name)[1]  # [0] returns path+filename
+    valid_extensions = [".json"]
+    if ext.lower() not in valid_extensions:
+        raise ValidationError("Unsupported file extension.")
+
+
+def validate_json_file(value):
+    try:
+        json.loads(value.read().decode("ascii"))
+    except Exception:
+        raise ValidationError("Malformatted JSON object.")
