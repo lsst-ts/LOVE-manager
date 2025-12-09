@@ -332,7 +332,7 @@ COMMANDING_PERMISSION_TYPE = os.environ.get("COMMANDING_PERMISSION_TYPE", "user"
 
 
 NIGHTLYDIGEST_BASE_URL = os.environ.get(
-    "NIGHTLYDIGEST_BASE_URL", "https://usdf-rsp-dev.slac.stanford.edu/nightlydigest"
+    "NIGHTLYDIGEST_BASE_URL", "https://usdf-rsp.slac.stanford.edu/nightlydigest"
 )
 """Base URL for the Nightly Digest application, read from
 the `NIGHTLYDIGEST_BASE_URL` environment variable (`string`)"""
