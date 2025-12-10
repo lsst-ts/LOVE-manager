@@ -1199,9 +1199,8 @@ def arrange_nightreport_email(report, plain=False):
         <p>
             {parse_observatory_status_to_html_table(report["observatory_status"])}
         </p>
+        <br>
         <p>
-            {CSCS_STATUS_TITLE}
-            <br>
             {parse_cscs_status_to_html_table(report["cscs_status"])}
         </p>
         <p>
@@ -1792,23 +1791,92 @@ def parse_cscs_status_to_html_table(cscs_status):
     str
         The CSCs status in HTML table format
     """
-    html_table = """
-    <table style="width:100%">
-        <tr>
-            <th>CSC</th>
-            <th>SummaryState</th>
-        </tr>
-    """
 
-    for csc in NIGHT_REPORT_CSCS:
-        html_table += f"""
-        <tr>
-            <td>{csc}</td>
-            <td>{cscs_status[csc]}</td>
-        </tr>
+    def render_status_cell(status):
+        color_map = {
+            "ENABLED": "#d4edda",  # Green
+            "STANDBY": "#fff3cd",  # Yellow
+            "FAULT": "#f8d7da",  # Red
+            "DISABLED": "#d6d8d9",  # Grey
+            "UNKNOWN": "#d6d8d9",  # Grey
+        }
+        color = color_map.get(status, "#d6d8d9")
+        return f"""
+        <td style="text-align: center;">
+            <div style="background-color: {color};border-radius: 4px;padding: 2px;">{status}</div>
+        </td>
         """
 
-    html_table += "</table>"
+    html_table = f"""
+    <table
+        style="width:100%;border-collapse: collapse;table-layout: auto;"
+        cellpadding="0" cellspacing="0" border="0">
+        <tr>
+            <td colspan="8" style="text-align: center;">CSCs Summary States</td>
+        </tr>
+        <tr>
+            <td>MTMount:0</td>
+            {render_status_cell(cscs_status["MTMount:0"])}
+            <td>MTM1M3:0</td>
+            {render_status_cell(cscs_status["MTM1M3:0"])}
+            <td>MTAOS:0</td>
+            {render_status_cell(cscs_status["MTAOS:0"])}
+            <td>MTM2:0</td>
+            {render_status_cell(cscs_status["MTM2:0"])}
+        </tr>
+        <tr>
+            <td>MTDome:0</td>
+            {render_status_cell(cscs_status["MTDome:0"])}
+            <td>MTDomeTrajectory:0</td>
+            {render_status_cell(cscs_status["MTDomeTrajectory:0"])}
+            <td>MTHexapod:1</td>
+            {render_status_cell(cscs_status["MTHexapod:1"])}
+            <td>MTHexapod:2</td>
+            {render_status_cell(cscs_status["MTHexapod:2"])}
+        </tr>
+        <tr>
+            <td>MTRotator:0</td>
+            {render_status_cell(cscs_status["MTRotator:0"])}
+            <td>MTPtg:0</td>
+            {render_status_cell(cscs_status["MTPtg:0"])}
+            <td>MTM1M3TS:0</td>
+            {render_status_cell(cscs_status["MTM1M3TS:0"])}
+            <td>MTCamera:0</td>
+            {render_status_cell(cscs_status["MTCamera:0"])}
+        </tr>
+        <tr>
+            <td>ATMCS:0</td>
+            {render_status_cell(cscs_status["ATMCS:0"])}
+            <td>ATPtg:0</td>
+            {render_status_cell(cscs_status["ATPtg:0"])}
+            <td>ATDome:0</td>
+            {render_status_cell(cscs_status["ATDome:0"])}
+            <td>ATDomeTrajectory:0</td>
+            {render_status_cell(cscs_status["ATDomeTrajectory:0"])}
+        </tr>
+        <tr>
+            <td>ATAOS:0</td>
+            {render_status_cell(cscs_status["ATAOS:0"])}
+            <td>ATPneumatics:0</td>
+            {render_status_cell(cscs_status["ATPneumatics:0"])}
+            <td>ATHexapod:0</td>
+            {render_status_cell(cscs_status["ATHexapod:0"])}
+            <td>ATCamera:0</td>
+            {render_status_cell(cscs_status["ATCamera:0"])}
+        </tr>
+        <tr>
+            <td>ATOODS:0</td>
+            {render_status_cell(cscs_status["ATOODS:0"])}
+            <td>ATHeaderService:0</td>
+            {render_status_cell(cscs_status["ATHeaderService:0"])}
+            <td>ATSpectrograph:0</td>
+            {render_status_cell(cscs_status["ATSpectrograph:0"])}
+            <td></td>
+            <td></td>
+        </tr>
+
+    """
+
     return html_table
 
 
