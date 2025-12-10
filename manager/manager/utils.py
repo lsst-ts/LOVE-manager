@@ -1635,40 +1635,59 @@ def parse_observatory_status_to_html_table(observatory_status):
     str
         The observatory status in HTML table format
     """
-    maintel_params = [
-        "simonyiAzimuth",
-        "simonyiElevation",
-        "simonyiDomeAzimuth",
-        "simonyiRotator",
-        "simonyiMirrorCoversState",
-        "simonyiOilSupplySystemState",
-        "simonyiPowerSupplySystemState",
-        "simonyiLockingPinsSystemState",
-    ]
-    auxtel_params = [
-        "auxtelAzimuth",
-        "auxtelElevation",
-        "auxtelDomeAzimuth",
-        "auxtelMirrorCoversState",
-    ]
-
-    html_table = """
-    <table style="width:100%">
+    html_table = f"""
+    <table style="width:100%;border-collapse: collapse;" cellpadding="0" cellspacing="0" border="0">
         <tr>
-            <th>Param</th>
-            <th>State</th>
+            <td colspan="3" style="text-align: center;">Observatory Status</td>
+        <tr>
+        <tr>
+            <td></td>
+            <td style="text-align: center;">Simonyi Telescope</td>
+            <td style="text-align: center;">Auxiliary Telescope</td>
+        <tr>
+        <tr>
+            <td>Elevation</td>
+            <td>{observatory_status["simonyiElevation"]}</td>
+            <td>{observatory_status["auxtelElevation"]}</td>
         </tr>
+        <tr>
+            <td>Azimuth</td>
+            <td>{observatory_status["simonyiAzimuth"]}</td>
+            <td>{observatory_status["auxtelAzimuth"]}</td>
+        </tr>
+        <tr>
+            <td>Dome Azimuth</td>
+            <td>{observatory_status["simonyiDomeAzimuth"]}</td>
+            <td>{observatory_status["auxtelDomeAzimuth"]}</td>
+        </tr>
+        <tr>
+            <td>Rotator</td>
+            <td>{observatory_status["simonyiRotator"]}</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <td>Mirror Covers State</td>
+            <td>{observatory_status["simonyiMirrorCoversState"]}</td>
+            <td>{observatory_status["auxtelMirrorCoversState"]}</td>
+        </tr>
+        <tr>
+            <td>Oil Supply System State</td>
+            <td>{observatory_status["simonyiOilSupplySystemState"]}</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <td>Power Supply System State</td>
+            <td>{observatory_status["simonyiPowerSupplySystemState"]}</td>
+            <td>N/A</td>
+        </tr>
+        <tr>
+            <td>Locking Pins System State</td>
+            <td>{observatory_status["simonyiLockingPinsSystemState"]}</td
+            <td>N/A</td>
+        </tr>
+    </table>
     """
 
-    for param in maintel_params + auxtel_params:
-        html_table += f"""
-        <tr>
-            <td>{param}</td>
-            <td>{observatory_status[param]}</td>
-        </tr>
-        """
-
-    html_table += "</table>"
     return html_table
 
 
