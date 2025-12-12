@@ -5,6 +5,7 @@ Version History
 v7.5.3
 ------
 
+* Add new Glycol Heat Monitor dashboard to summit, base and tucson. `<https://github.com/lsst-ts/LOVE-manager/pull/343>`_
 * Update ts_pre_commit_config.yaml to start using ruff linter & formatter. `<https://github.com/lsst-ts/LOVE-manager/pull/338>`_
 
 v7.5.2
