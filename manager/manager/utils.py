@@ -1171,27 +1171,27 @@ def arrange_nightreport_email(report, plain=False):
     </head>
     <body>
         <p>
-            {NIGHTLYDIGEST_TITLE}
+            <span style="font-weight: bold;">{NIGHTLYDIGEST_TITLE}</span>
             <br>
             <a href="{nightlydigest_urls["simonyi"]}">{nightlydigest_urls["simonyi"]}</a>
         </p>
         <p>
-            {SUMMARY_TITLE}
+            <span style="font-weight: bold;">{SUMMARY_TITLE}</span>
             <br>
             {report["summary"].replace(new_line_character, "<br>")}
         </p>
         <p>
-            {WEATHER_TITLE}
+            <span style="font-weight: bold;">{WEATHER_TITLE}</span>
             <br>
             {report["weather"].replace(new_line_character, "<br>")}
         </p>
         <p>
-            {MAINTEL_SUMMARY_TITLE}
+            <span style="font-weight: bold;">{MAINTEL_SUMMARY_TITLE}</span>
             <br>
             {report["maintel_summary"].replace(new_line_character, "<br>")}
         </p>
         <p>
-            {AUXTEL_SUMMARY_TITLE}
+            <span style="font-weight: bold;">{AUXTEL_SUMMARY_TITLE}</span>
             <br>
             {report["auxtel_summary"].replace(new_line_character, "<br>")}
         </p>
@@ -1203,8 +1203,9 @@ def arrange_nightreport_email(report, plain=False):
         <p>
             {parse_cscs_status_to_html_table(report["cscs_status"])}
         </p>
+        <br>
         <p>
-            {ADDITIONAL_RESOURCES_TITLE}
+            <span style="font-weight: bold;">{ADDITIONAL_RESOURCES_TITLE}</span>
             <br>
             <ul>
                 <li>
@@ -1218,7 +1219,7 @@ def arrange_nightreport_email(report, plain=False):
             </ul>
         </p>
         <p>
-            {DETAILED_ISSUE_REPORT_TITLE}
+            <span style="font-weight: bold;">{DETAILED_ISSUE_REPORT_TITLE}</span>
             <br>
             {
         parse_obs_issues_array_to_html_table(report["obs_issues"])
@@ -1227,7 +1228,7 @@ def arrange_nightreport_email(report, plain=False):
     }
         </p>
         <p>
-            {SIGNED_MSG}
+            <span style="font-weight: bold;">{SIGNED_MSG}</span>
             <br>
             {", ".join(report["observers_crew"])}
         </p>
@@ -1637,53 +1638,53 @@ def parse_observatory_status_to_html_table(observatory_status):
     """
     html_table = f"""
     <table
-        style="width:100%;border-collapse: collapse;table-layout: auto;"
-        cellpadding="0" cellspacing="0" border="0">
-        <tr>
-            <td colspan="3" style="text-align: center;">Observatory Status</td>
-        <tr>
-        <tr>
-            <td></td>
-            <td style="text-align: center;">Simonyi Telescope</td>
-            <td style="text-align: center;">Auxiliary Telescope</td>
-        <tr>
-        <tr>
-            <td>Elevation</td>
+        style="width:100%;border-collapse: collapse;border:1px solid #e5e7eb;table-layout: auto;"
+        cellpadding="0" cellspacing="0">
+        <tr style="background-color: #058B8C;color: #F5F5F5;">
+            <td colspan="3" style="text-align: center;font-weight:bold;">Observatory Status</td>
+        </tr>
+        <tr style="background-color:#00BABC; color: #F5F5F5;">
+            <td style="white-space:nowrap; width:1%;"></td>
+            <td style="text-align: center;font-weight:bold;">Simonyi Telescope</td>
+            <td style="text-align: center;font-weight:bold;">Auxiliary Telescope</td>
+        </tr>
+        <tr style="background-color:#ffffff;">
+            <td style="white-space:nowrap;font-weight: bold;">Elevation</td>
             <td>{observatory_status["simonyiElevation"]}</td>
             <td>{observatory_status["auxtelElevation"]}</td>
         </tr>
-        <tr>
-            <td>Azimuth</td>
+        <tr style="background-color:#fafafa;">
+            <td style="white-space:nowrap;font-weight: bold;">Azimuth</td>
             <td>{observatory_status["simonyiAzimuth"]}</td>
             <td>{observatory_status["auxtelAzimuth"]}</td>
         </tr>
-        <tr>
-            <td>Dome Azimuth</td>
+        <tr style="background-color:#ffffff;">
+            <td style="white-space:nowrap;font-weight: bold;">Dome Azimuth</td>
             <td>{observatory_status["simonyiDomeAzimuth"]}</td>
             <td>{observatory_status["auxtelDomeAzimuth"]}</td>
         </tr>
-        <tr>
-            <td>Rotator</td>
+        <tr style="background-color:#fafafa;">
+            <td style="white-space:nowrap;font-weight: bold;">Rotator</td>
             <td>{observatory_status["simonyiRotator"]}</td>
             <td>N/A</td>
         </tr>
-        <tr>
-            <td>Mirror Covers State</td>
+        <tr style="background-color:#ffffff;">
+            <td style="white-space:nowrap;font-weight: bold;">Mirror Covers State</td>
             <td>{observatory_status["simonyiMirrorCoversState"]}</td>
             <td>{observatory_status["auxtelMirrorCoversState"]}</td>
         </tr>
-        <tr>
-            <td>Oil Supply System State</td>
+        <tr style="background-color:#fafafa;">
+            <td style="white-space:nowrap;font-weight: bold;">Oil Supply System State</td>
             <td>{observatory_status["simonyiOilSupplySystemState"]}</td>
             <td>N/A</td>
         </tr>
-        <tr>
-            <td>Power Supply System State</td>
+        <tr style="background-color:#ffffff;">
+            <td style="white-space:nowrap;font-weight: bold;">Power Supply System State</td>
             <td>{observatory_status["simonyiPowerSupplySystemState"]}</td>
             <td>N/A</td>
         </tr>
-        <tr>
-            <td>Locking Pins System State</td>
+        <tr style="background-color:#fafafa;">
+            <td style="white-space:nowrap;font-weight: bold;">Locking Pins System State</td>
             <td>{observatory_status["simonyiLockingPinsSystemState"]}</td
             <td>N/A</td>
         </tr>
@@ -1809,67 +1810,67 @@ def parse_cscs_status_to_html_table(cscs_status):
 
     html_table = f"""
     <table
-        style="width:100%;border-collapse: collapse;table-layout: auto;"
-        cellpadding="0" cellspacing="0" border="0">
-        <tr>
-            <td colspan="8" style="text-align: center;">CSCs Summary States</td>
+        style="width:100%;border-collapse: collapse;border:1px solid #e5e7eb;table-layout: auto;"
+        cellpadding="0" cellspacing="0">
+        <tr style="background-color: #058B8C;color: #F5F5F5;">
+            <td colspan="8" style="text-align: center;font-weight: bold;">CSCs Summary States</td>
         </tr>
         <tr>
-            <td>MTMount:0</td>
+            <td style="font-weight: bold;">MTMount:0</td>
             {render_status_cell(cscs_status["MTMount:0"])}
-            <td>MTM1M3:0</td>
+            <td style="font-weight: bold;">MTM1M3:0</td>
             {render_status_cell(cscs_status["MTM1M3:0"])}
-            <td>MTAOS:0</td>
+            <td style="font-weight: bold;">MTAOS:0</td>
             {render_status_cell(cscs_status["MTAOS:0"])}
-            <td>MTM2:0</td>
+            <td style="font-weight: bold;">MTM2:0</td>
             {render_status_cell(cscs_status["MTM2:0"])}
         </tr>
         <tr>
-            <td>MTDome:0</td>
+            <td style="font-weight: bold;">MTDome:0</td>
             {render_status_cell(cscs_status["MTDome:0"])}
-            <td>MTDomeTrajectory:0</td>
+            <td style="font-weight: bold;">MTDomeTrajectory:0</td>
             {render_status_cell(cscs_status["MTDomeTrajectory:0"])}
-            <td>MTHexapod:1</td>
+            <td style="font-weight: bold;">MTHexapod:1</td>
             {render_status_cell(cscs_status["MTHexapod:1"])}
-            <td>MTHexapod:2</td>
+            <td style="font-weight: bold;">MTHexapod:2</td>
             {render_status_cell(cscs_status["MTHexapod:2"])}
         </tr>
         <tr>
-            <td>MTRotator:0</td>
+            <td style="font-weight: bold;">MTRotator:0</td>
             {render_status_cell(cscs_status["MTRotator:0"])}
-            <td>MTPtg:0</td>
+            <td style="font-weight: bold;">MTPtg:0</td>
             {render_status_cell(cscs_status["MTPtg:0"])}
-            <td>MTM1M3TS:0</td>
+            <td style="font-weight: bold;">MTM1M3TS:0</td>
             {render_status_cell(cscs_status["MTM1M3TS:0"])}
-            <td>MTCamera:0</td>
+            <td style="font-weight: bold;">MTCamera:0</td>
             {render_status_cell(cscs_status["MTCamera:0"])}
         </tr>
         <tr>
-            <td>ATMCS:0</td>
+            <td style="font-weight: bold;">ATMCS:0</td>
             {render_status_cell(cscs_status["ATMCS:0"])}
-            <td>ATPtg:0</td>
+            <td style="font-weight: bold;">ATPtg:0</td>
             {render_status_cell(cscs_status["ATPtg:0"])}
-            <td>ATDome:0</td>
+            <td style="font-weight: bold;">ATDome:0</td>
             {render_status_cell(cscs_status["ATDome:0"])}
-            <td>ATDomeTrajectory:0</td>
+            <td style="font-weight: bold;">ATDomeTrajectory:0</td>
             {render_status_cell(cscs_status["ATDomeTrajectory:0"])}
         </tr>
         <tr>
-            <td>ATAOS:0</td>
+            <td style="font-weight: bold;">ATAOS:0</td>
             {render_status_cell(cscs_status["ATAOS:0"])}
-            <td>ATPneumatics:0</td>
+            <td style="font-weight: bold;">ATPneumatics:0</td>
             {render_status_cell(cscs_status["ATPneumatics:0"])}
-            <td>ATHexapod:0</td>
+            <td style="font-weight: bold;">ATHexapod:0</td>
             {render_status_cell(cscs_status["ATHexapod:0"])}
-            <td>ATCamera:0</td>
+            <td style="font-weight: bold;">ATCamera:0</td>
             {render_status_cell(cscs_status["ATCamera:0"])}
         </tr>
         <tr>
-            <td>ATOODS:0</td>
+            <td style="font-weight: bold;">ATOODS:0</td>
             {render_status_cell(cscs_status["ATOODS:0"])}
-            <td>ATHeaderService:0</td>
+            <td style="font-weight: bold;">ATHeaderService:0</td>
             {render_status_cell(cscs_status["ATHeaderService:0"])}
-            <td>ATSpectrograph:0</td>
+            <td style="font-weight: bold;">ATSpectrograph:0</td>
             {render_status_cell(cscs_status["ATSpectrograph:0"])}
             <td></td>
             <td></td>
