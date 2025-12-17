@@ -24,7 +24,7 @@ from unittest.mock import call, patch
 from django.contrib.auth.models import Permission, User
 from django.test import TestCase, override_settings
 from django.urls import reverse
-from manager.utils import UserBasedPermission
+from manager.permissions import UserBasedPermission
 from rest_framework.test import APIClient
 
 from api.models import Token
