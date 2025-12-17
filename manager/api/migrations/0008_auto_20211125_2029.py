@@ -7,7 +7,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ("api", "0007_emergencycontact"),
@@ -43,9 +42,7 @@ class Migration(migrations.Migration):
                 ("requested_by", models.CharField(max_length=50)),
                 (
                     "requested_at",
-                    models.DateTimeField(
-                        auto_now_add=True, verbose_name="Requested at"
-                    ),
+                    models.DateTimeField(auto_now_add=True, verbose_name="Requested at"),
                 ),
                 (
                     "duration",
@@ -70,9 +67,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "resolved_at",
-                    models.DateTimeField(
-                        blank=True, null=True, verbose_name="Resolved at"
-                    ),
+                    models.DateTimeField(blank=True, null=True, verbose_name="Resolved at"),
                 ),
                 (
                     "resolved_by",

@@ -5,9 +5,12 @@ import pytest
 import requests
 from django.test import TestCase
 from django.test.utils import override_settings
-
 from manager.utils import (
+    ATPNEUMATICS_MIRROR_COVER_STATE_MAP,
     EFD_INSTACES,
+    MTMOUNT_DEPLOYABLE_MOTION_STATE_MAP,
+    MTMOUNT_MT_MOUNT_ELEVATION_LOCKING_PIN_MOTION_STATE_MAP,
+    MTMOUNT_POWER_STATE_MAP,
     arrange_nightlydigest_urls_for_obsday,
     get_efd_instance_from_request,
     get_last_valid_night_report,
@@ -17,14 +20,10 @@ from manager.utils import (
 
 observatory_status_efd_response = {
     "MTMount-0-azimuth": {
-        "actualPosition": [
-            {"ts": "2025-10-24 19:22:12.914495+00:00", "value": -32.0348721139252}
-        ]
+        "actualPosition": [{"ts": "2025-10-24 19:22:12.914495+00:00", "value": -32.0348721139252}]
     },
     "MTMount-0-elevation": {
-        "actualPosition": [
-            {"ts": "2025-10-24 19:22:12.886953+00:00", "value": 89.940244604426}
-        ]
+        "actualPosition": [{"ts": "2025-10-24 19:22:12.886953+00:00", "value": 89.940244604426}]
     },
     "MTMount-0-logevent_mirrorCoversMotionState": {
         "state": [{"ts": "2025-10-24 08:42:57.537999+00:00", "value": 1}]
@@ -39,26 +38,16 @@ observatory_status_efd_response = {
         "state": [{"ts": "2025-10-24 18:53:15.919564+00:00", "value": 2}]
     },
     "MTDome-0-azimuth": {
-        "positionActual": [
-            {"ts": "2025-10-24 19:22:04.829711+00:00", "value": 327.9999084472656}
-        ]
+        "positionActual": [{"ts": "2025-10-24 19:22:04.829711+00:00", "value": 327.9999084472656}]
     },
     "MTRotator-0-rotation": {
-        "actualPosition": [
-            {"ts": "2025-10-24 19:22:13.100240+00:00", "value": -0.0016296546160410818}
-        ]
+        "actualPosition": [{"ts": "2025-10-24 19:22:13.100240+00:00", "value": -0.0016296546160410818}]
     },
     "ATMCS-0-mount_AzEl_Encoders": {
-        "azimuthCalculatedAngle0": [
-            {"ts": "2025-10-24 19:22:03.259886+00:00", "value": 15.1014567}
-        ],
-        "elevationCalculatedAngle0": [
-            {"ts": "2025-10-24 19:22:03.259886+00:00", "value": 69.9999993}
-        ],
+        "azimuthCalculatedAngle0": [{"ts": "2025-10-24 19:22:03.259886+00:00", "value": 15.1014567}],
+        "elevationCalculatedAngle0": [{"ts": "2025-10-24 19:22:03.259886+00:00", "value": 69.9999993}],
     },
-    "ATDome-0-position": {
-        "azimuthPosition": [{"ts": "2025-10-24 19:22:04.123028+00:00", "value": 104.66}]
-    },
+    "ATDome-0-position": {"azimuthPosition": [{"ts": "2025-10-24 19:22:04.123028+00:00", "value": 104.66}]},
     "ATPneumatics-0-logevent_m1CoverState": {
         "state": [{"ts": "2025-10-24 15:45:44.900717+00:00", "value": 6}]
     },
@@ -66,7 +55,7 @@ observatory_status_efd_response = {
 
 cscs_status_efd_response = {
     "MTMount-0-logevent_summaryState": {
-        "summaryState": [{"ts": "2025-10-24 08:42:28.722677+00:00", "value": 1}]
+        "summaryState": [{"ts": "2025-10-24 08:42:28.722677+00:00", "value": 2}]
     },
     "MTM1M3-0-logevent_summaryState": {
         "summaryState": [{"ts": "2025-10-24 18:07:29.756257+00:00", "value": 2}]
@@ -156,12 +145,10 @@ class UtilsTestCase(TestCase):
         obsday = 20250930
         expected_urls = {
             "simonyi": (
-                "https://example.com/nightlydigest"
-                "/?startDayobs=20250930&endDayobs=20250930&telescope=Simonyi"
+                "https://example.com/nightlydigest/?startDayobs=20250930&endDayobs=20250930&telescope=Simonyi"
             ),
             "auxtel": (
-                "https://example.com/nightlydigest"
-                "/?startDayobs=20250930&endDayobs=20250930&telescope=AuxTel"
+                "https://example.com/nightlydigest/?startDayobs=20250930&endDayobs=20250930&telescope=AuxTel"
             ),
         }
 
@@ -174,10 +161,7 @@ class UtilsTestCase(TestCase):
         for obsday in invalid_obsdays:
             with pytest.raises(ValueError) as e:
                 arrange_nightlydigest_urls_for_obsday(obsday)
-            assert (
-                str(e.value)
-                == f"Invalid obsday format: {obsday}. Expected format is 'YYYYMMDD'."
-            )
+            assert str(e.value) == f"Invalid obsday format: {obsday}. Expected format is 'YYYYMMDD'."
 
     def test_get_last_valid_night_report(self):
         response_get = requests.Response()
@@ -232,21 +216,80 @@ class UtilsTestCase(TestCase):
         for key in expected_payload_keys:
             assert key in observatory_status
 
+        assert observatory_status["simonyiAzimuth"] == "-32.03°"
+        assert observatory_status["simonyiElevation"] == "89.94°"
+        assert observatory_status["simonyiDomeAzimuth"] == "328.00°"
+        assert observatory_status["simonyiRotator"] == "-0.00°"
+        assert observatory_status["simonyiMirrorCoversState"] == "DEPLOYED"
+        assert observatory_status["simonyiOilSupplySystemState"] == "ON"
+        assert observatory_status["simonyiPowerSupplySystemState"] == "ON"
+        assert observatory_status["simonyiLockingPinsSystemState"] == "UNLOCKED"
+        assert observatory_status["auxtelAzimuth"] == "15.10°"
+        assert observatory_status["auxtelElevation"] == "70.00°"
+        assert observatory_status["auxtelDomeAzimuth"] == "104.66°"
+        assert observatory_status["auxtelMirrorCoversState"] == "CLOSED"
+
+        # If key is not present in payload return default values,
+        # respectively "NaN" for measurements and
+        # the zero (0) key from state maps for states
+        measurement_keys = [
+            ("MTMount-0-azimuth", "simonyiAzimuth"),
+            ("MTMount-0-elevation", "simonyiElevation"),
+            ("MTDome-0-azimuth", "simonyiDomeAzimuth"),
+            ("MTRotator-0-rotation", "simonyiRotator"),
+            ("ATMCS-0-mount_AzEl_Encoders", "auxtelAzimuth"),
+            ("ATMCS-0-mount_AzEl_Encoders", "auxtelElevation"),
+            ("ATDome-0-position", "auxtelDomeAzimuth"),
+        ]
+
+        state_keys = [
+            (
+                "MTMount-0-logevent_mirrorCoversMotionState",
+                "simonyiMirrorCoversState",
+                MTMOUNT_DEPLOYABLE_MOTION_STATE_MAP,
+            ),
+            (
+                "MTMount-0-logevent_oilSupplySystemState",
+                "simonyiOilSupplySystemState",
+                MTMOUNT_POWER_STATE_MAP,
+            ),
+            (
+                "MTMount-0-logevent_mainAxesPowerSupplySystemState",
+                "simonyiPowerSupplySystemState",
+                MTMOUNT_POWER_STATE_MAP,
+            ),
+            (
+                "MTMount-0-logevent_elevationLockingPinMotionState",
+                "simonyiLockingPinsSystemState",
+                MTMOUNT_MT_MOUNT_ELEVATION_LOCKING_PIN_MOTION_STATE_MAP,
+            ),
+            (
+                "ATPneumatics-0-logevent_m1CoverState",
+                "auxtelMirrorCoversState",
+                ATPNEUMATICS_MIRROR_COVER_STATE_MAP,
+            ),
+        ]
+
+        efd_response_key, response_key = random.choice(measurement_keys)
+        observatory_status_clone = observatory_status_efd_response.copy()
+        del observatory_status_clone[efd_response_key]
+        response_post.json = lambda: observatory_status_clone
+        observatory_status = get_nightreport_observatory_status_from_efd()
+        assert observatory_status[response_key] == "NaN"
+
+        efd_response_key, response_key, state_map = random.choice(state_keys)
+        observatory_status_clone = observatory_status_efd_response.copy()
+        del observatory_status_clone[efd_response_key]
+        response_post.json = lambda: observatory_status_clone
+        observatory_status = get_nightreport_observatory_status_from_efd()
+        assert observatory_status[response_key] == state_map[0]
+
     def test_get_nightreport_observatory_status_from_efd_fails(self):
         response_post = requests.Response()
         response_post.status_code = 500
         self.mock_requests_post.return_value = response_post
 
         # Fails when EFD query fails
-        with self.assertRaises(Exception):
-            get_nightreport_observatory_status_from_efd()
-
-        # Fails if response has missing keys
-        random_key = random.choice(list(observatory_status_efd_response.keys()))
-        observatory_status_clone = observatory_status_efd_response.copy()
-        del observatory_status_clone[random_key]
-        response_post.status_code = 200
-        response_post.json = lambda: observatory_status_clone
         with self.assertRaises(Exception):
             get_nightreport_observatory_status_from_efd()
 
@@ -284,6 +327,17 @@ class UtilsTestCase(TestCase):
         ]
         for key in expected_payload_keys:
             assert key in cscs_status
+            assert cscs_status[key] == "ENABLED"
+
+        # If key is not present in payload returns UNKNOWN
+        efd_response_random_key = random.choice(list(cscs_status_efd_response.keys()))
+        cscs_status_clone = cscs_status_efd_response.copy()
+        del cscs_status_clone[efd_response_random_key]
+        response_post.json = lambda: cscs_status_clone
+
+        cscs_status = get_nightreport_cscs_status_from_efd()
+        random_key = ":".join(efd_response_random_key.split("-")[:2])
+        assert cscs_status[random_key] == "UNKNOWN"
 
     def test_get_nightreport_cscs_status_from_efd_fails(self):
         response_post = requests.Response()
@@ -291,15 +345,6 @@ class UtilsTestCase(TestCase):
         self.mock_requests_post.return_value = response_post
 
         # Fails when EFD query fails
-        with self.assertRaises(Exception):
-            get_nightreport_cscs_status_from_efd()
-
-        # Fails if response has missing keys
-        random_key = random.choice(list(cscs_status_efd_response.keys()))
-        cscs_status_clone = cscs_status_efd_response.copy()
-        del cscs_status_clone[random_key]
-        response_post.status_code = 200
-        response_post.json = lambda: cscs_status_clone
         with self.assertRaises(Exception):
             get_nightreport_cscs_status_from_efd()
 

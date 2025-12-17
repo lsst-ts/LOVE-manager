@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("api", "0006_configfile"),
     ]
@@ -24,9 +23,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "creation_timestamp",
-                    models.DateTimeField(
-                        auto_now_add=True, verbose_name="Creation time"
-                    ),
+                    models.DateTimeField(auto_now_add=True, verbose_name="Creation time"),
                 ),
                 (
                     "update_timestamp",

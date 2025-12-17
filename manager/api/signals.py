@@ -20,10 +20,11 @@
 
 import asyncio
 
-from api.models import Token
 from channels.layers import get_channel_layer
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
+
+from api.models import Token
 
 
 @receiver(post_delete, sender=Token)

@@ -5,7 +5,6 @@ from django.db.models import JSONField
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("ui_framework", "0001_initial"),
     ]

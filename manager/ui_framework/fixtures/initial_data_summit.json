@@ -1307,5 +1307,540 @@
       },
       "thumbnail": ""
     }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 254,
+    "fields": {
+      "creation_timestamp": "2025-12-11T00:00:00.000000Z",
+      "update_timestamp": "2025-12-11T00:00:00.000000Z",
+      "name": "Glycol Heat Monitor",
+      "data": {
+        "content": {
+          "newPanel-2": {
+            "config": {
+              "link": "",
+              "title": "Glycol Device Table",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true,
+              "showTableDifferences": true,
+              "devicesHeatThresholds": {
+                "OSS": 100,
+                "MRCR": 12,
+                "AHU CR": 12,
+                "AHU WR": 12,
+                "L2 CRACS": 54,
+                "Chiller 1": 200,
+                "Chiller 2": 200,
+                "Chiller 3": 200,
+                "DOME AHU 1": 60,
+                "DOME AHU 2": 60,
+                "DOME AHU 3": 60,
+                "DOME AHU 4": 60,
+                "L2 Fan Coils": 28
+              }
+            },
+            "content": "GlycolDeviceTable",
+            "properties": {
+              "h": 26,
+              "i": 2,
+              "w": 97,
+              "x": 0,
+              "y": 36,
+              "type": "component"
+            }
+          },
+          "newPanel-3": {
+            "config": {
+              "link": "",
+              "title": "Glycol Heat Monitor",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true,
+              "devicesHeatThresholds": {
+                "OSS": 100,
+                "MRCR": 12,
+                "AHU CR": 12,
+                "AHU WR": 12,
+                "L2 CRACS": 54,
+                "Chiller 1": 200,
+                "Chiller 2": 200,
+                "Chiller 3": 200,
+                "DOME AHU 1": 60,
+                "DOME AHU 2": 60,
+                "DOME AHU 3": 60,
+                "DOME AHU 4": 60,
+                "L2 Fan Coils": 28
+              }
+            },
+            "content": "GlycolHeatMonitor",
+            "properties": {
+              "h": 36,
+              "i": 3,
+              "w": 58,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          },
+          "newPanel-4": {
+            "config": {
+              "link": "",
+              "title": "Facility Map",
+              "margin": true,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "FacilityMap",
+            "properties": {
+              "h": 64,
+              "i": 4,
+              "w": 98,
+              "x": 0,
+              "y": 62,
+              "type": "component"
+            }
+          },
+          "newPanel-5": {
+            "config": {
+              "title": "Glycol Flow",
+              "inputs": {
+                "Supply CH01": {
+                  "dash": [
+                    4,
+                    0
+                  ],
+                  "type": "line",
+                  "color": "#ff7bb5",
+                  "shape": "circle",
+                  "filled": false,
+                  "orient": "left",
+                  "values": [
+                    {
+                      "csc": "HVAC",
+                      "item": "supplyFlowChiller01",
+                      "topic": "glycolSensor",
+                      "isArray": false,
+                      "accessor": "(x) => x",
+                      "category": "telemetry",
+                      "salindex": 0,
+                      "variable": "y",
+                      "arrayIndex": 0
+                    }
+                  ]
+                },
+                "Supply CH02": {
+                  "dash": [
+                    4,
+                    0
+                  ],
+                  "type": "line",
+                  "color": "#97e54f",
+                  "shape": "circle",
+                  "filled": false,
+                  "orient": "left",
+                  "values": [
+                    {
+                      "csc": "HVAC",
+                      "item": "supplyFlowChiller02",
+                      "topic": "glycolSensor",
+                      "isArray": false,
+                      "accessor": "(x) => x",
+                      "category": "telemetry",
+                      "salindex": 0,
+                      "variable": "y",
+                      "arrayIndex": 0
+                    }
+                  ]
+                },
+                "Supply CH03": {
+                  "dash": [
+                    4,
+                    0
+                  ],
+                  "type": "line",
+                  "color": "#00b7ff",
+                  "shape": "circle",
+                  "filled": false,
+                  "orient": "left",
+                  "values": [
+                    {
+                      "csc": "HVAC",
+                      "item": "supplyFlowChiller03",
+                      "topic": "glycolSensor",
+                      "isArray": false,
+                      "accessor": "(x) => x",
+                      "category": "telemetry",
+                      "salindex": 0,
+                      "variable": "y",
+                      "arrayIndex": 0
+                    }
+                  ]
+                }
+              },
+              "controls": false,
+              "titleBar": true,
+              "hasRawMode": true,
+              "xAxisTitle": "Time",
+              "yAxisTitle": "",
+              "legendPosition": "right"
+            },
+            "content": "VegaTimeSeriesPlot",
+            "properties": {
+              "h": 12,
+              "i": 5,
+              "w": 39,
+              "x": 58,
+              "y": 0,
+              "type": "component"
+            }
+          },
+          "newPanel-6": {
+            "config": {
+              "title": "Glycol Temperature",
+              "inputs": {
+                "Return CH01": {
+                  "dash": [
+                    4,
+                    2
+                  ],
+                  "type": "line",
+                  "color": "#ff7bb5",
+                  "shape": "circle",
+                  "filled": false,
+                  "orient": "left",
+                  "values": [
+                    {
+                      "csc": "HVAC",
+                      "item": "retTempChiller01",
+                      "topic": "glycolSensor",
+                      "isArray": false,
+                      "accessor": "(x) => x",
+                      "category": "telemetry",
+                      "salindex": 0,
+                      "variable": "y",
+                      "arrayIndex": 0
+                    }
+                  ]
+                },
+                "Return CH02": {
+                  "dash": [
+                    4,
+                    2
+                  ],
+                  "type": "line",
+                  "color": "#97e54f",
+                  "shape": "circle",
+                  "filled": false,
+                  "orient": "left",
+                  "values": [
+                    {
+                      "csc": "HVAC",
+                      "item": "retTempChiller02",
+                      "topic": "glycolSensor",
+                      "isArray": false,
+                      "accessor": "(x) => x",
+                      "category": "telemetry",
+                      "salindex": 0,
+                      "variable": "y",
+                      "arrayIndex": 0
+                    }
+                  ]
+                },
+                "Return CH03": {
+                  "dash": [
+                    4,
+                    2
+                  ],
+                  "type": "line",
+                  "color": "#00b7ff",
+                  "shape": "circle",
+                  "filled": false,
+                  "orient": "left",
+                  "values": [
+                    {
+                      "csc": "HVAC",
+                      "item": "retTempChiller03",
+                      "topic": "glycolSensor",
+                      "isArray": false,
+                      "accessor": "(x) => x",
+                      "category": "telemetry",
+                      "salindex": 0,
+                      "variable": "y",
+                      "arrayIndex": 0
+                    }
+                  ]
+                },
+                "Supply CH01": {
+                  "dash": [
+                    4,
+                    0
+                  ],
+                  "type": "line",
+                  "color": "#ff7bb5",
+                  "shape": "circle",
+                  "filled": false,
+                  "orient": "left",
+                  "values": [
+                    {
+                      "csc": "HVAC",
+                      "item": "supplyTempChiller01",
+                      "topic": "glycolSensor",
+                      "isArray": false,
+                      "accessor": "(x) => x",
+                      "category": "telemetry",
+                      "salindex": 0,
+                      "variable": "y",
+                      "arrayIndex": 0
+                    }
+                  ]
+                },
+                "Supply CH02": {
+                  "dash": [
+                    4,
+                    0
+                  ],
+                  "type": "line",
+                  "color": "#97e54f",
+                  "shape": "circle",
+                  "filled": false,
+                  "orient": "left",
+                  "values": [
+                    {
+                      "csc": "HVAC",
+                      "item": "supplyTempChiller02",
+                      "topic": "glycolSensor",
+                      "isArray": false,
+                      "accessor": "(x) => x",
+                      "category": "telemetry",
+                      "salindex": 0,
+                      "variable": "y",
+                      "arrayIndex": 0
+                    }
+                  ]
+                },
+                "Supply CH03": {
+                  "dash": [
+                    4,
+                    0
+                  ],
+                  "type": "line",
+                  "color": "#00b7ff",
+                  "shape": "circle",
+                  "filled": false,
+                  "orient": "left",
+                  "values": [
+                    {
+                      "csc": "HVAC",
+                      "item": "supplyTempChiller03",
+                      "topic": "glycolSensor",
+                      "isArray": false,
+                      "accessor": "(x) => x",
+                      "category": "telemetry",
+                      "salindex": 0,
+                      "variable": "y",
+                      "arrayIndex": 0
+                    }
+                  ]
+                }
+              },
+              "controls": false,
+              "titleBar": true,
+              "hasRawMode": true,
+              "xAxisTitle": "Time",
+              "yAxisTitle": "",
+              "legendPosition": "right"
+            },
+            "content": "VegaTimeSeriesPlot",
+            "properties": {
+              "h": 12,
+              "i": 6,
+              "w": 39,
+              "x": 58,
+              "y": 12,
+              "type": "component"
+            }
+          },
+          "newPanel-7": {
+            "config": {
+              "title": "Glycol Pressure",
+              "inputs": {
+                "Return CH01": {
+                  "dash": [
+                    4,
+                    2
+                  ],
+                  "type": "line",
+                  "color": "#ff7bb5",
+                  "shape": "circle",
+                  "filled": false,
+                  "orient": "left",
+                  "values": [
+                    {
+                      "csc": "HVAC",
+                      "item": "retPressChiller01",
+                      "topic": "glycolSensor",
+                      "isArray": false,
+                      "accessor": "(x) => x",
+                      "category": "telemetry",
+                      "salindex": 0,
+                      "variable": "y",
+                      "arrayIndex": 0
+                    }
+                  ]
+                },
+                "Return CH02": {
+                  "dash": [
+                    4,
+                    2
+                  ],
+                  "type": "line",
+                  "color": "#97e54f",
+                  "shape": "circle",
+                  "filled": false,
+                  "orient": "left",
+                  "values": [
+                    {
+                      "csc": "HVAC",
+                      "item": "retPressChiller02",
+                      "topic": "glycolSensor",
+                      "isArray": false,
+                      "accessor": "(x) => x",
+                      "category": "telemetry",
+                      "salindex": 0,
+                      "variable": "y",
+                      "arrayIndex": 0
+                    }
+                  ]
+                },
+                "Return CH03": {
+                  "dash": [
+                    4,
+                    2
+                  ],
+                  "type": "line",
+                  "color": "#00b7ff",
+                  "shape": "circle",
+                  "filled": false,
+                  "orient": "left",
+                  "values": [
+                    {
+                      "csc": "HVAC",
+                      "item": "retPressChiller03",
+                      "topic": "glycolSensor",
+                      "isArray": false,
+                      "accessor": "(x) => x",
+                      "category": "telemetry",
+                      "salindex": 0,
+                      "variable": "y",
+                      "arrayIndex": 0
+                    }
+                  ]
+                },
+                "Supply CH01": {
+                  "dash": [
+                    4,
+                    0
+                  ],
+                  "type": "line",
+                  "color": "#ff7bb5",
+                  "shape": "circle",
+                  "filled": false,
+                  "orient": "left",
+                  "values": [
+                    {
+                      "csc": "HVAC",
+                      "item": "supplyPressChiller01",
+                      "topic": "glycolSensor",
+                      "isArray": false,
+                      "accessor": "(x) => x",
+                      "category": "telemetry",
+                      "salindex": 0,
+                      "variable": "y",
+                      "arrayIndex": 0
+                    }
+                  ]
+                },
+                "Supply CH02": {
+                  "dash": [
+                    4,
+                    0
+                  ],
+                  "type": "line",
+                  "color": "#97e54f",
+                  "shape": "circle",
+                  "filled": false,
+                  "orient": "left",
+                  "values": [
+                    {
+                      "csc": "HVAC",
+                      "item": "supplyPressChiller02",
+                      "topic": "glycolSensor",
+                      "isArray": false,
+                      "accessor": "(x) => x",
+                      "category": "telemetry",
+                      "salindex": 0,
+                      "variable": "y",
+                      "arrayIndex": 0
+                    }
+                  ]
+                },
+                "Supply CH03": {
+                  "dash": [
+                    4,
+                    0
+                  ],
+                  "type": "line",
+                  "color": "#00b7ff",
+                  "shape": "circle",
+                  "filled": false,
+                  "orient": "left",
+                  "values": [
+                    {
+                      "csc": "HVAC",
+                      "item": "supplyPressChiller03",
+                      "topic": "glycolSensor",
+                      "isArray": false,
+                      "accessor": "(x) => x",
+                      "category": "telemetry",
+                      "salindex": 0,
+                      "variable": "y",
+                      "arrayIndex": 0
+                    }
+                  ]
+                }
+              },
+              "controls": false,
+              "titleBar": true,
+              "hasRawMode": true,
+              "xAxisTitle": "Time",
+              "yAxisTitle": "",
+              "legendPosition": "right"
+            },
+            "content": "VegaTimeSeriesPlot",
+            "properties": {
+              "h": 12,
+              "i": 7,
+              "w": 39,
+              "x": 58,
+              "y": 24,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      },
+      "thumbnail": "thumbnails/view_254.png"
+    }
   }
 ]

@@ -4,9 +4,10 @@ from urllib.parse import unquote
 
 from django.test import TestCase
 from django.urls import reverse
-from redirect.utils import CHRONOGRAF_SITES, FATable
 from rest_framework import status
 from rest_framework.test import APIClient
+
+from redirect.utils import ChronografSites, FATable
 
 
 def get_random_force_actuator():
@@ -27,7 +28,7 @@ class M1M3ForceActuatorsRedirectTestCase(TestCase):
 
     def test_m1m3_force_actuators_tests_redirect_success(self):
         # Arrange
-        site = CHRONOGRAF_SITES.SUMMIT
+        site = ChronografSites.SUMMIT
         params = {
             "id": get_random_force_actuator().actuator_id,
             "lower": "2022-01-01T00:00:00",
@@ -52,7 +53,7 @@ class M1M3ForceActuatorsRedirectTestCase(TestCase):
 
     def test_m1m3_force_actuators_tests_redirect_missing_parameters(self):
         # Arrange
-        site = CHRONOGRAF_SITES.SUMMIT
+        site = ChronografSites.SUMMIT
         params = {
             "id": get_random_force_actuator().actuator_id,
             "lower": "2022-01-01T00:00:00",
@@ -65,13 +66,11 @@ class M1M3ForceActuatorsRedirectTestCase(TestCase):
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(
-            response.data, "Error: lower and upper parameters are required"
-        )
+        self.assertEqual(response.data, "Error: lower and upper parameters are required")
 
     def test_m1m3_force_actuators_tests_redirect_exception(self):
         # Arrange
-        site = CHRONOGRAF_SITES.SUMMIT
+        site = ChronografSites.SUMMIT
         params = {
             "id": get_random_force_actuator().actuator_id,
             "lower": "2022-01-01T00:00:00",

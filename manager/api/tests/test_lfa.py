@@ -24,7 +24,6 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpRequest
 from django.test import TestCase, override_settings
 from django.utils.datastructures import MultiValueDict
-
 from manager.utils import upload_to_lfa
 
 

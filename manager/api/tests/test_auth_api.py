@@ -19,12 +19,12 @@
 
 
 """Test users' authentication through the API."""
+
 import datetime
 import json
 from unittest.mock import patch
 
 import ldap
-from api.models import ConfigFile, Token
 from django.conf import settings
 from django.contrib.auth.models import Group, Permission, User
 from django.core.files.base import ContentFile
@@ -34,6 +34,7 @@ from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APIClient
 
+from api.models import ConfigFile, Token
 from manager import utils
 
 LDAP_USERNAME = "ldap_user"
@@ -122,18 +123,14 @@ class AuthApiTestCase(TestCase):
 
         # Create ui_framework Group and add existent LDAP user
         ui_framework_group = Group.objects.create(name="ui_framework")
-        permissions = Permission.objects.filter(
-            content_type__app_label__contains="ui_framework"
-        )
+        permissions = Permission.objects.filter(content_type__app_label__contains="ui_framework")
         for permission in permissions:
             ui_framework_group.permissions.add(permission)
         ui_framework_group.user_set.add(self.user_ldap)
 
         self.login_url = reverse("login")
         self.validate_token_url = reverse("validate-token")
-        self.validate_token_no_config_url = reverse(
-            "validate-token", kwargs={"flags": "no_config"}
-        )
+        self.validate_token_no_config_url = reverse("validate-token", kwargs={"flags": "no_config"})
         self.logout_url = reverse("logout")
         self.swap_url = reverse("swap-user")
         self.swap_no_config_url = reverse("swap-user", kwargs={"flags": "no_config"})
@@ -146,9 +143,7 @@ class AuthApiTestCase(TestCase):
         self.content = {"key1": "this is the content of the file"}
         self.configfile = ConfigFile.objects.create(
             user=self.user,
-            config_file=AuthApiTestCase.get_config_file_sample(
-                "random_filename", self.content
-            ),
+            config_file=AuthApiTestCase.get_config_file_sample("random_filename", self.content),
             file_name=self.filename,
         )
 
@@ -164,16 +159,10 @@ class AuthApiTestCase(TestCase):
         # Assert:
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         tokens_num = Token.objects.filter(user__username=self.username).count()
-        self.assertEqual(
-            tokens_num_0 + 1, tokens_num, "The user should have a new token"
-        )
-        tokens_in_db = [
-            t.key for t in Token.objects.filter(user__username=self.username)
-        ]
+        self.assertEqual(tokens_num_0 + 1, tokens_num, "The user should have a new token")
+        tokens_in_db = [t.key for t in Token.objects.filter(user__username=self.username)]
         retrieved_token = response.data["token"]
-        self.assertTrue(
-            retrieved_token in tokens_in_db, "The token should be in the DB"
-        )
+        self.assertTrue(retrieved_token in tokens_in_db, "The token should be in the DB")
         self.assertEqual(
             response.data["permissions"],
             self.expected_permissions,
@@ -321,16 +310,10 @@ class AuthApiTestCase(TestCase):
         # Assert 1:
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         tokens_num_1 = Token.objects.filter(user__username=self.username).count()
-        self.assertEqual(
-            tokens_num_0 + 1, tokens_num_1, "The user should have a new token"
-        )
+        self.assertEqual(tokens_num_0 + 1, tokens_num_1, "The user should have a new token")
         retrieved_token_1 = response.data["token"]
-        tokens_in_db = [
-            t.key for t in Token.objects.filter(user__username=self.username)
-        ]
-        self.assertTrue(
-            retrieved_token_1 in tokens_in_db, "The token should be in the DB"
-        )
+        tokens_in_db = [t.key for t in Token.objects.filter(user__username=self.username)]
+        self.assertTrue(retrieved_token_1 in tokens_in_db, "The token should be in the DB")
 
         # Act 2:
         response = self.client.post(self.login_url, data, format="json")
@@ -338,19 +321,11 @@ class AuthApiTestCase(TestCase):
         # Assert after request 2:
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         tokens_num_2 = Token.objects.filter(user__username=self.username).count()
-        self.assertEqual(
-            tokens_num_1 + 1, tokens_num_2, "The user should have another new token"
-        )
+        self.assertEqual(tokens_num_1 + 1, tokens_num_2, "The user should have another new token")
         retrieved_token_2 = response.data["token"]
-        tokens_in_db = [
-            t.key for t in Token.objects.filter(user__username=self.username)
-        ]
-        self.assertTrue(
-            retrieved_token_1 in tokens_in_db, "The token should be in the DB"
-        )
-        self.assertNotEqual(
-            retrieved_token_1, retrieved_token_2, "The tokens should be different"
-        )
+        tokens_in_db = [t.key for t in Token.objects.filter(user__username=self.username)]
+        self.assertTrue(retrieved_token_1 in tokens_in_db, "The token should be in the DB")
+        self.assertNotEqual(retrieved_token_1, retrieved_token_2, "The tokens should be different")
 
     def test_user_validate_token(self):
         """Test that a user can validate a token."""
@@ -365,9 +340,7 @@ class AuthApiTestCase(TestCase):
 
         # Assert after request:
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(
-            response.data["token"], token.key, "The response is not as expected"
-        )
+        self.assertEqual(response.data["token"], token.key, "The response is not as expected")
         self.assertEqual(
             response.data["permissions"],
             self.expected_permissions,
@@ -404,15 +377,11 @@ class AuthApiTestCase(TestCase):
 
         # Act:
         print("self.validate_token_no_config_url: ", self.validate_token_no_config_url)
-        response = self.client.get(
-            self.validate_token_no_config_url, data, format="json"
-        )
+        response = self.client.get(self.validate_token_no_config_url, data, format="json")
 
         # Assert after request:
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(
-            response.data["token"], token.key, "The response is not as expected"
-        )
+        self.assertEqual(response.data["token"], token.key, "The response is not as expected")
         self.assertEqual(
             response.data["permissions"],
             self.expected_permissions,
@@ -475,9 +444,7 @@ class AuthApiTestCase(TestCase):
             self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
 
             # Act:
-            max_timedelta = datetime.timedelta(
-                days=settings.TOKEN_EXPIRED_AFTER_DAYS, seconds=1
-            )
+            max_timedelta = datetime.timedelta(days=settings.TOKEN_EXPIRED_AFTER_DAYS, seconds=1)
             frozen_datetime.tick(delta=max_timedelta)
             response = self.client.get(self.validate_token_url, format="json")
 
@@ -506,18 +473,14 @@ class AuthApiTestCase(TestCase):
             "The response is not as expected",
         )
         new_tokens_count = Token.objects.filter(user__username=self.username).count()
-        self.assertEqual(
-            old_tokens_count - 1, new_tokens_count, "The token was not deleted"
-        )
+        self.assertEqual(old_tokens_count - 1, new_tokens_count, "The token was not deleted")
 
     def test_user_swap(self):
         """Test that a logged user can be swapped"""
         # Arrange login:
         data = {"username": self.username, "password": self.password}
         user_1_tokens_num_0 = Token.objects.filter(user__username=self.username).count()
-        user_2_tokens_num_0 = Token.objects.filter(
-            user__username=self.username2
-        ).count()
+        user_2_tokens_num_0 = Token.objects.filter(user__username=self.username2).count()
         response = self.client.post(self.login_url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -527,18 +490,14 @@ class AuthApiTestCase(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
         self.client.post(self.swap_url, data, format="json")
         user_1_tokens_num_1 = Token.objects.filter(user__username=self.username).count()
-        user_2_tokens_num_1 = Token.objects.filter(
-            user__username=self.username2
-        ).count()
+        user_2_tokens_num_1 = Token.objects.filter(user__username=self.username2).count()
         # Assert:
         self.assertEqual(
             user_1_tokens_num_1,
             user_1_tokens_num_0,
             "User 1 has the same number of tokens as before logging in",
         )
-        self.assertEqual(
-            user_2_tokens_num_1, user_2_tokens_num_0 + 1, "User 2 has one more token"
-        )
+        self.assertEqual(user_2_tokens_num_1, user_2_tokens_num_0 + 1, "User 2 has one more token")
         # Act 2:
         token = Token.objects.filter(user__username=self.username2).first()
         self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
@@ -556,9 +515,7 @@ class AuthApiTestCase(TestCase):
         # Arrange login:
         data = {"username": self.username, "password": self.password}
         user_1_tokens_num_0 = Token.objects.filter(user__username=self.username).count()
-        user_2_tokens_num_0 = Token.objects.filter(
-            user__username=self.username2
-        ).count()
+        user_2_tokens_num_0 = Token.objects.filter(user__username=self.username2).count()
         response = self.client.post(self.login_url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -568,18 +525,14 @@ class AuthApiTestCase(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION="Token " + token.key)
         response = self.client.post(self.swap_no_config_url, data, format="json")
         user_1_tokens_num_1 = Token.objects.filter(user__username=self.username).count()
-        user_2_tokens_num_1 = Token.objects.filter(
-            user__username=self.username2
-        ).count()
+        user_2_tokens_num_1 = Token.objects.filter(user__username=self.username2).count()
         # Assert:
         self.assertEqual(
             user_1_tokens_num_1,
             user_1_tokens_num_0,
             "User 1 has the same number of tokens as before logging in",
         )
-        self.assertEqual(
-            user_2_tokens_num_1, user_2_tokens_num_0 + 1, "User 2 has one more token"
-        )
+        self.assertEqual(user_2_tokens_num_1, user_2_tokens_num_0 + 1, "User 2 has one more token")
         self.assertEqual(response.data["config"], None, "The config was requested")
         # Act 2:
         token = Token.objects.filter(user__username=self.username2).first()

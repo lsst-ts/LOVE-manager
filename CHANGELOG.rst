@@ -2,10 +2,17 @@
 Version History
 ===============
 
+v7.5.3
+------
+
+* Updates to night report email. `<https://github.com/lsst-ts/LOVE-manager/pull/341>`_
+* Add new Glycol Heat Monitor dashboard to summit, base and tucson. `<https://github.com/lsst-ts/LOVE-manager/pull/343>`_
+* Update ts_pre_commit_config.yaml to start using ruff linter & formatter. `<https://github.com/lsst-ts/LOVE-manager/pull/338>`_
+
 v7.5.2
 ------
 
-* Hotfix for use of the get_last_valid_night_report method. `<https://github.com/lsst-ts/LOVE-manager/pull/338>`_ 
+* Improve use of the get_last_valid_night_report method. `<https://github.com/lsst-ts/LOVE-manager/pull/340>`_
 
 
 v7.5.1

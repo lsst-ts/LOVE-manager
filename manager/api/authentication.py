@@ -19,13 +19,15 @@
 
 
 """Defines custom authentication classes."""
+
 from datetime import timedelta
 
 import rest_framework.authentication
-from api.models import Token
 from django.conf import settings
 from django.utils import timezone
 from rest_framework.exceptions import AuthenticationFailed
+
+from api.models import Token
 
 
 class TokenAuthentication(rest_framework.authentication.TokenAuthentication):

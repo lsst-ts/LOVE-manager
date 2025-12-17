@@ -19,6 +19,7 @@
 
 
 """Utilities for testing purposes."""
+
 import json
 
 from django.conf import settings
@@ -27,6 +28,7 @@ from django.utils import timezone
 from freezegun import freeze_time
 from rest_framework import serializers
 from rest_framework.test import APIClient
+
 from ui_framework.models import View, Workspace, WorkspaceView
 
 
@@ -108,9 +110,7 @@ class BaseTestCase(TestCase):
                 View._meta.get_field("thumbnail") is not None
                 and View._meta.get_field("thumbnail").get_default() is not None
             ):
-                default_thumbnail = settings.MEDIA_URL + str(
-                    View._meta.get_field("thumbnail").get_default()
-                )
+                default_thumbnail = settings.MEDIA_URL + str(View._meta.get_field("thumbnail").get_default())
 
             # Create views, store them in self.views
             # and add auto-generated fields to self.views_data
@@ -134,12 +134,8 @@ class BaseTestCase(TestCase):
                 self.workspaces.append(workspace)
 
                 # Add view[i]
-                self.workspaces[i].views.add(
-                    self.views[i], through_defaults={"view_name": "v{}".format(i)}
-                )
-                aux = WorkspaceView.objects.get(
-                    workspace=self.workspaces[i], view=self.views[i]
-                )
+                self.workspaces[i].views.add(self.views[i], through_defaults={"view_name": "v{}".format(i)})
+                aux = WorkspaceView.objects.get(workspace=self.workspaces[i], view=self.views[i])
                 self.workspace_views_data.append(
                     {
                         "id": aux.id,
@@ -155,9 +151,7 @@ class BaseTestCase(TestCase):
                 self.workspaces[i].views.add(
                     self.views[i + 1], through_defaults={"view_name": "v{}".format(i)}
                 )
-                aux = WorkspaceView.objects.get(
-                    workspace=self.workspaces[i], view=self.views[i + 1]
-                )
+                aux = WorkspaceView.objects.get(workspace=self.workspaces[i], view=self.views[i + 1])
                 self.workspace_views_data.append(
                     {
                         "id": aux.id,

@@ -38,7 +38,6 @@ class HeartbeatManager:
     """
 
     class __HeartbeatManager:
-
         heartbeat_task = None
         """Reference to the task that dispatches the heartbeats."""
 
@@ -63,9 +62,7 @@ class HeartbeatManager:
                 if not cls.heartbeat_task:
                     cls.heartbeat_task = asyncio.create_task(cls.dispatch_heartbeats())
                 if not cls.commander_heartbeat_task:
-                    cls.commander_heartbeat_task = asyncio.create_task(
-                        cls.query_commander()
-                    )
+                    cls.commander_heartbeat_task = asyncio.create_task(cls.query_commander())
 
         @classmethod
         def set_heartbeat_timestamp(cls, source, timestamp):
@@ -115,9 +112,7 @@ class HeartbeatManager:
             channel_layer = get_channel_layer()
             while True:
                 try:
-                    cls.set_heartbeat_timestamp(
-                        "Manager", datetime.datetime.now().timestamp()
-                    )
+                    cls.set_heartbeat_timestamp("Manager", datetime.datetime.now().timestamp())
                     data = json.dumps(
                         {
                             "category": "heartbeat",
@@ -125,11 +120,7 @@ class HeartbeatManager:
                                 {
                                     "csc": heartbeat_source,
                                     "salindex": 0,
-                                    "data": {
-                                        "timestamp": cls.heartbeat_data[
-                                            heartbeat_source
-                                        ]
-                                    },
+                                    "data": {"timestamp": cls.heartbeat_data[heartbeat_source]},
                                 }
                                 for heartbeat_source in cls.heartbeat_data
                             ],

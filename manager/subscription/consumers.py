@@ -20,15 +20,16 @@
 
 """Contains the Django Channels Consumers
 that handle the reception/sending of channels messages."""
+
 import asyncio
 import json
 
 from astropy.time import Time
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from django.conf import settings
-from subscription.heartbeat_manager import HeartbeatManager
 
 from manager import utils
+from subscription.heartbeat_manager import HeartbeatManager
 
 
 class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
@@ -46,10 +47,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
 
         # Reject connection if no authenticated user:
         if self.scope["user"].is_anonymous:
-            if (
-                self.scope["password"]
-                and self.scope["password"] == settings.PROCESS_CONNECTION_PASS
-            ):
+            if self.scope["password"] and self.scope["password"] == settings.PROCESS_CONNECTION_PASS:
                 await self.accept()
                 self.first_connection.set_result(True)
             else:
@@ -63,9 +61,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
 
     async def disconnect(self, close_code):
         """Handle disconnection."""
-        await asyncio.gather(
-            *[self._leave_group(*stream) for stream in self.stream_group_names]
-        )
+        await asyncio.gather(*[self._leave_group(*stream) for stream in self.stream_group_names])
 
     async def receive_json(self, message):
         """Handle a received message.
@@ -79,9 +75,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         message: `dict`
             dictionary containing the message parsed as json
         """
-        manager_rcv = (
-            Time.now().tai.datetime.timestamp() if settings.TRACE_TIMESTAMPS else None
-        )
+        manager_rcv = Time.now().tai.datetime.timestamp() if settings.TRACE_TIMESTAMPS else None
         if "option" in message:
             await self.handle_subscription_message(message)
         elif "action" in message:
@@ -122,10 +116,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             stream = message["stream"]
             await self._join_group(category, csc, str(salindex), stream)
             await self.send_json(
-                {
-                    "data": "Successfully subscribed to %s-%s-%s-%s"
-                    % (category, csc, salindex, stream)
-                }
+                {"data": "Successfully subscribed to %s-%s-%s-%s" % (category, csc, salindex, stream)}
             )
 
         elif option == "unsubscribe":
@@ -135,10 +126,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             stream = message["stream"]
             await self._leave_group(category, csc, str(salindex), stream)
             await self.send_json(
-                {
-                    "data": "Successfully unsubscribed to %s-%s-%s-%s"
-                    % (category, csc, salindex, stream)
-                }
+                {"data": "Successfully unsubscribed to %s-%s-%s-%s" % (category, csc, salindex, stream)}
             )
 
     async def handle_action_message(self, message):
@@ -297,9 +285,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         # print("to_send: ", to_send, flush=True)
 
         # Send all group-message pairs concurrently:
-        await asyncio.gather(
-            *[self.channel_layer.group_send(**group_msg) for group_msg in to_send]
-        )
+        await asyncio.gather(*[self.channel_layer.group_send(**group_msg) for group_msg in to_send])
 
     async def _join_group(self, category, csc, salindex, stream):
         """Join a group in order to receive messages from it.
@@ -332,9 +318,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                     "data": [
                         {
                             "csc": csc,
-                            "salindex": (
-                                int(salindex) if salindex != "all" else salindex
-                            ),
+                            "salindex": (int(salindex) if salindex != "all" else salindex),
                             "data": {"event_name": stream},
                         }
                     ],

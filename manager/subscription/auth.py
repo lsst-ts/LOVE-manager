@@ -19,6 +19,7 @@
 
 
 """Defines the TokenAuthMiddleware used for token authentication."""
+
 import urllib.parse as urlparse
 
 from api.models import Token

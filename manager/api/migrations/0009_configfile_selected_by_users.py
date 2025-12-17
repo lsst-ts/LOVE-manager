@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ("api", "0008_auto_20211125_2029"),
@@ -15,8 +14,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="configfile",
             name="selected_by_users",
-            field=models.ManyToManyField(
-                related_name="selected_config_file", to=settings.AUTH_USER_MODEL
-            ),
+            field=models.ManyToManyField(related_name="selected_config_file", to=settings.AUTH_USER_MODEL),
         ),
     ]
