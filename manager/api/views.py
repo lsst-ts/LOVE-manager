@@ -34,6 +34,7 @@ from django.contrib.auth.models import Group, User
 from django_auth_ldap.backend import LDAPBackend
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
+from manager.permissions import CommandPermission
 from manager.settings import (
     AUTH_LDAP_1_SERVER_URI,
     AUTH_LDAP_2_SERVER_URI,
@@ -41,7 +42,6 @@ from manager.settings import (
 )
 from manager.utils import (
     DATETIME_ISO_FORMAT,
-    CommandPermission,
     arrange_nightreport_email,
     get_efd_instance_from_request,
     get_jira_obs_report,

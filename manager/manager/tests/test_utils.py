@@ -6,7 +6,11 @@ import requests
 from django.test import TestCase
 from django.test.utils import override_settings
 from manager.utils import (
+    ATPNEUMATICS_MIRROR_COVER_STATE_MAP,
     EFD_INSTACES,
+    MTMOUNT_DEPLOYABLE_MOTION_STATE_MAP,
+    MTMOUNT_MT_MOUNT_ELEVATION_LOCKING_PIN_MOTION_STATE_MAP,
+    MTMOUNT_POWER_STATE_MAP,
     arrange_nightlydigest_urls_for_obsday,
     get_efd_instance_from_request,
     get_last_valid_night_report,
@@ -51,7 +55,7 @@ observatory_status_efd_response = {
 
 cscs_status_efd_response = {
     "MTMount-0-logevent_summaryState": {
-        "summaryState": [{"ts": "2025-10-24 08:42:28.722677+00:00", "value": 1}]
+        "summaryState": [{"ts": "2025-10-24 08:42:28.722677+00:00", "value": 2}]
     },
     "MTM1M3-0-logevent_summaryState": {
         "summaryState": [{"ts": "2025-10-24 18:07:29.756257+00:00", "value": 2}]
@@ -212,21 +216,80 @@ class UtilsTestCase(TestCase):
         for key in expected_payload_keys:
             assert key in observatory_status
 
+        assert observatory_status["simonyiAzimuth"] == "-32.03°"
+        assert observatory_status["simonyiElevation"] == "89.94°"
+        assert observatory_status["simonyiDomeAzimuth"] == "328.00°"
+        assert observatory_status["simonyiRotator"] == "-0.00°"
+        assert observatory_status["simonyiMirrorCoversState"] == "DEPLOYED"
+        assert observatory_status["simonyiOilSupplySystemState"] == "ON"
+        assert observatory_status["simonyiPowerSupplySystemState"] == "ON"
+        assert observatory_status["simonyiLockingPinsSystemState"] == "UNLOCKED"
+        assert observatory_status["auxtelAzimuth"] == "15.10°"
+        assert observatory_status["auxtelElevation"] == "70.00°"
+        assert observatory_status["auxtelDomeAzimuth"] == "104.66°"
+        assert observatory_status["auxtelMirrorCoversState"] == "CLOSED"
+
+        # If key is not present in payload return default values,
+        # respectively "NaN" for measurements and
+        # the zero (0) key from state maps for states
+        measurement_keys = [
+            ("MTMount-0-azimuth", "simonyiAzimuth"),
+            ("MTMount-0-elevation", "simonyiElevation"),
+            ("MTDome-0-azimuth", "simonyiDomeAzimuth"),
+            ("MTRotator-0-rotation", "simonyiRotator"),
+            ("ATMCS-0-mount_AzEl_Encoders", "auxtelAzimuth"),
+            ("ATMCS-0-mount_AzEl_Encoders", "auxtelElevation"),
+            ("ATDome-0-position", "auxtelDomeAzimuth"),
+        ]
+
+        state_keys = [
+            (
+                "MTMount-0-logevent_mirrorCoversMotionState",
+                "simonyiMirrorCoversState",
+                MTMOUNT_DEPLOYABLE_MOTION_STATE_MAP,
+            ),
+            (
+                "MTMount-0-logevent_oilSupplySystemState",
+                "simonyiOilSupplySystemState",
+                MTMOUNT_POWER_STATE_MAP,
+            ),
+            (
+                "MTMount-0-logevent_mainAxesPowerSupplySystemState",
+                "simonyiPowerSupplySystemState",
+                MTMOUNT_POWER_STATE_MAP,
+            ),
+            (
+                "MTMount-0-logevent_elevationLockingPinMotionState",
+                "simonyiLockingPinsSystemState",
+                MTMOUNT_MT_MOUNT_ELEVATION_LOCKING_PIN_MOTION_STATE_MAP,
+            ),
+            (
+                "ATPneumatics-0-logevent_m1CoverState",
+                "auxtelMirrorCoversState",
+                ATPNEUMATICS_MIRROR_COVER_STATE_MAP,
+            ),
+        ]
+
+        efd_response_key, response_key = random.choice(measurement_keys)
+        observatory_status_clone = observatory_status_efd_response.copy()
+        del observatory_status_clone[efd_response_key]
+        response_post.json = lambda: observatory_status_clone
+        observatory_status = get_nightreport_observatory_status_from_efd()
+        assert observatory_status[response_key] == "NaN"
+
+        efd_response_key, response_key, state_map = random.choice(state_keys)
+        observatory_status_clone = observatory_status_efd_response.copy()
+        del observatory_status_clone[efd_response_key]
+        response_post.json = lambda: observatory_status_clone
+        observatory_status = get_nightreport_observatory_status_from_efd()
+        assert observatory_status[response_key] == state_map[0]
+
     def test_get_nightreport_observatory_status_from_efd_fails(self):
         response_post = requests.Response()
         response_post.status_code = 500
         self.mock_requests_post.return_value = response_post
 
         # Fails when EFD query fails
-        with self.assertRaises(Exception):
-            get_nightreport_observatory_status_from_efd()
-
-        # Fails if response has missing keys
-        random_key = random.choice(list(observatory_status_efd_response.keys()))
-        observatory_status_clone = observatory_status_efd_response.copy()
-        del observatory_status_clone[random_key]
-        response_post.status_code = 200
-        response_post.json = lambda: observatory_status_clone
         with self.assertRaises(Exception):
             get_nightreport_observatory_status_from_efd()
 
@@ -264,6 +327,17 @@ class UtilsTestCase(TestCase):
         ]
         for key in expected_payload_keys:
             assert key in cscs_status
+            assert cscs_status[key] == "ENABLED"
+
+        # If key is not present in payload returns UNKNOWN
+        efd_response_random_key = random.choice(list(cscs_status_efd_response.keys()))
+        cscs_status_clone = cscs_status_efd_response.copy()
+        del cscs_status_clone[efd_response_random_key]
+        response_post.json = lambda: cscs_status_clone
+
+        cscs_status = get_nightreport_cscs_status_from_efd()
+        random_key = ":".join(efd_response_random_key.split("-")[:2])
+        assert cscs_status[random_key] == "UNKNOWN"
 
     def test_get_nightreport_cscs_status_from_efd_fails(self):
         response_post = requests.Response()
@@ -271,15 +345,6 @@ class UtilsTestCase(TestCase):
         self.mock_requests_post.return_value = response_post
 
         # Fails when EFD query fails
-        with self.assertRaises(Exception):
-            get_nightreport_cscs_status_from_efd()
-
-        # Fails if response has missing keys
-        random_key = random.choice(list(cscs_status_efd_response.keys()))
-        cscs_status_clone = cscs_status_efd_response.copy()
-        del cscs_status_clone[random_key]
-        response_post.status_code = 200
-        response_post.json = lambda: cscs_status_clone
         with self.assertRaises(Exception):
             get_nightreport_cscs_status_from_efd()
 
