@@ -1642,11 +1642,10 @@ def parse_observatory_status_to_html_table(observatory_status):
         </tr>
         <tr style="background-color:#fafafa;">
             <td style="white-space:nowrap;font-weight: bold;">Locking Pins System State</td>
-            <td>{observatory_status["simonyiLockingPinsSystemState"]}</td
+            <td>{observatory_status["simonyiLockingPinsSystemState"]}</td>
             <td>N/A</td>
         </tr>
-    </table>
-    """
+    </table>"""
 
     return html_table
 
