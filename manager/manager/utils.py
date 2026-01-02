@@ -1093,7 +1093,7 @@ def arrange_nightreport_email(report, plain=False):
 
 {ADDITIONAL_RESOURCES_TITLE}
 - {LINK_MSG_OBS} {url_jira_obs_tickets}
-- {LINK_MSG_CONFLUENCE} {report["confluence_url"]}
+{f"- {LINK_MSG_CONFLUENCE} {report['confluence_url']}" if report["confluence_url"] is not None else ""}
 
 {DETAILED_ISSUE_REPORT_TITLE}
 {
@@ -1166,10 +1166,14 @@ def arrange_nightreport_email(report, plain=False):
                 {LINK_MSG_OBS}
                 <a href="{url_jira_obs_tickets}">{url_jira_obs_tickets}</a>
             </li>
-            <li>
+            {
+        f'''<li>
                 {LINK_MSG_CONFLUENCE}
                 <a href="{report["confluence_url"]}">{report["confluence_url"]}</a>
-            </li>
+            </li>'''
+        if report["confluence_url"] is not None
+        else ""
+    }
         </ul>
         <p>
             <span style="font-weight: bold;">{DETAILED_ISSUE_REPORT_TITLE}</span>
