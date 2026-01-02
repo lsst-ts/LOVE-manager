@@ -1831,8 +1831,7 @@ def parse_cscs_status_to_html_table(cscs_status):
             <td></td>
             <td></td>
         </tr>
-
-    """
+    </table>"""
 
     return html_table
 
