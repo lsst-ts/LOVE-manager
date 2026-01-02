@@ -1154,28 +1154,23 @@ def arrange_nightreport_email(report, plain=False):
             {report["auxtel_summary"].replace(new_line_character, "<br>")}
         </p>
         <br>
-        <p>
-            {parse_observatory_status_to_html_table(report["observatory_status"])}
-        </p>
+        {parse_observatory_status_to_html_table(report["observatory_status"])}
         <br>
-        <p>
-            {parse_cscs_status_to_html_table(report["cscs_status"])}
-        </p>
+        {parse_cscs_status_to_html_table(report["cscs_status"])}
         <br>
         <p>
             <span style="font-weight: bold;">{ADDITIONAL_RESOURCES_TITLE}</span>
-            <br>
-            <ul>
-                <li>
-                    {LINK_MSG_OBS}
-                    <a href="{url_jira_obs_tickets}">{url_jira_obs_tickets}</a>
-                </li>
-                <li>
-                    {LINK_MSG_CONFLUENCE}
-                    <a href="{report["confluence_url"]}">{report["confluence_url"]}</a>
-                </li>
-            </ul>
         </p>
+        <ul>
+            <li>
+                {LINK_MSG_OBS}
+                <a href="{url_jira_obs_tickets}">{url_jira_obs_tickets}</a>
+            </li>
+            <li>
+                {LINK_MSG_CONFLUENCE}
+                <a href="{report["confluence_url"]}">{report["confluence_url"]}</a>
+            </li>
+        </ul>
         <p>
             <span style="font-weight: bold;">{DETAILED_ISSUE_REPORT_TITLE}</span>
             <br>
