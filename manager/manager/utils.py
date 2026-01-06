@@ -1233,9 +1233,11 @@ def parse_obs_issues_array_to_html_table(obs_issues):
     """
 
     for issue in obs_issues:
+        issue_key = issue.get("key", "-")
+        issue_url = f"https://{os.environ.get('JIRA_API_HOSTNAME')}/browse/{issue_key}"
         html_table += f"""
         <tr>
-            <td>{issue.get("key", "-")}</td>
+            <td><a href="{issue_url}">{issue_key}</a></td>
             <td>{issue.get("summary", "-")}</td>
             <td>{issue.get("reporter", "-")}</td>
             <td>{issue.get("created", "-")}</td>
