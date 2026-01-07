@@ -1093,7 +1093,7 @@ def arrange_nightreport_email(report, plain=False):
 
 {ADDITIONAL_RESOURCES_TITLE}
 - {LINK_MSG_OBS} {url_jira_obs_tickets}
-- {LINK_MSG_CONFLUENCE} {report["confluence_url"]}
+{f"- {LINK_MSG_CONFLUENCE} {report['confluence_url']}" if report["confluence_url"] is not None else ""}
 
 {DETAILED_ISSUE_REPORT_TITLE}
 {
@@ -1154,28 +1154,27 @@ def arrange_nightreport_email(report, plain=False):
             {report["auxtel_summary"].replace(new_line_character, "<br>")}
         </p>
         <br>
-        <p>
-            {parse_observatory_status_to_html_table(report["observatory_status"])}
-        </p>
+        {parse_observatory_status_to_html_table(report["observatory_status"])}
         <br>
-        <p>
-            {parse_cscs_status_to_html_table(report["cscs_status"])}
-        </p>
+        {parse_cscs_status_to_html_table(report["cscs_status"])}
         <br>
         <p>
             <span style="font-weight: bold;">{ADDITIONAL_RESOURCES_TITLE}</span>
-            <br>
-            <ul>
-                <li>
-                    {LINK_MSG_OBS}
-                    <a href="{url_jira_obs_tickets}">{url_jira_obs_tickets}</a>
-                </li>
-                <li>
-                    {LINK_MSG_CONFLUENCE}
-                    <a href="{report["confluence_url"]}">{report["confluence_url"]}</a>
-                </li>
-            </ul>
         </p>
+        <ul>
+            <li>
+                {LINK_MSG_OBS}
+                <a href="{url_jira_obs_tickets}">{url_jira_obs_tickets}</a>
+            </li>
+            {
+        f'''<li>
+                {LINK_MSG_CONFLUENCE}
+                <a href="{report["confluence_url"]}">{report["confluence_url"]}</a>
+            </li>'''
+        if report["confluence_url"] is not None
+        else ""
+    }
+        </ul>
         <p>
             <span style="font-weight: bold;">{DETAILED_ISSUE_REPORT_TITLE}</span>
             <br>
@@ -1234,9 +1233,11 @@ def parse_obs_issues_array_to_html_table(obs_issues):
     """
 
     for issue in obs_issues:
+        issue_key = issue.get("key", "-")
+        issue_url = f"https://{os.environ.get('JIRA_API_HOSTNAME')}/browse/{issue_key}"
         html_table += f"""
         <tr>
-            <td>{issue.get("key", "-")}</td>
+            <td><a href="{issue_url}">{issue_key}</a></td>
             <td>{issue.get("summary", "-")}</td>
             <td>{issue.get("reporter", "-")}</td>
             <td>{issue.get("created", "-")}</td>
@@ -1643,11 +1644,10 @@ def parse_observatory_status_to_html_table(observatory_status):
         </tr>
         <tr style="background-color:#fafafa;">
             <td style="white-space:nowrap;font-weight: bold;">Locking Pins System State</td>
-            <td>{observatory_status["simonyiLockingPinsSystemState"]}</td
+            <td>{observatory_status["simonyiLockingPinsSystemState"]}</td>
             <td>N/A</td>
         </tr>
-    </table>
-    """
+    </table>"""
 
     return html_table
 
@@ -1833,8 +1833,7 @@ def parse_cscs_status_to_html_table(cscs_status):
             <td></td>
             <td></td>
         </tr>
-
-    """
+    </table>"""
 
     return html_table
 

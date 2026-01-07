@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.5.4
+------
+
+* Fix some HTML format issues with the night report mail content. `<https://github.com/lsst-ts/LOVE-manager/pull/344>`_ 
+
 v7.5.3
 ------
 
