@@ -739,7 +739,9 @@ def get_jira_obs_report(request_data):
                     ),
                     "reporter": issue["fields"]["creator"]["displayName"],
                     "created": issue["fields"]["created"].split(".")[0],
-                    "systems": parse_obs_issue_systems(issue),
+                    "systems": parse_obs_issue_systems(issue)
+                    if issue["fields"][OBS_SYSTEMS_FIELD] is not None
+                    else [],
                 }
                 for issue in issues
             ]
