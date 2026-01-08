@@ -50,7 +50,7 @@ All these variables are initialized with default variables defined in :code:`.en
 - `SMTP_USER`: defines the user to use to send emails. The `@lsst.org` domain is added automatically.
 - `SMTP_PASSWORD`: defines the password for the `SMTP_USER`.
 - `NIGHTREPORT_MAIL_ADDRESS`: defines the email address to send the night report to. Default to `rubin-night-log@lists.lsst.org` if not defined.
-- `NIGHTLYDIGEST_BASE_URL`: defines the base URL to use to link to the nightly digest. Defaults to `https://usdf-rsp-dev.slac.stanford.edu/nightlydigest` if not defined.
+- `NIGHTLYDIGEST_BASE_URL`: defines the base URL to use to link to the nightly digest. Defaults to `https://usdf-rsp.slac.stanford.edu/nightlydigest` if not defined.
 
 # Local load for development
 
