@@ -5,6 +5,7 @@ Version History
 v7.5.4
 ------
 
+* Improve error handling for Jira issues retrieval in get_jira_obs_report. `<https://github.com/lsst-ts/LOVE-manager/pull/346>`_
 * Fix some HTML format issues with the night report mail content. `<https://github.com/lsst-ts/LOVE-manager/pull/344>`_ 
 
 v7.5.3
