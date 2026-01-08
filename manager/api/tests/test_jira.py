@@ -614,6 +614,23 @@ class JiraTestCase(TestCase):
                 get_jira_obs_report(request_data)
             assert str(e.value) == f"{ERROR_OBS_TICKETS}. Parsing JIRA response failed: missing field '{key}'"
 
+        # Payload with None values for non-mandatory fields
+        field_keys = [
+            OBS_TIME_LOST_FIELD,
+            OBS_SYSTEMS_FIELD,
+        ]
+        for key in field_keys:
+            payload = self.mock_jira_issues_response()
+            payload["issues"][0]["fields"][key] = None
+            sucess_response_2.json = lambda: payload
+            mock_jira_client.side_effect = [success_response_1, sucess_response_2]
+            jira_response = get_jira_obs_report(request_data)
+
+            if key == OBS_TIME_LOST_FIELD:
+                assert jira_response[0]["time_lost"] == 0.0
+            elif key == OBS_SYSTEMS_FIELD:
+                assert jira_response[0]["systems"] == []
+
         mock_jira_patcher.stop()
 
     def test_get_jira_obs_report_bad_date(self):
