@@ -5,6 +5,7 @@ Version History
 v7.5.6
 ------
 
+* Bump urllib3 from 2.5.0 to 2.6.3 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/345>`_
 * Bump python-ldap from 3.4.0 to 3.4.5 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/334>`_
 
 v7.5.5
