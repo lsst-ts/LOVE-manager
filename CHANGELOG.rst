@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.5.6
+------
+
+* Bump python-ldap from 3.4.0 to 3.4.5 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/334>`_
+
 v7.5.5
 ------
 
