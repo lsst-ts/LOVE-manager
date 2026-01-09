@@ -76,7 +76,7 @@ standard-imghdr==3.13.0
 Twisted==24.7.0
 txaio==23.1.1
 uritemplate==3.0.1
-urllib3==2.5.0
+urllib3==2.6.3
 uvicorn[standard]==0.24.0.post1
 wcwidth==0.1.8
 zipp==3.19.1
