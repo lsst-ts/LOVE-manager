@@ -2,10 +2,21 @@
 Version History
 ===============
 
-v7.5.4
+v7.5.6
+------
+
+* Add new ESS 123, 124, 125, 126, 401, 402 and 403 to ui-framework fixtures on summit, base and tucson. `<https://github.com/lsst-ts/LOVE-manager/pull/348>`_
+* Bump urllib3 from 2.5.0 to 2.6.3 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/345>`_
+* Bump python-ldap from 3.4.0 to 3.4.5 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/334>`_
+
+v7.5.5
 ------
 
 * Improve error handling for Jira issues retrieval in get_jira_obs_report. `<https://github.com/lsst-ts/LOVE-manager/pull/346>`_
+
+v7.5.4
+------
+
 * Fix some HTML format issues with the night report mail content. `<https://github.com/lsst-ts/LOVE-manager/pull/344>`_ 
 
 v7.5.3
