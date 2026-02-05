@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.5.7
+------
+
+* Add WFOODS CSC to Summary State views. `<https://github.com/lsst-ts/LOVE-manager/pull/349>`_
+
 v7.5.6
 ------
 
