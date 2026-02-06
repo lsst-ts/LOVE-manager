@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.5.8
+------
+
+* Bump django from 5.0.13 to 5.1.15 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/347>`_
+
 v7.5.7
 ------
 
