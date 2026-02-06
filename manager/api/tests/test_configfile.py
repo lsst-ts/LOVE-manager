@@ -215,7 +215,12 @@ class ConfigFileApiTestCase(TestCase):
         self.assertEqual(response.data["content"], expected_data["content"])
         self.assertEqual(response.data["filename"], expected_data["filename"])
 
-    @override_settings(DEFAULT_FILE_STORAGE="manager.utils.RemoteStorage")
+    @override_settings(
+        STORAGES={
+            "default": {"BACKEND": "manager.utils.RemoteStorage"},
+            "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
+        }
+    )
     def test_get_config_file_content_with_remote_storage(self):
         """Test that an authenticated user can get a config file content."""
 
@@ -249,7 +254,12 @@ class ConfigFileApiTestCase(TestCase):
 
         mock_requests_get.stop()
 
-    @override_settings(DEFAULT_FILE_STORAGE="manager.utils.RemoteStorage")
+    @override_settings(
+        STORAGES={
+            "default": {"BACKEND": "manager.utils.RemoteStorage"},
+            "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
+        }
+    )
     def test_get_config_file_content_with_remote_storage_error_invalid_url(self):
         """Test that an authenticated user cannot get
         a config file content with an invalid url."""
@@ -266,7 +276,12 @@ class ConfigFileApiTestCase(TestCase):
         # Assert:
         self.assertEqual(response.status_code, 400)
 
-    @override_settings(DEFAULT_FILE_STORAGE="manager.utils.RemoteStorage")
+    @override_settings(
+        STORAGES={
+            "default": {"BACKEND": "manager.utils.RemoteStorage"},
+            "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
+        }
+    )
     def test_get_config_file_content_with_remote_storage_error_file_not_found(self):
         """Test that an authenticated user cannot get
         a config file content which cannot be found."""
@@ -291,7 +306,12 @@ class ConfigFileApiTestCase(TestCase):
 
         mock_requests_get.stop()
 
-    @override_settings(DEFAULT_FILE_STORAGE="manager.utils.RemoteStorage")
+    @override_settings(
+        STORAGES={
+            "default": {"BACKEND": "manager.utils.RemoteStorage"},
+            "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
+        }
+    )
     def test_get_config_file_content_with_remote_storage_error_file_type_not_allowed(
         self,
     ):

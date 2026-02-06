@@ -67,7 +67,12 @@ class ViewThumbnailTestCase(TestCase):
         for file in thumbnail_files_list:
             os.remove(file)
 
-    @override_settings(DEFAULT_FILE_STORAGE="manager.utils.RemoteStorage")
+    @override_settings(
+        STORAGES={
+            "default": {"BACKEND": "manager.utils.RemoteStorage"},
+            "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
+        }
+    )
     def test_new_view_from_remote_storage(self):
         """Test thumbnail behavior when adding
         a new view from remote storage."""
