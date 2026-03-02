@@ -45,11 +45,18 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 5242880
 FORCE_SCRIPT_NAME = os.environ.get("URL_SUBPATH")
 
 # Define the type of storage to use for media files: remote or local
-DEFAULT_FILE_STORAGE = (
-    "manager.utils.RemoteStorage"
-    if os.environ.get("REMOTE_STORAGE")
-    else "django.core.files.storage.FileSystemStorage"
-)
+STORAGES = {
+    **{
+        "default": {
+            "BACKEND": "manager.utils.RemoteStorage"
+            if os.environ.get("REMOTE_STORAGE")
+            else "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+    },
+}
 
 # Define the default auto field for Django models
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"

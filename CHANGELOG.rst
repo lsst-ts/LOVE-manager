@@ -2,6 +2,17 @@
 Version History
 ===============
 
+v7.5.8
+------
+
+* Update salindex of ESS 118, 119 and 120 in ui-framework fixtures on summit, base and tucson. `<https://github.com/lsst-ts/LOVE-manager/pull/353>`_
+* Bump django from 5.0.13 to 5.1.15 in /manager `<https://github.com/lsst-ts/LOVE-manager/pull/347>`_
+
+v7.5.7
+------
+
+* Add WFOODS CSC to Summary State views. `<https://github.com/lsst-ts/LOVE-manager/pull/349>`_
+
 v7.5.6
 ------
 
