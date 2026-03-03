@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.5.9
+------
+
+* Update salindex of ESS 107, 108, 401, 402 and 403 in ui-framework fixtures on summit, base and tucson. `<https://github.com/lsst-ts/LOVE-manager/pull/354>`_ 
+
 v7.5.8
 ------
 
