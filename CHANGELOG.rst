@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.5.10
+-------
+
+* Fix position of ESS 441, 442, 443 in ui-framework fixtures on summit, base and tucson. `<https://github.com/lsst-ts/LOVE-manager/pull/355>`_ 
+
 v7.5.9
 ------
 

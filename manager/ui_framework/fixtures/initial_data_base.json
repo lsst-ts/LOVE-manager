@@ -571,18 +571,6 @@
                     },
                     {
                       "name": "ESS",
-                      "salindex": 441
-                    },
-                    {
-                      "name": "ESS",
-                      "salindex": 442
-                    },
-                    {
-                      "name": "ESS",
-                      "salindex": 443
-                    },
-                    {
-                      "name": "ESS",
                       "salindex": 121
                     },
                     {
@@ -660,6 +648,18 @@
                     {
                       "name": "ESS",
                       "salindex": 405
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 441
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 442
+                    },
+                    {
+                      "name": "ESS",
+                      "salindex": 443
                     }
                   ],
                   "HigherLevel": [
