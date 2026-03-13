@@ -579,7 +579,8 @@
               "margin": true,
               "salindex": 1,
               "titleBar": true,
-              "hasRawMode": true
+              "hasRawMode": true,
+              "showObservatoryStatusControls": true
             },
             "content": "ScriptQueue",
             "properties": {
@@ -622,7 +623,8 @@
               "margin": true,
               "salindex": 2,
               "titleBar": true,
-              "hasRawMode": true
+              "hasRawMode": true,
+              "showObservatoryStatusControls": false
             },
             "content": "ScriptQueue",
             "properties": {
@@ -1891,7 +1893,8 @@
               "margin": true,
               "salindex": 3,
               "titleBar": true,
-              "hasRawMode": true
+              "hasRawMode": true,
+              "showObservatoryStatusControls": false
             },
             "content": "ScriptQueue",
             "properties": {
