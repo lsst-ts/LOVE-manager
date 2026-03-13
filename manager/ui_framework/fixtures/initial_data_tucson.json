@@ -2073,5 +2073,47 @@
       },
       "thumbnail": "thumbnails/view_254.png"
     }
+  },
+  {
+    "model": "ui_framework.view",
+    "pk": 96,
+    "fields": {
+      "creation_timestamp": "2026-03-13T00:00:00.000Z",
+      "update_timestamp": "2026-03-13T00:00:00.000Z",
+      "name": "OCSQueue",
+      "data": {
+        "content": {
+          "newPanel-1": {
+            "config": {
+              "link": "",
+              "title": "OCS Queue",
+              "margin": true,
+              "salindex": 3,
+              "titleBar": true,
+              "hasRawMode": true
+            },
+            "content": "ScriptQueue",
+            "properties": {
+              "h": 53,
+              "i": 1,
+              "w": 97,
+              "x": 0,
+              "y": 0,
+              "type": "component"
+            }
+          }
+        },
+        "properties": {
+          "h": 2,
+          "i": 0,
+          "w": 100,
+          "x": 0,
+          "y": 0,
+          "cols": 100,
+          "type": "container",
+          "allowOverflow": true
+        }
+      }
+    }
   }
 ]
