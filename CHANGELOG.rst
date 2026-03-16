@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.5.11
+-------
+
+* Add new ScriptQueue property showObservatoryStatusControls to ui-framework fixtures. `<https://github.com/lsst-ts/LOVE-manager/pull/356>`_ 
+
 v7.5.10
 -------
 
