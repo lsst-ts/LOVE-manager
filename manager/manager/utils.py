@@ -827,6 +827,25 @@ def get_obsday_iso(obsday):
     return f"{str(obsday)[:4]}-{str(obsday)[4:6]}-{str(obsday)[6:8]}"
 
 
+def get_obsday_end_to_tai(obsday):
+    """Return the end of the observing day in TAI.
+
+    The end of the observing day is set to 12:00 UTC of the next day.
+
+    Parameters
+    ----------
+    obsday : `int`
+        The observing day in the format "YYYYMMDD" as an integer
+
+    Returns
+    -------
+    `datetime.datetime`
+        The TAI timestamp of the end of the observing day
+    """
+    obsday_iso = get_obsday_iso(obsday)
+    return Time(f"{obsday_iso}T12:00:00", scale="tai").datetime + timedelta(days=1)
+
+
 def get_tai_to_utc() -> float:
     """Return the difference in seconds between TAI and UTC Timestamps.
 
@@ -1303,12 +1322,20 @@ def parse_obs_issue_systems(issue):
     return systems
 
 
-def get_nightreport_observatory_status_from_efd(efd_instance="summit_efd"):
+def get_nightreport_observatory_status_from_efd(efd_instance="summit_efd", time_cut=None):
     """Get the observatory status from the EFD.
 
     Connect to the EFD LOVE-commander interface by querying
     the top_timeseries endpoint to get the current
     observatory status.
+
+    Parameters
+    ----------
+    efd_instance : str
+        Name of the EFD instance to query (defaults to "summit_efd").
+    time_cut : None | datetime
+        Optional datetime to use for the EFD `time_cut`. If None, the current
+        time (TAI) is used.
 
     Returns
     -------
@@ -1393,7 +1420,11 @@ def get_nightreport_observatory_status_from_efd(efd_instance="summit_efd"):
             state = 0
         return state_map.get(state, "UNKNOWN")
 
-    curr_tai = astropy.time.Time.now().tai.datetime
+    if time_cut is not None:
+        curr_tai = time_cut
+    else:
+        curr_tai = astropy.time.Time.now().tai.datetime
+
     payload = {
         "cscs": cscs,
         "num": 1,
@@ -1496,12 +1527,20 @@ def get_nightreport_observatory_status_from_efd(efd_instance="summit_efd"):
     raise Exception("Error getting observatory status from EFD.")
 
 
-def get_nightreport_cscs_status_from_efd(efd_instance="summit_efd"):
+def get_nightreport_cscs_status_from_efd(efd_instance="summit_efd", time_cut=None):
     """Get the CSCS status from the EFD.
 
     Connect to the EFD LOVE-commander interface by querying
     the top_timeseries endpoint to get the current
     CSCs status.
+
+    Parameters
+    ----------
+    efd_instance : str
+        Name of the EFD instance to query (defaults to "summit_efd").
+    time_cut : None | datetime
+        Optional datetime to use for the EFD `time_cut`. If None, the current
+        time (TAI) is used.
 
     Returns
     -------
@@ -1553,7 +1592,11 @@ def get_nightreport_cscs_status_from_efd(efd_instance="summit_efd"):
         except Exception:
             return 0
 
-    curr_tai = astropy.time.Time.now().tai.datetime
+    if time_cut is not None:
+        curr_tai = time_cut
+    else:
+        curr_tai = astropy.time.Time.now().tai.datetime
+
     payload = {
         "cscs": cscs,
         "num": 1,

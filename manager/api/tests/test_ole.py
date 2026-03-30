@@ -17,16 +17,23 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
-
+import datetime
 import json
 from unittest.mock import patch
 
+import astropy
 import requests
 import rest_framework.response
 from django.contrib.auth.models import User
 from django.test import TestCase, override_settings
 from django.urls import reverse
-from manager.utils import DATETIME_ISO_FORMAT, ERROR_OBS_TICKETS, get_tai_from_utc
+from manager.utils import (
+    DATETIME_ISO_FORMAT,
+    ERROR_OBS_TICKETS,
+    get_obsday_end_to_tai,
+    get_obsday_from_tai,
+    get_tai_from_utc,
+)
 from rest_framework.test import APIClient
 
 from api.models import Token
@@ -757,6 +764,43 @@ class NightReportTestCase(TestCase):
         url = reverse("OLE-nightreport-send-report", args=[self.response_report["id"]])
         response = self.client.post(url, data=self.send_report_payload, format="json")
         self.assertEqual(response.status_code, 200)
+
+        report_obsday_end = get_obsday_end_to_tai(int(self.response_report["day_obs"]))
+
+        # Check the observatory status & CSCs status from EFD
+        # is called with the end of the night in TAI scale as argument.
+        observatory_status_efd_time_cut = mock_get_nightreport_observatory_status_from_efd_client.call_args[
+            0
+        ][1]
+        cscs_status_efd_time_cut = mock_get_nightreport_cscs_status_from_efd_client.call_args[0][1]
+        assert observatory_status_efd_time_cut == report_obsday_end
+        assert cscs_status_efd_time_cut == report_obsday_end
+
+        print("###", flush=True)
+        print(observatory_status_efd_time_cut.isoformat())
+        print(cscs_status_efd_time_cut.isoformat())
+        print(report_obsday_end.isoformat())
+        print("###", flush=True)
+
+        # Simulate night report being sent on the current obs day
+        curr_tai = astropy.time.Time.now().tai.datetime
+        mock_get_last_valid_night_report_client.return_value = {
+            **self.response_report,
+            "day_obs": get_obsday_from_tai(curr_tai),
+        }
+        response = self.client.post(url, data=self.send_report_payload, format="json")
+        self.assertEqual(response.status_code, 200)
+
+        print("####", flush=True)
+        print(mock_get_nightreport_observatory_status_from_efd_client.call_args)
+        print("###", flush=True)
+
+        observatory_status_efd_time_cut = mock_get_nightreport_observatory_status_from_efd_client.call_args[
+            0
+        ][1]
+        cscs_status_efd_time_cut = mock_get_nightreport_cscs_status_from_efd_client.call_args[0][1]
+        self.assertAlmostEqual(observatory_status_efd_time_cut, curr_tai, delta=datetime.timedelta(seconds=1))
+        self.assertAlmostEqual(cscs_status_efd_time_cut, curr_tai, delta=datetime.timedelta(seconds=1))
 
         mock_requests_patch.stop()
         mock_get_jira_obs_report.stop()
