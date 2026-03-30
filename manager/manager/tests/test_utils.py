@@ -16,6 +16,7 @@ from manager.utils import (
     get_last_valid_night_report,
     get_nightreport_cscs_status_from_efd,
     get_nightreport_observatory_status_from_efd,
+    get_obsday_end_to_utc,
 )
 
 observatory_status_efd_response = {
@@ -360,3 +361,16 @@ class UtilsTestCase(TestCase):
             mock_request.get_host.return_value = host
             efd_instance = get_efd_instance_from_request(mock_request)
             assert efd_instance == expected_efd
+
+    def test_get_obsday_end_to_utc(self):
+        # Test with a known obsday end time
+        obsday = 20251001
+        obsday_end_utc = get_obsday_end_to_utc(obsday)
+        expected_obsday_end_utc = "2025-10-02T12:00:00"
+        assert obsday_end_utc.isoformat() == expected_obsday_end_utc
+
+        # Test with invalid obsday format
+        invalid_obsdays = [20250931, 202510, 202510001, None]
+        for obsday in invalid_obsdays:
+            with pytest.raises(ValueError):
+                get_obsday_end_to_utc(obsday)

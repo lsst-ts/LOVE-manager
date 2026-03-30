@@ -48,6 +48,7 @@ from manager.utils import (
     get_last_valid_night_report,
     get_nightreport_cscs_status_from_efd,
     get_nightreport_observatory_status_from_efd,
+    get_obsday_end_to_utc,
     get_obsday_from_tai,
     get_obsday_iso,
     get_tai_from_utc,
@@ -1472,6 +1473,7 @@ def ole_send_night_report(request, *args, **kwargs):
 
     # Get current report
     last_valid_report = get_last_valid_night_report(int(json_data["day_obs"]))
+
     if last_valid_report is None or last_valid_report["id"] != pk:
         return Response(
             {"error": NIGHT_REPORT_CONFLICT_MESSAGE},
@@ -1480,11 +1482,19 @@ def ole_send_night_report(request, *args, **kwargs):
     if last_valid_report["date_sent"] is not None:
         return Response({"error": "Night report already sent"}, status=status.HTTP_400_BAD_REQUEST)
 
+    last_valid_report_obsday = int(last_valid_report["day_obs"])
+
+    # Set time cut (TAI) for EFD queries. If the report is for a past obs day,
+    # we set the cut to the end of that obs day.
+    report_obsday_end_tai = get_tai_from_utc(get_obsday_end_to_utc(last_valid_report_obsday))
+    curr_tai = astropy.time.Time.now().tai.datetime
+    efd_time_cut = min(curr_tai, report_obsday_end_tai)
+
     # Get observatory and CSCS status
     try:
         efd_instance = get_efd_instance_from_request(request)
-        observatory_status = get_nightreport_observatory_status_from_efd(efd_instance)
-        cscs_status = get_nightreport_cscs_status_from_efd(efd_instance)
+        observatory_status = get_nightreport_observatory_status_from_efd(efd_instance, efd_time_cut)
+        cscs_status = get_nightreport_cscs_status_from_efd(efd_instance, efd_time_cut)
         last_valid_report["observatory_status"] = observatory_status
         last_valid_report["cscs_status"] = cscs_status
     except Exception as e:
@@ -1495,7 +1505,7 @@ def ole_send_night_report(request, *args, **kwargs):
 
     # Get JIRA observation issues
     try:
-        last_valid_report["obs_issues"] = get_jira_obs_report({"day_obs": last_valid_report["day_obs"]})
+        last_valid_report["obs_issues"] = get_jira_obs_report({"day_obs": last_valid_report_obsday})
     except Exception as e:
         return Response(
             {"error": str(e)},
@@ -1513,7 +1523,7 @@ def ole_send_night_report(request, *args, **kwargs):
         )
 
     # Handle email sending
-    subject = f"Rubin Observatory Night Report {get_obsday_iso(json_data['day_obs'])}"
+    subject = f"Rubin Observatory Night Report {get_obsday_iso(last_valid_report_obsday)}"
     email_sent = send_smtp_email(
         os.environ.get("NIGHTREPORT_MAIL_ADDRESS", "rubin-night-log@lists.lsst.org"),
         subject,
