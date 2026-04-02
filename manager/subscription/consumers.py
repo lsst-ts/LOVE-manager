@@ -29,7 +29,6 @@ from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from django.conf import settings
 
 from manager import utils
-from subscription.heartbeat_manager import HeartbeatManager
 
 
 class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
@@ -38,8 +37,6 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.first_connection = asyncio.Future()
-        self.heartbeat_manager = HeartbeatManager()
-        self.heartbeat_manager.initialize()
 
     async def connect(self):
         """Handle connection, rejects connection if no authenticated user."""

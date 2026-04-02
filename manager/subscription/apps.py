@@ -18,7 +18,7 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
 
-"""Django apps configuration for the api app."""
+"""Django apps configuration for the subscription app."""
 
 from django.apps import AppConfig
 
@@ -28,3 +28,16 @@ class SubscriptionConfig(AppConfig):
 
     name = "subscription"
     """The name of the app."""
+
+    def ready(self):
+        """Start background heartbeat tasks when the app is ready.
+
+        Spawns daemon threads for the commander heartbeat query
+        and the heartbeat dispatch loop.  The threads themselves
+        check ``settings.HEARTBEAT_QUERY_COMMANDER`` on every
+        iteration, so the setting can be toggled at runtime
+        (e.g. via ``@override_settings`` in tests).
+        """
+        from subscription.tasks import start_heartbeat_tasks
+
+        start_heartbeat_tasks()
