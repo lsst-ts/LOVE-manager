@@ -18,9 +18,15 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
 
-"""Django apps configuration for the api app."""
+"""Django apps configuration for the subscription app."""
+
+import os
+import sys
 
 from django.apps import AppConfig
+from django.conf import settings
+
+from subscription.tasks import HeatbeatManagerCommander
 
 
 class SubscriptionConfig(AppConfig):
@@ -28,3 +34,44 @@ class SubscriptionConfig(AppConfig):
 
     name = "subscription"
     """The name of the app."""
+
+    def ready(self):
+        """Start background heartbeat tasks when the app is ready.
+        Spawns daemon threads for the commander heartbeat query
+        and the heartbeat dispatch loop.
+
+        The heartbeat tasks are only started in server processes, not
+        in management commands.  This is determined by inspecting
+        ``sys.argv`` and environment variables to detect the context in
+        which the app is running. Additionally, the heartbeat tasks are
+        only started if ``settings.HEARTBEAT_QUERY_COMMANDER`` is ``True``.
+        """
+        if self._is_server_process() and settings.HEARTBEAT_QUERY_COMMANDER:
+            HeatbeatManagerCommander.start_heartbeat_tasks()
+
+    # ------------------------------------------------------------------
+    @staticmethod
+    def _is_server_process():
+        """Return ``True`` only when running inside a real server process.
+
+        * Returns ``False`` for management commands like ``migrate``,
+          ``loaddata``, ``makemigrations``, etc.
+        * For Django's ``runserver`` with auto-reload, returns ``True``
+          only in the reloader's *child* process (``RUN_MAIN=true``).
+        * For ASGI servers launched via ``python -m uvicorn …`` or
+          ``daphne …``, returns ``True``.
+        """
+        # Detect Django management commands by inspecting sys.argv.
+        # manage.py <command> …  →  sys.argv = ['manage.py', '<command>', …]
+        _server_commands = {"runserver", "runserver_plus"}
+        if len(sys.argv) >= 2 and sys.argv[0].endswith("manage.py"):
+            command = sys.argv[1]
+            if command not in _server_commands:
+                # A non-server management command (migrate, loaddata, …)
+                return False
+            # Django runserver: only proceed in the reloader child.
+            return os.environ.get("RUN_MAIN") == "true"
+
+        # Not launched via manage.py → assume an ASGI server (uvicorn,
+        # daphne, etc.) where we always want the tasks.
+        return True
