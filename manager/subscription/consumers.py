@@ -35,11 +35,11 @@ from subscription.heartbeat_manager import HeartbeatManager
 class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
     """Consumer that handles incoming websocket messages."""
 
+    heartbeat_manager = HeartbeatManager()
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.first_connection = asyncio.Future()
-        self.heartbeat_manager = HeartbeatManager()
-        self.heartbeat_manager.initialize()
 
     async def connect(self):
         """Handle connection, rejects connection if no authenticated user."""
@@ -58,6 +58,9 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
             url_token = self.scope["query_string"][6:].decode()
             personal_group_name = "token-{}".format(url_token)
             await self.channel_layer.group_add(personal_group_name, self.channel_name)
+
+            self.heartbeat_manager.add_consumer(personal_group_name)
+            self.heartbeat_manager.initialize()
 
     async def disconnect(self, close_code):
         """Handle disconnection."""
