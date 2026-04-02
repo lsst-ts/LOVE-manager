@@ -318,12 +318,9 @@ if AUTH_LDAP_1_SERVER_URI:
     AUTH_LDAP_1_USER_SEARCH = AUTH_LDAP_USER_SEARCH
     AUTH_LDAP_1_USER_ATTR_MAP = AUTH_LDAP_USER_ATTR_MAP
 
-TRACE_TIMESTAMPS = True
+TRACE_TIMESTAMPS = os.environ.get("SHOW_TRACE_TIMESTAMPS", "true").lower() == "true"
 """Define wether or not to add tracing timestamps to websocket messages.
-Read from TRACE_TIMESTAMPS` environment variable (`bool`)"""
-
-if os.environ.get("HIDE_TRACE_TIMESTAMPS", False):
-    TRACE_TIMESTAMPS = False
+Read from `SHOW_TRACE_TIMESTAMPS` environment variable (`bool`)"""
 
 # Check HeartBeat Commanded
 HEARTBEAT_QUERY_COMMANDER = os.environ.get("HEARTBEAT_QUERY_COMMANDER", "true").lower() == "true"
