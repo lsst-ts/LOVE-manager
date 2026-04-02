@@ -22,6 +22,7 @@
 that handle the reception/sending of channels messages."""
 
 import asyncio
+import datetime
 import json
 
 from astropy.time import Time
@@ -29,7 +30,6 @@ from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from django.conf import settings
 
 from manager import utils
-from subscription.heartbeat_manager import HeartbeatManager
 
 
 class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
@@ -38,8 +38,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.first_connection = asyncio.Future()
-        self.heartbeat_manager = HeartbeatManager()
-        self.heartbeat_manager.initialize()
+        self._heartbeat_task = None
 
     async def connect(self):
         """Handle connection, rejects connection if no authenticated user."""
@@ -52,16 +51,47 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
                 self.first_connection.set_result(True)
             else:
                 await self.close()
+                return
         else:
             await self.accept()
             self.first_connection.set_result(True)
             url_token = self.scope["query_string"][6:].decode()
             personal_group_name = "token-{}".format(url_token)
             await self.channel_layer.group_add(personal_group_name, self.channel_name)
+            # Start periodic heartbeat loop only for
+            # non annonymous users, i.e. frontend clients.
+            self._heartbeat_task = asyncio.create_task(self._heartbeat_loop())
 
     async def disconnect(self, close_code):
         """Handle disconnection."""
+        if self._heartbeat_task is not None:
+            self._heartbeat_task.cancel()
+            self._heartbeat_task = None
         await asyncio.gather(*[self._leave_group(*stream) for stream in self.stream_group_names])
+
+    async def _heartbeat_loop(self):
+        """Send a periodic heartbeat message to the WebSocket client
+        every 3 seconds.
+        """
+        try:
+            while True:
+                await asyncio.sleep(3)
+                data = json.dumps(
+                    {
+                        "category": "heartbeat",
+                        "data": [
+                            {
+                                "csc": "Manager",
+                                "salindex": 0,
+                                "data": {"timestamp": datetime.datetime.now().timestamp()},
+                            }
+                        ],
+                        "subscription": "heartbeat",
+                    }
+                )
+                await self.send(text_data=data)
+        except asyncio.CancelledError:
+            pass
 
     async def receive_json(self, message):
         """Handle a received message.
@@ -415,8 +445,7 @@ class SubscriptionConsumer(AsyncJsonWebsocketConsumer):
         await self.send(text_data=json.dumps(msg))
 
     async def send_heartbeat(self, message):
-        """
-        Send a heartbeat to all the instances
+        """Send a heartbeat to all the instances
         of a consumer that have joined the heartbeat-manager-0-stream.
 
         It is used to send messages associated
