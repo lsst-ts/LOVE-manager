@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.5.12
+-------
+
+* Change HIDE_TRACE_TIMESTAMPS env var to SHOW_TRACE_TIMESTAMPS and fix logic. `<https://github.com/lsst-ts/LOVE-manager/pull/361>`_ 
+
 v7.5.11
 -------
 
