@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.5.13
+-------
+
+* Add MTVMS 2 and 3 CSCs to Summary State views. `<https://github.com/lsst-ts/LOVE-manager/pull/362>`_ 
+
 v7.5.12
 -------
 
