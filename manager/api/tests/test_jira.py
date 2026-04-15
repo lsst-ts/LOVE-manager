@@ -39,7 +39,7 @@ from manager.utils import (
     OBS_TIME_LOST_FIELD,
     get_jira_obs_report,
     get_obsday_from_tai,
-    get_obsday_to_tai,
+    get_obsday_start_to_utc,
     handle_jira_payload,
     jira_comment,
     jira_ticket,
@@ -750,7 +750,7 @@ class JiraAPITestCase(TestCase):
         # Create a datetime object for the current date at 12:00 UTC
         current_tai_datetime = astropy.time.Time.now().tai.datetime
         current_day_obs = get_obsday_from_tai(current_tai_datetime)
-        twelve_utc = get_obsday_to_tai(current_day_obs)
+        twelve_utc = get_obsday_start_to_utc(current_day_obs)
         next_day = twelve_utc + timedelta(days=1)
         twelve_utc_day = twelve_utc.strftime("%Y-%m-%d")
         next_day_day = next_day.strftime("%Y-%m-%d")

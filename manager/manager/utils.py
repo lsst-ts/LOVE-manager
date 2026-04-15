@@ -689,8 +689,8 @@ def get_jira_obs_report(request_data):
         - reporter: The issue reporter
         - created: The issue creation date
     """
-    intitial_day_obs_tai = get_obsday_to_tai(request_data.get("day_obs"))
-    final_day_obs_tai = intitial_day_obs_tai + timedelta(days=1)
+    intitial_day_obs_utc = get_obsday_start_to_utc(request_data.get("day_obs"))
+    final_day_obs_utc = intitial_day_obs_utc + timedelta(days=1)
 
     headers = {
         "Authorization": f"Basic {os.environ.get('JIRA_API_TOKEN')}",
@@ -705,8 +705,8 @@ def get_jira_obs_report(request_data):
     else:
         raise Exception(f"Error getting user timezone from {os.environ.get('JIRA_API_HOSTNAME')}")
 
-    start_date_user_datetime = intitial_day_obs_tai.replace(tzinfo=timezone("UTC")).astimezone(user_timezone)
-    end_date_user_datetime = final_day_obs_tai.replace(tzinfo=timezone("UTC")).astimezone(user_timezone)
+    start_date_user_datetime = intitial_day_obs_utc.replace(tzinfo=timezone("UTC")).astimezone(user_timezone)
+    end_date_user_datetime = final_day_obs_utc.replace(tzinfo=timezone("UTC")).astimezone(user_timezone)
 
     initial_day_obs_string = start_date_user_datetime.strftime("%Y-%m-%d")
     final_day_obs_string = end_date_user_datetime.strftime("%Y-%m-%d")
@@ -792,25 +792,6 @@ def get_obsday_from_tai(tai):
     return observing_day
 
 
-def get_obsday_to_tai(obsday):
-    """Return the TAI timestamp from an observing day.
-
-    The TAI timestamp is set to 12:00 UTC of the observing day.
-
-    Parameters
-    ----------
-    obsday : `int`
-        The observing day in the format "YYYYMMDD" as an integer
-
-    Returns
-    -------
-    `datetime.datetime`
-        The TAI timestamp
-    """
-    obsday_iso = get_obsday_iso(obsday)
-    return Time(f"{obsday_iso}T12:00:00", scale="tai").datetime
-
-
 def get_obsday_iso(obsday):
     """Return the observing day in ISO format.
 
@@ -825,6 +806,46 @@ def get_obsday_iso(obsday):
         The observing day in ISO format
     """
     return f"{str(obsday)[:4]}-{str(obsday)[4:6]}-{str(obsday)[6:8]}"
+
+
+def get_obsday_start_to_utc(obsday):
+    """Return the start of the observing day in UTC.
+
+    The start of the observing day is set to 12:00 UTC
+    of the current calendar day.
+
+    Parameters
+    ----------
+    obsday : `int`
+        The observing day in the format "YYYYMMDD" as an integer.
+
+    Returns
+    -------
+    `datetime.datetime`
+        The UTC timestamp of the start of the observing day.
+    """
+    obsday_iso = get_obsday_iso(obsday)
+    return Time(f"{obsday_iso}T12:00:00", scale="utc").datetime
+
+
+def get_obsday_end_to_utc(obsday):
+    """Return the end of the observing day in UTC.
+
+    The end of the observing day is set to 12:00 UTC
+    of the next calendar day.
+
+    Parameters
+    ----------
+    obsday : `int`
+        The observing day in the format "YYYYMMDD" as an integer.
+
+    Returns
+    -------
+    `datetime.datetime`
+        The UTC timestamp of the end of the observing day
+    """
+    obsday_iso = get_obsday_iso(obsday)
+    return Time(f"{obsday_iso}T12:00:00", scale="utc").datetime + timedelta(days=1)
 
 
 def get_tai_to_utc() -> float:
@@ -1303,12 +1324,20 @@ def parse_obs_issue_systems(issue):
     return systems
 
 
-def get_nightreport_observatory_status_from_efd(efd_instance="summit_efd"):
+def get_nightreport_observatory_status_from_efd(efd_instance="summit_efd", time_cut=None):
     """Get the observatory status from the EFD.
 
     Connect to the EFD LOVE-commander interface by querying
     the top_timeseries endpoint to get the current
     observatory status.
+
+    Parameters
+    ----------
+    efd_instance : str
+        Name of the EFD instance to query (defaults to "summit_efd").
+    time_cut : None | datetime
+        Optional datetime to use for the EFD `time_cut`. If None, the current
+        time (TAI) is used.
 
     Returns
     -------
@@ -1393,11 +1422,13 @@ def get_nightreport_observatory_status_from_efd(efd_instance="summit_efd"):
             state = 0
         return state_map.get(state, "UNKNOWN")
 
-    curr_tai = astropy.time.Time.now().tai.datetime
+    if time_cut is None:
+        time_cut = astropy.time.Time.now().tai.datetime
+
     payload = {
         "cscs": cscs,
         "num": 1,
-        "time_cut": curr_tai.isoformat(),
+        "time_cut": time_cut.isoformat(),
         "efd_instance": efd_instance,
     }
     response = requests.post(url, json=payload)
@@ -1496,12 +1527,20 @@ def get_nightreport_observatory_status_from_efd(efd_instance="summit_efd"):
     raise Exception("Error getting observatory status from EFD.")
 
 
-def get_nightreport_cscs_status_from_efd(efd_instance="summit_efd"):
+def get_nightreport_cscs_status_from_efd(efd_instance="summit_efd", time_cut=None):
     """Get the CSCS status from the EFD.
 
     Connect to the EFD LOVE-commander interface by querying
     the top_timeseries endpoint to get the current
     CSCs status.
+
+    Parameters
+    ----------
+    efd_instance : str
+        Name of the EFD instance to query (defaults to "summit_efd").
+    time_cut : None | datetime
+        Optional datetime to use for the EFD `time_cut`. If None, the current
+        time (TAI) is used.
 
     Returns
     -------
@@ -1553,11 +1592,13 @@ def get_nightreport_cscs_status_from_efd(efd_instance="summit_efd"):
         except Exception:
             return 0
 
-    curr_tai = astropy.time.Time.now().tai.datetime
+    if time_cut is None:
+        time_cut = astropy.time.Time.now().tai.datetime
+
     payload = {
         "cscs": cscs,
         "num": 1,
-        "time_cut": curr_tai.isoformat(),
+        "time_cut": time_cut.isoformat(),
         "efd_instance": efd_instance,
     }
     response = requests.post(url, json=payload)

@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.5.14
+-------
+
+* Fix time cut setting for EFD queries in the ole_send_night_report method. `<https://github.com/lsst-ts/LOVE-manager/pull/366>`_
+
 v7.5.13
 -------
 
