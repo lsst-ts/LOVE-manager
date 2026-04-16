@@ -71,7 +71,7 @@ ruamel.yaml==0.18.15
 ruamel.yaml.clib==0.2.14
 six==1.17.0
 snowballstemmer==2.0.0
-sqlparse==0.5.0
+sqlparse==0.5.4
 standard-imghdr==3.13.0
 Twisted==24.7.0
 txaio==23.1.1
