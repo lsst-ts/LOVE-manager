@@ -2,6 +2,14 @@
 Version History
 ===============
 
+v
+
+v7.5.14
+-------
+
+* Add new ESS CSCs 309, 310 and 311 to summary state views. `<https://github.com/lsst-ts/LOVE-manager/pull/368>`_
+* Fix time cut setting for EFD queries in the ole_send_night_report method. `<https://github.com/lsst-ts/LOVE-manager/pull/366>`_
+
 v7.5.13
 -------
 
