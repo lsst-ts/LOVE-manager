@@ -80,7 +80,7 @@ MTMOUNT_POWER_STATE_MAP = {
     15: "UNKNOWN",
 }
 
-MTMOUNT_MT_MOUNT_ELEVATION_LOCKING_PIN_MOTION_STATE_MAP = {
+MTMOUNT_ELEVATION_LOCKING_PIN_MOTION_STATE_MAP = {
     0: "LOCKED",
     1: "TEST",
     2: "UNLOCKED",
@@ -1490,7 +1490,7 @@ def get_nightreport_observatory_status_from_efd(efd_instance="summit_efd", time_
                 data,
                 "MTMount-0-logevent_elevationLockingPinMotionState",
                 "state",
-                MTMOUNT_MT_MOUNT_ELEVATION_LOCKING_PIN_MOTION_STATE_MAP,
+                MTMOUNT_ELEVATION_LOCKING_PIN_MOTION_STATE_MAP,
             ),
             "auxtelAzimuth": parse_measurement(
                 get_efd_data_measurement(

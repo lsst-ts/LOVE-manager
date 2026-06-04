@@ -9,7 +9,7 @@ from manager.utils import (
     ATPNEUMATICS_MIRROR_COVER_STATE_MAP,
     EFD_INSTACES,
     MTMOUNT_DEPLOYABLE_MOTION_STATE_MAP,
-    MTMOUNT_MT_MOUNT_ELEVATION_LOCKING_PIN_MOTION_STATE_MAP,
+    MTMOUNT_ELEVATION_LOCKING_PIN_MOTION_STATE_MAP,
     MTMOUNT_POWER_STATE_MAP,
     arrange_nightlydigest_urls_for_obsday,
     get_efd_instance_from_request,
@@ -262,7 +262,7 @@ class UtilsTestCase(TestCase):
             (
                 "MTMount-0-logevent_elevationLockingPinMotionState",
                 "simonyiLockingPinsSystemState",
-                MTMOUNT_MT_MOUNT_ELEVATION_LOCKING_PIN_MOTION_STATE_MAP,
+                MTMOUNT_ELEVATION_LOCKING_PIN_MOTION_STATE_MAP,
             ),
             (
                 "ATPneumatics-0-logevent_m1CoverState",
