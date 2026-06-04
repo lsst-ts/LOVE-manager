@@ -562,6 +562,7 @@ class NightReportTestCase(TestCase):
             "simonyiOilSupplySystemState": "UNKNOWN",
             "simonyiPowerSupplySystemState": "UNKNOWN",
             "simonyiLockingPinsSystemState": "UNKNOWN",
+            "simonyiM1M3DetailedState": "UNKNOWN",
             "auxtelAzimuth": 200,
             "auxtelElevation": 60,
             "auxtelDomeAzimuth": 250,
