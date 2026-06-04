@@ -88,6 +88,28 @@ MTMOUNT_ELEVATION_LOCKING_PIN_MOTION_STATE_MAP = {
     4: "MISMATCH",
 }
 
+MTM1M3_DETAILED_STATE_MAP = {
+    0: "UNKNOWN",
+    1: "DISABLED",
+    2: "FAULT",
+    3: "OFFLINE",
+    4: "STANDBY",
+    5: "PARKED",
+    6: "RAISING",
+    7: "ACTIVE",
+    8: "LOWERING",
+    9: "PARKEDENGINEERING",
+    10: "RAISINGENGINEERING",
+    11: "ACTIVEENGINEERING",
+    12: "LOWERINGENGINEERING",
+    13: "LOWERINGFAULT",
+    14: "PROFILEHARDPOINTCORRECTIONS",
+    15: "PAUSEDRAISING",
+    16: "PAUSEDRAISINGENGINEERING",
+    17: "PAUSEDLOWERING",
+    18: "PAUSEDLOWERINGENGINEERING",
+}
+
 ATPNEUMATICS_MIRROR_COVER_STATE_MAP = {
     1: "DISABLED",
     2: "ENABLED",
@@ -1352,6 +1374,7 @@ def get_nightreport_observatory_status_from_efd(efd_instance="summit_efd", time_
         - simonyiOilSupplySystemState
         - simonyiPowerSupplySystemState
         - simonyiLockingPinsSystemState
+        - simonyiM1M3DetailedState
         - auxtelAzimuth
         - auxtelElevation
         - auxtelDomeAzimuth
@@ -1381,6 +1404,11 @@ def get_nightreport_observatory_status_from_efd(efd_instance="summit_efd", time_
         "MTRotator": {
             0: {
                 "rotation": ["actualPosition"],
+            },
+        },
+        "MTM1M3": {
+            0: {
+                "detailedState": ["detailedState"],
             },
         },
         "ATMCS": {
@@ -1491,6 +1519,12 @@ def get_nightreport_observatory_status_from_efd(efd_instance="summit_efd", time_
                 "MTMount-0-logevent_elevationLockingPinMotionState",
                 "state",
                 MTMOUNT_ELEVATION_LOCKING_PIN_MOTION_STATE_MAP,
+            ),
+            "simonyiM1M3DetailedState": get_efd_data_state(
+                data,
+                "MTM1M3-0-logevent_detailedState",
+                "detailedState",
+                MTM1M3_DETAILED_STATE_MAP,
             ),
             "auxtelAzimuth": parse_measurement(
                 get_efd_data_measurement(
@@ -1628,6 +1662,7 @@ def parse_observatory_status_to_html_table(observatory_status):
         - simonyiOilSupplySystemState
         - simonyiPowerSupplySystemState
         - simonyiLockingPinsSystemState
+        - simonyiM1M3DetailedState
         - auxtelAzimuth
         - auxtelElevation
         - auxtelDomeAzimuth
@@ -1671,21 +1706,26 @@ def parse_observatory_status_to_html_table(observatory_status):
             <td>N/A</td>
         </tr>
         <tr style="background-color:#ffffff;">
+            <td style="white-space:nowrap;font-weight: bold;">M1M3 Detailed State</td>
+            <td>{observatory_status["simonyiM1M3DetailedState"]}</td>
+            <td>N/A</td>
+        </tr>
+        <tr style="background-color:#fafafa;">
             <td style="white-space:nowrap;font-weight: bold;">Mirror Covers State</td>
             <td>{observatory_status["simonyiMirrorCoversState"]}</td>
             <td>{observatory_status["auxtelMirrorCoversState"]}</td>
         </tr>
-        <tr style="background-color:#fafafa;">
+        <tr style="background-color:#ffffff;">
             <td style="white-space:nowrap;font-weight: bold;">Oil Supply System State</td>
             <td>{observatory_status["simonyiOilSupplySystemState"]}</td>
             <td>N/A</td>
         </tr>
-        <tr style="background-color:#ffffff;">
+        <tr style="background-color:#fafafa;">
             <td style="white-space:nowrap;font-weight: bold;">Power Supply System State</td>
             <td>{observatory_status["simonyiPowerSupplySystemState"]}</td>
             <td>N/A</td>
         </tr>
-        <tr style="background-color:#fafafa;">
+        <tr style="background-color:#ffffff;">
             <td style="white-space:nowrap;font-weight: bold;">Locking Pins System State</td>
             <td>{observatory_status["simonyiLockingPinsSystemState"]}</td>
             <td>N/A</td>
@@ -1710,6 +1750,7 @@ def parse_observatory_status_to_plain_text(observatory_status):
         - simonyiOilSupplySystemState
         - simonyiPowerSupplySystemState
         - simonyiLockingPinsSystemState
+        - simonyiM1M3DetailedState
         - auxtelAzimuth
         - auxtelElevation
         - auxtelDomeAzimuth
@@ -1727,6 +1768,7 @@ def parse_observatory_status_to_plain_text(observatory_status):
     plain_text += f"dome az = {observatory_status['simonyiDomeAzimuth']}, "
     plain_text += f"rotator = {observatory_status['simonyiRotator']}."
     plain_text += "\n"
+    plain_text += f"M1M3 Detailed State: {observatory_status['simonyiM1M3DetailedState']}, "
     plain_text += f"Mirror covers: {observatory_status['simonyiMirrorCoversState']}, "
     plain_text += f"Oil supply system: {observatory_status['simonyiOilSupplySystemState']}, "
     plain_text += f"Power supply system: {observatory_status['simonyiPowerSupplySystemState']}, "
