@@ -2,7 +2,10 @@
 Version History
 ===============
 
-v
+v7.5.15
+-------
+
+* Add M1M3 detailedState field to night report email. `<https://github.com/lsst-ts/LOVE-manager/pull/370>`_
 
 v7.5.14
 -------
