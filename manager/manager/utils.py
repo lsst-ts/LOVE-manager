@@ -1720,37 +1720,21 @@ def parse_observatory_status_to_plain_text(observatory_status):
     str
         The observatory status in plain text format
     """
-    maintel_params_units = {
-        "simonyiAzimuth": "°",
-        "simonyiElevation": "°",
-        "simonyiDomeAzimuth": "°",
-        "simonyiRotator": "°",
-    }
-    auxtel_params_units = {
-        "auxtelAzimuth": "°",
-        "auxtelElevation": "°",
-        "auxtelDomeAzimuth": "°",
-    }
-
     plain_text = ""
     plain_text += "Simonyi Telescope: "
-    plain_text += f"el = {observatory_status['simonyiElevation']}{maintel_params_units['simonyiElevation']}, "
-    plain_text += f"az = {observatory_status['simonyiAzimuth']}{maintel_params_units['simonyiAzimuth']}, "
-    plain_text += (
-        f"dome az = {observatory_status['simonyiDomeAzimuth']}{maintel_params_units['simonyiDomeAzimuth']}, "
-    )
-    plain_text += f"rotator = {observatory_status['simonyiRotator']}{maintel_params_units['simonyiRotator']}."
+    plain_text += f"el = {observatory_status['simonyiElevation']}, "
+    plain_text += f"az = {observatory_status['simonyiAzimuth']}, "
+    plain_text += f"dome az = {observatory_status['simonyiDomeAzimuth']}, "
+    plain_text += f"rotator = {observatory_status['simonyiRotator']}."
     plain_text += "\n"
     plain_text += f"Mirror covers: {observatory_status['simonyiMirrorCoversState']}, "
     plain_text += f"Oil supply system: {observatory_status['simonyiOilSupplySystemState']}, "
     plain_text += f"Power supply system: {observatory_status['simonyiPowerSupplySystemState']}, "
     plain_text += f"Locking pins system: {observatory_status['simonyiLockingPinsSystemState']}.\n"
     plain_text += "AuxTel Telescope: "
-    plain_text += f"el = {observatory_status['auxtelElevation']}{auxtel_params_units['auxtelElevation']}, "
-    plain_text += f"az = {observatory_status['auxtelAzimuth']}{auxtel_params_units['auxtelAzimuth']}, "
-    plain_text += (
-        f"dome az = {observatory_status['auxtelDomeAzimuth']}{auxtel_params_units['auxtelDomeAzimuth']}."
-    )
+    plain_text += f"el = {observatory_status['auxtelElevation']}, "
+    plain_text += f"az = {observatory_status['auxtelAzimuth']}, "
+    plain_text += f"dome az = {observatory_status['auxtelDomeAzimuth']}."
     plain_text += "\n"
     plain_text += f"Mirror covers: {observatory_status['auxtelMirrorCoversState']}.\n"
 
