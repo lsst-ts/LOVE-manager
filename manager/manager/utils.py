@@ -1359,7 +1359,7 @@ def get_nightreport_observatory_status_from_efd(efd_instance="summit_efd", time_
         Name of the EFD instance to query (defaults to "summit_efd").
     time_cut : None | datetime
         Optional datetime to use for the EFD `time_cut`. If None, the current
-        time (TAI) is used.
+        datetime is used.
 
     Returns
     -------
@@ -1451,7 +1451,7 @@ def get_nightreport_observatory_status_from_efd(efd_instance="summit_efd", time_
         return state_map.get(state, "UNKNOWN")
 
     if time_cut is None:
-        time_cut = astropy.time.Time.now().tai.datetime
+        time_cut = astropy.time.Time.now().datetime
 
     payload = {
         "cscs": cscs,
@@ -1574,7 +1574,7 @@ def get_nightreport_cscs_status_from_efd(efd_instance="summit_efd", time_cut=Non
         Name of the EFD instance to query (defaults to "summit_efd").
     time_cut : None | datetime
         Optional datetime to use for the EFD `time_cut`. If None, the current
-        time (TAI) is used.
+        datetime is used.
 
     Returns
     -------
@@ -1627,7 +1627,7 @@ def get_nightreport_cscs_status_from_efd(efd_instance="summit_efd", time_cut=Non
             return 0
 
     if time_cut is None:
-        time_cut = astropy.time.Time.now().tai.datetime
+        time_cut = astropy.time.Time.now().datetime
 
     payload = {
         "cscs": cscs,

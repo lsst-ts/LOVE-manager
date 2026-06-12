@@ -766,22 +766,25 @@ class NightReportTestCase(TestCase):
         response = self.client.post(url, data=self.send_report_payload, format="json")
         self.assertEqual(response.status_code, 200)
 
-        report_obsday_end_tai = get_tai_from_utc(get_obsday_end_to_utc(int(self.response_report["day_obs"])))
+        report_obsday_end_utc = get_obsday_end_to_utc(int(self.response_report["day_obs"]))
 
         # Check the observatory status & CSCs status from EFD
         # is called with the end of the report observing day
-        # in TAI scale as argument.
-        observatory_status_efd_time_cut_tai = (
+        # in UTC scale as argument.
+        observatory_status_efd_time_cut_utc = (
             mock_get_nightreport_observatory_status_from_efd_client.call_args[0][1]
         )
-        cscs_status_efd_time_cut_tai = mock_get_nightreport_cscs_status_from_efd_client.call_args[0][1]
-        assert observatory_status_efd_time_cut_tai == report_obsday_end_tai
-        assert cscs_status_efd_time_cut_tai == report_obsday_end_tai
+        cscs_status_efd_time_cut_utc = mock_get_nightreport_cscs_status_from_efd_client.call_args[0][1]
+        assert observatory_status_efd_time_cut_utc == report_obsday_end_utc
+        assert cscs_status_efd_time_cut_utc == report_obsday_end_utc
 
         # Simulate night report being sent on the current obs day
-        # thus EFD status methods are called with the current time (TAI)
+        # thus EFD status methods are called with the current time (UTC)
         # instead of the report obs day end.
-        curr_tai = astropy.time.Time.now().tai.datetime
+        curr_time = astropy.time.Time.now()
+        curr_utc = curr_time.utc.datetime
+        curr_tai = curr_time.tai.datetime
+
         mock_get_last_valid_night_report_client.return_value = {
             **self.response_report,
             "day_obs": get_obsday_from_tai(curr_tai),
@@ -789,14 +792,14 @@ class NightReportTestCase(TestCase):
         response = self.client.post(url, data=self.send_report_payload, format="json")
         self.assertEqual(response.status_code, 200)
 
-        observatory_status_efd_time_cut_tai = (
+        observatory_status_efd_time_cut_utc = (
             mock_get_nightreport_observatory_status_from_efd_client.call_args[0][1]
         )
-        cscs_status_efd_time_cut_tai = mock_get_nightreport_cscs_status_from_efd_client.call_args[0][1]
+        cscs_status_efd_time_cut_utc = mock_get_nightreport_cscs_status_from_efd_client.call_args[0][1]
         self.assertAlmostEqual(
-            observatory_status_efd_time_cut_tai, curr_tai, delta=datetime.timedelta(seconds=1)
+            observatory_status_efd_time_cut_utc, curr_utc, delta=datetime.timedelta(seconds=1)
         )
-        self.assertAlmostEqual(cscs_status_efd_time_cut_tai, curr_tai, delta=datetime.timedelta(seconds=1))
+        self.assertAlmostEqual(cscs_status_efd_time_cut_utc, curr_utc, delta=datetime.timedelta(seconds=1))
 
         mock_requests_patch.stop()
         mock_get_jira_obs_report.stop()
