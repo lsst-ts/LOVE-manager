@@ -1486,9 +1486,9 @@ def ole_send_night_report(request, *args, **kwargs):
 
     # Set time cut (TAI) for EFD queries. If the report is for a past obs day,
     # we set the cut to the end of that obs day.
-    report_obsday_end_tai = get_tai_from_utc(get_obsday_end_to_utc(last_valid_report_obsday))
-    curr_tai = astropy.time.Time.now().tai.datetime
-    efd_time_cut = min(curr_tai, report_obsday_end_tai)
+    report_obsday_end_utc = get_obsday_end_to_utc(last_valid_report_obsday)
+    curr_utc = astropy.time.Time.now().datetime
+    efd_time_cut = min(curr_utc, report_obsday_end_utc)
 
     # Get observatory and CSCS status
     try:

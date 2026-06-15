@@ -412,7 +412,7 @@ class TestSubscriptionCombinations:
         await producer_communicator.connect()
 
         # initial state is only useful for events
-        combinations = filter(lambda item: (item["category"] == "event"), self.combinations)
+        combinations = filter(lambda item: item["category"] == "event", self.combinations)
 
         for combination in combinations:
             # Act 1 (Subscribe producer)

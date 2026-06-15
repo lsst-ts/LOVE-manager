@@ -80,12 +80,34 @@ MTMOUNT_POWER_STATE_MAP = {
     15: "UNKNOWN",
 }
 
-MTMOUNT_MT_MOUNT_ELEVATION_LOCKING_PIN_MOTION_STATE_MAP = {
+MTMOUNT_ELEVATION_LOCKING_PIN_MOTION_STATE_MAP = {
     0: "LOCKED",
     1: "TEST",
     2: "UNLOCKED",
     3: "MOVING",
     4: "MISMATCH",
+}
+
+MTM1M3_DETAILED_STATE_MAP = {
+    0: "UNKNOWN",
+    1: "DISABLED",
+    2: "FAULT",
+    3: "OFFLINE",
+    4: "STANDBY",
+    5: "PARKED",
+    6: "RAISING",
+    7: "ACTIVE",
+    8: "LOWERING",
+    9: "PARKEDENGINEERING",
+    10: "RAISINGENGINEERING",
+    11: "ACTIVEENGINEERING",
+    12: "LOWERINGENGINEERING",
+    13: "LOWERINGFAULT",
+    14: "PROFILEHARDPOINTCORRECTIONS",
+    15: "PAUSEDRAISING",
+    16: "PAUSEDRAISINGENGINEERING",
+    17: "PAUSEDLOWERING",
+    18: "PAUSEDLOWERINGENGINEERING",
 }
 
 ATPNEUMATICS_MIRROR_COVER_STATE_MAP = {
@@ -1337,7 +1359,7 @@ def get_nightreport_observatory_status_from_efd(efd_instance="summit_efd", time_
         Name of the EFD instance to query (defaults to "summit_efd").
     time_cut : None | datetime
         Optional datetime to use for the EFD `time_cut`. If None, the current
-        time (TAI) is used.
+        datetime is used.
 
     Returns
     -------
@@ -1352,6 +1374,7 @@ def get_nightreport_observatory_status_from_efd(efd_instance="summit_efd", time_
         - simonyiOilSupplySystemState
         - simonyiPowerSupplySystemState
         - simonyiLockingPinsSystemState
+        - simonyiM1M3DetailedState
         - auxtelAzimuth
         - auxtelElevation
         - auxtelDomeAzimuth
@@ -1381,6 +1404,11 @@ def get_nightreport_observatory_status_from_efd(efd_instance="summit_efd", time_
         "MTRotator": {
             0: {
                 "rotation": ["actualPosition"],
+            },
+        },
+        "MTM1M3": {
+            0: {
+                "logevent_detailedState": ["detailedState"],
             },
         },
         "ATMCS": {
@@ -1423,7 +1451,7 @@ def get_nightreport_observatory_status_from_efd(efd_instance="summit_efd", time_
         return state_map.get(state, "UNKNOWN")
 
     if time_cut is None:
-        time_cut = astropy.time.Time.now().tai.datetime
+        time_cut = astropy.time.Time.now().datetime
 
     payload = {
         "cscs": cscs,
@@ -1490,7 +1518,13 @@ def get_nightreport_observatory_status_from_efd(efd_instance="summit_efd", time_
                 data,
                 "MTMount-0-logevent_elevationLockingPinMotionState",
                 "state",
-                MTMOUNT_MT_MOUNT_ELEVATION_LOCKING_PIN_MOTION_STATE_MAP,
+                MTMOUNT_ELEVATION_LOCKING_PIN_MOTION_STATE_MAP,
+            ),
+            "simonyiM1M3DetailedState": get_efd_data_state(
+                data,
+                "MTM1M3-0-logevent_detailedState",
+                "detailedState",
+                MTM1M3_DETAILED_STATE_MAP,
             ),
             "auxtelAzimuth": parse_measurement(
                 get_efd_data_measurement(
@@ -1540,7 +1574,7 @@ def get_nightreport_cscs_status_from_efd(efd_instance="summit_efd", time_cut=Non
         Name of the EFD instance to query (defaults to "summit_efd").
     time_cut : None | datetime
         Optional datetime to use for the EFD `time_cut`. If None, the current
-        time (TAI) is used.
+        datetime is used.
 
     Returns
     -------
@@ -1593,7 +1627,7 @@ def get_nightreport_cscs_status_from_efd(efd_instance="summit_efd", time_cut=Non
             return 0
 
     if time_cut is None:
-        time_cut = astropy.time.Time.now().tai.datetime
+        time_cut = astropy.time.Time.now().datetime
 
     payload = {
         "cscs": cscs,
@@ -1628,6 +1662,7 @@ def parse_observatory_status_to_html_table(observatory_status):
         - simonyiOilSupplySystemState
         - simonyiPowerSupplySystemState
         - simonyiLockingPinsSystemState
+        - simonyiM1M3DetailedState
         - auxtelAzimuth
         - auxtelElevation
         - auxtelDomeAzimuth
@@ -1671,21 +1706,26 @@ def parse_observatory_status_to_html_table(observatory_status):
             <td>N/A</td>
         </tr>
         <tr style="background-color:#ffffff;">
+            <td style="white-space:nowrap;font-weight: bold;">M1M3 Detailed State</td>
+            <td>{observatory_status["simonyiM1M3DetailedState"]}</td>
+            <td>N/A</td>
+        </tr>
+        <tr style="background-color:#fafafa;">
             <td style="white-space:nowrap;font-weight: bold;">Mirror Covers State</td>
             <td>{observatory_status["simonyiMirrorCoversState"]}</td>
             <td>{observatory_status["auxtelMirrorCoversState"]}</td>
         </tr>
-        <tr style="background-color:#fafafa;">
+        <tr style="background-color:#ffffff;">
             <td style="white-space:nowrap;font-weight: bold;">Oil Supply System State</td>
             <td>{observatory_status["simonyiOilSupplySystemState"]}</td>
             <td>N/A</td>
         </tr>
-        <tr style="background-color:#ffffff;">
+        <tr style="background-color:#fafafa;">
             <td style="white-space:nowrap;font-weight: bold;">Power Supply System State</td>
             <td>{observatory_status["simonyiPowerSupplySystemState"]}</td>
             <td>N/A</td>
         </tr>
-        <tr style="background-color:#fafafa;">
+        <tr style="background-color:#ffffff;">
             <td style="white-space:nowrap;font-weight: bold;">Locking Pins System State</td>
             <td>{observatory_status["simonyiLockingPinsSystemState"]}</td>
             <td>N/A</td>
@@ -1710,6 +1750,7 @@ def parse_observatory_status_to_plain_text(observatory_status):
         - simonyiOilSupplySystemState
         - simonyiPowerSupplySystemState
         - simonyiLockingPinsSystemState
+        - simonyiM1M3DetailedState
         - auxtelAzimuth
         - auxtelElevation
         - auxtelDomeAzimuth
@@ -1720,37 +1761,22 @@ def parse_observatory_status_to_plain_text(observatory_status):
     str
         The observatory status in plain text format
     """
-    maintel_params_units = {
-        "simonyiAzimuth": "°",
-        "simonyiElevation": "°",
-        "simonyiDomeAzimuth": "°",
-        "simonyiRotator": "°",
-    }
-    auxtel_params_units = {
-        "auxtelAzimuth": "°",
-        "auxtelElevation": "°",
-        "auxtelDomeAzimuth": "°",
-    }
-
     plain_text = ""
     plain_text += "Simonyi Telescope: "
-    plain_text += f"el = {observatory_status['simonyiElevation']}{maintel_params_units['simonyiElevation']}, "
-    plain_text += f"az = {observatory_status['simonyiAzimuth']}{maintel_params_units['simonyiAzimuth']}, "
-    plain_text += (
-        f"dome az = {observatory_status['simonyiDomeAzimuth']}{maintel_params_units['simonyiDomeAzimuth']}, "
-    )
-    plain_text += f"rotator = {observatory_status['simonyiRotator']}{maintel_params_units['simonyiRotator']}."
+    plain_text += f"el = {observatory_status['simonyiElevation']}, "
+    plain_text += f"az = {observatory_status['simonyiAzimuth']}, "
+    plain_text += f"dome az = {observatory_status['simonyiDomeAzimuth']}, "
+    plain_text += f"rotator = {observatory_status['simonyiRotator']}."
     plain_text += "\n"
+    plain_text += f"M1M3 Detailed State: {observatory_status['simonyiM1M3DetailedState']}, "
     plain_text += f"Mirror covers: {observatory_status['simonyiMirrorCoversState']}, "
     plain_text += f"Oil supply system: {observatory_status['simonyiOilSupplySystemState']}, "
     plain_text += f"Power supply system: {observatory_status['simonyiPowerSupplySystemState']}, "
     plain_text += f"Locking pins system: {observatory_status['simonyiLockingPinsSystemState']}.\n"
     plain_text += "AuxTel Telescope: "
-    plain_text += f"el = {observatory_status['auxtelElevation']}{auxtel_params_units['auxtelElevation']}, "
-    plain_text += f"az = {observatory_status['auxtelAzimuth']}{auxtel_params_units['auxtelAzimuth']}, "
-    plain_text += (
-        f"dome az = {observatory_status['auxtelDomeAzimuth']}{auxtel_params_units['auxtelDomeAzimuth']}."
-    )
+    plain_text += f"el = {observatory_status['auxtelElevation']}, "
+    plain_text += f"az = {observatory_status['auxtelAzimuth']}, "
+    plain_text += f"dome az = {observatory_status['auxtelDomeAzimuth']}."
     plain_text += "\n"
     plain_text += f"Mirror covers: {observatory_status['auxtelMirrorCoversState']}.\n"
 
