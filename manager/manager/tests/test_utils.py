@@ -8,8 +8,9 @@ from django.test.utils import override_settings
 from manager.utils import (
     ATPNEUMATICS_MIRROR_COVER_STATE_MAP,
     EFD_INSTACES,
+    MTM1M3_DETAILED_STATE_MAP,
     MTMOUNT_DEPLOYABLE_MOTION_STATE_MAP,
-    MTMOUNT_MT_MOUNT_ELEVATION_LOCKING_PIN_MOTION_STATE_MAP,
+    MTMOUNT_ELEVATION_LOCKING_PIN_MOTION_STATE_MAP,
     MTMOUNT_POWER_STATE_MAP,
     arrange_nightlydigest_urls_for_obsday,
     get_efd_instance_from_request,
@@ -43,6 +44,9 @@ observatory_status_efd_response = {
     },
     "MTRotator-0-rotation": {
         "actualPosition": [{"ts": "2025-10-24 19:22:13.100240+00:00", "value": -0.0016296546160410818}]
+    },
+    "MTM1M3-0-logevent_detailedState": {
+        "detailedState": [{"ts": "2025-10-24 19:22:13.100240+00:00", "value": 5}]
     },
     "ATMCS-0-mount_AzEl_Encoders": {
         "azimuthCalculatedAngle0": [{"ts": "2025-10-24 19:22:03.259886+00:00", "value": 15.1014567}],
@@ -209,6 +213,7 @@ class UtilsTestCase(TestCase):
             "simonyiOilSupplySystemState",
             "simonyiPowerSupplySystemState",
             "simonyiLockingPinsSystemState",
+            "simonyiM1M3DetailedState",
             "auxtelAzimuth",
             "auxtelElevation",
             "auxtelDomeAzimuth",
@@ -225,6 +230,7 @@ class UtilsTestCase(TestCase):
         assert observatory_status["simonyiOilSupplySystemState"] == "ON"
         assert observatory_status["simonyiPowerSupplySystemState"] == "ON"
         assert observatory_status["simonyiLockingPinsSystemState"] == "UNLOCKED"
+        assert observatory_status["simonyiM1M3DetailedState"] == "PARKED"
         assert observatory_status["auxtelAzimuth"] == "15.10°"
         assert observatory_status["auxtelElevation"] == "70.00°"
         assert observatory_status["auxtelDomeAzimuth"] == "104.66°"
@@ -262,12 +268,17 @@ class UtilsTestCase(TestCase):
             (
                 "MTMount-0-logevent_elevationLockingPinMotionState",
                 "simonyiLockingPinsSystemState",
-                MTMOUNT_MT_MOUNT_ELEVATION_LOCKING_PIN_MOTION_STATE_MAP,
+                MTMOUNT_ELEVATION_LOCKING_PIN_MOTION_STATE_MAP,
             ),
             (
                 "ATPneumatics-0-logevent_m1CoverState",
                 "auxtelMirrorCoversState",
                 ATPNEUMATICS_MIRROR_COVER_STATE_MAP,
+            ),
+            (
+                "MTM1M3-0-logevent_detailedState",
+                "simonyiM1M3DetailedState",
+                MTM1M3_DETAILED_STATE_MAP,
             ),
         ]
 
