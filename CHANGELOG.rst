@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.5.16
+-------
+
+Pin redis to versions <8.0.0,>=7.4.0. `<https://github.com/lsst-ts/LOVE-manager/pull/371>`_
+
 v7.5.15
 -------
 
