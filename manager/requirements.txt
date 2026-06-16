@@ -66,6 +66,7 @@ python-dateutil==2.9.0.post0
 python-ldap==3.4.5
 pytz==2024.1
 PyYAML==6.0.1
+redis<8.0.0,>=7.4.0
 requests==2.32.4
 ruamel.yaml==0.18.15
 ruamel.yaml.clib==0.2.14
