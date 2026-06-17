@@ -828,6 +828,14 @@
                       "salindex": 0
                     },
                     {
+                      "name": "FiberSpectrograph",
+                      "salindex": 101
+                    },
+                    {
+                      "name": "FiberSpectrograph",
+                      "salindex": 102
+                    },
+                    {
                       "name": "LEDProjector",
                       "salindex": 0
                     },
