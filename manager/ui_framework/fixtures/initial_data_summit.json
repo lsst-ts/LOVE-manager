@@ -1470,7 +1470,7 @@
                     {
                       "csc": "HVAC",
                       "item": "supplyFlowChiller01",
-                      "topic": "glycolSensor",
+                      "topic": "glycolLineSensors",
                       "isArray": false,
                       "accessor": "(x) => x",
                       "category": "telemetry",
@@ -1494,7 +1494,7 @@
                     {
                       "csc": "HVAC",
                       "item": "supplyFlowChiller02",
-                      "topic": "glycolSensor",
+                      "topic": "glycolLineSensors",
                       "isArray": false,
                       "accessor": "(x) => x",
                       "category": "telemetry",
@@ -1518,7 +1518,7 @@
                     {
                       "csc": "HVAC",
                       "item": "supplyFlowChiller03",
-                      "topic": "glycolSensor",
+                      "topic": "glycolLineSensors",
                       "isArray": false,
                       "accessor": "(x) => x",
                       "category": "telemetry",
@@ -1564,7 +1564,7 @@
                     {
                       "csc": "HVAC",
                       "item": "retTempChiller01",
-                      "topic": "glycolSensor",
+                      "topic": "glycolLineSensors",
                       "isArray": false,
                       "accessor": "(x) => x",
                       "category": "telemetry",
@@ -1588,7 +1588,7 @@
                     {
                       "csc": "HVAC",
                       "item": "retTempChiller02",
-                      "topic": "glycolSensor",
+                      "topic": "glycolLineSensors",
                       "isArray": false,
                       "accessor": "(x) => x",
                       "category": "telemetry",
@@ -1612,7 +1612,7 @@
                     {
                       "csc": "HVAC",
                       "item": "retTempChiller03",
-                      "topic": "glycolSensor",
+                      "topic": "glycolLineSensors",
                       "isArray": false,
                       "accessor": "(x) => x",
                       "category": "telemetry",
@@ -1636,7 +1636,7 @@
                     {
                       "csc": "HVAC",
                       "item": "supplyTempChiller01",
-                      "topic": "glycolSensor",
+                      "topic": "glycolLineSensors",
                       "isArray": false,
                       "accessor": "(x) => x",
                       "category": "telemetry",
@@ -1660,7 +1660,7 @@
                     {
                       "csc": "HVAC",
                       "item": "supplyTempChiller02",
-                      "topic": "glycolSensor",
+                      "topic": "glycolLineSensors",
                       "isArray": false,
                       "accessor": "(x) => x",
                       "category": "telemetry",
@@ -1684,7 +1684,7 @@
                     {
                       "csc": "HVAC",
                       "item": "supplyTempChiller03",
-                      "topic": "glycolSensor",
+                      "topic": "glycolLineSensors",
                       "isArray": false,
                       "accessor": "(x) => x",
                       "category": "telemetry",
@@ -1730,7 +1730,7 @@
                     {
                       "csc": "HVAC",
                       "item": "retPressChiller01",
-                      "topic": "glycolSensor",
+                      "topic": "glycolLineSensors",
                       "isArray": false,
                       "accessor": "(x) => x",
                       "category": "telemetry",
@@ -1754,7 +1754,7 @@
                     {
                       "csc": "HVAC",
                       "item": "retPressChiller02",
-                      "topic": "glycolSensor",
+                      "topic": "glycolLineSensors",
                       "isArray": false,
                       "accessor": "(x) => x",
                       "category": "telemetry",
@@ -1778,7 +1778,7 @@
                     {
                       "csc": "HVAC",
                       "item": "retPressChiller03",
-                      "topic": "glycolSensor",
+                      "topic": "glycolLineSensors",
                       "isArray": false,
                       "accessor": "(x) => x",
                       "category": "telemetry",
@@ -1802,7 +1802,7 @@
                     {
                       "csc": "HVAC",
                       "item": "supplyPressChiller01",
-                      "topic": "glycolSensor",
+                      "topic": "glycolLineSensors",
                       "isArray": false,
                       "accessor": "(x) => x",
                       "category": "telemetry",
@@ -1826,7 +1826,7 @@
                     {
                       "csc": "HVAC",
                       "item": "supplyPressChiller02",
-                      "topic": "glycolSensor",
+                      "topic": "glycolLineSensors",
                       "isArray": false,
                       "accessor": "(x) => x",
                       "category": "telemetry",
@@ -1850,7 +1850,7 @@
                     {
                       "csc": "HVAC",
                       "item": "supplyPressChiller03",
-                      "topic": "glycolSensor",
+                      "topic": "glycolLineSensors",
                       "isArray": false,
                       "accessor": "(x) => x",
                       "category": "telemetry",
