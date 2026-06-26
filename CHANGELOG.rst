@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.5.17
+-------
+
+* Update glycol sensors topic in ui_framework fixtures in summit, base, tucson. `<https://github.com/lsst-ts/LOVE-manager/pull/374>`_
+
 v7.5.16
 -------
 
