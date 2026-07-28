@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.5.18
+-------
+
+* Add ESS:307 to SummaryState views on base, tucson and summit. `<https://github.com/lsst-ts/LOVE-manager/pull/375>`_
+
 v7.5.17
 -------
 
