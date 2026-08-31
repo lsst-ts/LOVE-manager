@@ -8,3 +8,4 @@ isort: false
 mypy: false
 ruff: true
 towncrier: false
+insert-license: true
