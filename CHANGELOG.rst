@@ -2,9 +2,10 @@
 Version History
 ===============
 
-v7.5.18
--------
+v7.6.0
+------
 
+* Add insert-license pre-commit hook and make LICENSE and COPYRIGHT standard. `<https://github.com/lsst-ts/LOVE-manager/pull/376>`_ 
 * Add ESS:307 to SummaryState views on base, tucson and summit. `<https://github.com/lsst-ts/LOVE-manager/pull/375>`_
 
 v7.5.17
