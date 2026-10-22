@@ -31,6 +31,7 @@ from tempfile import TemporaryFile
 from urllib.parse import quote
 
 import astropy.time
+import astropy.utils.iers as iers
 import requests
 from astropy.time import Time
 from astropy.units import hour
@@ -39,6 +40,10 @@ from django.core.exceptions import ValidationError
 from django.core.files.storage import Storage
 from pytz import timezone
 from rest_framework.response import Response
+
+# IERS configurations
+iers.conf.auto_max_age = None
+iers.conf.auto_download = False
 
 # Constants
 JSON_RESPONSE_LOCAL_STORAGE_NOT_ALLOWED = {"error": "Local storage not allowed."}
@@ -922,15 +927,15 @@ def get_times():
     t_tai = t.tai.datetime.timestamp()
     shifted_iso = (t.tai - 12 * hour).iso
     observing_day = shifted_iso[0:10].replace("-", "")
-    sidereal_summit = t.sidereal_time("apparent", longitude=-70.749417, model=None)
-    sidereal_greenwich = t.sidereal_time("apparent", longitude="greenwich", model=None)
+    sidereal_summit = t.sidereal_time("apparent", longitude=-70.749417, model=None).value
+    sidereal_greenwich = t.sidereal_time("apparent", longitude="greenwich", model=None).value
     return {
         "utc": t_utc,
         "tai": t_tai,
         "mjd": t.mjd,
         "observing_day": observing_day,
-        "sidereal_summit": sidereal_summit.value,
-        "sidereal_greenwich": sidereal_greenwich.value,
+        "sidereal_summit": sidereal_summit,
+        "sidereal_greenwich": sidereal_greenwich,
         "tai_to_utc": t_utc - t_tai,
     }
 
