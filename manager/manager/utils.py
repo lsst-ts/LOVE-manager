@@ -31,6 +31,7 @@ from tempfile import TemporaryFile
 from urllib.parse import quote
 
 import astropy.time
+import astropy.utils.iers as iers
 import requests
 from astropy.time import Time
 from astropy.units import hour
@@ -39,6 +40,9 @@ from django.core.exceptions import ValidationError
 from django.core.files.storage import Storage
 from pytz import timezone
 from rest_framework.response import Response
+
+# IERS configurations
+iers.conf.auto_max_age = None
 
 # Constants
 JSON_RESPONSE_LOCAL_STORAGE_NOT_ALLOWED = {"error": "Local storage not allowed."}
