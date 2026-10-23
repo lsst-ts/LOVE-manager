@@ -1,4 +1,7 @@
 #!/bin/bash
+
+source ~/.bashrc
+
 echo -e "\nMaking migrations"
 while ! python manage.py makemigrations
 do
