@@ -19,33 +19,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-import os
-
-from django.db.models.signals import post_delete
-from django.dispatch import receiver
-
-from manager import settings
-from ui_framework.models import View
-
-
-@receiver(post_delete, sender=View)
-def hanlde_view_deletion(sender, **kwargs):
-    """Receive signal when a View is deleted
-    and delete its thumbnail image from disk.
-
-    Parameters
-    ----------
-    sender: `object`
-        class of the sender, in this case 'View'
-    kwargs: `dict`
-        arguments dictionary sent with the signal.
-        It contains the key 'instance' with the View instance that was deleted
-    """
-    deleted_view = kwargs["instance"]
-    if deleted_view and deleted_view.thumbnail:
-        file_url = settings.MEDIA_BASE + deleted_view.thumbnail.url
-        try:
-            os.remove(file_url)
-        except FileNotFoundError:
-            pass
-    pass
+try:
+    from .version import __version__
+except ImportError:
+    __version__ = "?"

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+source $HOME/.setup_sal_env.sh
+cd $HOME/develop/python/love/manager
+
 echo -e "\nMaking migrations"
 while ! python manage.py makemigrations
 do
