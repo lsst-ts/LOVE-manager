@@ -29,8 +29,9 @@ from api.models import Token
 from channels.testing import WebsocketCommunicator
 from django.contrib.auth.models import Permission, User
 from django.test import override_settings
-from manager.routing import application
 from subscription.heartbeat_manager import HeartbeatManager
+
+from manager.routing import application
 
 
 class TestHeartbeat:
@@ -323,6 +324,7 @@ class TestHeartbeat:
         # Assert 1
         assert response["data"] == "Successfully subscribed to heartbeat-manager-0-stream"
 
+        timed_out = False
         try:
             response = await communicator.receive_json_from(timeout=10)
             # assert response["data"][0]["data"]["timestamp"] is not None
@@ -338,8 +340,11 @@ class TestHeartbeat:
 
         except asyncio.TimeoutError:
             # Assert 2
-            assert True
+            # Newer asgiref cancels the application on a receive timeout,
+            # so the communicator can no longer be disconnected.
+            timed_out = True
 
         finally:
-            await communicator.disconnect()
+            if not timed_out:
+                await communicator.disconnect()
             await hb_manager.stop()

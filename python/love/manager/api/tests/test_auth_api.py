@@ -32,11 +32,11 @@ from django.core.files.base import ContentFile
 from django.test import TestCase
 from django.urls import reverse
 from freezegun import freeze_time
+from manager import utils
 from rest_framework import status
 from rest_framework.test import APIClient
 
 from api.models import ConfigFile, Token
-from manager import utils
 
 LDAP_USERNAME = "ldap_user"
 LDAP_USERNAME_NON_COMMANDS = "ldap_user_non_commands"

@@ -19,21 +19,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-# !/usr/bin/env python
+import setuptools
+import setuptools_scm
 
-"""Main executable of the Django Application."""
-
-import os
-import sys
-
-if __name__ == "__main__":
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "manager.settings")
-    try:
-        from django.core.management import execute_from_command_line
-    except ImportError as exc:
-        raise ImportError(
-            "Couldn't import Django. Are you sure it's installed and "
-            "available on your PYTHONPATH environment variable? Did you "
-            "forget to activate a virtual environment?"
-        ) from exc
-    execute_from_command_line(sys.argv)
+setuptools.setup(
+    version=setuptools_scm.get_version(
+        write_to="python/love/manager/version.py",
+        local_scheme="no-local-version",
+    )
+)
