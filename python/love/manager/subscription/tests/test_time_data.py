@@ -25,9 +25,8 @@ import pytest
 from api.models import Token
 from channels.testing import WebsocketCommunicator
 from django.contrib.auth.models import Permission, User
-from manager.routing import application
-
 from manager import utils
+from manager.routing import application
 
 
 class TestTimeData:
