@@ -26,6 +26,7 @@ from typing import Union
 
 from django.contrib.auth.models import User
 from drf_yasg.utils import swagger_serializer_method
+from manager import utils
 from manager.permissions import CommandPermission
 from rest_framework import serializers
 
@@ -36,7 +37,6 @@ from api.models import (
     ImageTag,
     ScriptConfiguration,
 )
-from manager import utils
 
 
 class UserSerializer(serializers.ModelSerializer):

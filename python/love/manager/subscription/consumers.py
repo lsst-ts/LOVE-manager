@@ -28,8 +28,8 @@ import json
 from astropy.time import Time
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from django.conf import settings
-
 from manager import utils
+
 from subscription.heartbeat_manager import HeartbeatManager
 
 
