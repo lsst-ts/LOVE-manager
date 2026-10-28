@@ -23,9 +23,9 @@ import os
 
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
-from manager import settings
-
 from ui_framework.models import View
+
+from manager import settings
 
 
 @receiver(post_delete, sender=View)
@@ -43,7 +43,7 @@ def hanlde_view_deletion(sender, **kwargs):
     """
     deleted_view = kwargs["instance"]
     if deleted_view and deleted_view.thumbnail:
-        file_url = settings.MEDIA_BASE + deleted_view.thumbnail.url
+        file_url = settings.BASE_DIR + deleted_view.thumbnail.url
         try:
             os.remove(file_url)
         except FileNotFoundError:

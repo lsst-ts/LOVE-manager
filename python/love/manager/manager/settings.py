@@ -124,10 +124,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # 'webpack_loader',
     "channels",
     "rest_framework",
-    # 'rest_framework.authtoken',
     "corsheaders",
     "drf_yasg",
     "api",
@@ -227,11 +225,9 @@ TOKEN_EXPIRED_AFTER_DAYS = 30
 STATIC_URL = f"{FORCE_SCRIPT_NAME}/manager/static/" if FORCE_SCRIPT_NAME else "/manager/static/"
 
 """URL to access Django static files (`string`)"""
-
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+#
+STATIC_ROOT = os.path.join("/usr/src/love-manager", "static")
 """Location of static files (`string`)"""
-
-STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
 STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.FileSystemFinder",
@@ -240,11 +236,13 @@ STATICFILES_FINDERS = (
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static_files"),
 ]
+"""Additional locations of static files (`list`)"""
 
 MEDIA_URL = f"{FORCE_SCRIPT_NAME}/manager/media/" if FORCE_SCRIPT_NAME else "/manager/media/"
 """URL for media files access (`string`)"""
-MEDIA_BASE = BASE_DIR
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+#
+MEDIA_ROOT = os.path.join("/usr/src/love-manager", "media")
+"""Location of media files (`string`)"""
 
 # Channels
 ASGI_APPLICATION = "manager.routing.application"
