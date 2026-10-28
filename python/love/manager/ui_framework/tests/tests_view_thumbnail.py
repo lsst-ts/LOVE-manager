@@ -35,8 +35,9 @@ from django.test import TestCase, override_settings
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
-
 from ui_framework.models import View
+
+MOCK_LOCATION = os.path.join(os.path.dirname(os.path.abspath(__file__)), "media", "mock", "test")
 
 
 @override_settings(DEBUG=True)
@@ -80,7 +81,7 @@ class ViewThumbnailTestCase(TestCase):
         # Arrange
         # read test data (base64 string)
         old_count = View.objects.count()
-        mock_location = os.path.join(os.getcwd(), "ui_framework", "tests", "media", "mock", "test")
+        mock_location = MOCK_LOCATION
         with open(mock_location) as f:
             image_data = f.read()
 
@@ -141,7 +142,7 @@ class ViewThumbnailTestCase(TestCase):
         # Arrange
         # read test data (base64 string)
         old_count = View.objects.count()
-        mock_location = os.path.join(os.getcwd(), "ui_framework", "tests", "media", "mock", "test")
+        mock_location = MOCK_LOCATION
         with open(mock_location) as f:
             image_data = f.read()
 
@@ -190,7 +191,7 @@ class ViewThumbnailTestCase(TestCase):
         """Test thumbnail behavior when deleting a view"""
         # Arrange
         # add view with thumbnail
-        mock_location = os.path.join(os.getcwd(), "ui_framework", "tests", "media", "mock", "test")
+        mock_location = MOCK_LOCATION
         with open(mock_location) as f:
             image_data = f.read()
 
@@ -213,7 +214,7 @@ class ViewThumbnailTestCase(TestCase):
         self.assertEqual(delete_response.status_code, status.HTTP_204_NO_CONTENT)
 
         # - file does not exist
-        file_url = settings.MEDIA_BASE + view.thumbnail.url
+        file_url = settings.BASE_DIR + view.thumbnail.url
         with pytest.raises(FileNotFoundError):
             f = open(file_url, "r")
             f.close()

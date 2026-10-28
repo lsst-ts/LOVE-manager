@@ -65,6 +65,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# Define the current working directory of the project
+# Used to construct absolute paths for static and media files
+CURRENT_WORKING_DIR = os.getcwd()
+
 # Define wether the system is being tested or not:
 TESTING = os.environ.get("TESTING", False)
 """Define wether or not this instance is being created for testing or not,
@@ -124,10 +128,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # 'webpack_loader',
     "channels",
     "rest_framework",
-    # 'rest_framework.authtoken',
     "corsheaders",
     "drf_yasg",
     "api",
@@ -227,11 +229,9 @@ TOKEN_EXPIRED_AFTER_DAYS = 30
 STATIC_URL = f"{FORCE_SCRIPT_NAME}/manager/static/" if FORCE_SCRIPT_NAME else "/manager/static/"
 
 """URL to access Django static files (`string`)"""
-
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+#
+STATIC_ROOT = os.path.join(CURRENT_WORKING_DIR, "love-manager", "static")
 """Location of static files (`string`)"""
-
-STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
 STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.FileSystemFinder",
@@ -240,11 +240,13 @@ STATICFILES_FINDERS = (
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static_files"),
 ]
+"""Additional locations of static files (`list`)"""
 
 MEDIA_URL = f"{FORCE_SCRIPT_NAME}/manager/media/" if FORCE_SCRIPT_NAME else "/manager/media/"
 """URL for media files access (`string`)"""
-MEDIA_BASE = BASE_DIR
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+#
+MEDIA_ROOT = os.path.join(CURRENT_WORKING_DIR, "love-manager", "media")
+"""Location of media files (`string`)"""
 
 # Channels
 ASGI_APPLICATION = "manager.routing.application"
