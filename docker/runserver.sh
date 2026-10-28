@@ -23,13 +23,13 @@ fi
 echo -e "\nSite: ${love_site}"
 
 echo -e "\nApplying fixtures"
-mkdir -p media/thumbnails
-cp -u ui_framework/fixtures/thumbnails/* media/thumbnails
+mkdir -p love-manager/media/thumbnails
+cp -u ui_framework/fixtures/thumbnails/* love-manager/media/thumbnails
 if [ -d "ui_framework/fixtures/thumbnails/${love_site}" ]; then
-  cp -u ui_framework/fixtures/thumbnails/${love_site}/* media/thumbnails
+  cp -u ui_framework/fixtures/thumbnails/${love_site}/* love-manager/media/thumbnails
 fi
-mkdir -p media/configs
-cp -u api/fixtures/configs/* media/configs
+mkdir -p love-manager/media/configs
+cp -u api/fixtures/configs/* love-manager/media/configs
 
 if [ -z ${REMOTE_STORAGE} ]; then
   echo -e "\nStarting server without URL subpath"

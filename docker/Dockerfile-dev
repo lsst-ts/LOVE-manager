@@ -1,7 +1,8 @@
 ARG dev_cycle=develop
 FROM rubincr.lsst.org/develop-env:${dev_cycle}
 
-# Expose static files and port
+# Expose static and media files and port
+VOLUME /usr/src/love/love-manager
 EXPOSE 8000
 
 # Set env variables for runtime (to be replaced in docker-compose files)
@@ -11,5 +12,6 @@ ENV CMD_USER_PASS=test
 
 # Run development server in runtime
 WORKDIR /usr/src/love
-COPY --chown=saluser:saluser docker/runserver.sh .startup.sh
-CMD ["./.startup.sh"]
+COPY --chown=saluser:saluser docker/runserver.sh /home/saluser/.startup.sh
+RUN chmod a+x /home/saluser/.startup.sh
+CMD ["/home/saluser/.startup.sh"]
