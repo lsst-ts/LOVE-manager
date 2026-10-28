@@ -1,24 +1,6 @@
 ARG dev_cycle=develop
 FROM rubincr.lsst.org/develop-env:${dev_cycle}
 
-# Install required packages
-# RUN apt-get update && \
-#     apt-get install -y \
-#     libsasl2-dev \
-#     libldap2-dev \
-#     libssl-dev &&\
-#     rm -rf /var/lib/apt/lists/*
-
-# Set workdir and install python requirements
-# WORKDIR /usr/src/love/manager
-# COPY manager/requirements.txt .
-# RUN pip install -r requirements.txt
-
-RUN source ~/.bashrc && conda install -y -c conda-forge django==5.2 python-ldap==3.4.8 django-auth-ldap==5.4.0 daphne==4.2.1 \
-    channels==4.1.0 channels_redis==4.2.0 djangorestframework==3.15.2 drf-yasg==1.21.15 django-cors-headers==4.4.0 \
-    standard-imghdr==3.13.0 freezegun==1.5.5 m2r2==2.1.0 pytest-django==4.11.1
-
-
 # Expose static files and port
 EXPOSE 8000
 
@@ -28,5 +10,6 @@ ENV USER_USER_PASS=test
 ENV CMD_USER_PASS=test
 
 # Run development server in runtime
-WORKDIR /usr/src/love/manager
-CMD ["./runserver-dev.sh"]
+WORKDIR /usr/src/love
+COPY --chown=saluser:saluser docker/runserver.sh .startup.sh
+CMD ["./.startup.sh"]
