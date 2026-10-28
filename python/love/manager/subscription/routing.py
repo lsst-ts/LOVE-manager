@@ -22,13 +22,22 @@
 """Define the rules for routing
 of channels messages (websockets) in the subscription application."""
 
+import re
+
+from django.conf import settings
 from django.urls import re_path
 
 from .consumers import SubscriptionConsumer
 
+subpath = getattr(settings, "FORCE_SCRIPT_NAME", "") or ""
+subpath_clean = subpath.strip("/")
+prefix_pattern = f"(?:{re.escape(subpath_clean)}/)?" if subpath_clean else ""
+
+subscription_pattern = rf"^/?{prefix_pattern}manager(.*?)/ws/subscription/?$"
+
 websocket_urlpatterns = [
     re_path(
-        r"^manager(.*?)/ws/subscription/?$",
+        subscription_pattern,
         SubscriptionConsumer.as_asgi(),
     ),
 ]
