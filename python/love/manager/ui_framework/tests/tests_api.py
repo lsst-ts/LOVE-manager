@@ -25,7 +25,6 @@ from api.models import Token
 from django.contrib.auth.models import Permission, User
 from django.urls import reverse
 from rest_framework import status
-
 from ui_framework.tests.utils import BaseTestCase, get_dict
 
 

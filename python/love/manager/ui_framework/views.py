@@ -26,7 +26,6 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-
 from ui_framework.models import View, Workspace, WorkspaceView
 from ui_framework.serializers import (
     ViewSerializer,

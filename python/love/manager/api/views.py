@@ -31,10 +31,36 @@ import jsonschema
 import ldap
 import requests
 import yaml
+from api.models import (
+    ConfigFile,
+    ControlLocation,
+    EmergencyContact,
+    ImageTag,
+    ScriptConfiguration,
+    Token,
+)
+from api.serializers import (
+    ConfigFileContentSerializer,
+    ConfigFileSerializer,
+    ConfigSerializer,
+    ControlLocationSerializer,
+    EmergencyContactSerializer,
+    ImageTagSerializer,
+    ScriptConfigurationSerializer,
+    TokenSerializer,
+    UserSerializer,
+)
 from django.contrib.auth.models import Group, User
 from django_auth_ldap.backend import LDAPBackend
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework import status, viewsets
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework.parsers import MultiPartParser
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
 from manager.permissions import CommandPermission
 from manager.settings import (
     AUTH_LDAP_1_SERVER_URI,
@@ -56,32 +82,6 @@ from manager.utils import (
     handle_jira_payload,
     send_smtp_email,
     upload_to_lfa,
-)
-from rest_framework import status, viewsets
-from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.decorators import action, api_view, permission_classes
-from rest_framework.parsers import MultiPartParser
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-
-from api.models import (
-    ConfigFile,
-    ControlLocation,
-    EmergencyContact,
-    ImageTag,
-    ScriptConfiguration,
-    Token,
-)
-from api.serializers import (
-    ConfigFileContentSerializer,
-    ConfigFileSerializer,
-    ConfigSerializer,
-    ControlLocationSerializer,
-    EmergencyContactSerializer,
-    ImageTagSerializer,
-    ScriptConfigurationSerializer,
-    TokenSerializer,
-    UserSerializer,
 )
 
 from .schema_validator import DefaultingValidator

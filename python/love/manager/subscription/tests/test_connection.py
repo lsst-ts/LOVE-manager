@@ -29,6 +29,7 @@ from channels.db import database_sync_to_async
 from channels.layers import get_channel_layer
 from channels.testing import WebsocketCommunicator
 from django.contrib.auth.models import User
+
 from manager.routing import application
 from manager.settings import PROCESS_CONNECTION_PASS
 

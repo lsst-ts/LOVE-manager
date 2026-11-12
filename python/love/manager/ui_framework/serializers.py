@@ -29,7 +29,6 @@ from django.conf import settings
 from django.core.files.base import ContentFile
 from django.db.models import Max
 from rest_framework import serializers
-
 from ui_framework.models import View, Workspace, WorkspaceView
 
 
