@@ -25,10 +25,9 @@ from urllib.parse import unquote
 
 from django.test import TestCase
 from django.urls import reverse
+from redirect.utils import ChronografSites, FATable
 from rest_framework import status
 from rest_framework.test import APIClient
-
-from redirect.utils import ChronografSites, FATable
 
 
 def get_random_force_actuator():

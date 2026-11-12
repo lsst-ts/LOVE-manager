@@ -19,12 +19,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+from api.models import Token
 from django.contrib.auth.models import Permission, User
 from django.test import TestCase, override_settings
 from django.urls import reverse
 from rest_framework.test import APIClient
-
-from api.models import Token
 
 
 @override_settings(DEBUG=True)

@@ -26,7 +26,6 @@ from django.conf import settings
 from django.contrib.auth.models import Permission, User
 from django.urls import reverse
 from rest_framework import status
-
 from ui_framework.models import View
 from ui_framework.tests.utils import BaseTestCase
 

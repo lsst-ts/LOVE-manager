@@ -26,14 +26,13 @@ import tempfile
 from unittest import mock
 
 import requests
+from api.models import ConfigFile, Token
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 from django.test import TestCase, override_settings
 from django.urls import reverse
 from rest_framework.test import APIClient
-
-from api.models import ConfigFile, Token
 
 # python manage.py test api.tests.tests_configfile.ConfigFileApiTestCase
 

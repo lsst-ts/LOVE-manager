@@ -38,7 +38,6 @@ Including another URLconf
 """
 
 from rest_framework.routers import DefaultRouter
-
 from ui_framework.views import ViewViewSet, WorkspaceViewSet, WorkspaceViewViewSet
 
 router = DefaultRouter()

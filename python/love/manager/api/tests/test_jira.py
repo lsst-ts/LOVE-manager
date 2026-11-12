@@ -30,9 +30,12 @@ import astropy
 import pytest
 import requests
 import rest_framework
+from api.models import Token
 from django.contrib.auth.models import User
 from django.test import TestCase, override_settings
 from django.urls import reverse
+from rest_framework.test import APIClient
+
 from manager.utils import (
     ERROR_OBS_TICKETS,
     JIRA_PROJECTS_WITH_TIME_LOSS,
@@ -47,9 +50,6 @@ from manager.utils import (
     jira_ticket,
     update_time_lost,
 )
-from rest_framework.test import APIClient
-
-from api.models import Token
 
 JIRA_OBS_SYSTEMS_SELECTION_EXAMPLE = """
 {

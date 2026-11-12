@@ -29,7 +29,6 @@ from django.utils import timezone
 from freezegun import freeze_time
 from rest_framework import serializers
 from rest_framework.test import APIClient
-
 from ui_framework.models import View, Workspace, WorkspaceView
 
 

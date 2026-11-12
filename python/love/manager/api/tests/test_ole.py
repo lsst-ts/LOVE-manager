@@ -26,9 +26,13 @@ from unittest.mock import patch
 import astropy
 import requests
 import rest_framework.response
+from api.models import Token
+from api.views import NIGHT_REPORT_CONFLICT_MESSAGE
 from django.contrib.auth.models import User
 from django.test import TestCase, override_settings
 from django.urls import reverse
+from rest_framework.test import APIClient
+
 from manager.utils import (
     DATETIME_ISO_FORMAT,
     ERROR_OBS_TICKETS,
@@ -36,10 +40,6 @@ from manager.utils import (
     get_obsday_from_tai,
     get_tai_from_utc,
 )
-from rest_framework.test import APIClient
-
-from api.models import Token
-from api.views import NIGHT_REPORT_CONFLICT_MESSAGE
 
 OBS_SYSTEMS_HIERARCHY = """
 {
