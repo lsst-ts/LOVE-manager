@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v7.6.1
+------
+
+* Add ESSs 130, 131 and 132 to Summary State views on base, tucson and summit.
+
 v7.6.0
 ------
 
