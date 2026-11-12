@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v8.0.0
+------
+
+* Conda package the love-manager. `<https://github.com/lsst-ts/LOVE-manager/pull/379>`_
+
 v7.6.1
 ------
 
