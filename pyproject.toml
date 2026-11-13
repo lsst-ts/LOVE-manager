@@ -26,7 +26,7 @@ asyncio_mode = "strict"
 pythonpath = "python/love/manager"
 addopts = "--import-mode=importlib"
 python_files = ["test_*.py", "tests_*.py", "tests.py"]
-DJANGO_SETTINGS_MODULE = "manager.settings"
+DJANGO_SETTINGS_MODULE = "manager.test_settings"
 env = [
   "TESTING=True",
   "SHOW_TRACE_TIMESTAMPS=false",
