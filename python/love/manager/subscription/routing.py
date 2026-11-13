@@ -1,0 +1,45 @@
+# This file is part of LOVE-manager.
+#
+# Developed for the Vera C. Rubin Observatory Telescope and Site Systems.
+# This product includes software developed by the LSST Project
+# (https://www.lsst.org).
+# See the COPYRIGHT file at the top-level directory of this distribution
+# for details of code ownership.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+"""Define the rules for routing
+of channels messages (websockets) in the subscription application."""
+
+import re
+
+from django.conf import settings
+from django.urls import re_path
+
+from .consumers import SubscriptionConsumer
+
+subpath = getattr(settings, "FORCE_SCRIPT_NAME", "") or ""
+subpath_clean = subpath.strip("/")
+prefix_pattern = f"(?:{re.escape(subpath_clean)}/)?" if subpath_clean else ""
+
+subscription_pattern = rf"^/?{prefix_pattern}manager(.*?)/ws/subscription/?$"
+
+websocket_urlpatterns = [
+    re_path(
+        subscription_pattern,
+        SubscriptionConsumer.as_asgi(),
+    ),
+]
+"""List of url patterns that match
+a URL to a Consumer (in this case only 1)."""
