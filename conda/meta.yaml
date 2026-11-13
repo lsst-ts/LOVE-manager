@@ -14,17 +14,17 @@ build:
     - manage_love = love.manager.manage:main
   string: "py{{ PY_VER | replace('.', '') }}{{ PKG_HASH }}_{{ PKG_BUILDNUM }}"
 
-# test:
-#     requires:
-#         - freezegun =1.5
-#         - pytest-django =4.11
-#         - ts-conda-build =0.5
-#     source_files:
-#         - pyproject.toml
-#         - python
-#         - tests
-#     commands:
-#         - pytest
+test:
+    requires:
+        - freezegun =1.5
+        - pytest-django =4.11
+        - ts-conda-build =0.5
+    source_files:
+        - pyproject.toml
+        - python
+        - tests
+    commands:
+        - pytest
 
 requirements:
   host:
