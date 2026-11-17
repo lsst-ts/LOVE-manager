@@ -19,3 +19,9 @@ webpack-stats.*
 .ruff.toml
 towncrier.toml
 .LICENSE.txt
+
+# Auto-generated version file
+python/love/manager/version.py
+
+# Egg-info build metadata (matches anywhere in the repo)
+*.egg-info/

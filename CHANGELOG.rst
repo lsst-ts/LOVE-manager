@@ -2,15 +2,20 @@
 Version History
 ===============
 
+v8.0.0
+------
+
+* Conda package the love-manager. `<https://github.com/lsst-ts/LOVE-manager/pull/379>`_
+
 v7.6.1
 ------
 
-* Add ESSs 130, 131 and 132 to Summary State views on base, tucson and summit.
+* Add ESSs 130, 131 and 132 to Summary State views on base, tucson and summit. `<https://github.com/lsst-ts/LOVE-manager/pull/378>`_
+* Set IERS configurations ``auto_max_age`` to None and ``auto_download`` to False. `<https://github.com/lsst-ts/LOVE-manager/pull/377>`_
 
 v7.6.0
 ------
 
-* Set IERS configurations ``auto_max_age`` to None and ``auto_download`` to False. `<https://github.com/lsst-ts/LOVE-manager/pull/377>`_
 * Add insert-license pre-commit hook and make LICENSE and COPYRIGHT standard. `<https://github.com/lsst-ts/LOVE-manager/pull/376>`_ 
 * Add ESS:307 to SummaryState views on base, tucson and summit. `<https://github.com/lsst-ts/LOVE-manager/pull/375>`_
 
