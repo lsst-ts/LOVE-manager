@@ -22,7 +22,6 @@ test:
     source_files:
         - pyproject.toml
         - python
-        - tests
     commands:
         - pytest
 
