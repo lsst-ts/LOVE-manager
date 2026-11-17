@@ -18,6 +18,7 @@ test:
     requires:
         - freezegun =1.5
         - pytest-django =4.11
+        - pytest-env
         - ts-conda-build =0.5
     source_files:
         - pyproject.toml
