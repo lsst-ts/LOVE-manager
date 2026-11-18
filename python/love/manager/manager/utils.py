@@ -37,7 +37,7 @@ from astropy.time import Time
 from astropy.units import hour
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.core.files.storage import Storage
+from django.core.files.storage import FileSystemStorage, Storage
 from pytz import timezone
 from rest_framework.response import Response
 
@@ -178,6 +178,7 @@ class RemoteStorage(Storage):
         self.location = (
             f"http://{os.environ.get('COMMANDER_HOSTNAME')}:{os.environ.get('COMMANDER_PORT')}/lfa"
         )
+        self.local_storage = FileSystemStorage()
 
     def _validate_LFA_url(self, name):
         """Validate the name of the file is a valid LFA url."""
@@ -187,45 +188,46 @@ class RemoteStorage(Storage):
             raise ValueError(f"Invalid remote url: {name}")
 
     def _open(self, name, mode="rb"):
-        """Return the remote file object."""
+        """Return the remote file object, falling back to local storage."""
+        try:
+            self._validate_LFA_url(name)
+        except ValueError:
+            return self.local_storage.open(name, mode)
 
-        # Validate name is a remote url
-        self._validate_LFA_url(name)
+        try:
+            response = requests.get(name)
+            if response.status_code != 200:
+                raise FileNotFoundError(f"Error requesting file at: {name}.")
 
-        # Make request to remote server
-        response = requests.get(name)
-        if response.status_code != 200:
-            raise FileNotFoundError(f"Error requesting file at: {name}.")
+            # Create temporary file to store the response
+            tf = TemporaryFile()
 
-        # Create temporary file to store the response
-        tf = TemporaryFile()
+            # If request is for thumbnail (image file)
+            if (
+                response.headers.get("content-type") in RemoteStorage.ALLOWED_FILE_TYPES[:3]
+            ) or response.headers.get("content-type") == RemoteStorage.ALLOWED_FILE_TYPES[4]:
+                byte_encoded_response = response.content
+                tf.write(byte_encoded_response)
+                tf.seek(0)
+                return tf
 
-        # If request is for thumbnail (image file)
-        if (
-            response.headers.get("content-type") in RemoteStorage.ALLOWED_FILE_TYPES[:3]
-        ) or response.headers.get("content-type") == RemoteStorage.ALLOWED_FILE_TYPES[4]:
-            byte_encoded_response = response.content
-            tf.write(byte_encoded_response)
-            # Before sending the file,
-            # we need to reset the file pointer to the beginning
-            tf.seek(0)
-            return tf
+            # If request is for config files (json file)
+            if (
+                response.headers.get("content-type") == RemoteStorage.ALLOWED_FILE_TYPES[3]
+                or response.headers.get("content-type") == RemoteStorage.ALLOWED_FILE_TYPES[4]
+            ):
+                json_response = response.json()
+                byte_encoded_response = json.dumps(json_response).encode("ascii")
+                tf.write(byte_encoded_response)
+                tf.seek(0)
+                return tf
 
-        # If request is for config files (json file)
-        if (
-            response.headers.get("content-type") == RemoteStorage.ALLOWED_FILE_TYPES[3]
-            or response.headers.get("content-type") == RemoteStorage.ALLOWED_FILE_TYPES[4]
-        ):
-            json_response = response.json()
-            byte_encoded_response = json.dumps(json_response).encode("ascii")
-            tf.write(byte_encoded_response)
-            # Before sending the file,
-            # we need to reset the file pointer to the beginning
-            tf.seek(0)
-            return tf
-
-        # Raise error if file type is not supported
-        raise ValueError(f"File type not supported: {response.headers.get('content-type')}")
+            # Raise error if file type is not supported
+            raise ValueError(f"File type not supported: {response.headers.get('content-type')}")
+        except (requests.RequestException, FileNotFoundError):
+            if self.local_storage.exists(name):
+                return self.local_storage.open(name, mode=mode)
+            raise
 
     def _save(self, name, content):
         """Upload the file to the remote server.
@@ -239,9 +241,9 @@ class RemoteStorage(Storage):
             url = f"{self.location}/upload-love-thumbnail"
         elif name.startswith(RemoteStorage.PREFIX_CONFIG):
             url = f"{self.location}/upload-love-config-file"
+        else:
+            raise ValueError(f"Unsupported upload prefix for: {name}")
 
-        # Before sending the file,
-        # we need to reset the file pointer to the beginning
         content.seek(0)
         upload_file_response = requests.post(url, files={"uploaded_file": content})
         if upload_file_response.status_code != 200:
@@ -249,16 +251,24 @@ class RemoteStorage(Storage):
         return upload_file_response.json()["url"]
 
     def delete(self, name):
-        pass
+        if not name.startswith(("http://", "https://")) and self.local_storage.exists(name):
+            self.local_storage.delete(name)
 
     def exists(self, name):
-        return False
+        if name.startswith(("http://", "https://")):
+            return False
+        return self.local_storage.exists(name)
+
+    def path(self, name):
+        if name.startswith(("http://", "https://")):
+            raise NotImplementedError("Remote URLs do not have a local filesystem path.")
+        return self.local_storage.path(name)
 
     def url(self, name):
-        """Return the URL of the remote file."""
-        if "http" in name:
+        """Return the URL of the remote or local file."""
+        if name.startswith(("http://", "https://")):
             return name
-        return f"{settings.MEDIA_URL}{name}"
+        return self.local_storage.url(name)
 
 
 def upload_to_lfa(request, *args, **kwargs):
