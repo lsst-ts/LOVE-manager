@@ -730,6 +730,7 @@ class ConfigFileViewSet(viewsets.ModelViewSet):
         try:
             serializer_data = ConfigFileContentSerializer(cf).data
         except Exception:
+            raise
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         return Response(serializer_data)
