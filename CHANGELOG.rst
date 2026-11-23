@@ -2,6 +2,11 @@
 Version History
 ===============
 
+v8.0.1
+------
+
+* Fix conda recipe tests environment. `<https://github.com/lsst-ts/LOVE-manager/pull/380>`_
+
 v8.0.0
 ------
 
