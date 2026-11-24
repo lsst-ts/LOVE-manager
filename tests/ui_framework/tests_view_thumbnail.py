@@ -35,6 +35,7 @@ from django.test import TestCase, override_settings
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
+
 from ui_framework.models import View
 
 MOCK_LOCATION = os.path.join(os.path.dirname(os.path.abspath(__file__)), "media", "mock", "test")
