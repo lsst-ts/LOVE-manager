@@ -26,9 +26,8 @@ from api.models import Token
 from django.contrib.auth.models import Permission, User
 from django.test import TestCase, override_settings
 from django.urls import reverse
-from rest_framework.test import APIClient
-
 from manager.permissions import UserBasedPermission
+from rest_framework.test import APIClient
 
 # python manage.py test api.tests.test_commander.CommanderTestCase
 # python manage.py test api.tests.test_commander.SalinfoTestCase
