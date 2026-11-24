@@ -29,9 +29,9 @@ from api.models import Token
 from channels.testing import WebsocketCommunicator
 from django.contrib.auth.models import Permission, User
 from django.test import override_settings
-from subscription.heartbeat_manager import HeartbeatManager
-
 from manager.routing import application
+
+from subscription.heartbeat_manager import HeartbeatManager
 
 
 class TestHeartbeat:
