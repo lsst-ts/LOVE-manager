@@ -24,6 +24,7 @@
 from django.test import TestCase
 from django.utils import timezone
 from freezegun import freeze_time
+
 from ui_framework.models import View, Workspace, WorkspaceView
 
 
